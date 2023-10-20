@@ -23,7 +23,7 @@ export const SurveyCard = ({ survey }: { survey: Survey }) => {
       </CardHeader>
       <CardContent>3 questions</CardContent>
       <CardFooter className="justify-between">
-        <DeleteSurveyButton />
+        <DeleteSurveyButton survey={survey} />
         <Button variant="default" asChild>
           <Link href={`/surveys/${survey.id}`}>View</Link>
         </Button>

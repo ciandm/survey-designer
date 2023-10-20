@@ -1,6 +1,6 @@
-import { Prisma } from '@prisma/client';
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/prisma/client';
+import { Prisma } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/prisma/client";
 
 export type FullSurvey = Prisma.SurveyGetPayload<{
   include: {
@@ -23,5 +23,5 @@ export async function GET(req: NextRequest, res: NextResponse) {
     },
   });
 
-  return Response.json({ surveys });
+  return new Response(JSON.stringify(surveys));
 }
