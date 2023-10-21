@@ -16,7 +16,7 @@ export async function DELETE(
 
   await prisma.survey.delete({
     where: {
-      id: Number(params.id),
+      id: params.id,
     },
   });
 

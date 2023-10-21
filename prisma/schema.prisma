@@ -12,26 +12,26 @@ datasource db {
 }
 
 model Survey {
-  id        Int        @id @default(autoincrement())
+  id        String     @id @default(cuid())
   name      String
   questions Question[]
 }
 
 model Question {
-  id       Int      @id @default(autoincrement())
+  id       String   @id @default(cuid())
   text     String
   answers  Answer[]
   survey   Survey?  @relation(fields: [surveyId], references: [id])
-  surveyId Int?
+  surveyId String?
 
   @@index([surveyId], name: "surveyId")
 }
 
 model Answer {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(cuid())
   text       String
   question   Question @relation(fields: [questionId], references: [id])
-  questionId Int
+  questionId String
 
   @@index([questionId], name: "questionId")
 }

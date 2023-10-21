@@ -1,5 +1,5 @@
 import React from "react";
-import { Survey } from "@prisma/client";
+import { Prisma, Survey } from "@prisma/client";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import {
@@ -12,7 +12,16 @@ import {
 } from "./ui/card";
 import { DeleteSurveyButton } from "./delete-survey-button";
 
-export const SurveyCard = ({ survey }: { survey: Survey }) => {
+export const SurveyCard = ({
+  survey,
+}: {
+  survey: Prisma.SurveyGetPayload<{
+    include: {
+      questions: true;
+    };
+  }>;
+}) => {
+  const questionCount = survey.questions.length;
   return (
     <Card>
       <CardHeader>
@@ -21,11 +30,11 @@ export const SurveyCard = ({ survey }: { survey: Survey }) => {
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
         </CardDescription>
       </CardHeader>
-      <CardContent>3 questions</CardContent>
+      <CardContent>{questionCount} questions</CardContent>
       <CardFooter className="justify-between">
         <DeleteSurveyButton survey={survey} />
         <Button variant="default" asChild>
-          <Link href={`/surveys/${survey.id}`}>View</Link>
+          <Link href={`/survey/creator/${survey.id}`}>View</Link>
         </Button>
       </CardFooter>
     </Card>

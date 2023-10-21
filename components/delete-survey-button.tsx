@@ -50,7 +50,8 @@ export const DeleteSurveyButton = ({
         <DialogHeader>
           <DialogTitle>Are you sure absolutely sure?</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently the survey.
+            This action cannot be undone. This will delete permanently the
+            survey.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="sm:justify-start">

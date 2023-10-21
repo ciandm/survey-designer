@@ -4,11 +4,7 @@ import prisma from "@/prisma/client";
 const Home = async () => {
   const surveys = await prisma.survey.findMany({
     include: {
-      questions: {
-        include: {
-          answers: true,
-        },
-      },
+      questions: true,
     },
   });
 
