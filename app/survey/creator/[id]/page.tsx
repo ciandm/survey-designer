@@ -23,7 +23,7 @@ const SurveyCreatorPage = async ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <>
+    <div className="h-screen">
       <header className="border-b">
         <div className="container flex items-center justify-between py-4">
           <div>
@@ -40,8 +40,35 @@ const SurveyCreatorPage = async ({ params }: { params: { id: string } }) => {
           </div>
         </div>
       </header>
-      <main></main>
-    </>
+      <main className="flex">
+        <aside className="w-[320px] border-r p-4">
+          Question suggestion selector goes here
+        </aside>
+        <div className="bg-primary-foreground container py-8">
+          {survey.questions.map((question) => (
+            <div key={question.id} className="mb-8">
+              <h5 className="text-lg font-semibold">{question.text}</h5>
+              <div className="mt-4">
+                {question.answers.map((answer) => (
+                  <div key={answer.id} className="flex items-center">
+                    <input
+                      type="radio"
+                      id={answer.id}
+                      name={question.id}
+                      className="mr-2"
+                    />
+                    <label htmlFor={answer.id}>{answer.text}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <aside className="w-[400px] border-l p-4">
+          Question options goes here
+        </aside>
+      </main>
+    </div>
   );
 };
 
