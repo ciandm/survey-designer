@@ -25,6 +25,7 @@ model Question {
   survey      Survey?      @relation(fields: [surveyId], references: [id])
   surveyId    String?
   type        QuestionType @default(TEXT)
+  order       Int          @default(1)
 
   @@index([surveyId], name: "surveyId")
 }
