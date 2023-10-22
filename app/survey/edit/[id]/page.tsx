@@ -1,12 +1,12 @@
-import { EyeIcon } from "lucide-react";
-import { notFound } from "next/navigation";
-import QuestionDesigner from "@/components/question-designer";
-import QuestionOptionsPlayground from "@/components/question-options-playground";
-import QuestionsContainer from "@/components/questions-container";
-import { Button } from "@/components/ui/button";
-import prisma from "@/prisma/client";
+import {EyeIcon} from 'lucide-react';
+import {notFound} from 'next/navigation';
+import QuestionOptionsPlayground from '@/components/question-options-playground';
+import QuestionsContainer from '@/components/questions-container';
+import {QuestionsPanel} from '@/components/questions-panel';
+import {Button} from '@/components/ui/button';
+import prisma from '@/prisma/client';
 
-const SurveyCreatorPage = async ({ params }: { params: { id: string } }) => {
+const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
   const survey = await prisma.survey.findUnique({
     where: {
       id: params.id,
@@ -43,24 +43,15 @@ const SurveyCreatorPage = async ({ params }: { params: { id: string } }) => {
         </div>
       </header>
       <main className="flex">
-        <aside className="w-[320px] border-r p-4">
-          Question suggestion selector goes here
-        </aside>
-        <div className="flex w-full flex-col">
-          {survey.questions.map((question, index) => (
-            <QuestionsContainer questions={survey.questions} key={question.id}>
-              <QuestionDesigner
-                questionNumber={index + 1}
-                question={question}
-                isActive={index === 0}
-              />
-              <Button variant="ghost" className="mx-auto" size="sm">
-                Add question
-              </Button>
-            </QuestionsContainer>
-          ))}
-        </div>
-        <QuestionOptionsPlayground questions={survey.questions} />
+        <QuestionsContainer questions={survey.questions}>
+          <aside className="w-[320px] border-r p-4">
+            Question suggestion selector goes here
+          </aside>
+          <div className="flex w-full flex-col space-y-2">
+            <QuestionsPanel />
+          </div>
+          <QuestionOptionsPlayground />
+        </QuestionsContainer>
       </main>
     </div>
   );

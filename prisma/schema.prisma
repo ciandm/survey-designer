@@ -18,12 +18,13 @@ model Survey {
 }
 
 model Question {
-  id       String       @id @default(cuid())
-  text     String
-  answers  Answer[]
-  survey   Survey?      @relation(fields: [surveyId], references: [id])
-  surveyId String?
-  type     QuestionType @default(TEXT)
+  id          String       @id @default(cuid())
+  text        String
+  description String?
+  answers     Answer[]
+  survey      Survey?      @relation(fields: [surveyId], references: [id])
+  surveyId    String?
+  type        QuestionType @default(TEXT)
 
   @@index([surveyId], name: "surveyId")
 }

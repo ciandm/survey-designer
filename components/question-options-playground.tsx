@@ -1,36 +1,30 @@
 'use client';
 
-import {useForm} from 'react-hook-form';
-import {Prisma, QuestionType} from '@prisma/client';
-import z from 'zod';
+import {useState} from 'react';
+import {Prisma} from '@prisma/client';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {useSelectedQuestion} from '@/stores/question/selected-question';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from './ui/form';
+import {updateQuestion} from '@/store/features/questions-slice';
+import {useAppDispatch, useAppSelector} from '@/store/hooks';
+import {Button} from './ui/button';
+import {Label} from './ui/label';
 import {Separator} from './ui/separator';
 import {Switch} from './ui/switch';
 import {Textarea} from './ui/textarea';
 
-const QuestionOptionsPlayground = ({
-  questions,
-}: {
-  questions: Prisma.QuestionGetPayload<{include: {answers: true}}>[];
-}) => {
-  const selectedQuestion = useSelectedQuestion();
-  const question = questions.find((q) => q.id === selectedQuestion);
+const QuestionOptionsPlayground = () => {
+  const questions = useAppSelector((state) => state.questions.questions);
+  const selectedQuestionId = useAppSelector(
+    (state) => state.questions.selectedQuestionId,
+  );
+  const question = questions[selectedQuestionId ?? ''];
 
   if (!question) {
     return null;
@@ -38,120 +32,89 @@ const QuestionOptionsPlayground = ({
 
   return (
     <aside className="w-[480px] border-l p-4">
-      <QuestionForm question={question} key={selectedQuestion} />
+      <QuestionForm question={question} key={question.id} />
     </aside>
   );
 };
-
-const formSchema = z.object({
-  question: z.string().min(2, {
-    message: 'Question must be at least 2 characters long.',
-  }),
-  type: z.nativeEnum(QuestionType),
-  description: z.string().optional(),
-  hasDescription: z.boolean().optional(),
-});
 
 const QuestionForm = ({
   question,
 }: {
   question: Prisma.QuestionGetPayload<{include: {answers: true}}>;
 }) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    defaultValues: {
-      question: question?.text,
-      type: question?.type || QuestionType.TEXT,
-      hasDescription: false,
-      description: '',
-    },
-  });
-
-  const hasDescription = form.watch('hasDescription');
+  const [hasDescription, setHasDescription] = useState(false);
+  const dispatch = useAppDispatch();
 
   return (
-    <Form {...form}>
-      <form className="flex flex-col">
-        <div className="flex flex-col space-y-4">
-          <FormField
-            control={form.control}
-            name="question"
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>Question</FormLabel>
-                <FormControl>
-                  <Textarea rows={2} placeholder="Your question" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
+    <div className="flex flex-col">
+      <div className="flex flex-col space-y-4">
+        <div className="grid w-full max-w-sm items-center gap-1.5">
+          <Label htmlFor="question">Question</Label>
+          <Textarea
+            id="question"
+            rows={2}
+            placeholder="Your question"
+            value={question.text}
+            onChange={(e) =>
+              dispatch(updateQuestion({id: question.id, text: e.target.value}))
+            }
           />
-          <FormField
-            control={form.control}
-            name="type"
-            render={({field}) => (
-              <FormItem>
-                <FormLabel>Question type</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue>{field.value}</SelectValue>
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Object.values(QuestionType).map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <Separator className="my-6 block" />
-        <FormField
-          control={form.control}
-          name="hasDescription"
-          render={({field}) => (
-            <FormItem className="flex flex-row items-center justify-between gap-2">
-              <div className="space-y-0.5">
-                <FormLabel>Add a description</FormLabel>
-                <FormDescription>
-                  Provide useful information to your users.
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
+          {!question.text && (
+            <p className="text-sm text-muted-foreground">
+              Add a question to your survey
+            </p>
           )}
+        </div>
+        <div>
+          <Label>Question type</Label>
+          <Select value="apple">
+            <SelectTrigger>
+              <SelectValue placeholder="Select a fruit" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Fruits</SelectLabel>
+                <SelectItem value="apple">Apple</SelectItem>
+                <SelectItem value="banana">Banana</SelectItem>
+                <SelectItem value="blueberry">Blueberry</SelectItem>
+                <SelectItem value="grapes">Grapes</SelectItem>
+                <SelectItem value="pineapple">Pineapple</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <Separator className="my-6 block" />
+      <div className="flex flex-row items-center justify-between gap-4">
+        <div className="space-y-0.5">
+          <p className="text-sm font-medium">Add a description</p>
+          <p className="text-xs text-muted-foreground">
+            Provide useful information to help your respondents answer the
+            question
+          </p>
+        </div>
+        <Switch
+          onCheckedChange={(checked) => setHasDescription(checked)}
+          checked={hasDescription}
         />
-        {hasDescription && (
-          <FormField
-            control={form.control}
-            name="description"
-            render={({field}) => (
-              <FormItem className="my-2">
-                <FormControl>
-                  <Textarea
-                    rows={2}
-                    placeholder="Your description"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        )}
-      </form>
-    </Form>
+      </div>
+      {hasDescription && (
+        <Textarea
+          rows={2}
+          placeholder="Your description"
+          className="mt-4"
+          value={question.description ?? ''}
+          onChange={(event) =>
+            dispatch(
+              updateQuestion({
+                id: question.id,
+                description: event.target.value,
+              }),
+            )
+          }
+        />
+      )}
+    </div>
   );
 };
 

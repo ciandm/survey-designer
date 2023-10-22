@@ -1,22 +1,21 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Question } from "@prisma/client";
+import React from 'react';
+import {Question} from '@prisma/client';
 import {
-  useSelectedQuestion,
-  useSetSelectedQuestion,
-} from "@/stores/question/selected-question";
+  setQuestions,
+  setSelectedQuestionId,
+} from '@/store/features/questions-slice';
+import {useAppDispatch} from '@/store/hooks';
 
 const QuestionsContainer = ({
   children,
   questions,
-}: React.PropsWithChildren<{ questions: Question[] }>) => {
-  const selectedQuestion = useSelectedQuestion();
-  const setSelectedQuestion = useSetSelectedQuestion();
+}: React.PropsWithChildren<{questions: Question[]}>) => {
+  const dispatch = useAppDispatch();
 
-  if (!selectedQuestion && questions.length > 0) {
-    setSelectedQuestion(questions[0].id);
-  }
+  dispatch(setQuestions(questions));
+  dispatch(setSelectedQuestionId(questions[0]?.id ?? ''));
 
   return <>{children}</>;
 };
