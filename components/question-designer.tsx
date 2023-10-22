@@ -2,8 +2,10 @@
 
 import {Prisma} from '@prisma/client';
 import {cn} from '@/lib/utils';
-import {setSelectedQuestionId} from '@/store/features/questions-slice';
-import {useAppDispatch, useAppSelector} from '@/store/hooks';
+import {
+  setSelectedQuestionId,
+  useSelectedQuestionId,
+} from '@/stores/question/questions';
 import {Input} from './ui/input';
 
 interface Props {
@@ -13,13 +15,9 @@ interface Props {
 }
 
 const QuestionDesigner = ({question, questionNumber}: Props) => {
-  const dispatch = useAppDispatch();
-  const selectedQuestionId = useAppSelector(
-    (state) => state.questions.selectedQuestionId,
-  );
-
+  const selectedQuestionId = useSelectedQuestionId();
   const onQuestionClick = () => {
-    dispatch(setSelectedQuestionId(question.id));
+    setSelectedQuestionId(question.id);
   };
 
   return (

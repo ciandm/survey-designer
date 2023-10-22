@@ -11,18 +11,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {updateQuestion} from '@/store/features/questions-slice';
-import {useAppDispatch, useAppSelector} from '@/store/hooks';
+import {
+  updateQuestion,
+  useQuestions,
+  useSelectedQuestionId,
+} from '@/stores/question/questions';
 import {Label} from './ui/label';
 import {Separator} from './ui/separator';
 import {Switch} from './ui/switch';
 import {Textarea} from './ui/textarea';
 
 const QuestionOptionsPlayground = () => {
-  const questions = useAppSelector((state) => state.questions.questions);
-  const selectedQuestionId = useAppSelector(
-    (state) => state.questions.selectedQuestionId,
-  );
+  const questions = useQuestions();
+  const selectedQuestionId = useSelectedQuestionId();
   const question = questions[selectedQuestionId ?? ''];
 
   if (!question) {
@@ -42,7 +43,6 @@ const QuestionForm = ({
   question: Prisma.QuestionGetPayload<{include: {answers: true}}>;
 }) => {
   const [hasDescription, setHasDescription] = useState(false);
-  const dispatch = useAppDispatch();
 
   return (
     <div className="flex flex-col">
@@ -55,7 +55,7 @@ const QuestionForm = ({
             placeholder="Your question"
             value={question.text}
             onChange={(e) =>
-              dispatch(updateQuestion({id: question.id, text: e.target.value}))
+              updateQuestion({id: question.id, text: e.target.value})
             }
           />
           {!question.text && (
@@ -104,12 +104,10 @@ const QuestionForm = ({
           className="mt-4"
           value={question.description ?? ''}
           onChange={(event) =>
-            dispatch(
-              updateQuestion({
-                id: question.id,
-                description: event.target.value,
-              }),
-            )
+            updateQuestion({
+              id: question.id,
+              description: event.target.value,
+            })
           }
         />
       )}

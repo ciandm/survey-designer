@@ -1,4 +1,5 @@
-import { create } from "zustand";
+import {StateCreator, StoreApi} from 'zustand';
+import {immer} from 'zustand/middleware/immer';
 
 interface State {
   questionId: string;
@@ -7,12 +8,21 @@ interface State {
   };
 }
 
-const useQuestionStore = create<State>()((set) => ({
-  questionId: "",
+type ImmerStateCreator<T> = StateCreator<
+  T,
+  [['zustand/immer', never], never],
+  [],
+  T
+>;
+
+export const createSelectedQuestionSlice: ImmerStateCreator<State> = (
+  set: StoreApi<State>['setState'],
+) => ({
+  questionId: '',
   actions: {
-    setQuestion: (question) => set({ questionId: question }),
+    setQuestion: (question) => set({questionId: question}),
   },
-}));
+});
 
 export const useSelectedQuestion = () =>
   useQuestionStore((state) => state.questionId);

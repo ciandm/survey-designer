@@ -2,12 +2,12 @@
 
 import {Fragment} from 'react';
 import {Separator} from '@radix-ui/react-select';
-import {useAppSelector} from '@/store/hooks';
+import {useQuestions} from '@/stores/question/questions';
 import {Button} from './ui/button';
 import QuestionDesigner from './question-designer';
 
 export const QuestionsPanel = () => {
-  const questions = useAppSelector((state) => state.questions.questions);
+  const questions = useQuestions();
 
   return (
     <>

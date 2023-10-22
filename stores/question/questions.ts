@@ -1,18 +1,21 @@
-import {Question} from '@prisma/client';
+import {Prisma, Question} from '@prisma/client';
 import {create} from 'zustand';
 
 interface State {
   questions: {
-    [id: string]: Question;
+    [id: string]: Prisma.QuestionGetPayload<{include: {answers: true}}>;
   };
+  selectedQuestionId: string;
   actions: {
     setQuestions: (questions: Question[]) => void;
-    updateQuestion: (question: Question) => void;
+    updateQuestion: (question: Partial<Question> & {id: string}) => void;
+    setSelectedQuestionId: (id: string) => void;
   };
 }
 
 const useQuestionsStore = create<State>()((set) => ({
   questions: {},
+  selectedQuestionId: '',
   actions: {
     setQuestions: (questions) =>
       set({questions: questions.reduce((acc, q) => ({...acc, [q.id]: q}), {})}),
@@ -26,11 +29,15 @@ const useQuestionsStore = create<State>()((set) => ({
           },
         },
       })),
+    setSelectedQuestionId: (id) => set({selectedQuestionId: id}),
   },
 }));
 
 export const useQuestions = () => useQuestionsStore((state) => state.questions);
 export const useQuestion = (id: string) =>
   useQuestionsStore((state) => state.questions[id]);
-export const useSetQuestions = () =>
-  useQuestionsStore((state) => state.actions.setQuestions);
+export const useSelectedQuestionId = () =>
+  useQuestionsStore((state) => state.selectedQuestionId);
+
+export const {setQuestions, updateQuestion, setSelectedQuestionId} =
+  useQuestionsStore.getState().actions;
