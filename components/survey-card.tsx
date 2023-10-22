@@ -34,7 +34,7 @@ export const SurveyCard = ({
       <CardFooter className="justify-between">
         <DeleteSurveyButton survey={survey} />
         <Button variant="default" asChild>
-          <Link href={`/survey/creator/${survey.id}`}>View</Link>
+          <Link href={`/survey/edit/${survey.id}`}>View</Link>
         </Button>
       </CardFooter>
     </Card>

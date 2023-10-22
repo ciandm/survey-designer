@@ -1,6 +1,8 @@
-import React from "react";
 import { EyeIcon } from "lucide-react";
 import { notFound } from "next/navigation";
+import QuestionDesigner from "@/components/question-designer";
+import QuestionOptionsPlayground from "@/components/question-options-playground";
+import QuestionsContainer from "@/components/questions-container";
 import { Button } from "@/components/ui/button";
 import prisma from "@/prisma/client";
 
@@ -44,29 +46,21 @@ const SurveyCreatorPage = async ({ params }: { params: { id: string } }) => {
         <aside className="w-[320px] border-r p-4">
           Question suggestion selector goes here
         </aside>
-        <div className="bg-primary-foreground container py-8">
-          {survey.questions.map((question) => (
-            <div key={question.id} className="mb-8">
-              <h5 className="text-lg font-semibold">{question.text}</h5>
-              <div className="mt-4">
-                {question.answers.map((answer) => (
-                  <div key={answer.id} className="flex items-center">
-                    <input
-                      type="radio"
-                      id={answer.id}
-                      name={question.id}
-                      className="mr-2"
-                    />
-                    <label htmlFor={answer.id}>{answer.text}</label>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <div className="flex w-full flex-col">
+          {survey.questions.map((question, index) => (
+            <QuestionsContainer questions={survey.questions} key={question.id}>
+              <QuestionDesigner
+                questionNumber={index + 1}
+                question={question}
+                isActive={index === 0}
+              />
+              <Button variant="ghost" className="mx-auto" size="sm">
+                Add question
+              </Button>
+            </QuestionsContainer>
           ))}
         </div>
-        <aside className="w-[400px] border-l p-4">
-          Question options goes here
-        </aside>
+        <QuestionOptionsPlayground questions={survey.questions} />
       </main>
     </div>
   );

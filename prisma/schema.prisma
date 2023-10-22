@@ -18,13 +18,20 @@ model Survey {
 }
 
 model Question {
-  id       String   @id @default(cuid())
+  id       String       @id @default(cuid())
   text     String
   answers  Answer[]
-  survey   Survey?  @relation(fields: [surveyId], references: [id])
+  survey   Survey?      @relation(fields: [surveyId], references: [id])
   surveyId String?
+  type     QuestionType @default(TEXT)
 
   @@index([surveyId], name: "surveyId")
+}
+
+enum QuestionType {
+  TEXT
+  MULTIPLE_CHOICE
+  SINGLE_CHOICE
 }
 
 model Answer {
