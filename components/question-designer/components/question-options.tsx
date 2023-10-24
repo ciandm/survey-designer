@@ -1,6 +1,6 @@
 'use client';
 
-import {Control, Controller} from 'react-hook-form';
+import {Controller, useFormContext} from 'react-hook-form';
 import {QuestionType} from '@prisma/client';
 import * as Accordion from '@radix-ui/react-accordion';
 import {ChevronDownIcon} from 'lucide-react';
@@ -16,17 +16,15 @@ import {
   SelectValue,
 } from '../../ui/select';
 import {Switch} from '../../ui/switch';
-
-interface FormState {
-  title: string;
-  description: string;
-  type: QuestionType;
-}
+import {
+  QuestionDesignerControl,
+  QuestionDesignerFormData,
+} from '../question-designer';
 
 interface OptionsProps {
   setHasDescription: (hasDescription: boolean) => void;
   hasDescription: boolean;
-  control: Control<FormState>;
+  control: QuestionDesignerControl;
 }
 
 type AccordionValues = 'general' | 'validation';
@@ -87,21 +85,23 @@ export const QuestionOptions = ({
   );
 };
 
-const GeneralOptions = ({
-  control,
-  hasDescription,
-  setHasDescription,
-}: OptionsProps) => {
+const GeneralOptions = ({hasDescription, setHasDescription}: OptionsProps) => {
+  const {control, watch, setValue} = useFormContext<QuestionDesignerFormData>();
+
+  const {config} = watch();
+
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex flex-col gap-2">
-        <Label>Question type</Label>
+        <Label htmlFor="question-type" className="text-xs">
+          Question type
+        </Label>
         <Controller
           control={control}
           name="type"
           render={({field}) => (
             <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger>
+              <SelectTrigger id="question-type">
                 <SelectValue placeholder="Select a question type" />
               </SelectTrigger>
               <SelectContent>
@@ -120,15 +120,58 @@ const GeneralOptions = ({
       </div>
       <div className="flex flex-row items-center justify-between gap-4">
         <div className="space-y-0.5">
-          <p className="text-sm font-medium">Add a description</p>
+          <Label htmlFor="description" className="text-xs">
+            Add a description
+          </Label>
           <p className="text-xs text-muted-foreground">
             Provide useful information to help your respondents answer the
             question
           </p>
         </div>
         <Switch
+          id="description"
           onCheckedChange={(checked) => setHasDescription(checked)}
           checked={hasDescription}
+        />
+      </div>
+      <div className="flex flex-row items-center justify-between gap-4">
+        <div className="space-y-0.5">
+          <Label htmlFor="required" className="text-xs">
+            Required
+          </Label>
+        </div>
+        <Controller
+          control={control}
+          name="config.required"
+          render={({field}) => (
+            <Switch
+              id="required"
+              onCheckedChange={(checked) => {
+                field.onChange(checked);
+                if (checked) setValue('config.skippable', false);
+              }}
+              checked={field.value}
+            />
+          )}
+        />
+      </div>
+      <div className="flex flex-row items-center justify-between gap-4">
+        <div className="space-y-0.5">
+          <Label htmlFor="skippable" className="text-xs">
+            Skippable
+          </Label>
+        </div>
+        <Controller
+          control={control}
+          name="config.skippable"
+          render={({field}) => (
+            <Switch
+              id="skippable"
+              disabled={config.required}
+              onCheckedChange={(checked) => field.onChange(checked)}
+              checked={field.value}
+            />
+          )}
         />
       </div>
     </div>

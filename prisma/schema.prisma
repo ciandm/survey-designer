@@ -24,14 +24,15 @@ model Question {
   answers     Answer[]
   survey      Survey?      @relation(fields: [surveyId], references: [id])
   surveyId    String?
-  type        QuestionType @default(TEXT)
+  type        QuestionType @default(SHORT_TEXT)
   order       Int          @default(1)
 
   @@index([surveyId], name: "surveyId")
 }
 
 enum QuestionType {
-  TEXT
+  SHORT_TEXT
+  LONG_TEXT
   MULTIPLE_CHOICE
   SINGLE_CHOICE
 }
