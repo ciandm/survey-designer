@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import prisma from "@/prisma/client";
+import {NextRequest} from 'next/server';
+import {z} from 'zod';
+import prisma from '@/prisma/client';
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -12,7 +12,7 @@ export async function DELETE(
   req: NextRequest,
   context: z.infer<typeof routeContextSchema>,
 ) {
-  const { params } = routeContextSchema.parse(context);
+  const {params} = routeContextSchema.parse(context);
 
   await prisma.survey.delete({
     where: {
@@ -20,5 +20,5 @@ export async function DELETE(
     },
   });
 
-  return new Response(null, { status: 204 });
+  return new Response(null, {status: 204});
 }

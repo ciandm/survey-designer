@@ -1,8 +1,6 @@
 import {EyeIcon} from 'lucide-react';
 import {notFound} from 'next/navigation';
-import QuestionOptionsPlayground from '@/components/question-options-playground';
-import QuestionsContainer from '@/components/questions-container';
-import {QuestionsPanel} from '@/components/questions-panel';
+import {SurveyDesigner} from '@/components/survey-designer';
 import {Button} from '@/components/ui/button';
 import prisma from '@/prisma/client';
 
@@ -43,15 +41,7 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
         </div>
       </header>
       <main className="flex">
-        <QuestionsContainer questions={survey.questions}>
-          <aside className="w-[320px] border-r p-4">
-            Question suggestion selector goes here
-          </aside>
-          <div className="flex w-full flex-col space-y-2">
-            <QuestionsPanel />
-          </div>
-          <QuestionOptionsPlayground />
-        </QuestionsContainer>
+        <SurveyDesigner survey={survey} />
       </main>
     </div>
   );

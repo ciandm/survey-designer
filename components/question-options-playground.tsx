@@ -26,15 +26,7 @@ const QuestionOptionsPlayground = () => {
   const selectedQuestionId = useSelectedQuestionId();
   const question = questions[selectedQuestionId ?? ''];
 
-  if (!question) {
-    return null;
-  }
-
-  return (
-    <aside className="w-[480px] border-l p-4">
-      <QuestionForm question={question} key={question.id} />
-    </aside>
-  );
+  return <aside className="w-[480px] border-l p-4" id="options-playground" />;
 };
 
 const QuestionForm = ({
