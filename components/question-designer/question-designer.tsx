@@ -6,12 +6,14 @@ import {
   Control,
   Controller,
   FormProvider,
+  useFieldArray,
   useForm,
   useFormContext,
 } from 'react-hook-form';
 import TextareaAutosize from 'react-textarea-autosize';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Prisma, QuestionType} from '@prisma/client';
+import {Delete, Plus, Trash} from 'lucide-react';
 import {z} from 'zod';
 import {cn} from '@/lib/utils';
 import {questionDesignSchema} from '@/lib/validations/question';
@@ -22,8 +24,6 @@ import {
 import {Button} from '../ui/button';
 import {Card, CardContent} from '../ui/card';
 import {Input} from '../ui/input';
-import {Label} from '../ui/label';
-import {Separator} from '../ui/separator';
 import {Textarea} from '../ui/textarea';
 import {QuestionOptions} from './components/question-options';
 
@@ -46,8 +46,14 @@ export const QuestionDesigner = ({question, questionNumber}: Props) => {
       title: question.text,
       type: question.type,
       description: question.description ?? '',
-      choices: [],
-      config: {},
+      choices: question.answers.length
+        ? question.answers.map((answer) => ({
+            value: answer.text,
+          }))
+        : [{value: ''}],
+      config: {
+        placeholder: 'Enter an answer',
+      },
     },
     resolver: zodResolver(questionDesignSchema),
   });
@@ -65,8 +71,8 @@ export const QuestionDesigner = ({question, questionNumber}: Props) => {
   const questionTypeMap = {
     [QuestionType.SHORT_TEXT]: <TextQuestion type="SHORT_TEXT" />,
     [QuestionType.LONG_TEXT]: <TextQuestion type="LONG_TEXT" />,
-    [QuestionType.MULTIPLE_CHOICE]: <p>Multiple choice</p>,
-    [QuestionType.SINGLE_CHOICE]: <p>Single choice</p>,
+    [QuestionType.MULTIPLE_CHOICE]: <ChoicesQuestion />,
+    [QuestionType.SINGLE_CHOICE]: <ChoicesQuestion />,
   };
 
   return (
@@ -78,9 +84,10 @@ export const QuestionDesigner = ({question, questionNumber}: Props) => {
         )}
         key={question.id}
         className={cn(
-          'flex cursor-pointer flex-col border border-transparent p-8',
+          'flex cursor-pointer flex-col border-2 border-transparent p-4',
           {
-            'bg-primary-foreground': selectedQuestionId === question.id,
+            'border-slate-100 bg-primary-foreground':
+              selectedQuestionId === question.id,
           },
         )}
         onClick={onQuestionClick}
@@ -125,16 +132,13 @@ export const QuestionDesigner = ({question, questionNumber}: Props) => {
             <CardContent className="p-4">{questionTypeMap[type]}</CardContent>
           </Card>
         </div>
-        {mounted &&
-          isActive &&
-          createPortal(
-            <QuestionOptions
-              control={control}
-              hasDescription={showDescription}
-              setHasDescription={setShowDescription}
-            />,
-            document.getElementById('options-playground')!,
-          )}
+        {isActive && (
+          <QuestionOptions
+            control={control}
+            hasDescription={showDescription}
+            setHasDescription={setShowDescription}
+          />
+        )}
         <Button variant="ghost" className="ml-auto mt-8">
           Save changes
         </Button>
@@ -144,7 +148,7 @@ export const QuestionDesigner = ({question, questionNumber}: Props) => {
 };
 
 const TextQuestion = ({type}: {type: QuestionType}) => {
-  const {control, watch} = useFormContext<QuestionDesignerFormData>();
+  const {watch} = useFormContext<QuestionDesignerFormData>();
   const {config} = watch();
 
   const InputComponent = type === QuestionType.SHORT_TEXT ? Input : Textarea;
@@ -152,19 +156,49 @@ const TextQuestion = ({type}: {type: QuestionType}) => {
   return (
     <div className="flex flex-col gap-4">
       <InputComponent type="text" readOnly placeholder={config.placeholder} />
-      <Separator />
-      <div className="flex flex-1 items-center gap-2 space-x-2">
-        <Label htmlFor="placeholder" className="flex-shrink-0">
-          Placeholder
-        </Label>
-        <Controller
-          control={control}
-          name="config.placeholder"
-          render={({field}) => (
-            <Input id="placeholder" className="flex-1" type="text" {...field} />
-          )}
-        />
-      </div>
+    </div>
+  );
+};
+
+const ChoicesQuestion = () => {
+  const {control, register} = useFormContext<QuestionDesignerFormData>();
+  const {fields, append, prepend, remove, swap, move, insert} = useFieldArray({
+    control,
+    name: 'choices',
+  });
+
+  return (
+    <div className="flex flex-col gap-2">
+      {fields.map((field, index) => (
+        <div key={field.id} className="flex gap-2">
+          <Controller
+            control={control}
+            name={`choices.${index}.value`}
+            render={({field}) => (
+              <Input // important to include key with field's id
+                placeholder="Enter a choice"
+                {...field}
+              />
+            )}
+          />
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={() => remove(index)}
+            disabled={fields.length === 1}
+          >
+            <Trash className="h-4 w-4" />
+          </Button>
+        </div>
+      ))}
+      <Button
+        variant="outline"
+        onClick={() => append({value: ''})}
+        className="mt-2 self-start"
+      >
+        <Plus className="mr-2 h-4 w-4" />
+        Add a choice
+      </Button>
     </div>
   );
 };

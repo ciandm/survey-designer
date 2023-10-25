@@ -4,6 +4,9 @@ import {Controller, useFormContext} from 'react-hook-form';
 import {QuestionType} from '@prisma/client';
 import * as Accordion from '@radix-ui/react-accordion';
 import {ChevronDownIcon} from 'lucide-react';
+import {FormDescription} from '@/components/ui/form';
+import {Input} from '@/components/ui/input';
+import {Separator} from '@/components/ui/separator';
 import {formatQuestionType} from '@/lib/utils';
 import {Label} from '../../ui/label';
 import {
@@ -86,12 +89,13 @@ export const QuestionOptions = ({
 };
 
 const GeneralOptions = ({hasDescription, setHasDescription}: OptionsProps) => {
-  const {control, watch, setValue} = useFormContext<QuestionDesignerFormData>();
+  const {control, watch, setValue, setFocus} =
+    useFormContext<QuestionDesignerFormData>();
 
   const {config} = watch();
 
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-4">
       <div className="flex flex-col gap-2">
         <Label htmlFor="question-type" className="text-xs">
           Question type
@@ -118,19 +122,35 @@ const GeneralOptions = ({hasDescription, setHasDescription}: OptionsProps) => {
           )}
         />
       </div>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="placeholder" className="text-xs">
+          Placeholder
+        </Label>
+        <Controller
+          control={control}
+          name="config.placeholder"
+          render={({field}) => <Input type="text" {...field} />}
+        />
+        <FormDescription className="text-xs">
+          This is the text that will appear in the input field when it is empty
+        </FormDescription>
+      </div>
+      <Separator />
       <div className="flex flex-row items-center justify-between gap-4">
         <div className="space-y-0.5">
           <Label htmlFor="description" className="text-xs">
             Add a description
           </Label>
           <p className="text-xs text-muted-foreground">
-            Provide useful information to help your respondents answer the
-            question
+            Provide useful information to help the question
           </p>
         </div>
         <Switch
           id="description"
-          onCheckedChange={(checked) => setHasDescription(checked)}
+          onCheckedChange={(checked) => {
+            setHasDescription(checked);
+            if (checked) setFocus('description');
+          }}
           checked={hasDescription}
         />
       </div>
@@ -158,7 +178,7 @@ const GeneralOptions = ({hasDescription, setHasDescription}: OptionsProps) => {
       <div className="flex flex-row items-center justify-between gap-4">
         <div className="space-y-0.5">
           <Label htmlFor="skippable" className="text-xs">
-            Skippable
+            Skippable {config.required && '(disabled)'}
           </Label>
         </div>
         <Controller
