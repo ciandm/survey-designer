@@ -1,13 +1,13 @@
 'use client';
 
-import {Controller, useFormContext} from 'react-hook-form';
 import {QuestionType} from '@prisma/client';
 import * as Accordion from '@radix-ui/react-accordion';
 import {ChevronDownIcon} from 'lucide-react';
-import {FormDescription} from '@/components/ui/form';
+import {useSurveySchemaActions} from '@/components/survey-schema-initiailiser';
 import {Input} from '@/components/ui/input';
 import {Separator} from '@/components/ui/separator';
 import {formatQuestionType} from '@/lib/utils';
+import {useSelectedField} from '@/stores/selected-field.ts';
 import {Label} from '../../ui/label';
 import {
   Select,
@@ -19,16 +19,6 @@ import {
   SelectValue,
 } from '../../ui/select';
 import {Switch} from '../../ui/switch';
-import {
-  QuestionDesignerControl,
-  QuestionDesignerFormData,
-} from '../question-designer';
-
-interface OptionsProps {
-  setHasDescription: (hasDescription: boolean) => void;
-  hasDescription: boolean;
-  control: QuestionDesignerControl;
-}
 
 type AccordionValues = 'general' | 'validation';
 
@@ -48,19 +38,9 @@ const questionTypeOptions = Object.values(QuestionType).map((value) => ({
   label: formatQuestionType(value),
 }));
 
-export const QuestionOptions = ({
-  setHasDescription,
-  hasDescription,
-  control,
-}: OptionsProps) => {
+export const QuestionOptions = () => {
   const accordionMap: Record<AccordionValues, JSX.Element> = {
-    general: (
-      <GeneralOptions
-        hasDescription={hasDescription}
-        setHasDescription={setHasDescription}
-        control={control}
-      />
-    ),
+    general: <GeneralOptions />,
     validation: <p>Validation options</p>,
   };
   return (
@@ -88,11 +68,11 @@ export const QuestionOptions = ({
   );
 };
 
-const GeneralOptions = ({hasDescription, setHasDescription}: OptionsProps) => {
-  const {control, watch, setValue, setFocus} =
-    useFormContext<QuestionDesignerFormData>();
+const GeneralOptions = () => {
+  const field = useSelectedField();
+  const {updateQuestion} = useSurveySchemaActions();
 
-  const {config} = watch();
+  if (!field) return null;
 
   return (
     <div className="flex flex-col space-y-4">
@@ -100,98 +80,73 @@ const GeneralOptions = ({hasDescription, setHasDescription}: OptionsProps) => {
         <Label htmlFor="question-type" className="text-xs">
           Question type
         </Label>
-        <Controller
-          control={control}
-          name="type"
-          render={({field}) => (
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger id="question-type">
-                <SelectValue placeholder="Select a question type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Simple</SelectLabel>
-                  {questionTypeOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          )}
-        />
+        <Select
+          value={field.type}
+          onValueChange={(value) =>
+            updateQuestion({id: field.id, type: value as QuestionType})
+          }
+        >
+          <SelectTrigger id="question-type">
+            <SelectValue placeholder="Select a question type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Simple</SelectLabel>
+              {questionTypeOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="placeholder" className="text-xs">
           Placeholder
         </Label>
-        <Controller
-          control={control}
-          name="config.placeholder"
-          render={({field}) => <Input type="text" {...field} />}
+        <Input
+          type="text"
+          value={field.properties.placeholder}
+          onChange={(event) =>
+            updateQuestion({
+              id: field.id,
+              properties: {placeholder: event.target.value},
+            })
+          }
         />
-        <FormDescription className="text-xs">
-          This is the text that will appear in the input field when it is empty
-        </FormDescription>
       </div>
       <Separator />
-      <div className="flex flex-row items-center justify-between gap-4">
-        <div className="space-y-0.5">
-          <Label htmlFor="description" className="text-xs">
-            Add a description
-          </Label>
-          <p className="text-xs text-muted-foreground">
-            Provide useful information to help the question
-          </p>
-        </div>
-        <Switch
-          id="description"
-          onCheckedChange={(checked) => {
-            setHasDescription(checked);
-            if (checked) setFocus('description');
-          }}
-          checked={hasDescription}
-        />
-      </div>
       <div className="flex flex-row items-center justify-between gap-4">
         <div className="space-y-0.5">
           <Label htmlFor="required" className="text-xs">
             Required
           </Label>
         </div>
-        <Controller
-          control={control}
-          name="config.required"
-          render={({field}) => (
-            <Switch
-              id="required"
-              onCheckedChange={(checked) => {
-                field.onChange(checked);
-                if (checked) setValue('config.skippable', false);
-              }}
-              checked={field.value}
-            />
-          )}
+        <Switch
+          id="required"
+          checked={field.properties.required}
+          onCheckedChange={(checked) => {
+            updateQuestion({
+              id: field.id,
+              properties: {required: checked, skippable: false},
+            });
+          }}
         />
       </div>
       <div className="flex flex-row items-center justify-between gap-4">
         <div className="space-y-0.5">
           <Label htmlFor="skippable" className="text-xs">
-            Skippable {config.required && '(disabled)'}
+            Skippable {field.properties.required && '(disabled)'}
           </Label>
         </div>
-        <Controller
-          control={control}
-          name="config.skippable"
-          render={({field}) => (
-            <Switch
-              id="skippable"
-              disabled={config.required}
-              onCheckedChange={(checked) => field.onChange(checked)}
-              checked={field.value}
-            />
-          )}
+        <Switch
+          id="skippable"
+          checked={field.properties.skippable}
+          disabled={field.properties.required}
+          onCheckedChange={(checked) => {
+            updateQuestion({id: field.id, properties: {skippable: checked}});
+          }}
         />
       </div>
     </div>
