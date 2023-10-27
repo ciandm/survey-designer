@@ -24,5 +24,5 @@ export const useSelectedField = () => {
   const fields = useSurveySchemaStore((state) => state.fields);
   const selectedFieldId = useSelectedFieldId();
 
-  return fields.find((field) => field.id === selectedFieldId);
+  return fields.find((field) => field.ref === selectedFieldId);
 };

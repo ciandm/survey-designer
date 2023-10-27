@@ -70,7 +70,7 @@ export const QuestionOptions = () => {
 
 const GeneralOptions = () => {
   const field = useSelectedField();
-  const {updateQuestion} = useSurveySchemaActions();
+  const {updateField: updateQuestion} = useSurveySchemaActions();
 
   if (!field) return null;
 

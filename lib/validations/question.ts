@@ -29,6 +29,7 @@ const fieldSchema = z.object({
   text: z.string(),
   type: z.nativeEnum(QuestionType),
   description: z.string().optional(),
+  ref: z.string(),
   properties: z.object({
     choices: z.array(z.string()).optional(),
     placeholder: z.string().optional(),

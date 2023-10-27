@@ -8,8 +8,11 @@ import {
   useRef,
 } from 'react';
 import {Survey} from '@prisma/client';
+import {useMutation} from '@tanstack/react-query';
+import axios from 'axios';
 import {debounce} from 'lodash';
 import merge from 'lodash/merge';
+import {v4 as uuidv4} from 'uuid';
 import {createStore, StoreApi, useStore} from 'zustand';
 import {
   Configuration,
@@ -27,7 +30,14 @@ interface State extends Configuration {
 }
 
 interface Actions {
-  updateQuestion: (question: Partial<FieldConfig> & {id: string}) => void;
+  updateField: (question: Partial<FieldConfig> & {id: string}) => void;
+  insertField: (
+    question: Pick<FieldConfig, 'type'> & {indexAt?: number},
+  ) => void;
+  deleteField: (
+    question: Pick<FieldConfig, 'ref'> & {fallbackSelectedField: string},
+  ) => void;
+  duplicateField: (question: Pick<FieldConfig, 'ref'>) => void;
 }
 
 interface Props
@@ -39,6 +49,23 @@ const StoreContext = createContext<StoreApi<State> | null>(null);
 
 export const SurveySchemaInitialiser = ({children, survey}: Props) => {
   const parsedSchema = configurationSchema.safeParse(survey.schema);
+  const {mutate} = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await axios.put(
+        `/api/v1/surveys/${survey.id}/schema`,
+        {
+          ...data,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      return res.data;
+    },
+    mutationKey: ['survey-schema', survey.id],
+  });
 
   if (!parsedSchema.success) {
     throw new Error('Invalid schema');
@@ -54,23 +81,100 @@ export const SurveySchemaInitialiser = ({children, survey}: Props) => {
         description: '',
       },
       actions: {
-        updateQuestion: (question) =>
+        updateField: (field) =>
           set((state) => ({
             fields: state.fields.map((q) =>
-              q.id === question.id ? merge(q, question) : q,
+              q.id === field.id ? merge(q, field) : q,
             ),
           })),
+        insertField: ({type, indexAt}) => {
+          const ref = uuidv4();
+          set((state) => {
+            const fields = [...state.fields];
+            if (indexAt !== undefined) {
+              fields.splice(indexAt, 0, {
+                id: uuidv4(),
+                ref,
+                type,
+                text: '',
+                description: '',
+                properties: {},
+              });
+              return {
+                fields,
+              };
+            }
+            return {
+              fields: [
+                ...state.fields,
+                {
+                  id: uuidv4(),
+                  ref,
+                  type,
+                  text: '',
+                  description: '',
+                  properties: {},
+                },
+              ],
+            };
+          });
+          setSelectedFieldId(ref);
+        },
+        deleteField: ({ref}) => {
+          const fields = storeRef.current?.getState().fields || [];
+          if (fields.length === 1) return;
+
+          const indexOfFieldToDelete = fields.findIndex((q) => q.ref === ref);
+
+          set((state) => ({
+            fields: state.fields.filter((q) => q.ref !== ref),
+          }));
+
+          if (fields.length === 2) {
+            setSelectedFieldId(fields.find((q) => q.ref !== ref)?.ref || '');
+          } else {
+            setSelectedFieldId(
+              fields[indexOfFieldToDelete - 1]?.ref ||
+                fields[indexOfFieldToDelete + 1]?.ref ||
+                '',
+            );
+          }
+        },
+        duplicateField: ({ref}) => {
+          const newRef = uuidv4();
+          set((state) => {
+            const field = state.fields.find((q) => q.ref === ref);
+            if (!field) return state;
+            const newField = {
+              ...field,
+              text: `${field.text} (copy)`,
+              ref: newRef,
+              id: uuidv4(),
+            };
+            const fields = [...state.fields];
+            fields.splice(
+              state.fields.findIndex((q) => q.ref === ref) + 1,
+              0,
+              newField,
+            );
+            return {
+              fields,
+            };
+          }),
+            setSelectedFieldId(newRef);
+        },
       },
     }));
 
     if (parsedSchema.data.fields.length > 0) {
-      setSelectedFieldId(parsedSchema.data.fields[0].id);
+      setSelectedFieldId(parsedSchema.data.fields[0].ref);
     }
   }
 
   useEffect(() => {
     const fn = debounce((data: any) => {
-      console.log(data);
+      console.log('mutating', data);
+      mutate(data);
     }, 1000);
     const unsub = storeRef.current?.subscribe((state, prevState) => {
       fn(state);
@@ -79,7 +183,7 @@ export const SurveySchemaInitialiser = ({children, survey}: Props) => {
     return () => {
       unsub?.();
     };
-  }, []);
+  }, [mutate]);
 
   return (
     <StoreContext.Provider value={storeRef.current}>

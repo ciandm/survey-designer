@@ -12,7 +12,7 @@ import {Separator} from '../ui/separator';
 import {Textarea} from '../ui/textarea';
 
 export const QuestionDesigner = ({field}: {field: FieldConfig}) => {
-  const {updateQuestion} = useSurveySchemaActions();
+  const {updateField: updateQuestion} = useSurveySchemaActions();
   const questionTypeMap = {
     [QuestionType.SHORT_TEXT]: <TextQuestion field={field} />,
     [QuestionType.LONG_TEXT]: <TextQuestion field={field} />,
@@ -29,13 +29,13 @@ export const QuestionDesigner = ({field}: {field: FieldConfig}) => {
       </div>
       <Input
         placeholder="Your question here..."
-        value={field.text}
+        value={field.text || ''}
         onChange={(e) => updateQuestion({id: field.id, text: e.target.value})}
       />
       <Input
         className="mt-4"
         placeholder="Description (optional)"
-        value={field.description}
+        value={field.description || ''}
         onChange={(e) =>
           updateQuestion({id: field.id, description: e.target.value})
         }

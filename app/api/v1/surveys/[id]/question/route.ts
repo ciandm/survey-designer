@@ -2,14 +2,17 @@ import {NextRequest} from 'next/server';
 import {z} from 'zod';
 import prisma from '@/prisma/client';
 
-export async function POST(req: NextRequest) {
-  const {params} = routeContextSchema.parse(context);
+const routeContextSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+});
 
-  await prisma.survey.delete({
-    where: {
-      id: params.id,
-    },
-  });
+export async function POST(
+  req: NextRequest,
+  context: z.infer<typeof routeContextSchema>,
+) {
+  const {params} = routeContextSchema.parse(context);
 
   return new Response(null, {status: 204});
 }
