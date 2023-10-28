@@ -31,6 +31,10 @@ interface State extends Configuration {
 
 interface Actions {
   updateField: (question: Partial<FieldConfig> & {id: string}) => void;
+  updateFieldChoices: (params: {
+    fieldId: string;
+    choices: FieldConfig['properties']['choices'];
+  }) => void;
   insertField: (
     question: Pick<FieldConfig, 'type'> & {indexAt?: number},
   ) => void;
@@ -84,6 +88,14 @@ export const SurveySchemaInitialiser = ({children, survey}: Props) => {
           set((state) => ({
             fields: state.fields.map((q) =>
               q.id === field.id ? merge(q, field) : q,
+            ),
+          })),
+        updateFieldChoices: ({fieldId, choices}) =>
+          set((state) => ({
+            fields: state.fields.map((q) =>
+              q.id === fieldId
+                ? {...q, properties: {...q.properties, choices}}
+                : q,
             ),
           })),
         insertField: ({type, indexAt}) => {

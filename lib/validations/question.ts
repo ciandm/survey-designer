@@ -27,7 +27,7 @@ export const questionDesignSchema = z.object({
 export const choicesSchema = z.array(
   z.object({
     id: z.string().min(1).max(255),
-    value: z.string().min(1).max(255),
+    value: z.string(),
   }),
 );
 
