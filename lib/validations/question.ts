@@ -24,6 +24,13 @@ export const questionDesignSchema = z.object({
   ),
 });
 
+export const choicesSchema = z.array(
+  z.object({
+    id: z.string().min(1).max(255),
+    value: z.string().min(1).max(255),
+  }),
+);
+
 const fieldSchema = z.object({
   id: z.string(),
   text: z.string(),
@@ -31,7 +38,7 @@ const fieldSchema = z.object({
   description: z.string().optional(),
   ref: z.string(),
   properties: z.object({
-    choices: z.array(z.string()).optional(),
+    choices: choicesSchema.optional(),
     placeholder: z.string().optional(),
     required: z.boolean().optional(),
     skippable: z.boolean().optional(),
@@ -46,3 +53,4 @@ export const configurationSchema = z.object({
 
 export type Configuration = z.infer<typeof configurationSchema>;
 export type FieldConfig = z.infer<typeof fieldSchema>;
+export type ChoicesConfig = z.infer<typeof choicesSchema>;

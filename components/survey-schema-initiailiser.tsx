@@ -34,9 +34,7 @@ interface Actions {
   insertField: (
     question: Pick<FieldConfig, 'type'> & {indexAt?: number},
   ) => void;
-  deleteField: (
-    question: Pick<FieldConfig, 'ref'> & {fallbackSelectedField: string},
-  ) => void;
+  deleteField: (question: Pick<FieldConfig, 'ref'>) => void;
   duplicateField: (question: Pick<FieldConfig, 'ref'>) => void;
 }
 
@@ -68,6 +66,7 @@ export const SurveySchemaInitialiser = ({children, survey}: Props) => {
   });
 
   if (!parsedSchema.success) {
+    console.log(parsedSchema.error.format());
     throw new Error('Invalid schema');
   }
 
@@ -126,22 +125,24 @@ export const SurveySchemaInitialiser = ({children, survey}: Props) => {
 
           const indexOfFieldToDelete = fields.findIndex((q) => q.ref === ref);
 
-          set((state) => ({
+          const prevItem = fields[indexOfFieldToDelete - 1];
+          const nextItem = fields[indexOfFieldToDelete + 1];
+
+          if (prevItem) {
+            setSelectedFieldId(prevItem.ref);
+          } else if (nextItem) {
+            setSelectedFieldId(nextItem.ref);
+          } else {
+            setSelectedFieldId('');
+          }
+
+          return set((state) => ({
             fields: state.fields.filter((q) => q.ref !== ref),
           }));
-
-          if (fields.length === 2) {
-            setSelectedFieldId(fields.find((q) => q.ref !== ref)?.ref || '');
-          } else {
-            setSelectedFieldId(
-              fields[indexOfFieldToDelete - 1]?.ref ||
-                fields[indexOfFieldToDelete + 1]?.ref ||
-                '',
-            );
-          }
         },
         duplicateField: ({ref}) => {
           const newRef = uuidv4();
+          setSelectedFieldId(newRef);
           set((state) => {
             const field = state.fields.find((q) => q.ref === ref);
             if (!field) return state;
@@ -160,8 +161,7 @@ export const SurveySchemaInitialiser = ({children, survey}: Props) => {
             return {
               fields,
             };
-          }),
-            setSelectedFieldId(newRef);
+          });
         },
       },
     }));
@@ -173,7 +173,6 @@ export const SurveySchemaInitialiser = ({children, survey}: Props) => {
 
   useEffect(() => {
     const fn = debounce((data: any) => {
-      console.log('mutating', data);
       mutate(data);
     }, 1000);
     const unsub = storeRef.current?.subscribe((state, prevState) => {

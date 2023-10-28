@@ -106,6 +106,7 @@ const GeneralOptions = () => {
           Placeholder
         </Label>
         <Input
+          id="placeholder"
           type="text"
           value={field.properties.placeholder}
           onChange={(event) =>
@@ -125,7 +126,7 @@ const GeneralOptions = () => {
         </div>
         <Switch
           id="required"
-          checked={field.properties.required}
+          checked={!!field.properties.required}
           onCheckedChange={(checked) => {
             updateQuestion({
               id: field.id,
