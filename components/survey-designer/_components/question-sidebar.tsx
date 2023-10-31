@@ -1,10 +1,13 @@
 import React, {useState} from 'react';
+import {useAutoAnimate} from '@formkit/auto-animate/react';
+import {QuestionType} from '@prisma/client';
 import {useIsMutating} from '@tanstack/react-query';
-import {MoreVertical, Plus} from 'lucide-react';
+import {Check, FileQuestion, MoreVertical, Plus, Text} from 'lucide-react';
 import {
   useSurveySchemaActions,
   useSurveySchemaStore,
 } from '@/components/survey-schema-initiailiser';
+import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -20,9 +23,17 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {cn} from '@/lib/utils';
-import {setSelectedFieldId, useSelectedField} from '@/stores/selected-field.ts';
+import {setSelectedFieldId, useSelectedField} from '@/stores/selected-field';
+
+const ICON_MAP: Record<QuestionType, React.ReactNode> = {
+  LONG_TEXT: <Text className="h-4 w-4 flex-shrink-0" />,
+  SHORT_TEXT: <Text className="h-4 w-4 flex-shrink-0" />,
+  MULTIPLE_CHOICE: <Check className="h-4 w-4 flex-shrink-0" />,
+  SINGLE_CHOICE: <FileQuestion className="h-4 w-4 flex-shrink-0" />,
+};
 
 export const QuestionSidebar = () => {
+  const [parent] = useAutoAnimate();
   const fields = useSurveySchemaStore((state) => state.fields);
   const {insertField, deleteField, duplicateField} = useSurveySchemaActions();
   const selectedField = useSelectedField();
@@ -64,8 +75,8 @@ export const QuestionSidebar = () => {
         </TooltipProvider>
       </header>
       {!!isMutating && <p>loading...</p>}
-      <ul className="flex flex-col">
-        {fields.map((field) => (
+      <ul className="flex flex-col" ref={parent}>
+        {fields.map((field, index) => (
           <div
             tabIndex={0}
             key={field.id}
@@ -74,15 +85,22 @@ export const QuestionSidebar = () => {
               setSelectedFieldId(field.ref);
             }}
             className={cn(
-              'group flex cursor-pointer justify-between p-3 text-left',
+              'group box-border flex min-h-[56px] cursor-pointer items-center justify-between p-4 text-left',
               {
                 'bg-slate-100': field.ref === selectedField?.ref,
               },
             )}
           >
-            <li>
-              <div>{field.type}</div>
-              <div>{field.text}</div>
+            <li className="mr-4 flex w-full items-center gap-2">
+              <Badge className="flex w-full max-w-[56px] flex-shrink-0 justify-between px-2">
+                {ICON_MAP[field.type]}
+                <span className="text-xs">{index + 1}</span>
+              </Badge>
+              <div className="line-clamp-2 self-center">
+                <p className="text-xs font-medium leading-tight text-gray-500">
+                  {field.text || '...'}
+                </p>
+              </div>
             </li>
 
             <DropdownMenu
@@ -97,7 +115,11 @@ export const QuestionSidebar = () => {
                   },
                 )}
               >
-                <Button variant="ghost" size="icon">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="w-8 flex-shrink-0"
+                >
                   <span className="sr-only">Actions</span>
                   <MoreVertical className="h-4 w-4" />
                 </Button>
@@ -107,6 +129,7 @@ export const QuestionSidebar = () => {
                   onSelect={(e) => {
                     e.stopPropagation();
                     duplicateField({ref: field.ref});
+                    setFixedField(null);
                   }}
                 >
                   Duplicate
@@ -116,6 +139,7 @@ export const QuestionSidebar = () => {
                   onSelect={(e) => {
                     e.stopPropagation();
                     deleteField({ref: field.ref});
+                    setFixedField(null);
                   }}
                   className="text-red-600"
                 >

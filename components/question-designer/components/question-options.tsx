@@ -7,7 +7,7 @@ import {useSurveySchemaActions} from '@/components/survey-schema-initiailiser';
 import {Input} from '@/components/ui/input';
 import {Separator} from '@/components/ui/separator';
 import {formatQuestionType} from '@/lib/utils';
-import {useSelectedField} from '@/stores/selected-field.ts';
+import {useSelectedField} from '@/stores/selected-field';
 import {Label} from '../../ui/label';
 import {
   Select,

@@ -1,6 +1,6 @@
 'use client';
 
-import {useSelectedField} from '@/stores/selected-field.ts';
+import {useSelectedField} from '@/stores/selected-field';
 import {QuestionOptions} from '../question-designer/components/question-options';
 import {QuestionDesigner} from '../question-designer/question-designer';
 import {useSurveySchemaStore} from '../survey-schema-initiailiser';
