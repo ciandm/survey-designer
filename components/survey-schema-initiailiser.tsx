@@ -19,7 +19,7 @@ import {
   configurationSchema,
   FieldConfig,
 } from '@/lib/validations/question';
-import {setSelectedFieldId} from '@/stores/selected-field.ts';
+import {setSelectedFieldId} from '@/stores/selected-field';
 
 interface State extends Configuration {
   survey: {
