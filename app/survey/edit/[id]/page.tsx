@@ -20,9 +20,9 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
     <SurveySchemaInitialiser survey={survey}>
       <div className="flex h-screen flex-col">
         <header className="border-b">
-          <div className="container flex items-center justify-between py-4">
+          <div className="flex items-center justify-between px-4 py-2">
             <div>
-              <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
+              <h4 className="text-md scroll-m-20 font-medium tracking-tight">
                 {survey.name}
               </h4>
             </div>
@@ -35,7 +35,7 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
             </div>
           </div>
         </header>
-        <main className="flex h-full">
+        <main className="flex h-full min-h-0">
           <SurveyDesigner />
         </main>
       </div>

@@ -49,7 +49,7 @@ export const QuestionSidebar = () => {
   const [fixedField, setFixedField] = useState<string | null>(null);
 
   return (
-    <aside className="w-full max-w-[260px] border-r">
+    <aside className="flex w-full max-w-[260px] flex-col overflow-hidden border-r">
       <header className="flex items-center justify-between border-b p-4">
         <h5 className="text-md font-semibold tracking-tight">Fields</h5>
         <TooltipProvider delayDuration={400}>
@@ -75,81 +75,83 @@ export const QuestionSidebar = () => {
         </TooltipProvider>
       </header>
       {!!isMutating && <p>loading...</p>}
-      <ul className="flex flex-col" ref={parent}>
-        {fields.map((field, index) => (
-          <div
-            tabIndex={0}
-            key={field.id}
-            onClick={(e) => {
-              if (fixedField) return;
-              setSelectedFieldId(field.ref);
-            }}
-            className={cn(
-              'group box-border flex min-h-[56px] cursor-pointer items-center justify-between p-4 text-left',
-              {
-                'bg-slate-100': field.ref === selectedField?.ref,
-              },
-            )}
-          >
-            <li className="mr-4 flex w-full items-center gap-2">
-              <Badge className="flex w-full max-w-[56px] flex-shrink-0 justify-between px-2">
-                {ICON_MAP[field.type]}
-                <span className="text-xs">{index + 1}</span>
-              </Badge>
-              <div className="line-clamp-2 self-center">
-                <p className="text-xs font-medium leading-tight text-gray-500">
-                  {field.text || '...'}
-                </p>
-              </div>
-            </li>
-
-            <DropdownMenu
-              onOpenChange={(open) => setFixedField(open ? field.ref : null)}
+      <div className="flex flex-1 flex-col overflow-y-auto">
+        <ul className="flex flex-1 flex-col" ref={parent}>
+          {fields.map((field, index) => (
+            <div
+              tabIndex={0}
+              key={field.id}
+              onClick={(e) => {
+                if (fixedField) return;
+                setSelectedFieldId(field.ref);
+              }}
+              className={cn(
+                'group box-border flex min-h-[56px] cursor-pointer items-center justify-between p-4 text-left',
+                {
+                  'bg-slate-100': field.ref === selectedField?.ref,
+                },
+              )}
             >
-              <DropdownMenuTrigger
-                asChild
-                className={cn(
-                  'invisible opacity-0 transition-opacity group-hover:visible group-hover:opacity-100',
-                  {
-                    'visible opacity-100': fixedField === field.ref,
-                  },
-                )}
+              <li className="mr-4 flex w-full items-center gap-2">
+                <Badge className="flex w-full max-w-[56px] flex-shrink-0 justify-between px-2">
+                  {ICON_MAP[field.type]}
+                  <span className="text-xs">{index + 1}</span>
+                </Badge>
+                <div className="line-clamp-2 self-center">
+                  <p className="text-xs font-medium leading-tight text-gray-500">
+                    {field.text || '...'}
+                  </p>
+                </div>
+              </li>
+
+              <DropdownMenu
+                onOpenChange={(open) => setFixedField(open ? field.ref : null)}
               >
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="w-8 flex-shrink-0"
+                <DropdownMenuTrigger
+                  asChild
+                  className={cn(
+                    'invisible opacity-0 transition-opacity group-hover:visible group-hover:opacity-100',
+                    {
+                      'visible opacity-100': fixedField === field.ref,
+                    },
+                  )}
                 >
-                  <span className="sr-only">Actions</span>
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onSelect={(e) => {
-                    e.stopPropagation();
-                    duplicateField({ref: field.ref});
-                    setFixedField(null);
-                  }}
-                >
-                  Duplicate
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onSelect={(e) => {
-                    e.stopPropagation();
-                    deleteField({ref: field.ref});
-                    setFixedField(null);
-                  }}
-                  className="text-red-600"
-                >
-                  Remove
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        ))}
-      </ul>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="w-8 flex-shrink-0"
+                  >
+                    <span className="sr-only">Actions</span>
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.stopPropagation();
+                      duplicateField({ref: field.ref});
+                      setFixedField(null);
+                    }}
+                  >
+                    Duplicate
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.stopPropagation();
+                      deleteField({ref: field.ref});
+                      setFixedField(null);
+                    }}
+                    className="text-red-600"
+                  >
+                    Remove
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          ))}
+        </ul>
+      </div>
     </aside>
   );
 };
