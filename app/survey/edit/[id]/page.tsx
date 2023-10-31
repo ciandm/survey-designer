@@ -1,6 +1,6 @@
 import {EyeIcon} from 'lucide-react';
 import {notFound} from 'next/navigation';
-import {SurveyDesigner} from '@/components/survey-designer';
+import {SurveyDesigner} from '@/components/survey-designer/survey-designer';
 import {SurveySchemaInitialiser} from '@/components/survey-schema-initiailiser';
 import {Button} from '@/components/ui/button';
 import prisma from '@/prisma/client';
