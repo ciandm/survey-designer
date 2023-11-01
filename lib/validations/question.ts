@@ -40,8 +40,14 @@ const fieldSchema = z.object({
   properties: z.object({
     choices: choicesSchema.optional(),
     placeholder: z.string().optional(),
+    allow_other_option: z.boolean().optional(),
+    allow_multiple_selection: z.boolean().optional(),
+    randomise: z.boolean().optional(),
+  }),
+  validations: z.object({
     required: z.boolean().optional(),
-    skippable: z.boolean().optional(),
+    min_length: z.number().optional(),
+    max_length: z.number().optional(),
   }),
 });
 
