@@ -35,6 +35,10 @@ interface Actions {
     fieldId: string;
     choices: FieldConfig['properties']['choices'];
   }) => void;
+  updateFieldValidations: (params: {
+    fieldId: string;
+    validations: FieldConfig['validations'];
+  }) => void;
   insertField: (
     question: Pick<FieldConfig, 'type'> & {indexAt?: number},
   ) => void;
@@ -98,6 +102,14 @@ export const SurveySchemaInitialiser = ({children, survey}: Props) => {
                 : q,
             ),
           })),
+        updateFieldValidations: ({fieldId, validations}) =>
+          set((state) => ({
+            fields: state.fields.map((q) =>
+              q.id === fieldId
+                ? {...q, validations: {...q.validations, ...validations}}
+                : q,
+            ),
+          })),
         insertField: ({type, indexAt}) => {
           const ref = uuidv4();
           set((state) => {
@@ -110,6 +122,7 @@ export const SurveySchemaInitialiser = ({children, survey}: Props) => {
                 text: '',
                 description: '',
                 properties: {},
+                validations: {},
               });
               return {
                 fields,
@@ -125,6 +138,7 @@ export const SurveySchemaInitialiser = ({children, survey}: Props) => {
                   text: '',
                   description: '',
                   properties: {},
+                  validations: {},
                 },
               ],
             };
