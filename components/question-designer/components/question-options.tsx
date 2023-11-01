@@ -1,7 +1,8 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {QuestionType} from '@prisma/client';
+import {debounce} from 'lodash';
 import {useSurveySchemaActions} from '@/components/survey-schema-initiailiser';
 import {Input} from '@/components/ui/input';
 import {formatQuestionType} from '@/lib/utils';
@@ -138,6 +139,27 @@ const TextLengthSetting = ({
 }) => {
   const [isOpen, setIsOpen] = useState(!!field.validations[setting]);
   const {updateFieldValidations} = useSurveySchemaActions();
+  const [value, setValue] = useState(
+    field.validations[setting]?.toString() ?? '',
+  );
+
+  useEffect(() => {
+    const fn = debounce(() => {
+      updateFieldValidations({
+        fieldId: field.id,
+        validations: {
+          [setting]: Number(value),
+        },
+      });
+    }, 200);
+    if (value && isOpen) {
+      fn();
+    }
+
+    return () => {
+      fn.cancel();
+    };
+  }, [value, setting, field.id, updateFieldValidations, isOpen]);
 
   const onCheckedChange = (checked: boolean) => {
     setIsOpen(checked);
@@ -165,15 +187,10 @@ const TextLengthSetting = ({
           <Input
             type="number"
             className="w-full rounded-md border px-2 py-1 text-sm"
-            value={field.validations[setting] || ''}
+            value={value}
             placeholder="0-999"
             onChange={(event) => {
-              updateFieldValidations({
-                fieldId: field.id,
-                validations: {
-                  [setting]: Number(event.target.value),
-                },
-              });
+              setValue(event.target.value);
             }}
           />
         </div>
