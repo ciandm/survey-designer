@@ -46,8 +46,8 @@ const fieldSchema = z.object({
   }),
   validations: z.object({
     required: z.boolean().optional(),
-    min_length: z.number().optional(),
-    max_length: z.number().optional(),
+    min_characters: z.number().optional(),
+    max_characters: z.number().optional(),
   }),
 });
 

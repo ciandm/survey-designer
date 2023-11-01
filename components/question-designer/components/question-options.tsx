@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, {useState} from 'react';
 import {QuestionType} from '@prisma/client';
 import {useSurveySchemaActions} from '@/components/survey-schema-initiailiser';
+import {Input} from '@/components/ui/input';
 import {formatQuestionType} from '@/lib/utils';
 import {FieldConfig} from '@/lib/validations/question';
 import {useSelectedField} from '@/stores/selected-field';
@@ -35,10 +36,10 @@ export const QuestionOptions = () => {
   if (!field) return null;
 
   return (
-    <>
+    <React.Fragment key={field.id}>
       <QuestionTypeOption field={field} />
       <QuestionSettings field={field} />
-    </>
+    </React.Fragment>
   );
 };
 
@@ -79,22 +80,34 @@ const QuestionSettings = ({field}: {field: FieldConfig}) => {
     <div className="p-4">
       <p className="mb-4 text-sm font-medium leading-none">Settings</p>
       <div className="flex flex-col gap-4">
-        {validationSettingsMap[field.type].map((setting) => (
-          <Setting setting={setting} key={setting}>
-            <Switch
-              id={setting}
-              checked={!!field.validations[setting]}
-              onCheckedChange={(checked) => {
-                updateField({
-                  id: field.id,
-                  validations: {
-                    [setting]: checked,
-                  },
-                });
-              }}
-            />
-          </Setting>
-        ))}
+        {validationSettingsMap[field.type].map((setting) => {
+          if (setting === 'min_characters' || setting === 'max_characters') {
+            return (
+              <TextLengthSetting
+                setting={setting}
+                field={field}
+                key={setting}
+              />
+            );
+          }
+
+          return (
+            <Setting setting={setting} key={setting}>
+              <Switch
+                id={setting}
+                checked={!!field.validations[setting]}
+                onCheckedChange={(checked) => {
+                  updateField({
+                    id: field.id,
+                    validations: {
+                      [setting]: checked,
+                    },
+                  });
+                }}
+              />
+            </Setting>
+          );
+        })}
         {propertySettingsMap[field.type].map((setting) => (
           <Setting setting={setting} key={setting}>
             <Switch
@@ -113,6 +126,59 @@ const QuestionSettings = ({field}: {field: FieldConfig}) => {
         ))}
       </div>
     </div>
+  );
+};
+
+const TextLengthSetting = ({
+  setting,
+  field,
+}: {
+  setting: 'min_characters' | 'max_characters';
+  field: FieldConfig;
+}) => {
+  const [isOpen, setIsOpen] = useState(!!field.validations[setting]);
+  const {updateFieldValidations} = useSurveySchemaActions();
+
+  const onCheckedChange = (checked: boolean) => {
+    setIsOpen(checked);
+    if (!checked) {
+      updateFieldValidations({
+        fieldId: field.id,
+        validations: {
+          [setting]: undefined,
+        },
+      });
+    }
+  };
+
+  return (
+    <>
+      <Setting setting={setting} key={setting}>
+        <Switch
+          id={setting}
+          checked={isOpen}
+          onCheckedChange={onCheckedChange}
+        />
+      </Setting>
+      {isOpen && (
+        <div className="flex w-full flex-row items-center gap-4">
+          <Input
+            type="number"
+            className="w-full rounded-md border px-2 py-1 text-sm"
+            value={field.validations[setting] || ''}
+            placeholder="0-999"
+            onChange={(event) => {
+              updateFieldValidations({
+                fieldId: field.id,
+                validations: {
+                  [setting]: Number(event.target.value),
+                },
+              });
+            }}
+          />
+        </div>
+      )}
+    </>
   );
 };
 
@@ -149,8 +215,8 @@ const propertySettingsMap: Record<QuestionType, PropertySettingKey[]> = {
 };
 
 const validationSettingsMap: Record<QuestionType, ValidationSettingKey[]> = {
-  SHORT_TEXT: ['required', 'min_length', 'max_length'],
-  LONG_TEXT: ['required', 'min_length', 'max_length'],
+  SHORT_TEXT: ['required', 'min_characters', 'max_characters'],
+  LONG_TEXT: ['required', 'min_characters', 'max_characters'],
   MULTIPLE_CHOICE: ['required'],
   SINGLE_CHOICE: ['required'],
 };
@@ -161,6 +227,6 @@ const keyToLabelMap: Record<PropertySettingKey | ValidationSettingKey, string> =
     allow_multiple_selection: 'Allow multiple selection',
     randomise: 'Randomise',
     required: 'Required',
-    max_length: 'Max length',
-    min_length: 'Min length',
+    max_characters: 'Max characters',
+    min_characters: 'Min characters',
   };

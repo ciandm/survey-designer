@@ -30,7 +30,7 @@ export const QuestionDesigner = ({
     <div className="flex w-full flex-col border-2 border-transparent bg-white p-4 shadow-md">
       <div className="flex justify-between">
         <p className="mb-1 text-sm text-muted-foreground">
-          Question {index} {field.properties.required && '(required)'}
+          Question {index} {field.validations.required && '(required)'}
         </p>
       </div>
       <Input
