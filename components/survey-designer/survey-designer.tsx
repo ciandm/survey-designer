@@ -13,7 +13,6 @@ import {
 import {
   useActiveQuestion,
   useSurveyFieldActions,
-  useSurveyQuestions,
 } from '../survey-schema-initiailiser';
 import {Input} from '../ui/input';
 import {Separator} from '../ui/separator';
@@ -21,8 +20,7 @@ import {QuestionSidebar} from './_components/question-sidebar';
 
 export const SurveyDesigner = () => {
   const {activeQuestion} = useActiveQuestion();
-  const {updateQuestion, setActiveQuestionRef: setActiveQuestionRef} =
-    useSurveyFieldActions();
+  const {updateQuestion} = useSurveyFieldActions();
 
   const renderQuestionTypeOption = (type: QuestionType) => {
     switch (type) {

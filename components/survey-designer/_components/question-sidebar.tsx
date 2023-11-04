@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {cn} from '@/lib/utils';
 import {AddQuestionButton} from './add-question-button';
-import {QuestionItem} from './question-item';
+import {SidebarQuestionItem} from './sidebar-question-item';
 
 export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
   LONG_TEXT: <Text className="h-4 w-4 flex-shrink-0" />,
@@ -45,17 +45,17 @@ export const QuestionSidebar = () => {
 
   return (
     <aside className="flex w-full max-w-[260px] flex-col overflow-hidden border-r">
-      <header className="flex items-center justify-between border-b p-4">
-        <h5 className="text-md font-semibold tracking-tight">Questions</h5>
+      <header className="flex items-center justify-between border-b px-4 py-2">
+        <h5 className="text-md font-medium tracking-tight">Questions</h5>
         <AddQuestionButton
           onClick={() => insertQuestion({type: 'LONG_TEXT'})}
         />
       </header>
       {!!isMutating && <p>loading...</p>}
       <div className="flex flex-1 flex-col overflow-y-auto">
-        <ul className="flex flex-1 flex-col" ref={parent}>
+        <ol className="flex flex-1 flex-col gap-1 p-2" ref={parent}>
           {questions.map((question, index) => (
-            <QuestionItem
+            <SidebarQuestionItem
               key={question.id}
               question={question}
               index={index}
@@ -89,22 +89,26 @@ export const QuestionSidebar = () => {
                   <DropdownMenuItem
                     onSelect={() => {
                       duplicateQuestion({id: question.id});
+                      setIsMenuOpen(false);
                     }}
                   >
                     Duplicate
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onSelect={() => deleteQuestion({id: question.id})}
+                    onSelect={() => {
+                      deleteQuestion({id: question.id});
+                      setIsMenuOpen(false);
+                    }}
                     className="text-red-600"
                   >
                     Remove
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </QuestionItem>
+            </SidebarQuestionItem>
           ))}
-        </ul>
+        </ol>
       </div>
     </aside>
   );
