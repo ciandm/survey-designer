@@ -1,13 +1,14 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {QuestionType} from '@prisma/client';
-import {debounce} from 'lodash';
-import {useSurveySchemaActions} from '@/components/survey-schema-initiailiser';
+import {
+  useActiveField,
+  useSurveyFieldActions,
+} from '@/components/survey-schema-initiailiser';
 import {Input} from '@/components/ui/input';
 import {formatQuestionType} from '@/lib/utils';
-import {FieldConfig} from '@/lib/validations/question';
-import {useSelectedField} from '@/stores/selected-field';
+import {QuestionConfig} from '@/lib/validations/question';
 import {Label} from '../../ui/label';
 import {
   Select,
@@ -21,40 +22,49 @@ import {
 import {Switch} from '../../ui/switch';
 
 type PropertySettingKey = Exclude<
-  keyof FieldConfig['properties'],
+  keyof QuestionConfig['properties'],
   'choices' | 'placeholder'
 >;
 
-type ValidationSettingKey = keyof FieldConfig['validations'];
+type ValidationSettingKey = keyof QuestionConfig['validations'];
 
 const questionTypeOptions = Object.values(QuestionType).map((value) => ({
   value,
   label: formatQuestionType(value),
 }));
 
-export const QuestionOptions = () => {
-  const field = useSelectedField();
-  if (!field) return null;
-
+export const QuestionOptions = ({
+  typeOptionComponent,
+  settingsComponent,
+}: {
+  typeOptionComponent: React.ReactNode;
+  settingsComponent: React.ReactNode;
+}) => {
   return (
-    <React.Fragment key={field.id}>
-      <QuestionTypeOption field={field} />
-      <QuestionSettings field={field} />
-    </React.Fragment>
+    <>
+      {typeOptionComponent}
+      {settingsComponent}
+    </>
   );
 };
 
-const QuestionTypeOption = ({field}: {field: FieldConfig}) => {
-  const {updateField} = useSurveySchemaActions();
+export const QuestionTypeOption = () => {
+  const {changeQuestionType} = useSurveyFieldActions();
+  const {activeField} = useActiveField();
+
+  const onChangeFieldType = (newType: QuestionType) => {
+    changeQuestionType({
+      id: activeField?.id ?? '',
+      type: newType,
+    });
+  };
 
   return (
     <div className="border-b p-4">
       <p className="mb-4 text-sm font-medium leading-none">Type</p>
       <Select
-        value={field?.type}
-        onValueChange={(value) =>
-          updateField({id: field.id, type: value as QuestionType})
-        }
+        value={activeField?.type ?? QuestionType.SHORT_TEXT}
+        onValueChange={(value) => onChangeFieldType(value as QuestionType)}
       >
         <SelectTrigger id="question-type" className="mt-2">
           <SelectValue placeholder="Select a question type" />
@@ -74,21 +84,56 @@ const QuestionTypeOption = ({field}: {field: FieldConfig}) => {
   );
 };
 
-const QuestionSettings = ({field}: {field: FieldConfig}) => {
-  const {updateField} = useSurveySchemaActions();
+export const QuestionSettings = () => {
+  const {updateQuestion} = useSurveyFieldActions();
+  const {activeField} = useActiveField();
+
+  if (!activeField) return null;
 
   return (
     <div className="p-4">
       <p className="mb-4 text-sm font-medium leading-none">Settings</p>
       <div className="flex flex-col gap-4">
-        {validationSettingsMap[field.type].map((setting) => {
+        {validationSettingsMap[activeField.type].map((setting) => {
           if (setting === 'min_characters' || setting === 'max_characters') {
             return (
               <TextLengthSetting
                 setting={setting}
-                field={field}
                 key={setting}
-              />
+                onCheckedChange={(checked) => {
+                  if (!checked) {
+                    updateQuestion({
+                      id: activeField.id,
+                      validations: {
+                        [setting]: null,
+                      },
+                    });
+                  }
+                }}
+              >
+                {({isOpen}) =>
+                  isOpen && (
+                    <div className="flex w-full flex-row items-center gap-4">
+                      <Input
+                        max={999}
+                        min={0}
+                        type="number"
+                        className="w-full rounded-md border px-2 py-1 text-sm"
+                        value={activeField.validations[setting] ?? ''}
+                        placeholder="0-999"
+                        onChange={(event) => {
+                          updateQuestion({
+                            id: activeField.id,
+                            validations: {
+                              [setting]: event.target.value,
+                            },
+                          });
+                        }}
+                      />
+                    </div>
+                  )
+                }
+              </TextLengthSetting>
             );
           }
 
@@ -96,10 +141,10 @@ const QuestionSettings = ({field}: {field: FieldConfig}) => {
             <Setting setting={setting} key={setting}>
               <Switch
                 id={setting}
-                checked={!!field.validations[setting]}
+                checked={!!activeField.validations[setting]}
                 onCheckedChange={(checked) => {
-                  updateField({
-                    id: field.id,
+                  updateQuestion({
+                    id: activeField.id,
                     validations: {
                       [setting]: checked,
                     },
@@ -109,14 +154,14 @@ const QuestionSettings = ({field}: {field: FieldConfig}) => {
             </Setting>
           );
         })}
-        {propertySettingsMap[field.type].map((setting) => (
+        {propertySettingsMap[activeField.type].map((setting) => (
           <Setting setting={setting} key={setting}>
             <Switch
               id={setting}
-              checked={!!field.properties[setting]}
+              checked={!!activeField.properties[setting]}
               onCheckedChange={(checked) => {
-                updateField({
-                  id: field.id,
+                updateQuestion({
+                  id: activeField.id,
                   properties: {
                     [setting]: checked,
                   },
@@ -132,45 +177,21 @@ const QuestionSettings = ({field}: {field: FieldConfig}) => {
 
 const TextLengthSetting = ({
   setting,
-  field,
+  children,
+  onCheckedChange: onCheckedChangeProp,
 }: {
   setting: 'min_characters' | 'max_characters';
-  field: FieldConfig;
+  children: ({isOpen}: {isOpen: boolean}) => React.ReactNode;
+  onCheckedChange?: (checked: boolean) => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(!!field.validations[setting]);
-  const {updateFieldValidations} = useSurveySchemaActions();
-  const [value, setValue] = useState(
-    field.validations[setting]?.toString() ?? '',
+  const {activeField} = useActiveField();
+  const [isOpen, setIsOpen] = useState(
+    !!activeField?.validations[setting] ?? false,
   );
-
-  useEffect(() => {
-    const fn = debounce(() => {
-      updateFieldValidations({
-        fieldId: field.id,
-        validations: {
-          [setting]: Number(value),
-        },
-      });
-    }, 200);
-    if (value && isOpen) {
-      fn();
-    }
-
-    return () => {
-      fn.cancel();
-    };
-  }, [value, setting, field.id, updateFieldValidations, isOpen]);
 
   const onCheckedChange = (checked: boolean) => {
     setIsOpen(checked);
-    if (!checked) {
-      updateFieldValidations({
-        fieldId: field.id,
-        validations: {
-          [setting]: undefined,
-        },
-      });
-    }
+    onCheckedChangeProp?.(checked);
   };
 
   return (
@@ -182,19 +203,7 @@ const TextLengthSetting = ({
           onCheckedChange={onCheckedChange}
         />
       </Setting>
-      {isOpen && (
-        <div className="flex w-full flex-row items-center gap-4">
-          <Input
-            type="number"
-            className="w-full rounded-md border px-2 py-1 text-sm"
-            value={value}
-            placeholder="0-999"
-            onChange={(event) => {
-              setValue(event.target.value);
-            }}
-          />
-        </div>
-      )}
+      {children({isOpen})}
     </>
   );
 };

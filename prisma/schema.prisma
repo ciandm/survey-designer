@@ -23,7 +23,7 @@ model Question {
   text        String
   description String?
   answers     Answer[]
-  survey      Survey?      @relation(fields: [surveyId], references: [id])
+  survey      Survey?      @relation(questions: [surveyId], references: [id])
   surveyId    String?
   type        QuestionType @default(SHORT_TEXT)
   order       Int          @default(1)
@@ -41,7 +41,7 @@ enum QuestionType {
 model Answer {
   id         String   @id @default(cuid())
   text       String
-  question   Question @relation(fields: [questionId], references: [id])
+  question   Question @relation(questions: [questionId], references: [id])
   questionId String
 
   @@index([questionId], name: "questionId")

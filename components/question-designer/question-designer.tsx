@@ -3,58 +3,36 @@
 import {QuestionType} from '@prisma/client';
 import {Copy, Plus, Trash} from 'lucide-react';
 import {v4 as uuidv4} from 'uuid';
-import {FieldConfig} from '@/lib/validations/question';
-import {updateQuestion} from '@/stores/survey-schema';
-import {useSurveySchemaActions} from '../survey-schema-initiailiser';
+import {
+  useActiveField,
+  useSurveyFieldActions,
+} from '../survey-schema-initiailiser';
 import {Button} from '../ui/button';
 import {Input} from '../ui/input';
-import {Separator} from '../ui/separator';
 import {Textarea} from '../ui/textarea';
 
-export const QuestionDesigner = ({
-  field,
-  index,
-}: {
-  field: FieldConfig;
-  index: number;
-}) => {
-  const {updateField: updateQuestion} = useSurveySchemaActions();
-  const questionTypeMap = {
-    [QuestionType.SHORT_TEXT]: <TextQuestion field={field} />,
-    [QuestionType.LONG_TEXT]: <TextQuestion field={field} />,
-    [QuestionType.MULTIPLE_CHOICE]: <ChoicesQuestion field={field} />,
-    [QuestionType.SINGLE_CHOICE]: <ChoicesQuestion field={field} />,
-  };
-
+export const QuestionDesigner = ({children}: {children: React.ReactNode}) => {
+  const {activeFieldIndex} = useActiveField();
   return (
     <div className="flex w-full flex-col border-2 border-transparent bg-white p-4 shadow-md">
       <div className="flex justify-between">
         <p className="mb-1 text-sm text-muted-foreground">
-          Question {index} {field.validations.required && '(required)'}
+          {activeFieldIndex + 1}
+          {/* {selectedField.validations.required && '(required)'} */}
         </p>
       </div>
-      <Input
-        placeholder="Your question here..."
-        value={field.text || ''}
-        onChange={(e) => updateQuestion({id: field.id, text: e.target.value})}
-      />
-      <Input
-        className="mt-4"
-        placeholder="Description (optional)"
-        value={field.description || ''}
-        onChange={(e) =>
-          updateQuestion({id: field.id, description: e.target.value})
-        }
-      />
-      <Separator className="my-8" />
-      <>{questionTypeMap[field.type]}</>
+      {/* <>{questionTypeMap[selectedField.type]}</> */}
+      {children}
     </div>
   );
 };
 
-const TextQuestion = ({field}: {field: FieldConfig}) => {
+export const TextQuestion = () => {
+  const {activeField} = useActiveField();
+  const {updateQuestion} = useSurveyFieldActions();
+
   const InputComponent =
-    field.type === QuestionType.SHORT_TEXT ? Input : Textarea;
+    activeField?.type === QuestionType.SHORT_TEXT ? Input : Textarea;
 
   return (
     <InputComponent
@@ -62,110 +40,164 @@ const TextQuestion = ({field}: {field: FieldConfig}) => {
       name="name"
       id="name"
       placeholder={
-        !!field.properties.placeholder
-          ? field.properties.placeholder
+        !!activeField?.properties.placeholder
+          ? activeField.properties.placeholder
           : 'Your answer here...'
       }
       onChange={(e) =>
-        updateQuestion({id: field.id, config: {placeholder: e.target.value}})
+        updateQuestion({
+          id: activeField?.id ?? '',
+          properties: {placeholder: e.target.value},
+        })
       }
       readOnly
     />
   );
 };
 
-const ChoicesQuestion = ({field}: {field: FieldConfig}) => {
-  const {updateFieldChoices} = useSurveySchemaActions();
-  const onChange = (value: string, choiceId: string) => {
-    const choices =
-      field.properties.choices?.map((choice) =>
-        choice.id === choiceId ? {...choice, value} : choice,
-      ) ?? [];
-    updateFieldChoices({
-      fieldId: field.id,
-      choices,
-    });
-  };
+export const ChoicesQuestion = () => {
+  const {activeField} = useActiveField();
+  const {updateQuestion} = useSurveyFieldActions();
 
-  const onAddChoice = () => {
-    const choices = [
-      ...(field.properties.choices ?? []),
-      {
-        id: uuidv4(),
-        value: '',
-      },
-    ];
-    updateFieldChoices({
-      fieldId: field.id,
-      choices,
-    });
-  };
+  const handleRemoveChoice = (choiceId: string) => {
+    const copiedField = {...activeField};
 
-  const onDeleteChoice = (choiceId: string) => {
-    const choices = field.properties.choices?.filter(
+    if (!copiedField.properties?.choices?.length) return;
+
+    copiedField.properties.choices = copiedField.properties?.choices?.filter(
       (choice) => choice.id !== choiceId,
     );
-    updateFieldChoices({
-      fieldId: field.id,
-      choices,
+
+    updateQuestion({
+      id: activeField?.id ?? '',
+      properties: copiedField.properties,
     });
   };
 
-  const onDuplicateChoice = (choiceId: string) => {
-    const copiedChoices = [...(field.properties.choices ?? [])];
-    const copiedChoice = copiedChoices.find((choice) => choice.id === choiceId);
+  const handleDuplicateChoice = (choiceId: string) => {
+    const copiedField = {...activeField};
 
-    if (!copiedChoice) return;
+    if (!copiedField.properties?.choices?.length) return;
 
-    const copiedChoiceIndex = copiedChoices.findIndex(
+    const choice = copiedField.properties?.choices?.find(
       (choice) => choice.id === choiceId,
     );
 
-    const newChoices = [
-      ...copiedChoices.slice(0, copiedChoiceIndex + 1),
-      {
-        id: uuidv4(),
-        value: `${copiedChoice.value} (copy)`,
-      },
-      ...copiedChoices.slice(copiedChoiceIndex + 1),
-    ];
+    if (!choice) return;
 
-    updateFieldChoices({
-      fieldId: field.id,
-      choices: newChoices,
+    const index = copiedField.properties.choices.findIndex(
+      (choice) => choice.id === choiceId,
+    );
+
+    copiedField.properties.choices.splice(index + 1, 0, {
+      id: uuidv4(),
+      value: choice?.value ? `${choice.value} (copy)` : '',
+    });
+
+    updateQuestion({
+      id: activeField?.id ?? '',
+      properties: copiedField.properties,
+    });
+  };
+
+  const handleAddChoice = () => {
+    const copiedField = {...activeField};
+
+    if (!copiedField.properties?.choices?.length) return;
+
+    copiedField.properties.choices.push({
+      id: copiedField.properties.choices.length.toString(),
+      value: '',
+    });
+
+    updateQuestion({
+      id: activeField?.id ?? '',
+      properties: copiedField.properties,
+    });
+  };
+
+  const onChoiceChange = (choiceId: string, value: string) => {
+    const copiedField = {...activeField};
+
+    if (!copiedField.properties?.choices?.length) return;
+
+    const choice = copiedField.properties?.choices?.find(
+      (choice) => choice.id === choiceId,
+    );
+
+    if (!choice) return;
+
+    choice.value = value;
+
+    updateQuestion({
+      id: activeField?.id ?? '',
+      properties: copiedField.properties,
     });
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      {field.properties.choices?.map((choice) => (
-        <div key={choice.id} className="flex gap-2">
-          <Input // important to include key with field's id
-            placeholder="Enter a choice"
-            value={choice.value}
-            onChange={(e) => onChange(e.target.value, choice.id)}
-          />
-          <Button
-            size="icon"
-            variant="ghost"
-            disabled={field.properties.choices?.length === 1}
-            onClick={() => onDeleteChoice(choice.id)}
-          >
-            <Trash className="h-4 w-4" />
-          </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            onClick={() => onDuplicateChoice(choice.id)}
-          >
-            <Copy className="h-4 w-4" />
-          </Button>
+    <div className="flex flex-col items-start gap-1">
+      {activeField?.properties.choices?.map((choice) => (
+        <div key={choice.id} className="flex justify-start gap-2">
+          <div className="relative mt-2 flex items-center">
+            <Input
+              type="text"
+              placeholder="Enter a choice"
+              className="py-1.5 pr-24 sm:text-sm sm:leading-6"
+              value={choice.value}
+              onChange={(e) => onChoiceChange(choice.id, e.target.value)}
+            />
+            <div className="absolute right-0 flex gap-2 py-1.5 pr-1.5">
+              <Button
+                className="h-8 w-8"
+                size="icon"
+                variant="ghost"
+                disabled={activeField.properties.choices?.length === 1}
+                onClick={() => handleRemoveChoice(choice.id)}
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+              <Button
+                className="h-8 w-8"
+                size="icon"
+                variant="ghost"
+                onClick={() => handleDuplicateChoice(choice.id)}
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
       ))}
+      {activeField?.properties.allow_other_option && (
+        <div className="relative mt-2 flex items-center">
+          <Input
+            type="text"
+            value="Other"
+            className="py-1.5 pr-24 sm:text-sm sm:leading-6"
+          />
+          <div className="absolute right-0 flex gap-2 py-1.5 pr-1.5">
+            <Button
+              className="h-8 w-8"
+              size="icon"
+              variant="ghost"
+              disabled={activeField.properties.choices?.length === 1}
+              onClick={() =>
+                updateQuestion({
+                  id: activeField.id,
+                  properties: {allow_other_option: false},
+                })
+              }
+            >
+              <Trash className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
       <Button
         variant="outline"
-        className="mt-2 self-start"
-        onClick={onAddChoice}
+        className="mt-4 self-start"
+        onClick={handleAddChoice}
       >
         <Plus className="mr-2 h-4 w-4" />
         Add a choice

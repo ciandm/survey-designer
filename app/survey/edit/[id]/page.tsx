@@ -3,6 +3,7 @@ import {notFound} from 'next/navigation';
 import {SurveyDesigner} from '@/components/survey-designer/survey-designer';
 import {SurveySchemaInitialiser} from '@/components/survey-schema-initiailiser';
 import {Button} from '@/components/ui/button';
+import {configurationSchema} from '@/lib/validations/question';
 import prisma from '@/prisma/client';
 
 const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
@@ -13,6 +14,12 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
   });
 
   if (!survey) {
+    return notFound();
+  }
+
+  const schema = configurationSchema.safeParse(survey.schema);
+
+  if (!schema.success) {
     return notFound();
   }
 
