@@ -1,3 +1,5 @@
+'use client';
+
 import React, {useState} from 'react';
 import {useAutoAnimate} from '@formkit/auto-animate/react';
 import {QuestionType} from '@prisma/client';
@@ -27,7 +29,7 @@ export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
   SINGLE_CHOICE: <FileQuestion className="h-4 w-4 flex-shrink-0" />,
 };
 
-export const QuestionSidebar = () => {
+export const QuestionsSidebar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const questions = useSurveyQuestions();
   const {activeQuestion} = useActiveQuestion();

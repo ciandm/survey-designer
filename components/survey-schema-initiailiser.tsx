@@ -38,6 +38,10 @@ export const SurveySchemaInitialiser = ({
   );
 };
 
+export const useSurveyTitle = () =>
+  useSurveySchemaStore((state) => state.title);
+export const useSurveyDescription = () =>
+  useSurveySchemaStore((state) => state.description);
 export const useSurveyQuestions = () =>
   useSurveySchemaStore((state) => state.questions);
 export const useSurveyFieldActions = () =>

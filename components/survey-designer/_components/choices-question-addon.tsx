@@ -1,61 +1,16 @@
 'use client';
 
-import {QuestionType} from '@prisma/client';
-import {Copy, Plus, Trash} from 'lucide-react';
+import {Plus, Trash, XCircle} from 'lucide-react';
 import {v4 as uuidv4} from 'uuid';
+import {Checkbox} from '@/components/ui/checkbox';
 import {
   useActiveQuestion,
   useSurveyFieldActions,
-} from '../survey-schema-initiailiser';
-import {Button} from '../ui/button';
-import {Input} from '../ui/input';
-import {Textarea} from '../ui/textarea';
+} from '../../survey-schema-initiailiser';
+import {Button} from '../../ui/button';
+import {ContentEditable} from './content-editable';
 
-export const QuestionDesigner = ({children}: {children: React.ReactNode}) => {
-  const {activeQuestionIndex} = useActiveQuestion();
-  return (
-    <div className="flex w-full flex-col border-2 border-transparent bg-white p-4 shadow-md">
-      <div className="flex justify-between">
-        <p className="mb-1 text-sm text-muted-foreground">
-          {activeQuestionIndex + 1}
-          {/* {selectedField.validations.required && '(required)'} */}
-        </p>
-      </div>
-      {/* <>{questionTypeMap[selectedField.type]}</> */}
-      {children}
-    </div>
-  );
-};
-
-export const TextQuestion = () => {
-  const {activeQuestion} = useActiveQuestion();
-  const {updateQuestion} = useSurveyFieldActions();
-
-  const InputComponent =
-    activeQuestion?.type === QuestionType.SHORT_TEXT ? Input : Textarea;
-
-  return (
-    <InputComponent
-      type="text"
-      name="name"
-      id="name"
-      placeholder={
-        !!activeQuestion?.properties.placeholder
-          ? activeQuestion.properties.placeholder
-          : 'Your answer here...'
-      }
-      onChange={(e) =>
-        updateQuestion({
-          id: activeQuestion?.id ?? '',
-          properties: {placeholder: e.target.value},
-        })
-      }
-      readOnly
-    />
-  );
-};
-
-export const ChoicesQuestion = () => {
+export const ChoicesQuestionAddon = () => {
   const {activeQuestion} = useActiveQuestion();
   const {updateQuestion} = useSurveyFieldActions();
 
@@ -134,48 +89,40 @@ export const ChoicesQuestion = () => {
       properties: copiedField.properties,
     });
   };
-
   return (
-    <div className="flex flex-col items-start gap-1">
+    <div className="flex flex-col gap-2">
       {activeQuestion?.properties.choices?.map((choice) => (
-        <div key={choice.id} className="flex justify-start gap-2">
-          <div className="relative mt-2 flex items-center">
-            <Input
-              type="text"
+        <div
+          key={choice.id}
+          className=" gap-4 rounded-sm border border-blue-400 bg-blue-50 pl-4"
+        >
+          <div className="group relative flex w-full items-center gap-2">
+            <Checkbox />
+            <ContentEditable
+              className="w-full bg-transparent p-2 pr-4 text-blue-800"
               placeholder="Enter a choice"
-              className="py-1.5 pr-24 sm:text-sm sm:leading-6"
-              value={choice.value}
+              html={choice.value ?? ''}
               onChange={(e) => onChoiceChange(choice.id, e.target.value)}
             />
-            <div className="absolute right-0 flex gap-2 py-1.5 pr-1.5">
-              <Button
-                className="h-8 w-8"
-                size="icon"
-                variant="ghost"
-                disabled={activeQuestion.properties.choices?.length === 1}
-                onClick={() => handleRemoveChoice(choice.id)}
-              >
-                <Trash className="h-4 w-4" />
-              </Button>
-              <Button
-                className="h-8 w-8"
-                size="icon"
-                variant="ghost"
-                onClick={() => handleDuplicateChoice(choice.id)}
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
-            </div>
+            <button
+              className="absolute -right-3 hidden h-6 w-6 items-center justify-center gap-2 rounded-full bg-foreground group-hover:flex"
+              disabled={activeQuestion.properties.choices?.length === 1}
+              onClick={() => handleRemoveChoice(choice.id)}
+            >
+              <XCircle color="white" />
+            </button>
           </div>
         </div>
       ))}
       {activeQuestion?.properties.allow_other_option && (
-        <div className="relative mt-2 flex items-center">
-          <Input
-            type="text"
-            readOnly
+        <div className="flex items-center gap-4">
+          <Checkbox />
+          <ContentEditable
+            html="Other"
+            disabled
+            onChange={(e) => {}}
             defaultValue="Other"
-            className="py-1.5 pr-24 sm:text-sm sm:leading-6"
+            className="py-1.5 pr-24 text-blue-900 sm:text-sm sm:leading-6"
           />
           <div className="absolute right-0 flex gap-2 py-1.5 pr-1.5">
             <Button
@@ -195,6 +142,11 @@ export const ChoicesQuestion = () => {
           </div>
         </div>
       )}
+      <ContentEditable
+        html=""
+        placeholder="Add a choice"
+        onChange={(e) => {}}
+      />
       <Button
         variant="outline"
         className="mt-4 self-start"

@@ -1,6 +1,11 @@
 import {EyeIcon} from 'lucide-react';
 import {notFound} from 'next/navigation';
-import {SurveyDesigner} from '@/components/survey-designer/survey-designer';
+import {
+  QuestionSettings,
+  QuestionTypeOption,
+} from '@/components/question-designer/components/question-options';
+import {EditorSection} from '@/components/survey-designer/_components/editor-section';
+import {QuestionsSidebar} from '@/components/survey-designer/_components/questions-sidebar';
 import {SurveySchemaInitialiser} from '@/components/survey-schema-initiailiser';
 import {Button} from '@/components/ui/button';
 import {configurationSchema} from '@/lib/validations/question';
@@ -45,7 +50,12 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
           </div>
         </header>
         <main className="flex h-full min-h-0">
-          <SurveyDesigner />
+          <QuestionsSidebar />
+          <EditorSection />
+          <aside className="w-[480px] border-l">
+            <QuestionTypeOption />
+            <QuestionSettings />
+          </aside>
         </main>
       </div>
     </SurveySchemaInitialiser>

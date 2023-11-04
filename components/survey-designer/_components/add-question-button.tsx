@@ -13,7 +13,7 @@ export const AddQuestionButton = ({onClick}: {onClick: () => void}) => {
     <TooltipProvider delayDuration={400}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="outline" size="icon" onClick={onClick}>
+          <Button variant="secondary" size="icon" onClick={onClick}>
             <Plus className="h-4 w-4" />
           </Button>
         </TooltipTrigger>
