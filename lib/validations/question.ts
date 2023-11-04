@@ -54,7 +54,7 @@ const questionSchema = z.object({
 export const configurationSchema = z.object({
   id: z.string(),
   name: z.string(),
-  questions: z.array(questionSchema),
+  fields: z.array(questionSchema),
 });
 
 export type Configuration = z.infer<typeof configurationSchema>;

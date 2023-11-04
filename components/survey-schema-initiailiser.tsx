@@ -26,8 +26,8 @@ export const SurveySchemaInitialiser = ({
   if (!storeRef.current) {
     storeRef.current = createSurveySchemaStore({
       title: survey.name,
-      questions: parsedSchema.data.questions,
-      activeQuestionRef: parsedSchema.data.questions[0].ref,
+      questions: parsedSchema.data.fields,
+      activeQuestionRef: parsedSchema.data.fields[0].ref,
     });
   }
 
@@ -42,13 +42,13 @@ export const useSurveyQuestions = () =>
   useSurveySchemaStore((state) => state.questions);
 export const useSurveyFieldActions = () =>
   useSurveySchemaStore((state) => state.actions);
-export const useActiveFieldRef = () =>
+export const useActiveQuestionRef = () =>
   useSurveySchemaStore((state) => state.activeQuestionRef);
-export const useActiveField = () => {
-  const activeQuestionRef = useActiveFieldRef();
+export const useActiveQuestion = () => {
+  const activeQuestionRef = useActiveQuestionRef();
   const questions = useSurveyQuestions();
-  const field = questions.find((q) => q.ref === activeQuestionRef);
+  const question = questions.find((q) => q.ref === activeQuestionRef);
   const index = questions.findIndex((q) => q.ref === activeQuestionRef);
 
-  return {activeField: field, activeFieldIndex: index};
+  return {activeQuestion: question, activeQuestionIndex: index};
 };

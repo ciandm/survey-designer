@@ -3,7 +3,7 @@
 import React, {useState} from 'react';
 import {QuestionType} from '@prisma/client';
 import {
-  useActiveField,
+  useActiveQuestion,
   useSurveyFieldActions,
 } from '@/components/survey-schema-initiailiser';
 import {Input} from '@/components/ui/input';
@@ -50,11 +50,11 @@ export const QuestionOptions = ({
 
 export const QuestionTypeOption = () => {
   const {changeQuestionType} = useSurveyFieldActions();
-  const {activeField} = useActiveField();
+  const {activeQuestion} = useActiveQuestion();
 
   const onChangeFieldType = (newType: QuestionType) => {
     changeQuestionType({
-      id: activeField?.id ?? '',
+      id: activeQuestion?.id ?? '',
       type: newType,
     });
   };
@@ -63,7 +63,7 @@ export const QuestionTypeOption = () => {
     <div className="border-b p-4">
       <p className="mb-4 text-sm font-medium leading-none">Type</p>
       <Select
-        value={activeField?.type ?? QuestionType.SHORT_TEXT}
+        value={activeQuestion?.type ?? QuestionType.SHORT_TEXT}
         onValueChange={(value) => onChangeFieldType(value as QuestionType)}
       >
         <SelectTrigger id="question-type" className="mt-2">
@@ -86,15 +86,15 @@ export const QuestionTypeOption = () => {
 
 export const QuestionSettings = () => {
   const {updateQuestion} = useSurveyFieldActions();
-  const {activeField} = useActiveField();
+  const {activeQuestion} = useActiveQuestion();
 
-  if (!activeField) return null;
+  if (!activeQuestion) return null;
 
   return (
     <div className="p-4">
       <p className="mb-4 text-sm font-medium leading-none">Settings</p>
       <div className="flex flex-col gap-4">
-        {validationSettingsMap[activeField.type].map((setting) => {
+        {validationSettingsMap[activeQuestion.type].map((setting) => {
           if (setting === 'min_characters' || setting === 'max_characters') {
             return (
               <TextLengthSetting
@@ -103,7 +103,7 @@ export const QuestionSettings = () => {
                 onCheckedChange={(checked) => {
                   if (!checked) {
                     updateQuestion({
-                      id: activeField.id,
+                      id: activeQuestion.id,
                       validations: {
                         [setting]: null,
                       },
@@ -119,11 +119,11 @@ export const QuestionSettings = () => {
                         min={0}
                         type="number"
                         className="w-full rounded-md border px-2 py-1 text-sm"
-                        value={activeField.validations[setting] ?? ''}
+                        value={activeQuestion.validations[setting] ?? ''}
                         placeholder="0-999"
                         onChange={(event) => {
                           updateQuestion({
-                            id: activeField.id,
+                            id: activeQuestion.id,
                             validations: {
                               [setting]: event.target.value,
                             },
@@ -141,10 +141,10 @@ export const QuestionSettings = () => {
             <Setting setting={setting} key={setting}>
               <Switch
                 id={setting}
-                checked={!!activeField.validations[setting]}
+                checked={!!activeQuestion.validations[setting]}
                 onCheckedChange={(checked) => {
                   updateQuestion({
-                    id: activeField.id,
+                    id: activeQuestion.id,
                     validations: {
                       [setting]: checked,
                     },
@@ -154,14 +154,14 @@ export const QuestionSettings = () => {
             </Setting>
           );
         })}
-        {propertySettingsMap[activeField.type].map((setting) => (
+        {propertySettingsMap[activeQuestion.type].map((setting) => (
           <Setting setting={setting} key={setting}>
             <Switch
               id={setting}
-              checked={!!activeField.properties[setting]}
+              checked={!!activeQuestion.properties[setting]}
               onCheckedChange={(checked) => {
                 updateQuestion({
-                  id: activeField.id,
+                  id: activeQuestion.id,
                   properties: {
                     [setting]: checked,
                   },
@@ -184,9 +184,9 @@ const TextLengthSetting = ({
   children: ({isOpen}: {isOpen: boolean}) => React.ReactNode;
   onCheckedChange?: (checked: boolean) => void;
 }) => {
-  const {activeField} = useActiveField();
+  const {activeQuestion} = useActiveQuestion();
   const [isOpen, setIsOpen] = useState(
-    !!activeField?.validations[setting] ?? false,
+    !!activeQuestion?.validations[setting] ?? false,
   );
 
   const onCheckedChange = (checked: boolean) => {

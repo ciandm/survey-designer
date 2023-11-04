@@ -14,13 +14,15 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
   });
 
   if (!survey) {
+    console.log('here?');
     return notFound();
   }
 
   const schema = configurationSchema.safeParse(survey.schema);
 
   if (!schema.success) {
-    return notFound();
+    console.log('here?');
+    // return notFound();
   }
 
   return (

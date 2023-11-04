@@ -91,12 +91,12 @@ export const createSurveySchemaStore = (
         const newRef = uuidv4();
 
         set((state) => {
-          const field = state.questions.find((q) => q.id === id);
-          if (!field) return state;
+          const question = state.questions.find((q) => q.id === id);
+          if (!question) return state;
 
-          const newField = {
-            ...field,
-            text: field.text ? `${field.text} (copy)` : '',
+          const newQuestion = {
+            ...question,
+            text: question.text ? `${question.text} (copy)` : '',
             ref: newRef,
             id: uuidv4(),
           };
@@ -104,7 +104,7 @@ export const createSurveySchemaStore = (
           questions.splice(
             state.questions.findIndex((q) => q.id === id) + 1,
             0,
-            newField,
+            newQuestion,
           );
           return {
             questions,
