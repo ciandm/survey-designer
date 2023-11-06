@@ -1,10 +1,10 @@
 'use client';
 
 import {QuestionType} from '@prisma/client';
-import {useActiveQuestion, useSurveyFieldActions} from '@/stores/survey-schema';
 import {Separator} from '@/components/ui/separator';
 import {ChoicesQuestionAddon} from '@/features/survey-designer/components/choices-question-addon';
 import {cn} from '@/lib/utils';
+import {useActiveQuestion, useSurveyFieldActions} from '@/stores/survey-schema';
 import {ContentEditable} from './content-editable';
 import {QuestionContainer} from './question-container';
 import {TextQuestionAddon} from './text-question-addon';

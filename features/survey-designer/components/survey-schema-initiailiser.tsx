@@ -10,6 +10,7 @@ export const SurveySchemaInitialiser = ({survey}: {survey: Survey}) => {
   const isInitialised = useRef(false);
 
   if (!parsedSchema.success) {
+    // TODO: Handle invalid schema
     throw new Error('Invalid schema');
   }
 

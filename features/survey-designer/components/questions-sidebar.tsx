@@ -3,11 +3,6 @@
 import React, {useState} from 'react';
 import {QuestionType} from '@prisma/client';
 import {Check, FileQuestion, MoreVertical, Plus, Text} from 'lucide-react';
-import {
-  useActiveQuestion,
-  useSurveyFieldActions,
-  useSurveyQuestions,
-} from '@/stores/survey-schema';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -17,6 +12,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {cn} from '@/lib/utils';
+import {
+  useActiveQuestion,
+  useSurveyFieldActions,
+  useSurveyQuestions,
+} from '@/stores/survey-schema';
 import {SidebarQuestionItem} from './sidebar-question-item';
 
 export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
