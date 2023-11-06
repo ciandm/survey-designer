@@ -2,7 +2,14 @@
 
 import React, {useState} from 'react';
 import {QuestionType} from '@prisma/client';
-import {Check, FileQuestion, MoreVertical, Plus, Text} from 'lucide-react';
+import {
+  Check,
+  FileQuestion,
+  MoreVertical,
+  Plus,
+  PlusSquare,
+  Text,
+} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -27,7 +34,7 @@ export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
 };
 
 export const QuestionsSidebar = () => {
-  const [menuStatus, setMenuStatus] = useState<'open' | 'closed'>('closed');
+  const [menuOpenId, setMenuOpenId] = useState('');
   const questions = useSurveyQuestions();
   const {activeQuestion} = useActiveQuestion();
 
@@ -39,17 +46,19 @@ export const QuestionsSidebar = () => {
   } = useSurveyFieldActions();
 
   return (
-    <aside className="flex w-full max-w-[260px] flex-col overflow-hidden border-r">
+    <aside className="flex max-w-[260px] flex-1 flex-col overflow-hidden bg-zinc-800">
       <Button
         variant="ghost"
-        className="mt-4 rounded-none"
+        className="my-4 justify-start rounded-none font-semibold text-white hover:bg-primary hover:text-white"
         onClick={() => insertQuestion({type: 'SHORT_TEXT'})}
       >
-        <Plus className="mr-2 h-4 w-4" />
-        New Question
+        <div className="mr-4 flex h-5 w-5 items-center justify-center bg-primary">
+          <Plus className="h-5 w-5" />
+        </div>
+        New question
       </Button>
       <div className="flex flex-1 flex-col overflow-y-auto">
-        <ol className="mt-4 flex flex-1 flex-col">
+        <ol className="flex flex-1 flex-col">
           {questions.map((question, index) => (
             <SidebarQuestionItem
               key={question.id}
@@ -58,36 +67,39 @@ export const QuestionsSidebar = () => {
               isSelected={question.id === activeQuestion?.id}
               type={question.type}
               onClick={() => {
-                if (menuStatus === 'open') return;
+                if (!!menuOpenId) return;
                 setActiveQuestionRef(question.ref);
               }}
             >
               <DropdownMenu
                 modal
                 onOpenChange={(checked) =>
-                  setMenuStatus(checked ? 'open' : 'closed')
+                  setMenuOpenId(checked ? question.id : '')
                 }
               >
                 <DropdownMenuTrigger
                   asChild
                   className={cn(
                     'invisible opacity-0 transition-opacity group-hover:visible group-hover:opacity-100',
+                    {
+                      'visible opacity-100': menuOpenId === question.id,
+                    },
                   )}
                 >
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 flex-shrink-0 hover:bg-transparent"
+                    className="w-8 flex-shrink-0 text-gray-50 hover:bg-transparent hover:text-gray-50 focus:text-gray-50"
                   >
                     <span className="sr-only">Actions</span>
-                    <MoreVertical className="h-4 w-4" />
+                    <MoreVertical className="h-4 w-4 text-inherit" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     onSelect={() => {
                       duplicateQuestion({id: question.id});
-                      setMenuStatus('closed');
+                      setMenuOpenId('');
                     }}
                   >
                     Duplicate
@@ -96,7 +108,7 @@ export const QuestionsSidebar = () => {
                   <DropdownMenuItem
                     onSelect={() => {
                       deleteQuestion({id: question.id});
-                      setMenuStatus('closed');
+                      setMenuOpenId('');
                     }}
                     className="text-red-600"
                   >
