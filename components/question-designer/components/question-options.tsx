@@ -2,10 +2,7 @@
 
 import React, {useState} from 'react';
 import {QuestionType} from '@prisma/client';
-import {
-  useActiveQuestion,
-  useSurveyFieldActions,
-} from '@/components/survey-schema-initiailiser';
+import {useActiveQuestion, useSurveyFieldActions} from '@/stores/survey-schema';
 import {Input} from '@/components/ui/input';
 import {formatQuestionType} from '@/lib/utils';
 import {QuestionConfig} from '@/lib/validations/question';

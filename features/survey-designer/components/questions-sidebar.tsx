@@ -1,15 +1,13 @@
 'use client';
 
 import React, {useState} from 'react';
-import {useAutoAnimate} from '@formkit/auto-animate/react';
 import {QuestionType} from '@prisma/client';
-import {useIsMutating} from '@tanstack/react-query';
-import {Check, FileQuestion, MoreVertical, Text} from 'lucide-react';
+import {Check, FileQuestion, MoreVertical, Plus, Text} from 'lucide-react';
 import {
   useActiveQuestion,
   useSurveyFieldActions,
   useSurveyQuestions,
-} from '@/components/survey-schema-initiailiser';
+} from '@/stores/survey-schema';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -19,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {cn} from '@/lib/utils';
-import {AddQuestionButton} from './add-question-button';
 import {SidebarQuestionItem} from './sidebar-question-item';
 
 export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
@@ -30,13 +27,9 @@ export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
 };
 
 export const QuestionsSidebar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [menuStatus, setMenuStatus] = useState<'open' | 'closed'>('closed');
   const questions = useSurveyQuestions();
   const {activeQuestion} = useActiveQuestion();
-  const [parent] = useAutoAnimate();
-  const isMutating = useIsMutating({
-    mutationKey: ['survey-schema'],
-  });
 
   const {
     insertQuestion,
@@ -47,15 +40,16 @@ export const QuestionsSidebar = () => {
 
   return (
     <aside className="flex w-full max-w-[260px] flex-col overflow-hidden border-r">
-      <header className="flex items-center justify-between border-b px-4 py-2">
-        <h5 className="text-md font-medium tracking-tight">Questions</h5>
-        <AddQuestionButton
-          onClick={() => insertQuestion({type: 'LONG_TEXT'})}
-        />
-      </header>
-      {!!isMutating && <p>loading...</p>}
+      <Button
+        variant="ghost"
+        className="mt-4 rounded-none"
+        onClick={() => insertQuestion({type: 'SHORT_TEXT'})}
+      >
+        <Plus className="mr-2 h-4 w-4" />
+        New Question
+      </Button>
       <div className="flex flex-1 flex-col overflow-y-auto">
-        <ol className="flex flex-1 flex-col gap-1 p-2" ref={parent}>
+        <ol className="mt-4 flex flex-1 flex-col">
           {questions.map((question, index) => (
             <SidebarQuestionItem
               key={question.id}
@@ -64,13 +58,15 @@ export const QuestionsSidebar = () => {
               isSelected={question.id === activeQuestion?.id}
               type={question.type}
               onClick={() => {
-                if (isMenuOpen) return;
+                if (menuStatus === 'open') return;
                 setActiveQuestionRef(question.ref);
               }}
             >
               <DropdownMenu
                 modal
-                onOpenChange={(checked) => setIsMenuOpen(checked)}
+                onOpenChange={(checked) =>
+                  setMenuStatus(checked ? 'open' : 'closed')
+                }
               >
                 <DropdownMenuTrigger
                   asChild
@@ -81,7 +77,7 @@ export const QuestionsSidebar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 flex-shrink-0"
+                    className="w-8 flex-shrink-0 hover:bg-transparent"
                   >
                     <span className="sr-only">Actions</span>
                     <MoreVertical className="h-4 w-4" />
@@ -91,7 +87,7 @@ export const QuestionsSidebar = () => {
                   <DropdownMenuItem
                     onSelect={() => {
                       duplicateQuestion({id: question.id});
-                      setIsMenuOpen(false);
+                      setMenuStatus('closed');
                     }}
                   >
                     Duplicate
@@ -100,7 +96,7 @@ export const QuestionsSidebar = () => {
                   <DropdownMenuItem
                     onSelect={() => {
                       deleteQuestion({id: question.id});
-                      setIsMenuOpen(false);
+                      setMenuStatus('closed');
                     }}
                     className="text-red-600"
                   >

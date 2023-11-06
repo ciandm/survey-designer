@@ -24,9 +24,9 @@ export const SidebarQuestionItem = ({
       tabIndex={0}
       onClick={onClick}
       className={cn(
-        'group box-border flex min-h-[56px] cursor-pointer items-center justify-between rounded-sm p-2 text-left',
+        'group box-border flex min-h-[56px] cursor-pointer items-center justify-between p-2 text-left',
         {
-          'bg-slate-100': isSelected,
+          'bg-blue-100': isSelected,
         },
       )}
     >
@@ -38,7 +38,14 @@ export const SidebarQuestionItem = ({
             </span>
             <div className="flex flex-col items-start gap-2">
               <div className="line-clamp-2">
-                <p className="text-sm font-semibold leading-tight text-gray-900">
+                <p
+                  className={cn(
+                    'text-sm font-semibold leading-tight text-gray-900',
+                    {
+                      'text-gray-500': !question.text,
+                    },
+                  )}
+                >
                   {question.text || '...'}
                 </p>
               </div>

@@ -4,7 +4,7 @@ import {
   useSurveyDescription,
   useSurveyFieldActions,
   useSurveyTitle,
-} from '@/components/survey-schema-initiailiser';
+} from '@/stores/survey-schema';
 import {ContentEditable} from './content-editable';
 
 export const EditorHeader = () => {
@@ -17,6 +17,7 @@ export const EditorHeader = () => {
       <ContentEditable
         html={title}
         className="text-md font-semibold"
+        placeholder="Untitled Survey"
         onChange={(e) => updateTitle(e.target.value)}
       />
       <ContentEditable

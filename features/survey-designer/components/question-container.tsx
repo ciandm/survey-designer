@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  useActiveQuestion,
-  useSurveyQuestions,
-} from '../../survey-schema-initiailiser';
+import {useActiveQuestion, useSurveyQuestions} from '@/stores/survey-schema';
 
 export const QuestionContainer = ({children}: {children: React.ReactNode}) => {
   const {activeQuestionIndex} = useActiveQuestion();
