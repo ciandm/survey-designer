@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
 export function formatQuestionType(type: QuestionType) {
   switch (type) {
     case QuestionType.SHORT_TEXT:
-      return 'Text';
+      return 'Short Text';
     case QuestionType.LONG_TEXT:
       return 'Long Text';
     case QuestionType.MULTIPLE_CHOICE:

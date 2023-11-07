@@ -26,8 +26,8 @@ export const SidebarQuestionItem = ({
       className={cn(
         'group box-border flex min-h-[56px] cursor-pointer items-center justify-between p-2 text-left',
         {
-          'hover:bg-zinc-700': !isSelected,
-          'bg-zinc-900 ': isSelected,
+          'hover:bg-gray-800': !isSelected,
+          'bg-gray-800 ': isSelected,
         },
       )}
     >

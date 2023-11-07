@@ -17,7 +17,6 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
   });
 
   if (!survey) {
-    console.log('here?');
     return notFound();
   }
 
@@ -35,7 +34,7 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
           <QuestionsSidebar />
           <div className="flex w-full flex-1 flex-col">
             <EditorHeader />
-            <div className="flex flex-1">
+            <div className="flex h-full flex-1 overflow-hidden">
               <EditorSection>
                 <QuestionEditor />
                 <EditorFooter />

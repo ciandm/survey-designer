@@ -1,5 +1,6 @@
 'use client';
 
+import {Card} from '@/components/ui/card';
 import {useActiveQuestion, useSurveyQuestions} from '@/stores/survey-schema';
 
 export const QuestionContainer = ({children}: {children: React.ReactNode}) => {
@@ -7,13 +8,15 @@ export const QuestionContainer = ({children}: {children: React.ReactNode}) => {
   const questions = useSurveyQuestions();
 
   return (
-    <div className="flex w-full flex-col items-start self-start p-4">
-      <div className="flex justify-between">
-        <p className="mb-2 text-sm text-muted-foreground">
-          Question {activeQuestionIndex + 1} of {questions.length}
-        </p>
+    <Card className="flex w-full flex-col items-center justify-center rounded-none">
+      <div className="flex w-full flex-col items-center justify-center py-16">
+        <div className="w-full flex-1 px-32">
+          <p className="mb-2 text-sm text-muted-foreground">
+            Question {activeQuestionIndex + 1} of {questions.length}
+          </p>
+          <div className="flex flex-col">{children}</div>
+        </div>
       </div>
-      {children}
-    </div>
+    </Card>
   );
 };

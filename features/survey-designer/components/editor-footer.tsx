@@ -15,7 +15,7 @@ const footerActions = [
 
 export const EditorFooter = () => {
   return (
-    <footer className="border-t">
+    <footer className="border-t bg-background">
       <div className="flex items-center justify-between">
         <div className="flex">
           {footerActions.map(({label, icon}) => (

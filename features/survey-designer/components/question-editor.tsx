@@ -25,12 +25,13 @@ export const QuestionEditor = () => {
   };
 
   return (
-    <div className="flex w-full flex-1 overflow-y-auto bg-slate-50 p-8">
+    <div className="flex w-full flex-1 overflow-y-auto bg-primary-foreground p-8">
       {activeQuestion ? (
         <QuestionContainer>
           <ContentEditable
             className={cn('text-2xl font-bold', {
-              [`after:content-['*']`]: activeQuestion?.validations?.required,
+              [`after:content-['*']`]:
+                activeQuestion?.validations?.required && activeQuestion?.text,
             })}
             placeholder="Begin typing your question here..."
             html={activeQuestion.text ?? ''}

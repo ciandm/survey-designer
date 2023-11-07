@@ -8,7 +8,7 @@ import {
 
 export const ConfigPanel = () => {
   return (
-    <aside className="w-[480px] border-l">
+    <aside className="w-[480px] border-l bg-background">
       <QuestionTypeOption />
       <QuestionSettings />
     </aside>

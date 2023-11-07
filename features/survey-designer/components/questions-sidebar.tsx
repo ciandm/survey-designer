@@ -46,19 +46,19 @@ export const QuestionsSidebar = () => {
   } = useSurveyFieldActions();
 
   return (
-    <aside className="flex max-w-[260px] flex-1 flex-col overflow-hidden bg-zinc-800">
+    <aside className="flex max-w-[260px] flex-1 flex-col overflow-hidden bg-gray-900">
       <Button
         variant="ghost"
         className="my-4 justify-start rounded-none font-semibold text-white hover:bg-primary hover:text-white"
         onClick={() => insertQuestion({type: 'SHORT_TEXT'})}
       >
-        <div className="mr-4 flex h-5 w-5 items-center justify-center bg-primary">
+        <div className="mr-4 flex h-5 w-5 items-center justify-center rounded-[2px] bg-primary">
           <Plus className="h-5 w-5" />
         </div>
         New question
       </Button>
       <div className="flex flex-1 flex-col overflow-y-auto">
-        <ol className="flex flex-1 flex-col">
+        <ol className="flex flex-1 flex-col gap-2">
           {questions.map((question, index) => (
             <SidebarQuestionItem
               key={question.id}

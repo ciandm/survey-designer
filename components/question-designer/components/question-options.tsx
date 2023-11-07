@@ -2,10 +2,10 @@
 
 import React, {useState} from 'react';
 import {QuestionType} from '@prisma/client';
-import {useActiveQuestion, useSurveyFieldActions} from '@/stores/survey-schema';
 import {Input} from '@/components/ui/input';
 import {formatQuestionType} from '@/lib/utils';
 import {QuestionConfig} from '@/lib/validations/question';
+import {useActiveQuestion, useSurveyFieldActions} from '@/stores/survey-schema';
 import {Label} from '../../ui/label';
 import {
   Select,
@@ -25,10 +25,16 @@ type PropertySettingKey = Exclude<
 
 type ValidationSettingKey = keyof QuestionConfig['validations'];
 
-const questionTypeOptions = Object.values(QuestionType).map((value) => ({
-  value,
-  label: formatQuestionType(value),
-}));
+const ALLOWED_TYPES = [QuestionType.SHORT_TEXT, QuestionType.LONG_TEXT];
+
+const questionTypeOptions = Object.values(QuestionType)
+  // TODO: Remove this when we have more question types
+  // @ts-ignore
+  .filter((val) => ALLOWED_TYPES.includes(val))
+  .map((value) => ({
+    value,
+    label: formatQuestionType(value),
+  }));
 
 export const QuestionOptions = ({
   typeOptionComponent,
@@ -238,8 +244,8 @@ const propertySettingsMap: Record<QuestionType, PropertySettingKey[]> = {
 };
 
 const validationSettingsMap: Record<QuestionType, ValidationSettingKey[]> = {
-  SHORT_TEXT: ['required', 'min_characters', 'max_characters'],
-  LONG_TEXT: ['required', 'min_characters', 'max_characters'],
+  SHORT_TEXT: ['required', 'max_characters'],
+  LONG_TEXT: ['required', 'max_characters'],
   MULTIPLE_CHOICE: ['required'],
   SINGLE_CHOICE: ['required'],
 };
