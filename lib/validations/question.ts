@@ -31,7 +31,7 @@ export const choicesSchema = z.array(
   }),
 );
 
-const fieldSchema = z.object({
+const questionSchema = z.object({
   id: z.string(),
   text: z.string(),
   type: z.nativeEnum(QuestionType),
@@ -54,9 +54,9 @@ const fieldSchema = z.object({
 export const configurationSchema = z.object({
   id: z.string(),
   name: z.string(),
-  fields: z.array(fieldSchema),
+  fields: z.array(questionSchema),
 });
 
 export type Configuration = z.infer<typeof configurationSchema>;
-export type FieldConfig = z.infer<typeof fieldSchema>;
+export type QuestionConfig = z.infer<typeof questionSchema>;
 export type ChoicesConfig = z.infer<typeof choicesSchema>;

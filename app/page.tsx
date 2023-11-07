@@ -1,5 +1,5 @@
-import { SurveyCard } from "@/components/survey-card";
-import prisma from "@/prisma/client";
+import {SurveyCard} from '@/components/survey-card';
+import prisma from '@/prisma/client';
 
 const Home = async () => {
   const surveys = await prisma.survey.findMany({
@@ -24,4 +24,4 @@ const Home = async () => {
 
 export default Home;
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';

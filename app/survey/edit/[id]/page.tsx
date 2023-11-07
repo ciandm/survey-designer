@@ -1,8 +1,12 @@
-import {EyeIcon} from 'lucide-react';
 import {notFound} from 'next/navigation';
-import {SurveyDesigner} from '@/components/survey-designer/survey-designer';
-import {SurveySchemaInitialiser} from '@/components/survey-schema-initiailiser';
-import {Button} from '@/components/ui/button';
+import {ConfigPanel} from '@/features/survey-designer/components/config-panel';
+import {EditorFooter} from '@/features/survey-designer/components/editor-footer';
+import {EditorHeader} from '@/features/survey-designer/components/editor-header';
+import {EditorSection} from '@/features/survey-designer/components/editor-section';
+import {QuestionEditor} from '@/features/survey-designer/components/question-editor';
+import {QuestionsSidebar} from '@/features/survey-designer/components/questions-sidebar';
+import {SurveySchemaInitialiser} from '@/features/survey-designer/components/survey-schema-initiailiser';
+import {configurationSchema} from '@/lib/validations/question';
 import prisma from '@/prisma/client';
 
 const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
@@ -16,30 +20,31 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
     return notFound();
   }
 
+  const schema = configurationSchema.safeParse(survey.schema);
+
+  if (!schema.success) {
+    return notFound();
+  }
+
   return (
-    <SurveySchemaInitialiser survey={survey}>
+    <>
+      <SurveySchemaInitialiser survey={survey} />
       <div className="flex h-screen flex-col">
-        <header className="border-b">
-          <div className="flex items-center justify-between px-4 py-2">
-            <div>
-              <h4 className="text-md scroll-m-20 font-medium tracking-tight">
-                {survey.name}
-              </h4>
-            </div>
-            <div className="flex gap-4">
-              <Button variant="ghost">
-                <EyeIcon className="mr-2 h-5 w-5" />
-                Preview
-              </Button>
-              <Button>Publish</Button>
+        <main className="flex h-full min-h-0">
+          <QuestionsSidebar />
+          <div className="flex w-full flex-1 flex-col">
+            <EditorHeader />
+            <div className="flex h-full flex-1 overflow-hidden">
+              <EditorSection>
+                <QuestionEditor />
+                <EditorFooter />
+              </EditorSection>
+              <ConfigPanel />
             </div>
           </div>
-        </header>
-        <main className="flex h-full min-h-0">
-          <SurveyDesigner />
         </main>
       </div>
-    </SurveySchemaInitialiser>
+    </>
   );
 };
 
