@@ -85,7 +85,7 @@ const SurveyEditorPage = async ({
 
   return (
     <>
-      <SurveySchemaInitialiser survey={survey} />
+      {/* <SurveySchemaInitialiser survey={survey} /> */}
       <div className="flex h-screen flex-col">
         <main className="flex h-full min-h-0">
           <QuestionsSidebar />

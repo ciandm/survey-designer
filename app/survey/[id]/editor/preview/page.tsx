@@ -1,8 +1,14 @@
+import {ArrowRight} from 'lucide-react';
+import {notFound} from 'next/navigation';
 import {v4 as uuidv4} from 'uuid';
+import {Button} from '@/components/ui/button';
 import {QuestionCard} from '@/features/question/components/question-card';
 import {QuestionChoices} from '@/features/question/components/question-choices';
 import {QuestionWording} from '@/features/question/components/question-wording';
-import {PreviewHeader} from '@/features/survey-preview/components/preview-header';
+import {PreviewHeader} from '@/features/survey/components/header';
+import {QuestionForm} from '@/features/survey/components/question-form';
+import {SurveyProvider} from '@/features/survey/components/survey-provider';
+import {configurationSchema} from '@/lib/validations/question';
 
 const SurveyEditorPreviewPage = () => {
   const survey = {
@@ -56,22 +62,26 @@ const SurveyEditorPreviewPage = () => {
     },
   };
 
+  if (!survey) {
+    return notFound();
+  }
+
+  const schema = configurationSchema.safeParse(survey.schema);
+
+  if (!schema.success) {
+    return notFound();
+  }
+
   return (
     <div className="flex h-screen flex-col border-b bg-background">
       <PreviewHeader surveyTitle={survey.name} />
-      <main className="flex flex-1 items-center justify-center bg-primary-foreground py-20">
-        <div className="flex h-full w-full max-w-5xl flex-1">
-          <QuestionCard
-            view="live"
-            totalQuestions={survey.schema.fields.length}
-            questionNumber={1}
-            question={survey.schema.fields[0] as any}
-          >
-            <QuestionWording />
-            <QuestionChoices />
-          </QuestionCard>
-        </div>
-      </main>
+      <SurveyProvider>
+        <main className="flex flex-1 items-center justify-center bg-primary-foreground py-20">
+          <div className="flex h-full w-full max-w-5xl flex-1">
+            <QuestionForm />
+          </div>
+        </main>
+      </SurveyProvider>
     </div>
   );
 };

@@ -1,15 +1,12 @@
 'use client';
 
-import {QuestionType} from '@prisma/client';
 import {QuestionCard} from '@/features/question/components/question-card';
 import {QuestionChoices} from '@/features/question/components/question-choices';
-import {ChoicesQuestionAddon} from '@/features/survey-designer/components/choices-question-addon';
 import {
   useSurveyFieldActions,
   useSurveyQuestions,
 } from '@/stores/survey-schema';
 import {QuestionWording} from '../../question/components/question-wording';
-import {TextField} from '../../question/components/text-field';
 import {useActiveQuestion} from '../hooks/use-active-question';
 
 export const QuestionEditor = () => {
