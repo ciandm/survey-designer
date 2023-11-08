@@ -3,8 +3,9 @@
 import {Plus, Trash, XCircle} from 'lucide-react';
 import {v4 as uuidv4} from 'uuid';
 import {Checkbox} from '@/components/ui/checkbox';
-import {useActiveQuestion, useSurveyFieldActions} from '@/stores/survey-schema';
+import {useSurveyFieldActions} from '@/stores/survey-schema';
 import {Button} from '../../../components/ui/button';
+import {useActiveQuestion} from '../hooks/use-active-question';
 import {ContentEditable} from './content-editable';
 
 export const ChoicesQuestionAddon = () => {

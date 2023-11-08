@@ -3,7 +3,8 @@
 import {QuestionType} from '@prisma/client';
 import {Card} from '@/components/ui/card';
 import {ChoicesQuestionAddon} from '@/features/survey-designer/components/choices-question-addon';
-import {useActiveQuestion, useSurveyQuestions} from '@/stores/survey-schema';
+import {useSurveyQuestions} from '@/stores/survey-schema';
+import {useActiveQuestion} from '../hooks/use-active-question';
 import {QuestionWording} from './question-wording';
 import {TextField} from './text-field';
 
@@ -11,13 +12,11 @@ export const QuestionEditor = () => {
   const questions = useSurveyQuestions();
   const {activeQuestion, activeQuestionIndex} = useActiveQuestion();
 
-  if (!activeQuestion) return;
-
   const renderQuestionTypeOption = (type: QuestionType) => {
     switch (type) {
       case 'SHORT_TEXT':
       case 'LONG_TEXT':
-        return <TextField type={type} question={activeQuestion} />;
+        return <TextField type={type} question={activeQuestion!} />;
       case 'MULTIPLE_CHOICE':
       case 'SINGLE_CHOICE':
         return <ChoicesQuestionAddon />;

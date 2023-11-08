@@ -4,7 +4,8 @@ import {QuestionType} from '@prisma/client';
 import {Input} from '@/components/ui/input';
 import {SwitchSetting} from '@/features/survey-designer/components/switch-setting';
 import {QuestionConfig} from '@/lib/validations/question';
-import {useActiveQuestion, useSurveyFieldActions} from '@/stores/survey-schema';
+import {useSurveyFieldActions} from '@/stores/survey-schema';
+import {useActiveQuestion} from '../hooks/use-active-question';
 
 type PropertySettingKey = Exclude<
   keyof QuestionConfig['properties'],
