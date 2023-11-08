@@ -1,4 +1,5 @@
 import {notFound} from 'next/navigation';
+import {v4 as uuidv4} from 'uuid';
 import {ConfigPanel} from '@/features/survey-designer/components/config-panel';
 import {EditorFooter} from '@/features/survey-designer/components/editor-footer';
 import {EditorHeader} from '@/features/survey-designer/components/editor-header';
@@ -9,7 +10,12 @@ import {SurveySchemaInitialiser} from '@/features/survey-designer/components/sur
 import {configurationSchema} from '@/lib/validations/question';
 import prisma from '@/prisma/client';
 
-const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
+const SurveyEditorPage = async ({
+  searchParams,
+}: {
+  params: {id: string};
+  searchParams: {question: string};
+}) => {
   // const survey = await prisma.survey.findUnique({
   //   where: {
   //     id: params.id,
@@ -25,7 +31,7 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
       fields: [
         {
           id: '384609ab-8e0d-476e-9133-549d1fb38de1',
-          ref: 'name',
+          ref: uuidv4(),
           text: 'What is your name?',
           type: 'SHORT_TEXT',
           properties: {placeholder: 'Enter your name'},
@@ -33,7 +39,7 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
         },
         {
           id: '6dabce75-8f8e-4a99-b59f-3d0ed947c3c5',
-          ref: 'email',
+          ref: uuidv4(),
           text: 'What is your email address?',
           type: 'SHORT_TEXT',
           properties: {placeholder: 'Enter your email'},
@@ -41,7 +47,7 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
         },
         {
           id: 'dabfb6d4-7c81-45d9-aa3f-4a9e0a62a8e5',
-          ref: 'satisfaction',
+          ref: uuidv4(),
           text: 'How satisfied are you with our service?',
           type: 'SHORT_TEXT',
           properties: {placeholder: 'Enter your satisfaction level (1-10)'},
@@ -49,7 +55,7 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
         },
         {
           id: 'f0f0b8a1-47ad-4c4d-9bde-3e72a5f6f93b',
-          ref: 'suggestions',
+          ref: uuidv4(),
           text: 'What suggestions do you have for improvement?',
           type: 'SHORT_TEXT',
           properties: {placeholder: 'Enter your suggestions'},
@@ -57,7 +63,7 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
         },
         {
           id: 'abaf2ca6-5a5b-4cd1-9402-49f2c7a3c4c4',
-          ref: 'how_did_you_hear',
+          ref: uuidv4(),
           text: 'How did you hear about our company?',
           type: 'SHORT_TEXT',
           properties: {placeholder: 'Enter your source'},
@@ -99,4 +105,4 @@ const SurveyCreatorPage = async ({params}: {params: {id: string}}) => {
   );
 };
 
-export default SurveyCreatorPage;
+export default SurveyEditorPage;

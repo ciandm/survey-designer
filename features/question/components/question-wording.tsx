@@ -1,22 +1,20 @@
-import {cn} from '@/lib/utils';
-import {QuestionConfig} from '@/lib/validations/question';
-import {useSurveyFieldActions} from '@/stores/survey-schema';
-import {ContentEditable} from './content-editable';
+'use client';
 
-interface Props {
-  question: QuestionConfig;
-  view: 'editable' | 'readonly';
-  questionNumber: number;
-  totalQuestions: number;
-}
+import {cn} from '@/lib/utils';
+import {ContentEditable} from '../../survey-designer/components/content-editable';
+import {useQuestionCardContext} from './question-card';
+
+type Props = {
+  onTitleChange?: (value: string) => void;
+  onDescriptionChange?: (value: string) => void;
+};
 
 export const QuestionWording = ({
-  question,
-  view = 'readonly',
-  questionNumber,
-  totalQuestions,
+  onDescriptionChange,
+  onTitleChange,
 }: Props) => {
-  const {updateQuestion} = useSurveyFieldActions();
+  const {question, questionNumber, totalQuestions, view} =
+    useQuestionCardContext();
   const {text, id, validations, description} = question;
 
   let content = null;
@@ -25,30 +23,20 @@ export const QuestionWording = ({
     [`after:content-['*']`]: validations.required && text,
   });
 
-  if (view === 'editable') {
+  if (view === 'editing') {
     content = (
       <>
         <ContentEditable
           className={titleClassName}
           placeholder="Begin typing your question here..."
           html={text ?? ''}
-          onChange={(e) =>
-            updateQuestion({
-              id,
-              text: e.target.value,
-            })
-          }
+          onChange={(e) => onTitleChange?.(e.target.value)}
         />
         <ContentEditable
           className="mt-2"
           placeholder="Description (optional)"
           html={description ?? ''}
-          onChange={(e) =>
-            updateQuestion({
-              id: id,
-              description: e.target.value,
-            })
-          }
+          onChange={(e) => onDescriptionChange?.(e.target.value)}
         />
       </>
     );

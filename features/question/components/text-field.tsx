@@ -6,14 +6,14 @@ interface Props
   extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   type: Extract<QuestionType, 'SHORT_TEXT' | 'LONG_TEXT'>;
   question: QuestionConfig;
-  view?: 'editable' | 'readonly';
+  view?: 'live' | 'editing';
 }
 
 export const TextField = ({
   value,
   type = 'SHORT_TEXT',
   question,
-  view = 'readonly',
+  view = 'live',
   ...rest
 }: Props) => {
   const Tag = type === 'SHORT_TEXT' ? 'input' : 'textarea';
@@ -34,9 +34,9 @@ export const TextField = ({
               : 'Your answer here...'
           }
           rows={type === 'SHORT_TEXT' ? 1 : 3}
-          readOnly={view === 'readonly'}
-          {...(view === 'editable' && {value})}
-          {...(view === 'readonly' && {defaultValue: value})}
+          readOnly={view === 'editing'}
+          {...(view === 'editing' && {value})}
+          {...(view === 'live' && {defaultValue: value})}
           {...rest}
         />
         <div
