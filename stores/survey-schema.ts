@@ -160,13 +160,3 @@ export const useSurveyQuestions = () =>
   useSurveyStore((state) => state.questions);
 export const useSurveyFieldActions = () =>
   useSurveyStore((state) => state.actions);
-export const useActiveQuestionRef = () =>
-  useSurveyStore((state) => state.activeQuestionRef);
-export const useActiveQuestion = () => {
-  const activeQuestionRef = useActiveQuestionRef();
-  const questions = useSurveyQuestions();
-  const question = questions.find((q) => q.ref === activeQuestionRef);
-  const index = questions.findIndex((q) => q.ref === activeQuestionRef);
-
-  return {activeQuestion: question, activeQuestionIndex: index};
-};

@@ -2,14 +2,7 @@
 
 import React, {useState} from 'react';
 import {QuestionType} from '@prisma/client';
-import {
-  Check,
-  FileQuestion,
-  MoreVertical,
-  Plus,
-  PlusSquare,
-  Text,
-} from 'lucide-react';
+import {Check, FileQuestion, MoreVertical, Plus, Text} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -20,10 +13,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {cn} from '@/lib/utils';
 import {
-  useActiveQuestion,
   useSurveyFieldActions,
   useSurveyQuestions,
 } from '@/stores/survey-schema';
+import {useActiveQuestion} from '../hooks/use-active-question';
 import {SidebarQuestionItem} from './sidebar-question-item';
 
 export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
@@ -36,14 +29,10 @@ export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
 export const QuestionsSidebar = () => {
   const [menuOpenId, setMenuOpenId] = useState('');
   const questions = useSurveyQuestions();
-  const {activeQuestion} = useActiveQuestion();
+  const {activeQuestion, setActiveQuestion} = useActiveQuestion();
 
-  const {
-    insertQuestion,
-    setActiveQuestionRef,
-    deleteQuestion,
-    duplicateQuestion,
-  } = useSurveyFieldActions();
+  const {insertQuestion, deleteQuestion, duplicateQuestion} =
+    useSurveyFieldActions();
 
   return (
     <aside className="flex max-w-[260px] flex-1 flex-col overflow-hidden bg-gray-900">
@@ -68,7 +57,7 @@ export const QuestionsSidebar = () => {
               type={question.type}
               onClick={() => {
                 if (!!menuOpenId) return;
-                setActiveQuestionRef(question.ref);
+                setActiveQuestion(question.ref);
               }}
             >
               <DropdownMenu

@@ -1,7 +1,6 @@
-import React from "react";
-import { Prisma, Survey } from "@prisma/client";
-import Link from "next/link";
-import { Button } from "./ui/button";
+import {Prisma} from '@prisma/client';
+import Link from 'next/link';
+import {Button} from './ui/button';
 import {
   Card,
   CardContent,
@@ -9,8 +8,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import { DeleteSurveyButton } from "./delete-survey-button";
+} from './ui/card';
+import {DeleteSurveyButton} from './delete-survey-button';
 
 export const SurveyCard = ({
   survey,
@@ -34,7 +33,7 @@ export const SurveyCard = ({
       <CardFooter className="justify-between">
         <DeleteSurveyButton survey={survey} />
         <Button variant="default" asChild>
-          <Link href={`/survey/edit/${survey.id}`}>View</Link>
+          <Link href={`/survey/${survey.id}/editor`}>View</Link>
         </Button>
       </CardFooter>
     </Card>

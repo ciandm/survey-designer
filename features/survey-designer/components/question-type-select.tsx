@@ -9,7 +9,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {formatQuestionType} from '@/lib/utils';
-import {useActiveQuestion, useSurveyFieldActions} from '@/stores/survey-schema';
+import {useSurveyFieldActions} from '@/stores/survey-schema';
+import {useActiveQuestion} from '../hooks/use-active-question';
 
 const ALLOWED_TYPES = [QuestionType.SHORT_TEXT, QuestionType.LONG_TEXT];
 
