@@ -57,7 +57,7 @@ export const QuestionSettings = () => {
                             updateQuestion({
                               id: activeQuestion.id,
                               validations: {
-                                [setting]: event.target.value,
+                                [setting]: parseInt(event.target.value, 10),
                               },
                             });
                           }}
