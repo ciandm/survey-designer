@@ -9,7 +9,6 @@ import {QuestionCard} from '@/features/survey-tool/components/question-card';
 import {QuestionChoices} from '@/features/survey-tool/components/question-choices';
 import {QuestionWording} from '@/features/survey-tool/components/question-wording';
 import {QuestionConfig} from '@/lib/validations/question';
-import {useSurveyQuestions} from '@/stores/survey-schema';
 import {useResponsesContext} from '../store/responses';
 import {getPreviousQuestion, getQuestionStates} from '../utils/question';
 
@@ -56,7 +55,7 @@ const createSchema = (question: QuestionConfig) => {
 };
 
 const QuestionFormInner = () => {
-  const questions = useSurveyQuestions();
+  const questions = useResponsesContext((state) => state.questions);
   const currentQuestionId = useResponsesContext(
     (state) => state.currentQuestionId,
   );

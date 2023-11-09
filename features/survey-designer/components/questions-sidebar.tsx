@@ -12,11 +12,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {cn} from '@/lib/utils';
-import {
-  useSurveyFieldActions,
-  useSurveyQuestions,
-} from '@/stores/survey-schema';
 import {useActiveQuestion} from '../hooks/use-active-question';
+import {useQuestionActions, useQuestions} from '../store/questions';
 import {SidebarQuestionItem} from './sidebar-question-item';
 
 export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
@@ -28,11 +25,10 @@ export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
 
 export const QuestionsSidebar = () => {
   const [menuOpenId, setMenuOpenId] = useState('');
-  const questions = useSurveyQuestions();
+  const questions = useQuestions();
   const {activeQuestion, setActiveQuestion} = useActiveQuestion();
-
   const {insertQuestion, deleteQuestion, duplicateQuestion} =
-    useSurveyFieldActions();
+    useQuestionActions();
 
   return (
     <aside className="flex max-w-[260px] flex-1 flex-col overflow-hidden bg-gray-900">

@@ -1,37 +1,27 @@
-import {createContext, useContext} from 'react';
 import {omitBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
-import {create, createStore, StoreApi, useStore} from 'zustand';
+import {create} from 'zustand';
 import {buildFieldHelper} from '@/lib/utils';
 import {QuestionConfig} from '@/lib/validations/question';
 
-type SurveySchemaProps = {
-  title: string;
-  description?: string;
+type QuestionsStoreProps = {
   questions: QuestionConfig[];
-  activeQuestionRef?: string;
 };
 
-type SurveySchemaActions = {
+type QuestionsActionsProps = {
   insertQuestion: (question: Pick<QuestionConfig, 'type'>) => void;
-  updateTitle: (title: string) => void;
-  updateDescription: (description: string) => void;
   deleteQuestion: (question: Pick<QuestionConfig, 'id'>) => void;
   duplicateQuestion: (question: Pick<QuestionConfig, 'id'>) => void;
   changeQuestionType: (question: Pick<QuestionConfig, 'id' | 'type'>) => void;
-  setActiveQuestionRef: (ref: string) => void;
   updateQuestion: (question: Partial<QuestionConfig> & {id: string}) => void;
 };
 
-export type SurveySchemaState = SurveySchemaProps & {
-  actions: SurveySchemaActions;
+export type QuestionsStoreState = QuestionsStoreProps & {
+  actions: QuestionsActionsProps;
 };
 
-export const useSurveyStore = create<SurveySchemaState>()((set, get) => ({
-  title: '',
-  description: '',
+export const useQuestionsStore = create<QuestionsStoreState>()((set, get) => ({
   questions: [],
-  activeQuestionRef: '',
   actions: {
     insertQuestion: ({type}) => {
       const newRef = uuidv4();
@@ -44,24 +34,6 @@ export const useSurveyStore = create<SurveySchemaState>()((set, get) => ({
         ...state,
         questions: [...state.questions, newField],
         activeQuestionRef: newRef,
-      }));
-    },
-    updateTitle: (title) => {
-      set((state) => ({
-        ...state,
-        title,
-      }));
-    },
-    updateDescription: (description) => {
-      set((state) => ({
-        ...state,
-        description,
-      }));
-    },
-    setActiveQuestionRef: (ref) => {
-      set((state) => ({
-        ...state,
-        activeQuestionRef: ref,
       }));
     },
     deleteQuestion: ({id}) => {
@@ -153,10 +125,6 @@ export const useSurveyStore = create<SurveySchemaState>()((set, get) => ({
   },
 }));
 
-export const useSurveyTitle = () => useSurveyStore((state) => state.title);
-export const useSurveyDescription = () =>
-  useSurveyStore((state) => state.description);
-export const useSurveyQuestions = () =>
-  useSurveyStore((state) => state.questions);
-export const useSurveyFieldActions = () =>
-  useSurveyStore((state) => state.actions);
+export const useQuestions = () => useQuestionsStore((state) => state.questions);
+export const useQuestionActions = () =>
+  useQuestionsStore((state) => state.actions);

@@ -68,6 +68,7 @@ export const TextField = ({
                 }
                 rows={type === 'SHORT_TEXT' ? 1 : 3}
                 readOnly={view === 'editing'}
+                autoComplete="off"
                 {...(view === 'editing' && {value})}
                 {...(view === 'live' && {defaultValue: value})}
                 {...rest}

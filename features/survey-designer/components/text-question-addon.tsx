@@ -1,13 +1,12 @@
-import React from 'react';
 import {QuestionType} from '@prisma/client';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
-import {useSurveyFieldActions} from '@/stores/survey-schema';
 import {useActiveQuestion} from '../hooks/use-active-question';
+import {useQuestionActions} from '../store/questions';
 
 export const TextQuestionAddon = () => {
   const {activeQuestion} = useActiveQuestion();
-  const {updateQuestion} = useSurveyFieldActions();
+  const {updateQuestion} = useQuestionActions();
 
   const InputComponent =
     activeQuestion?.type === QuestionType.SHORT_TEXT ? Input : Textarea;

@@ -1,6 +1,6 @@
 import {useQueryState, UseQueryStateReturn} from 'next-usequerystate';
 import {QuestionConfig} from '@/lib/validations/question';
-import {useSurveyQuestions} from '@/stores/survey-schema';
+import {useQuestions} from '../store/questions';
 
 const QUERY_STATE_KEY = 'question';
 
@@ -15,7 +15,7 @@ export const useActiveQuestion = (): {
       defaultValue: '',
     },
   );
-  const questions = useSurveyQuestions();
+  const questions = useQuestions();
 
   const activeQuestionIndex = questions.findIndex(
     (question) => question.ref === activeQuestionParam,

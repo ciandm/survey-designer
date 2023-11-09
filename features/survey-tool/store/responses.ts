@@ -1,7 +1,9 @@
 import {createContext, useContext} from 'react';
 import {createStore, useStore} from 'zustand';
+import {QuestionConfig} from '@/lib/validations/question';
 
 interface ResponsesProps {
+  questions: QuestionConfig[];
   responses: {
     questionId: string;
     response: string;
@@ -22,6 +24,7 @@ type BearStore = ReturnType<typeof createResponsesStore>;
 
 export const createResponsesStore = (initProps?: Partial<ResponsesProps>) => {
   const DEFAULT_PROPS: ResponsesProps = {
+    questions: [],
     currentQuestionId: '',
     responses: [],
     questionIds: [],
