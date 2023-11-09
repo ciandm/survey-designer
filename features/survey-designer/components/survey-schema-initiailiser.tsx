@@ -1,8 +1,10 @@
 'use client';
 
 import {useRef} from 'react';
-import {useSurveyDesignerStore} from '@/features/survey-designer/store/survey-designer';
 import {Configuration} from '@/lib/validations/question';
+import {useDesignerModeStore} from '../store/designer-mode';
+import {useQuestionsStore} from '../store/questions';
+import {useSurveyDetailsStore} from '../store/survey-details';
 
 export const SurveySchemaInitialiser = ({
   surveyConfig,
@@ -12,10 +14,14 @@ export const SurveySchemaInitialiser = ({
   const isInitialised = useRef(false);
 
   if (!isInitialised.current) {
-    useSurveyDesignerStore.setState({
+    useSurveyDetailsStore.setState({
       id: surveyConfig.id,
-      questions: surveyConfig.fields,
       title: surveyConfig.name,
+    });
+    useQuestionsStore.setState({
+      questions: surveyConfig.fields,
+    });
+    useDesignerModeStore.setState({
       mode: 'edit',
     });
 

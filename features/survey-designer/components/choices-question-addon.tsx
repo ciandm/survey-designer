@@ -3,14 +3,14 @@
 import {Plus, Trash, XCircle} from 'lucide-react';
 import {v4 as uuidv4} from 'uuid';
 import {Checkbox} from '@/components/ui/checkbox';
-import {useSurveyDesignerActions} from '@/features/survey-designer/store/survey-designer';
 import {Button} from '../../../components/ui/button';
 import {useActiveQuestion} from '../hooks/use-active-question';
+import {useQuestionActions} from '../store/questions';
 import {ContentEditable} from './content-editable';
 
 export const ChoicesQuestionAddon = () => {
   const {activeQuestion} = useActiveQuestion();
-  const {updateQuestion} = useSurveyDesignerActions();
+  const {updateQuestion} = useQuestionActions();
 
   const handleRemoveChoice = (choiceId: string) => {
     const copiedField = {...activeQuestion};

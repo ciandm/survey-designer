@@ -1,12 +1,12 @@
 'use client';
 
 import {Card} from '@/components/ui/card';
-import {useSurveyQuestions} from '@/features/survey-designer/store/survey-designer';
 import {useActiveQuestion} from '../hooks/use-active-question';
+import {useQuestions} from '../store/questions';
 
 export const QuestionContainer = ({children}: {children: React.ReactNode}) => {
   const {activeQuestionIndex} = useActiveQuestion();
-  const questions = useSurveyQuestions();
+  const questions = useQuestions();
 
   return (
     <Card className="flex w-full flex-col items-center justify-center rounded-none">

@@ -1,6 +1,6 @@
 'use client';
 
-import {useSurveyDesignerMode} from '../store/survey-designer';
+import {useDesignerMode} from '../store/designer-mode';
 import {ConfigPanel} from './config-panel';
 import {EditorFooter} from './editor-footer';
 import {EditorHeader} from './editor-header';
@@ -10,7 +10,7 @@ import {QuestionsSidebar} from './questions-sidebar';
 import {SurveyPreviewer} from './survey-previewer';
 
 export const SurveyDesigner = () => {
-  const designerMode = useSurveyDesignerMode();
+  const designerMode = useDesignerMode();
 
   if (designerMode === 'preview') {
     return <SurveyPreviewer />;

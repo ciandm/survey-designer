@@ -5,26 +5,28 @@ import axios from 'axios';
 import {EyeIcon, Loader2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {useToast} from '@/components/ui/use-toast';
+import {useDesignerModeActions} from '../store/designer-mode';
+import {useQuestions} from '../store/questions';
 import {
-  useSurveyDesignerActions,
-  useSurveyDesignerStore,
-  useSurveyTitle,
-} from '@/features/survey-designer/store/survey-designer';
+  useSurveyDetails,
+  useSurveyDetailsActions,
+} from '../store/survey-details';
 import {ContentEditable} from './content-editable';
 
 export const EditorHeader = () => {
-  const survey = useSurveyDesignerStore();
+  const survey = useSurveyDetails();
+  const questions = useQuestions();
   const {toast} = useToast();
   const {mutateAsync, isPending} = useMutation({
     mutationFn: async () =>
       await axios.put(`/api/v1/surveys/${survey.id}/schema`, {
         id: survey.id,
         name: survey.title,
-        fields: survey.questions,
+        fields: questions,
       }),
   });
-  const title = useSurveyTitle();
-  const {updateTitle, updateMode} = useSurveyDesignerActions();
+  const {updateTitle} = useSurveyDetailsActions();
+  const {updateMode} = useDesignerModeActions();
 
   const handleOnPreviewClick = async () => {
     try {
@@ -43,7 +45,7 @@ export const EditorHeader = () => {
     <header className="flex items-center justify-between gap-2 border-b bg-background p-4">
       <div className="flex flex-col gap-1">
         <ContentEditable
-          html={title}
+          html={survey.title}
           className="text-md font-semibold"
           placeholder="Untitled Survey"
           onChange={(e) => updateTitle(e.target.value)}
