@@ -1,18 +1,18 @@
 'use client';
 
+import {
+  useSurveyDesignerActions,
+  useSurveyQuestions,
+} from '@/features/survey-designer/store/survey-designer';
 import {QuestionCard} from '@/features/survey-tool/components/question-card';
 import {QuestionChoices} from '@/features/survey-tool/components/question-choices';
-import {
-  useSurveyFieldActions,
-  useSurveyQuestions,
-} from '@/stores/survey-schema';
 import {QuestionWording} from '../../survey-tool/components/question-wording';
 import {useActiveQuestion} from '../hooks/use-active-question';
 
 export const QuestionEditor = () => {
   const questions = useSurveyQuestions();
   const {activeQuestion, activeQuestionIndex} = useActiveQuestion();
-  const {updateQuestion} = useSurveyFieldActions();
+  const {updateQuestion} = useSurveyDesignerActions();
 
   return (
     <div className="flex w-full flex-1 overflow-y-auto bg-primary-foreground p-8">

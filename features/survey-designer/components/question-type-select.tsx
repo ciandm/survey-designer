@@ -8,8 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {useSurveyDesignerActions} from '@/features/survey-designer/store/survey-designer';
 import {formatQuestionType} from '@/lib/utils';
-import {useSurveyFieldActions} from '@/stores/survey-schema';
 import {useActiveQuestion} from '../hooks/use-active-question';
 
 const ALLOWED_TYPES = [QuestionType.SHORT_TEXT, QuestionType.LONG_TEXT];
@@ -24,7 +24,7 @@ const questionTypeOptions = Object.values(QuestionType)
   }));
 
 export const QuestionTypeSelect = () => {
-  const {changeQuestionType} = useSurveyFieldActions();
+  const {changeQuestionType} = useSurveyDesignerActions();
   const {activeQuestion} = useActiveQuestion();
 
   const onChangeFieldType = (newType: QuestionType) => {

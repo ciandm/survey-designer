@@ -1,7 +1,7 @@
 'use client';
 
 import {Card} from '@/components/ui/card';
-import {useSurveyQuestions} from '@/stores/survey-schema';
+import {useSurveyQuestions} from '@/features/survey-designer/store/survey-designer';
 import {useActiveQuestion} from '../hooks/use-active-question';
 
 export const QuestionContainer = ({children}: {children: React.ReactNode}) => {

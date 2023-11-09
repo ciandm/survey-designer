@@ -1,20 +1,42 @@
 'use client';
 
-import {usePathname, useRouter} from 'next/navigation';
+import {useMutation} from '@tanstack/react-query';
+import axios from 'axios';
+import {EyeIcon, Loader2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
-import {useSurveyFieldActions, useSurveyTitle} from '@/stores/survey-schema';
+import {useToast} from '@/components/ui/use-toast';
+import {
+  useSurveyDesignerActions,
+  useSurveyDesignerStore,
+  useSurveyTitle,
+} from '@/features/survey-designer/store/survey-designer';
 import {ContentEditable} from './content-editable';
 
 export const EditorHeader = () => {
+  const survey = useSurveyDesignerStore();
+  const {toast} = useToast();
+  const {mutateAsync, isPending} = useMutation({
+    mutationFn: async () =>
+      await axios.put(`/api/v1/surveys/${survey.id}/schema`, {
+        id: survey.id,
+        name: survey.title,
+        fields: survey.questions,
+      }),
+  });
   const title = useSurveyTitle();
-  const {updateTitle} = useSurveyFieldActions();
-  const router = useRouter();
-  const pathname = usePathname();
+  const {updateTitle, updateMode} = useSurveyDesignerActions();
 
-  const handleOnPreviewClick = () => {
-    console.log('TODO: Save pending changes');
-
-    router.push(`${pathname}/preview`);
+  const handleOnPreviewClick = async () => {
+    try {
+      await mutateAsync();
+      toast({
+        title: 'Survey saved',
+        description: 'Your survey has been saved successfully',
+      });
+      updateMode('preview');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -28,7 +50,12 @@ export const EditorHeader = () => {
         />
       </div>
       <div className="flex gap-2">
-        <Button variant="ghost" onClick={handleOnPreviewClick}>
+        <Button variant="outline" onClick={handleOnPreviewClick}>
+          {isPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <EyeIcon className="mr-2 h-4 w-4" />
+          )}
           Preview
         </Button>
         <Button onClick={() => alert('TODO: Publish')}>Publish</Button>

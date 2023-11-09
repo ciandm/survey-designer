@@ -3,8 +3,8 @@
 import {QuestionType} from '@prisma/client';
 import {Input} from '@/components/ui/input';
 import {SwitchSetting} from '@/features/survey-designer/components/switch-setting';
+import {useSurveyDesignerActions} from '@/features/survey-designer/store/survey-designer';
 import {QuestionConfig} from '@/lib/validations/question';
-import {useSurveyFieldActions} from '@/stores/survey-schema';
 import {useActiveQuestion} from '../hooks/use-active-question';
 
 type PropertySettingKey = Exclude<
@@ -15,7 +15,7 @@ type PropertySettingKey = Exclude<
 type ValidationSettingKey = keyof QuestionConfig['validations'];
 
 export const QuestionSettings = () => {
-  const {updateQuestion} = useSurveyFieldActions();
+  const {updateQuestion} = useSurveyDesignerActions();
   const {activeQuestion} = useActiveQuestion();
 
   if (!activeQuestion) return null;

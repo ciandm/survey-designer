@@ -11,11 +11,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {cn} from '@/lib/utils';
 import {
-  useSurveyFieldActions,
+  useSurveyDesignerActions,
   useSurveyQuestions,
-} from '@/stores/survey-schema';
+} from '@/features/survey-designer/store/survey-designer';
+import {cn} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {SidebarQuestionItem} from './sidebar-question-item';
 
@@ -32,7 +32,7 @@ export const QuestionsSidebar = () => {
   const {activeQuestion, setActiveQuestion} = useActiveQuestion();
 
   const {insertQuestion, deleteQuestion, duplicateQuestion} =
-    useSurveyFieldActions();
+    useSurveyDesignerActions();
 
   return (
     <aside className="flex max-w-[260px] flex-1 flex-col overflow-hidden bg-gray-900">

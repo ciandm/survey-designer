@@ -1,6 +1,6 @@
 import {useQueryState, UseQueryStateReturn} from 'next-usequerystate';
 import {QuestionConfig} from '@/lib/validations/question';
-import {useSurveyQuestions} from '@/stores/survey-schema';
+import {useSurveyQuestions} from '@/features/survey-designer/store/survey-designer';
 
 const QUERY_STATE_KEY = 'question';
 
