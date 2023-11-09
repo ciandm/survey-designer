@@ -15,7 +15,7 @@ export const QuestionWording = ({
 }: Props) => {
   const {question, questionNumber, totalQuestions, view} =
     useQuestionCardContext();
-  const {text, id, validations, description} = question;
+  const {text, validations, description} = question;
 
   let content = null;
 
@@ -33,7 +33,7 @@ export const QuestionWording = ({
           onChange={(e) => onTitleChange?.(e.target.value)}
         />
         <ContentEditable
-          className="mt-2"
+          className="mt-2 text-muted-foreground"
           placeholder="Description (optional)"
           html={description ?? ''}
           onChange={(e) => onDescriptionChange?.(e.target.value)}
@@ -44,7 +44,9 @@ export const QuestionWording = ({
     content = (
       <>
         <h1 className={titleClassName}>{text}</h1>
-        {!!description && <p className="mt-2">{description}</p>}
+        {!!description && (
+          <p className="mt-2 text-muted-foreground">{description}</p>
+        )}
       </>
     );
   }

@@ -1,13 +1,8 @@
-import {ArrowRight} from 'lucide-react';
 import {notFound} from 'next/navigation';
 import {v4 as uuidv4} from 'uuid';
-import {Button} from '@/components/ui/button';
-import {QuestionCard} from '@/features/question/components/question-card';
-import {QuestionChoices} from '@/features/question/components/question-choices';
-import {QuestionWording} from '@/features/question/components/question-wording';
-import {PreviewHeader} from '@/features/survey/components/header';
-import {QuestionForm} from '@/features/survey/components/question-form';
-import {SurveyProvider} from '@/features/survey/components/survey-provider';
+import {PreviewHeader} from '@/features/survey-tool/components/header';
+import {QuestionForm} from '@/features/survey-tool/components/question-form';
+import {ResponsesProvider} from '@/features/survey-tool/components/responses-provider';
 import {configurationSchema} from '@/lib/validations/question';
 
 const SurveyEditorPreviewPage = () => {
@@ -75,13 +70,13 @@ const SurveyEditorPreviewPage = () => {
   return (
     <div className="flex h-screen flex-col border-b bg-background">
       <PreviewHeader surveyTitle={survey.name} />
-      <SurveyProvider>
-        <main className="flex flex-1 items-center justify-center bg-primary-foreground py-20">
-          <div className="flex h-full w-full max-w-5xl flex-1">
+      <main className="flex flex-1 items-center justify-center bg-primary-foreground py-20">
+        <div className="flex h-full w-full max-w-5xl flex-1">
+          <ResponsesProvider>
             <QuestionForm />
-          </div>
-        </main>
-      </SurveyProvider>
+          </ResponsesProvider>
+        </div>
+      </main>
     </div>
   );
 };
