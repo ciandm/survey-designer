@@ -1,5 +1,6 @@
 'use client';
 
+import {usePathname, useRouter} from 'next/navigation';
 import {Button} from '@/components/ui/button';
 import {useSurveyFieldActions, useSurveyTitle} from '@/stores/survey-schema';
 import {ContentEditable} from './content-editable';
@@ -7,6 +8,14 @@ import {ContentEditable} from './content-editable';
 export const EditorHeader = () => {
   const title = useSurveyTitle();
   const {updateTitle} = useSurveyFieldActions();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleOnPreviewClick = () => {
+    console.log('TODO: Save pending changes');
+
+    router.push(`${pathname}/preview`);
+  };
 
   return (
     <header className="flex items-center justify-between gap-2 border-b bg-background p-4">
@@ -19,7 +28,7 @@ export const EditorHeader = () => {
         />
       </div>
       <div className="flex gap-2">
-        <Button variant="ghost" onClick={() => alert('TODO: Preview')}>
+        <Button variant="ghost" onClick={handleOnPreviewClick}>
           Preview
         </Button>
         <Button onClick={() => alert('TODO: Publish')}>Publish</Button>

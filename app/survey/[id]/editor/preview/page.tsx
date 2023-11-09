@@ -1,27 +1,11 @@
 import {notFound} from 'next/navigation';
 import {v4 as uuidv4} from 'uuid';
-import {ConfigPanel} from '@/features/survey-designer/components/config-panel';
-import {EditorFooter} from '@/features/survey-designer/components/editor-footer';
-import {EditorHeader} from '@/features/survey-designer/components/editor-header';
-import {EditorSection} from '@/features/survey-designer/components/editor-section';
-import {QuestionEditor} from '@/features/survey-designer/components/question-editor';
-import {QuestionsSidebar} from '@/features/survey-designer/components/questions-sidebar';
-import {SurveySchemaInitialiser} from '@/features/survey-designer/components/survey-schema-initiailiser';
+import {PreviewHeader} from '@/features/survey-tool/components/header';
+import {QuestionForm} from '@/features/survey-tool/components/question-form';
+import {ResponsesProvider} from '@/features/survey-tool/components/responses-provider';
 import {configurationSchema} from '@/lib/validations/question';
-import prisma from '@/prisma/client';
 
-const SurveyEditorPage = async ({
-  searchParams,
-}: {
-  params: {id: string};
-  searchParams: {question: string};
-}) => {
-  // const survey = await prisma.survey.findUnique({
-  //   where: {
-  //     id: params.id,
-  //   },
-  // });
-
+const SurveyEditorPreviewPage = () => {
   const survey = {
     id: '3a6ab3c3-6e91-4372-8e7a-7513124f7cc5',
     name: 'Customer Feedback Survey',
@@ -84,25 +68,17 @@ const SurveyEditorPage = async ({
   }
 
   return (
-    <>
-      {/* <SurveySchemaInitialiser survey={survey} /> */}
-      <div className="flex h-screen flex-col">
-        <main className="flex h-full min-h-0">
-          <QuestionsSidebar />
-          <div className="flex w-full flex-1 flex-col">
-            <EditorHeader />
-            <div className="flex h-full flex-1 overflow-hidden">
-              <EditorSection>
-                <QuestionEditor />
-                <EditorFooter />
-              </EditorSection>
-              <ConfigPanel />
-            </div>
-          </div>
-        </main>
-      </div>
-    </>
+    <div className="flex h-screen flex-col border-b bg-background">
+      <PreviewHeader surveyTitle={survey.name} />
+      <main className="flex flex-1 items-center justify-center bg-primary-foreground py-20">
+        <div className="flex h-full w-full max-w-5xl flex-1">
+          <ResponsesProvider>
+            <QuestionForm />
+          </ResponsesProvider>
+        </div>
+      </main>
+    </div>
   );
 };
 
-export default SurveyEditorPage;
+export default SurveyEditorPreviewPage;

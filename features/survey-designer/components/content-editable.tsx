@@ -22,7 +22,7 @@ export const ContentEditable = ({
         className,
         {
           'text-gray-500': !html,
-          [`before:content-[attr(data-placeholder)]`]: !html && placeholder,
+          [`before:content-[attr(data-placeholder)]`]: !html,
         },
       )}
       data-placeholder={placeholder}
