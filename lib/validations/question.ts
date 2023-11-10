@@ -60,3 +60,27 @@ export const configurationSchema = z.object({
 export type Configuration = z.infer<typeof configurationSchema>;
 export type QuestionConfig = z.infer<typeof questionSchema>;
 export type ChoicesConfig = z.infer<typeof choicesSchema>;
+
+export const createQuestionSchema = z.object({
+  type: z.nativeEnum(QuestionType),
+});
+
+export const duplicateQuestionSchema = z.object({
+  id: z.string(),
+});
+
+export const deleteQuestionSchema = z.object({
+  id: z.string(),
+});
+
+export type CreateQuestionPayload = z.infer<typeof createQuestionSchema>;
+export type DeleteQuestionPayload = z.infer<typeof deleteQuestionSchema>;
+export type DuplicateQuestionPayload = z.infer<typeof duplicateQuestionSchema>;
+
+export const surveyResponseSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  schema: configurationSchema,
+});
+
+export type SurveyResponse = z.infer<typeof surveyResponseSchema>;

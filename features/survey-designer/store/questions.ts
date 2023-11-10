@@ -9,11 +9,12 @@ type QuestionsStoreProps = {
 };
 
 type QuestionsActionsProps = {
-  insertQuestion: (question: Pick<QuestionConfig, 'type'>) => void;
+  insertQuestion: (question: QuestionConfig) => void;
   deleteQuestion: (question: Pick<QuestionConfig, 'id'>) => void;
   duplicateQuestion: (question: Pick<QuestionConfig, 'id'>) => void;
   changeQuestionType: (question: Pick<QuestionConfig, 'id' | 'type'>) => void;
   updateQuestion: (question: Partial<QuestionConfig> & {id: string}) => void;
+  setQuestions: (questions: QuestionConfig[]) => void;
 };
 
 export type QuestionsStoreState = QuestionsStoreProps & {
@@ -121,6 +122,9 @@ export const useQuestionsStore = create<QuestionsStoreState>()((set, get) => ({
           questions,
         };
       });
+    },
+    setQuestions: (questions) => {
+      set({questions});
     },
   },
 }));

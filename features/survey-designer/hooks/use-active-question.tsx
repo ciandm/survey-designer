@@ -9,13 +9,13 @@ export const useActiveQuestion = (): {
   activeQuestionIndex: number;
   setActiveQuestion: UseQueryStateReturn<string, string>['1'];
 } => {
+  const questions = useQuestions();
   const [activeQuestionParam, setActiveQuestion] = useQueryState(
     QUERY_STATE_KEY,
     {
-      defaultValue: '',
+      defaultValue: questions[0]?.ref,
     },
   );
-  const questions = useQuestions();
 
   const activeQuestionIndex = questions.findIndex(
     (question) => question.ref === activeQuestionParam,

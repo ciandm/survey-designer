@@ -1,5 +1,6 @@
 import React from 'react';
 import {ArrowLeft} from 'lucide-react';
+import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 
 interface Props
@@ -16,8 +17,10 @@ export const SurveyShell = ({surveyTitle, onBackClick, children}: Props) => {
           <Button size="icon" variant="ghost" onClick={onBackClick}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="font-medium leading-tight">{surveyTitle}</h1>
-          <span className="text-xs text-muted-foreground">Preview mode</span>
+          <h1 className="font-medium leading-tight">
+            {surveyTitle || 'Untitled Survey'}
+          </h1>
+          <Badge className="text-xs">Live preview</Badge>
         </div>
       </header>
       <main className="flex flex-1 items-center justify-center bg-primary-foreground py-20">
