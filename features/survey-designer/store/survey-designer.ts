@@ -38,8 +38,9 @@ export const useSurveySchemaStore = create<SurveySchemaStoreState>()(
           state.schema.title = title;
         });
       },
-      insertQuestion: ({type}) => {
+      insertQuestion: ({type, ref}) => {
         const newField = buildNewQuestionHelper(type, {
+          ref: ref ?? uuidv4(),
           type,
         });
 
