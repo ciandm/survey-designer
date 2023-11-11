@@ -1,24 +1,27 @@
-import {omitBy} from 'lodash';
+import {isEqual, omitBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import {create} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
 import {useShallow} from 'zustand/react/shallow';
-import {buildNewQuestionHelper} from '@/lib/utils/question';
+import {buildNewQuestionHelper} from '@/lib/utils';
 import {QuestionConfig} from '@/lib/validations/question';
 import {SurveySchema} from '@/lib/validations/survey';
 
 type SurveySchemaStoreProps = {
   schema: SurveySchema;
+  savedSchema: SurveySchema;
 };
 
 type SurveySchemaStoreActions = {
   updateTitle: (title: string) => void;
   insertQuestion: (question: QuestionConfig) => void;
   deleteQuestion: (question: Pick<QuestionConfig, 'id'>) => void;
-  duplicateQuestion: (question: Pick<QuestionConfig, 'id'>) => void;
+  duplicateQuestion: (question: Pick<QuestionConfig, 'id' | 'ref'>) => void;
   changeQuestionType: (question: Pick<QuestionConfig, 'id' | 'type'>) => void;
   updateQuestion: (question: Partial<QuestionConfig> & {id: string}) => void;
   setQuestions: (questions: QuestionConfig[]) => void;
+  setSchema: (schema: SurveySchema) => void;
+  setSavedSchema: (schema: SurveySchema) => void;
 };
 
 export type SurveySchemaStoreState = SurveySchemaStoreProps & {
@@ -28,6 +31,11 @@ export type SurveySchemaStoreState = SurveySchemaStoreProps & {
 export const useSurveySchemaStore = create<SurveySchemaStoreState>()(
   immer((set) => ({
     schema: {
+      id: '',
+      title: '',
+      questions: [],
+    },
+    savedSchema: {
       id: '',
       title: '',
       questions: [],
@@ -59,18 +67,16 @@ export const useSurveySchemaStore = create<SurveySchemaStoreState>()(
           state.schema.questions.splice(indexOfFieldToDelete, 1);
         });
       },
-      duplicateQuestion: ({id}) => {
-        const newRef = uuidv4();
-
+      duplicateQuestion: ({id, ref}) => {
         set((state) => {
           const question = state.schema.questions.find((q) => q.id === id);
           if (!question) return state;
 
           const newQuestion = buildNewQuestionHelper(question.type, {
             ...question,
-            text: question.text ? `${question.text} (copy)` : '',
-            ref: newRef,
+            ref,
             id: uuidv4(),
+            text: question.text ? `${question.text} (copy)` : '',
           });
 
           const indexOfFieldToDuplicate = state.schema.questions.findIndex(
@@ -130,6 +136,16 @@ export const useSurveySchemaStore = create<SurveySchemaStoreState>()(
       setQuestions: (questions) => {
         set((state) => (state.schema.questions = questions));
       },
+      setSchema: (schema) => {
+        set((state) => {
+          state.schema = schema;
+        });
+      },
+      setSavedSchema: (schema) => {
+        set((state) => {
+          state.savedSchema = schema;
+        });
+      },
     },
   })),
 );
@@ -170,3 +186,21 @@ export const useSurveyQuestionsActions = () =>
       setQuestions,
     };
   });
+
+export const useSurveySchema = () =>
+  useSurveySchemaStore((state) => state.schema);
+export const useSurveySchemaActions = () =>
+  useSurveySchemaStore((state) => ({
+    setSchema: state.actions.setSchema,
+    setSavedSchema: state.actions.setSavedSchema,
+  }));
+
+export const useIsSurveyChanged = () => {
+  const {isChanged} = useSurveySchemaStore(
+    useShallow(({schema, savedSchema}) => ({
+      isChanged: !isEqual(schema, savedSchema),
+    })),
+  );
+
+  return isChanged;
+};

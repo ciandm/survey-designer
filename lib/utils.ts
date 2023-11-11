@@ -1,8 +1,8 @@
 import {type ClassValue, clsx} from 'clsx';
 import {twMerge} from 'tailwind-merge';
 import {v4 as uuidv4} from 'uuid';
-import {QuestionType} from '../constants/question';
-import {QuestionConfig} from '../validations/question';
+import {QuestionType} from './constants/question';
+import {QuestionConfig} from './validations/question';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

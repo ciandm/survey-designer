@@ -1,42 +1,38 @@
 'use client';
 
-import {useMutation} from '@tanstack/react-query';
-import {EyeIcon, Loader2} from 'lucide-react';
+import {RefreshCw} from 'lucide-react';
 import {Button} from '@/components/ui/button';
-import {useToast} from '@/components/ui/use-toast';
-import {updateSurveySchema} from '@/lib/api/survey';
+import {cn} from '@/lib/utils';
+import {useUpdateSurveySchema} from '../hooks/use-update-survey-schema';
 import {useDesignerModeActions} from '../store/designer-mode';
 import {
+  useIsSurveyChanged,
   useSurveyDetails,
   useSurveyDetailsActions,
   useSurveyQuestions,
+  useSurveySchema,
 } from '../store/survey-designer';
 import {ContentEditable} from './content-editable';
+import {SurveyActions} from './survey-actions';
 
 export const EditorHeader = () => {
   const survey = useSurveyDetails();
   const questions = useSurveyQuestions();
-  const {toast} = useToast();
-  const {mutateAsync, isPending} = useMutation({
-    mutationFn: async () =>
-      updateSurveySchema({
-        survey: {
-          id: survey.id,
-          title: survey.title,
-          questions,
-        },
-      }),
-  });
+  const isChanged = useIsSurveyChanged();
+  const schema = useSurveySchema();
+  const {mutateAsync: handleUpdateSurveySchema} = useUpdateSurveySchema();
+
   const {updateTitle} = useSurveyDetailsActions();
   const {updateMode} = useDesignerModeActions();
 
   const handleOnPreviewClick = async () => {
     try {
-      await mutateAsync();
-      toast({
-        title: 'Survey saved',
-        description: 'Your survey has been saved successfully',
-      });
+      if (isChanged) {
+        handleUpdateSurveySchema({
+          ...schema,
+          questions,
+        });
+      }
       updateMode('preview');
     } catch (error) {
       console.error(error);
@@ -44,7 +40,7 @@ export const EditorHeader = () => {
   };
 
   return (
-    <header className="flex items-center justify-between gap-2 border-b bg-background p-4">
+    <header className="flex items-center justify-between gap-2 border-b bg-background px-4 py-3">
       <div className="flex flex-col gap-1">
         <ContentEditable
           html={survey.title}
@@ -54,16 +50,40 @@ export const EditorHeader = () => {
         />
       </div>
       <div className="flex gap-2">
-        <Button variant="outline" onClick={handleOnPreviewClick}>
-          {isPending ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <EyeIcon className="mr-2 h-4 w-4" />
-          )}
+        <UnsavedChangesButton />
+        <Button variant="secondary" onClick={handleOnPreviewClick}>
           Preview
         </Button>
-        <Button onClick={() => alert('TODO: Publish')}>Publish</Button>
+        <Button variant="secondary" onClick={() => alert('TODO: Publish')}>
+          Publish
+        </Button>
+        <SurveyActions />
       </div>
     </header>
+  );
+};
+
+const UnsavedChangesButton = () => {
+  const isDirty = useIsSurveyChanged();
+  const schema = useSurveySchema();
+  const {mutate: handleUpdateSurveySchema, isPending: isPendingUpdateSchema} =
+    useUpdateSurveySchema();
+
+  if (!isDirty) return null;
+
+  return (
+    <Button
+      variant="secondary"
+      onClick={() => handleUpdateSurveySchema({...schema})}
+      disabled={isPendingUpdateSchema}
+      className="mr-4"
+    >
+      <RefreshCw
+        className={cn('mr-2 h-4 w-4 flex-shrink-0', {
+          'animate-spin': isPendingUpdateSchema,
+        })}
+      />
+      Save changes
+    </Button>
   );
 };

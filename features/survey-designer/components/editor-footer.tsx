@@ -1,6 +1,9 @@
 import React from 'react';
 import {Copy, RefreshCw, Trash} from 'lucide-react';
 import {Button} from '@/components/ui/button';
+import {cn} from '@/lib/utils';
+import {useUpdateSurveySchema} from '../hooks/use-update-survey-schema';
+import {useIsSurveyChanged, useSurveySchema} from '../store/survey-designer';
 
 const footerActions = [
   {
@@ -30,14 +33,35 @@ export const EditorFooter = () => {
             </Button>
           ))}
         </div>
-        <div className="flex items-center gap-2">
-          <p className="text-xs text-gray-500">Unsaved changes</p>
-          <Button variant="ghost" size="icon" className="rounded-none">
-            <RefreshCw className="h-4 w-4 flex-shrink-0" />
-            <span className="sr-only">Refresh</span>
-          </Button>
-        </div>
+        <UnsavedChanges />
       </div>
     </footer>
+  );
+};
+
+const UnsavedChanges = () => {
+  const isDirty = useIsSurveyChanged();
+  const schema = useSurveySchema();
+  const {mutate: handleUpdateSurveySchema, isPending} = useUpdateSurveySchema();
+
+  if (!isDirty) return null;
+
+  return (
+    <div className="flex items-center gap-2">
+      <p className="text-xs text-gray-500">Unsaved changes</p>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="rounded-none"
+        onClick={() => handleUpdateSurveySchema({...schema})}
+      >
+        <RefreshCw
+          className={cn('h-4 w-4 flex-shrink-0', {
+            'animate-spin': isPending,
+          })}
+        />
+        <span className="sr-only">Refresh</span>
+      </Button>
+    </div>
   );
 };
