@@ -10,7 +10,7 @@ import {
 import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
 import {formatQuestionType} from '@/lib/utils/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {useQuestionActions} from '../store/questions';
+import {useSurveyQuestionsActions} from '../store/survey-designer';
 
 const ALLOWED_TYPES = [QUESTION_TYPE.short_text, QUESTION_TYPE.long_text];
 
@@ -24,7 +24,7 @@ const questionTypeOptions = Object.values(QUESTION_TYPE)
   }));
 
 export const QuestionTypeSelect = () => {
-  const {changeQuestionType} = useQuestionActions();
+  const {changeQuestionType} = useSurveyQuestionsActions();
   const {activeQuestion} = useActiveQuestion();
 
   const onChangeFieldType = (newType: QuestionType) => {

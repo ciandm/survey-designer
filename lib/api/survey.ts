@@ -1,4 +1,4 @@
-import {SurveyResponse} from '../validations/survey';
+import {SurveyResponse, SurveySchemaUpdate} from '../validations/survey';
 import {axios} from './axios';
 
 const ENDPOINT = '/surveys';
@@ -19,4 +19,15 @@ export async function createSurvey(
 
 export async function deleteSurvey(surveyId: string): Promise<void> {
   await axios.delete(`${ENDPOINT}/${surveyId}`);
+}
+
+export async function updateSurveySchema(
+  schema: SurveySchemaUpdate,
+): Promise<SurveyResponse> {
+  const {data} = await axios.put(
+    `${ENDPOINT}/${schema.survey.id}/schema`,
+    schema,
+  );
+
+  return data;
 }

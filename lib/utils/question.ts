@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatQuestionType(type: QuestionType) {
+export function formatQuestionType(type: QuestionType): string {
   switch (type) {
     case 'short_text':
       return 'Short Text';
@@ -21,7 +21,7 @@ export function formatQuestionType(type: QuestionType) {
   }
 }
 
-export function buildFieldHelper(
+export function buildNewQuestionHelper(
   type: QuestionType,
   field: Partial<QuestionConfig>,
 ): QuestionConfig {
@@ -68,12 +68,4 @@ export function buildFieldHelper(
     default:
       throw new Error('Invalid field type');
   }
-}
-
-export function insertQuestionIntoSchema(
-  questions: QuestionConfig[],
-  type: QuestionType,
-) {
-  const field = buildFieldHelper(type, {});
-  return [...questions, field];
 }

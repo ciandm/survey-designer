@@ -4,12 +4,15 @@ import {QuestionCard} from '@/features/survey-tool/components/question-card';
 import {QuestionChoices} from '@/features/survey-tool/components/question-choices';
 import {QuestionWording} from '../../survey-tool/components/question-wording';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {useQuestionActions, useQuestions} from '../store/questions';
+import {
+  useSurveyQuestions,
+  useSurveyQuestionsActions,
+} from '../store/survey-designer';
 
 export const QuestionEditor = () => {
-  const questions = useQuestions();
+  const questions = useSurveyQuestions();
   const {activeQuestion, activeQuestionIndex} = useActiveQuestion();
-  const {updateQuestion} = useQuestionActions();
+  const {updateQuestion} = useSurveyQuestionsActions();
 
   return (
     <div className="flex w-full flex-1 overflow-y-auto bg-primary-foreground p-8">

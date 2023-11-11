@@ -3,19 +3,14 @@
 import {useRef} from 'react';
 import {SurveySchema} from '@/lib/validations/survey';
 import {useDesignerModeStore} from '../store/designer-mode';
-import {useQuestionsStore} from '../store/questions';
-import {useSurveyDetailsStore} from '../store/survey-details';
+import {useSurveySchemaStore} from '../store/survey-designer';
 
 export const SurveySchemaInitialiser = ({schema}: {schema: SurveySchema}) => {
   const isInitialised = useRef(false);
 
   if (!isInitialised.current) {
-    useSurveyDetailsStore.setState({
-      id: schema.id,
-      title: schema.title,
-    });
-    useQuestionsStore.setState({
-      questions: schema.questions,
+    useSurveySchemaStore.setState({
+      schema,
     });
     useDesignerModeStore.setState({
       mode: 'edit',

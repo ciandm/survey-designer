@@ -4,25 +4,27 @@ import {useMutation} from '@tanstack/react-query';
 import {EyeIcon, Loader2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {useToast} from '@/components/ui/use-toast';
-import {axios} from '@/lib/api/axios';
+import {updateSurveySchema} from '@/lib/api/survey';
 import {useDesignerModeActions} from '../store/designer-mode';
-import {useQuestions} from '../store/questions';
 import {
   useSurveyDetails,
   useSurveyDetailsActions,
-} from '../store/survey-details';
+  useSurveyQuestions,
+} from '../store/survey-designer';
 import {ContentEditable} from './content-editable';
 
 export const EditorHeader = () => {
   const survey = useSurveyDetails();
-  const questions = useQuestions();
+  const questions = useSurveyQuestions();
   const {toast} = useToast();
   const {mutateAsync, isPending} = useMutation({
     mutationFn: async () =>
-      await axios.put(`/surveys/${survey.id}/schema`, {
-        id: survey.id,
-        name: survey.title,
-        fields: questions,
+      updateSurveySchema({
+        survey: {
+          id: survey.id,
+          title: survey.title,
+          questions,
+        },
       }),
   });
   const {updateTitle} = useSurveyDetailsActions();

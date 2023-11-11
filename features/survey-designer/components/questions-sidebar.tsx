@@ -14,7 +14,10 @@ import {
 import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
 import {cn} from '@/lib/utils/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {useQuestionActions, useQuestions} from '../store/questions';
+import {
+  useSurveyQuestions,
+  useSurveyQuestionsActions,
+} from '../store/survey-designer';
 import {SidebarQuestionItem} from './sidebar-question-item';
 
 export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
@@ -26,10 +29,10 @@ export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
 
 export const QuestionsSidebar = () => {
   const [menuOpenId, setMenuOpenId] = useState('');
-  const questions = useQuestions();
+  const questions = useSurveyQuestions();
   const {activeQuestion, setActiveQuestion} = useActiveQuestion();
   const {deleteQuestion, duplicateQuestion, insertQuestion} =
-    useQuestionActions();
+    useSurveyQuestionsActions();
 
   const onNewQuestionClick = async () => {
     insertQuestion({
@@ -48,11 +51,7 @@ export const QuestionsSidebar = () => {
   };
 
   const onDuplicateQuestionClick = async (id: string) => {
-    try {
-      duplicateQuestion({id});
-    } catch (error) {
-      console.log(error);
-    }
+    duplicateQuestion({id});
   };
 
   return (

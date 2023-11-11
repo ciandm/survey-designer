@@ -5,12 +5,12 @@ import {v4 as uuidv4} from 'uuid';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Button} from '../../../components/ui/button';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {useQuestionActions} from '../store/questions';
+import {useSurveyQuestionsActions} from '../store/survey-designer';
 import {ContentEditable} from './content-editable';
 
 export const ChoicesQuestionAddon = () => {
   const {activeQuestion} = useActiveQuestion();
-  const {updateQuestion} = useQuestionActions();
+  const {updateQuestion} = useSurveyQuestionsActions();
 
   const handleRemoveChoice = (choiceId: string) => {
     const copiedField = {...activeQuestion};
