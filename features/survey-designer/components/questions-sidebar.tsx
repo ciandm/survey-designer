@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
-import {cn} from '@/lib/utils/question';
+import {cn, getNextQuestionToSelect} from '@/lib/utils/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {
   useSurveyQuestions,
@@ -35,19 +35,24 @@ export const QuestionsSidebar = () => {
     useSurveyQuestionsActions();
 
   const onNewQuestionClick = async () => {
+    const ref = uuidv4();
     insertQuestion({
       id: uuidv4(),
       type: QUESTION_TYPE.short_text,
       text: '',
       properties: {},
-      ref: uuidv4(),
+      ref,
       validations: {},
       description: '',
     });
+    setActiveQuestion(ref);
   };
 
   const onDeleteQuestionClick = async (id: string) => {
     deleteQuestion({id});
+    if (activeQuestion?.id === id) {
+      setActiveQuestion(getNextQuestionToSelect(questions, id));
+    }
   };
 
   const onDuplicateQuestionClick = async (id: string) => {
@@ -115,6 +120,7 @@ export const QuestionsSidebar = () => {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
+                    disabled={questions.length === 1}
                     onSelect={() => {
                       onDeleteQuestionClick(question.id);
                       setMenuOpenId('');

@@ -69,3 +69,17 @@ export function buildNewQuestionHelper(
       throw new Error('Invalid field type');
   }
 }
+
+export function getNextQuestionToSelect(
+  questions: QuestionConfig[],
+  questionId: string,
+) {
+  const questionIndex = questions.findIndex(
+    (question) => question.id === questionId,
+  );
+
+  const prevQuestion = questions[questionIndex - 1];
+  const nextQuestion = questions[questionIndex + 1];
+
+  return (prevQuestion || nextQuestion).ref;
+}
