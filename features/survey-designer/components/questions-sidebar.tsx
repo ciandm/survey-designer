@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
-import {cn, getNextQuestionToSelect} from '@/lib/utils/question';
+import {cn, getNextQuestionToSelect} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {
   useSurveyQuestions,
@@ -56,7 +56,9 @@ export const QuestionsSidebar = () => {
   };
 
   const onDuplicateQuestionClick = async (id: string) => {
-    duplicateQuestion({id});
+    const ref = uuidv4();
+    duplicateQuestion({id, ref});
+    setActiveQuestion(ref);
   };
 
   return (

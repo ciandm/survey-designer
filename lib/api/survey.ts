@@ -1,4 +1,8 @@
-import {SurveyResponse, SurveySchemaUpdate} from '../validations/survey';
+import {
+  CreateSurveySchema,
+  SurveyResponse,
+  UpdateSurveySchema,
+} from '../validations/survey';
 import {axios} from './axios';
 
 const ENDPOINT = '/surveys';
@@ -10,9 +14,19 @@ export async function getSurveyById(surveyId: string): Promise<SurveyResponse> {
 }
 
 export async function createSurvey(
-  survey: SurveyResponse,
+  params: CreateSurveySchema,
 ): Promise<SurveyResponse> {
-  const {data} = await axios.post(ENDPOINT, survey);
+  const {data} = await axios.post(ENDPOINT, params);
+
+  return data;
+}
+
+export async function duplicateSurvey(
+  surveyId: string,
+): Promise<SurveyResponse> {
+  const {data} = await axios.post(
+    `${ENDPOINT}?survey_to_duplicate=${surveyId}`,
+  );
 
   return data;
 }
@@ -22,7 +36,7 @@ export async function deleteSurvey(surveyId: string): Promise<void> {
 }
 
 export async function updateSurveySchema(
-  schema: SurveySchemaUpdate,
+  schema: UpdateSurveySchema,
 ): Promise<SurveyResponse> {
   const {data} = await axios.put(
     `${ENDPOINT}/${schema.survey.id}/schema`,

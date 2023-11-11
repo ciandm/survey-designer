@@ -11,6 +11,7 @@ export const SurveySchemaInitialiser = ({schema}: {schema: SurveySchema}) => {
   if (!isInitialised.current) {
     useSurveySchemaStore.setState({
       schema,
+      savedSchema: schema,
     });
     useDesignerModeStore.setState({
       mode: 'edit',

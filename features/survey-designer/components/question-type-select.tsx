@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
-import {formatQuestionType} from '@/lib/utils/question';
+import {formatQuestionType} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {useSurveyQuestionsActions} from '../store/survey-designer';
 

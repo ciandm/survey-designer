@@ -1,6 +1,6 @@
 'use client';
 
-import {cn} from '@/lib/utils/question';
+import {cn} from '@/lib/utils';
 import {ContentEditable} from '../../survey-designer/components/content-editable';
 import {useQuestionCardContext} from './question-card';
 

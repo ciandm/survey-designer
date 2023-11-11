@@ -1,0 +1,164 @@
+import {useState} from 'react';
+import {DotsHorizontalIcon} from '@radix-ui/react-icons';
+import {Label} from '@radix-ui/react-label';
+import {Switch} from '@radix-ui/react-switch';
+import {Loader2} from 'lucide-react';
+import {useRouter} from 'next/navigation';
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {Button} from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {toast} from '@/components/ui/use-toast';
+import {useDeleteSurvey} from '../hooks/use-delete-survey';
+import {useDuplicateSurvey} from '../hooks/use-duplicate-survey';
+import {useSurveyDetails} from '../store/survey-designer';
+
+export const SurveyActions = () => {
+  const {id} = useSurveyDetails();
+  const [open, setIsOpen] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const router = useRouter();
+
+  const {mutate: duplicateSurvey, isPending: isPendingDuplicate} =
+    useDuplicateSurvey();
+  const {mutate: deleteSurvey, isPending: isPendingDelete} = useDeleteSurvey();
+
+  const handleDeleteSurvey = () => {
+    deleteSurvey(
+      {surveyId: id},
+      {
+        onSuccess: () => {
+          setShowDeleteDialog(false);
+          router.push('/');
+          router.refresh();
+        },
+      },
+    );
+  };
+
+  const handleDuplicateSurvey = () => {
+    duplicateSurvey(
+      {surveyId: id},
+      {
+        onSuccess: ({survey}) => {
+          toast({
+            title: 'Survey duplicated',
+            description: 'Your survey has been duplicated successfully.',
+            variant: 'default',
+          });
+          router.push(`/survey/${survey.id}/editor`);
+          router.refresh();
+        },
+      },
+    );
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="secondary">
+            <span className="sr-only">Actions</span>
+            <DotsHorizontalIcon className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onSelect={handleDuplicateSurvey}
+            disabled={isPendingDuplicate}
+          >
+            Duplicate survey
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={() => setShowDeleteDialog(true)}
+            className="text-red-600"
+            disabled={isPendingDuplicate}
+          >
+            Delete survey
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Dialog open={open} onOpenChange={setIsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Content filter preferences</DialogTitle>
+            <DialogDescription>
+              The content filter flags text that may violate our content policy.
+              It&apos;s powered by our moderation endpoint which is free to use
+              to moderate your OpenAI API traffic. Learn more.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-6">
+            <h4 className="text-sm text-muted-foreground">
+              Playground Warnings
+            </h4>
+            <div className="flex items-start justify-between space-x-4 pt-3">
+              <Switch name="show" id="show" defaultChecked={true} />
+              <Label className="grid gap-1 font-normal" htmlFor="show">
+                <span className="font-semibold">
+                  Show a warning when content is flagged
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  A warning will be shown when sexual, hateful, violent or
+                  self-harm content is detected.
+                </span>
+              </Label>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setIsOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete survey.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isPendingDelete}>
+              Cancel
+            </AlertDialogCancel>
+            <Button
+              disabled={isPendingDelete}
+              variant="destructive"
+              onClick={handleDeleteSurvey}
+            >
+              Delete
+              {isPendingDelete && (
+                <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+              )}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};

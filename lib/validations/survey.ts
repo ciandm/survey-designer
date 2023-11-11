@@ -6,14 +6,18 @@ export const deleteSurveySchema = z.object({
 });
 
 export const surveySchema = z.object({
-  id: z.string().readonly(),
+  id: z.string(),
   title: z.string(),
   questions: z.array(questionSchema),
 });
 
+export const createSurveySchema = z.object({
+  title: z.string(),
+});
+
 export type SurveySchema = z.infer<typeof surveySchema>;
 
-export const surveySchemaUpdate = z.object({
+export const updateSurveySchema = z.object({
   survey: surveySchema,
 });
 
@@ -25,4 +29,5 @@ export const surveyResponse = z.object({
 });
 
 export type SurveyResponse = z.infer<typeof surveyResponse>;
-export type SurveySchemaUpdate = z.infer<typeof surveySchemaUpdate>;
+export type UpdateSurveySchema = z.infer<typeof updateSurveySchema>;
+export type CreateSurveySchema = z.infer<typeof createSurveySchema>;
