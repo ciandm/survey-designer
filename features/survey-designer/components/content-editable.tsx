@@ -2,7 +2,7 @@ import React from 'react';
 import ContentEditableExt, {
   Props as ContentEditableProps,
 } from 'react-contenteditable';
-import {cn} from '@/lib/utils';
+import {cn} from '@/lib/utils/question';
 
 interface Props extends ContentEditableProps {
   placeholder?: string;

@@ -1,15 +1,8 @@
 'use client';
 
 import React, {useState} from 'react';
-import {QuestionType} from '@prisma/client';
-import {
-  Check,
-  FileQuestion,
-  Loader2,
-  MoreVertical,
-  Plus,
-  Text,
-} from 'lucide-react';
+import {Check, FileQuestion, MoreVertical, Plus, Text} from 'lucide-react';
+import {v4 as uuidv4} from 'uuid';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -18,67 +11,45 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {ToastAction} from '@/components/ui/toast';
-import {useToast} from '@/components/ui/use-toast';
-import {cn} from '@/lib/utils';
+import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
+import {cn} from '@/lib/utils/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {useAddQuestion} from '../hooks/use-add-question';
-import {useDeleteQuestion} from '../hooks/use-delete-question';
-import {useDuplicateQuestion} from '../hooks/use-duplicate-question';
 import {useQuestionActions, useQuestions} from '../store/questions';
 import {SidebarQuestionItem} from './sidebar-question-item';
 
 export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
-  LONG_TEXT: <Text className="h-4 w-4 flex-shrink-0" />,
-  SHORT_TEXT: <Text className="h-4 w-4 flex-shrink-0" />,
-  MULTIPLE_CHOICE: <Check className="h-4 w-4 flex-shrink-0" />,
-  SINGLE_CHOICE: <FileQuestion className="h-4 w-4 flex-shrink-0" />,
+  long_text: <Text className="h-4 w-4 flex-shrink-0" />,
+  short_text: <Text className="h-4 w-4 flex-shrink-0" />,
+  multiple_choice: <Check className="h-4 w-4 flex-shrink-0" />,
+  single_choice: <FileQuestion className="h-4 w-4 flex-shrink-0" />,
 };
 
 export const QuestionsSidebar = () => {
   const [menuOpenId, setMenuOpenId] = useState('');
   const questions = useQuestions();
-  const {toast} = useToast();
   const {activeQuestion, setActiveQuestion} = useActiveQuestion();
-  const {setQuestions} = useQuestionActions();
-
-  const {mutateAsync: handleAddQuestion, isPending: isPendingAddQuestion} =
-    useAddQuestion();
-  const {mutateAsync: handleDeleteQuestion} = useDeleteQuestion();
-  const {mutateAsync: handleDuplicateQuestion} = useDuplicateQuestion();
+  const {deleteQuestion, duplicateQuestion, insertQuestion} =
+    useQuestionActions();
 
   const onNewQuestionClick = async () => {
-    try {
-      const {data} = await handleAddQuestion({});
-      setQuestions(data.schema.fields);
-    } catch (error) {
-      console.log(error);
-    }
+    insertQuestion({
+      id: uuidv4(),
+      type: QUESTION_TYPE.short_text,
+      text: '',
+      properties: {},
+      ref: uuidv4(),
+      validations: {},
+      description: '',
+    });
   };
 
   const onDeleteQuestionClick = async (id: string) => {
-    try {
-      const {data} = await handleDeleteQuestion({id});
-      setQuestions(data.schema.fields);
-      toast({
-        title: 'Question deleted',
-        description: 'The question has been deleted from the survey.',
-        action: <ToastAction altText="Undo">Undo</ToastAction>,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    deleteQuestion({id});
   };
 
   const onDuplicateQuestionClick = async (id: string) => {
     try {
-      const {data} = await handleDuplicateQuestion({id});
-      setQuestions(data.schema.fields);
-      toast({
-        title: 'Question duplicated',
-        description: 'The question has been duplicated.',
-        action: <ToastAction altText="Undo">Undo</ToastAction>,
-      });
+      duplicateQuestion({id});
     } catch (error) {
       console.log(error);
     }
@@ -95,9 +66,6 @@ export const QuestionsSidebar = () => {
           <Plus className="h-5 w-5" />
         </div>
         New question
-        {isPendingAddQuestion && (
-          <Loader2 className="ml-auto h-4 w-4 animate-spin" />
-        )}
       </Button>
       <div className="flex flex-1 flex-col overflow-y-auto">
         <ol className="flex flex-1 flex-col gap-2">

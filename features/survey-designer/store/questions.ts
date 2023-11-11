@@ -1,7 +1,7 @@
 import {omitBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import {create} from 'zustand';
-import {buildFieldHelper} from '@/lib/utils';
+import {buildFieldHelper} from '@/lib/utils/question';
 import {QuestionConfig} from '@/lib/validations/question';
 
 type QuestionsStoreProps = {

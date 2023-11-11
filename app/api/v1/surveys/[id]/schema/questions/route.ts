@@ -1,10 +1,8 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {v4 as uuidv4} from 'uuid';
 import {z} from 'zod';
-import {
-  configurationSchema,
-  createQuestionSchema,
-} from '@/lib/validations/question';
+import {createQuestionSchema} from '@/lib/validations/question';
+import {surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
 const routeContextSchema = z.object({
@@ -34,13 +32,13 @@ export async function POST(
     return NextResponse.json({message: 'Survey not found'}, {status: 404});
   }
 
-  let schema = configurationSchema.safeParse(survey.schema);
+  let schema = surveySchema.safeParse(survey.schema);
 
   if (!schema.success) {
     return NextResponse.json(schema.error, {status: 400});
   }
 
-  schema.data.fields.push({
+  schema.data.questions.push({
     id: uuidv4(),
     ref: uuidv4(),
     type: parsed.data.type,

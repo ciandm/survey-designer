@@ -1,11 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Survey } from "@prisma/client";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import {useState} from 'react';
+import {Loader2} from 'lucide-react';
+import {useRouter} from 'next/navigation';
 import {
   Dialog,
   DialogClose,
@@ -15,35 +12,44 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button, ButtonProps } from "./ui/button";
-import { useToast } from "./ui/use-toast";
+} from '@/components/ui/dialog';
+import {useDeleteSurvey} from '@/features/survey-designer/hooks/use-delete-survey';
+import {Button, ButtonProps} from './ui/button';
+import {useToast} from './ui/use-toast';
 
 export const DeleteSurveyButton = ({
-  survey,
+  surveyId,
   children,
   ...rest
-}: { survey: Survey } & ButtonProps) => {
-  const { toast } = useToast();
+}: {surveyId: string} & ButtonProps) => {
+  const {toast} = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const { isPending, mutate } = useMutation({
-    mutationFn: async () => axios.delete(`/api/v1/surveys/${survey.id}`),
-    onSuccess: () => {
+
+  const {isPending, mutateAsync: deleteSurvey} = useDeleteSurvey();
+
+  const handleOnDelete = async () => {
+    try {
+      await deleteSurvey({surveyId});
       toast({
-        title: "Survey deleted",
-        description: "The survey was deleted successfully.",
+        title: 'Survey deleted',
+        description: 'The survey was deleted successfully.',
       });
       setIsOpen(false);
       router.refresh();
-    },
-  });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Something went wrong. Please try again.',
+      });
+    }
+  };
 
   return (
     <Dialog onOpenChange={(open) => setIsOpen(open)} open={isOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" {...rest}>
-          {children ?? "Delete"}
+          {children ?? 'Delete'}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -60,7 +66,7 @@ export const DeleteSurveyButton = ({
               Close
             </Button>
           </DialogClose>
-          <Button disabled={isPending} type="submit" onClick={() => mutate()}>
+          <Button disabled={isPending} type="submit" onClick={handleOnDelete}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Delete
           </Button>

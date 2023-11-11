@@ -1,10 +1,10 @@
 'use client';
 
 import {useMutation} from '@tanstack/react-query';
-import axios from 'axios';
 import {EyeIcon, Loader2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {useToast} from '@/components/ui/use-toast';
+import {axios} from '@/lib/api/axios';
 import {useDesignerModeActions} from '../store/designer-mode';
 import {useQuestions} from '../store/questions';
 import {
@@ -19,7 +19,7 @@ export const EditorHeader = () => {
   const {toast} = useToast();
   const {mutateAsync, isPending} = useMutation({
     mutationFn: async () =>
-      await axios.put(`/api/v1/surveys/${survey.id}/schema`, {
+      await axios.put(`/surveys/${survey.id}/schema`, {
         id: survey.id,
         name: survey.title,
         fields: questions,

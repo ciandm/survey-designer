@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {v4 as uuidv4} from 'uuid';
 import {z} from 'zod';
-import {configurationSchema} from '@/lib/validations/question';
+import {surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
 const routeContextSchema = z.object({
@@ -35,13 +35,13 @@ export async function POST(
     return NextResponse.json({message: 'Survey not found'}, {status: 404});
   }
 
-  let schema = configurationSchema.safeParse(survey.schema);
+  let schema = surveySchema.safeParse(survey.schema);
 
   if (!schema.success) {
     return NextResponse.json(schema.error, {status: 400});
   }
 
-  const questionToDuplicate = schema.data.fields.find(
+  const questionToDuplicate = schema.data.questions.find(
     (field) => field.id === query,
   );
 
@@ -52,7 +52,7 @@ export async function POST(
     );
   }
 
-  const questionToDuplicateIndex = schema.data.fields.findIndex(
+  const questionToDuplicateIndex = schema.data.questions.findIndex(
     (field) => field.id === query,
   );
 
@@ -65,14 +65,14 @@ export async function POST(
     ref: uuidv4(),
   };
 
-  schema.data.fields.splice(questionToDuplicateIndex + 1, 0, newQuestion);
+  schema.data.questions.splice(questionToDuplicateIndex + 1, 0, newQuestion);
 
   const updatedSurvey = await prisma.survey.update({
     where: {id: params.id},
     data: {schema: schema.data},
   });
 
-  return NextResponse.json({...updatedSurvey}, {status: 200});
+  return NextResponse.json({survey: updatedSurvey}, {status: 200});
 }
 
 export async function DELETE(
@@ -95,14 +95,14 @@ export async function DELETE(
     return NextResponse.json({message: 'Survey not found'}, {status: 404});
   }
 
-  let schema = configurationSchema.safeParse(survey.schema);
+  let schema = surveySchema.safeParse(survey.schema);
 
   if (!schema.success) {
     return NextResponse.json(schema.error, {status: 400});
   }
 
-  schema.data.fields = schema.data.fields.filter(
-    (field) => field.id !== params.questionId,
+  schema.data.questions = schema.data.questions.filter(
+    (question) => question.id !== params.questionId,
   );
 
   const updatedSurvey = await prisma.survey.update({
@@ -110,5 +110,5 @@ export async function DELETE(
     data: {schema: schema.data},
   });
 
-  return NextResponse.json({...updatedSurvey}, {status: 200});
+  return NextResponse.json({survey: updatedSurvey}, {status: 200});
 }

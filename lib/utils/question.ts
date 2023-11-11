@@ -1,8 +1,8 @@
-import {QuestionType} from '@prisma/client';
 import {type ClassValue, clsx} from 'clsx';
 import {twMerge} from 'tailwind-merge';
 import {v4 as uuidv4} from 'uuid';
-import {QuestionConfig} from './validations/question';
+import {QuestionType} from '../constants/question';
+import {QuestionConfig} from '../validations/question';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -10,13 +10,13 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatQuestionType(type: QuestionType) {
   switch (type) {
-    case QuestionType.SHORT_TEXT:
+    case 'short_text':
       return 'Short Text';
-    case QuestionType.LONG_TEXT:
+    case 'long_text':
       return 'Long Text';
-    case QuestionType.MULTIPLE_CHOICE:
+    case 'multiple_choice':
       return 'Multiple Choice';
-    case QuestionType.SINGLE_CHOICE:
+    case 'single_choice':
       return 'Single Choice';
   }
 }
@@ -26,8 +26,8 @@ export function buildFieldHelper(
   field: Partial<QuestionConfig>,
 ): QuestionConfig {
   switch (type) {
-    case 'LONG_TEXT':
-    case 'SHORT_TEXT':
+    case 'long_text':
+    case 'short_text':
       return {
         id: field?.id ?? uuidv4(),
         ref: field?.ref ?? uuidv4(),
@@ -43,8 +43,8 @@ export function buildFieldHelper(
         },
       };
 
-    case 'MULTIPLE_CHOICE':
-    case 'SINGLE_CHOICE':
+    case 'multiple_choice':
+    case 'single_choice':
       return {
         id: field?.id ?? uuidv4(),
         ref: field?.ref ?? uuidv4(),
@@ -68,4 +68,12 @@ export function buildFieldHelper(
     default:
       throw new Error('Invalid field type');
   }
+}
+
+export function insertQuestionIntoSchema(
+  questions: QuestionConfig[],
+  type: QuestionType,
+) {
+  const field = buildFieldHelper(type, {});
+  return [...questions, field];
 }
