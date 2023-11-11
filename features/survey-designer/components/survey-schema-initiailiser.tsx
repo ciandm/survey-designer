@@ -1,25 +1,16 @@
 'use client';
 
 import {useRef} from 'react';
-import {Configuration} from '@/lib/validations/question';
+import {SurveySchema} from '@/lib/validations/survey';
 import {useDesignerModeStore} from '../store/designer-mode';
-import {useQuestionsStore} from '../store/questions';
-import {useSurveyDetailsStore} from '../store/survey-details';
+import {useSurveySchemaStore} from '../store/survey-designer';
 
-export const SurveySchemaInitialiser = ({
-  surveyConfig,
-}: {
-  surveyConfig: Configuration;
-}) => {
+export const SurveySchemaInitialiser = ({schema}: {schema: SurveySchema}) => {
   const isInitialised = useRef(false);
 
   if (!isInitialised.current) {
-    useSurveyDetailsStore.setState({
-      id: surveyConfig.id,
-      title: surveyConfig.name,
-    });
-    useQuestionsStore.setState({
-      questions: surveyConfig.fields,
+    useSurveySchemaStore.setState({
+      schema,
     });
     useDesignerModeStore.setState({
       mode: 'edit',

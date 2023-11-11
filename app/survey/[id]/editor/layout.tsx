@@ -1,6 +1,6 @@
 import {notFound} from 'next/navigation';
 import {SurveySchemaInitialiser} from '@/features/survey-designer/components/survey-schema-initiailiser';
-import {configurationSchema} from '@/lib/validations/question';
+import {surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
 export default async function EditorLayout({
@@ -20,7 +20,7 @@ export default async function EditorLayout({
     return notFound();
   }
 
-  const schema = configurationSchema.safeParse(survey.schema);
+  const schema = surveySchema.safeParse(survey.schema);
 
   if (!schema.success) {
     return notFound();
@@ -28,7 +28,7 @@ export default async function EditorLayout({
 
   return (
     <>
-      <SurveySchemaInitialiser surveyConfig={schema.data} />
+      <SurveySchemaInitialiser schema={schema.data} />
       {children}
     </>
   );

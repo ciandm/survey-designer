@@ -2,11 +2,11 @@
 
 import {Card} from '@/components/ui/card';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {useQuestions} from '../store/questions';
+import {useSurveyQuestions} from '../store/survey-designer';
 
 export const QuestionContainer = ({children}: {children: React.ReactNode}) => {
   const {activeQuestionIndex} = useActiveQuestion();
-  const questions = useQuestions();
+  const questions = useSurveyQuestions();
 
   return (
     <Card className="flex w-full flex-col items-center justify-center rounded-none">

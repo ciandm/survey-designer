@@ -12,8 +12,8 @@ export const QuestionChoices = ({control}: Props) => {
   const {question, view} = useQuestionCardContext();
 
   switch (question.type) {
-    case 'SHORT_TEXT':
-    case 'LONG_TEXT':
+    case 'short_text':
+    case 'long_text':
       return (
         <TextField
           control={control}

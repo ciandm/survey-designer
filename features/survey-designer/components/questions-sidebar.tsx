@@ -1,8 +1,8 @@
 'use client';
 
 import React, {useState} from 'react';
-import {QuestionType} from '@prisma/client';
 import {Check, FileQuestion, MoreVertical, Plus, Text} from 'lucide-react';
+import {v4 as uuidv4} from 'uuid';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,31 +11,55 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {cn} from '@/lib/utils';
+import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
+import {cn} from '@/lib/utils/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {useQuestionActions, useQuestions} from '../store/questions';
+import {
+  useSurveyQuestions,
+  useSurveyQuestionsActions,
+} from '../store/survey-designer';
 import {SidebarQuestionItem} from './sidebar-question-item';
 
 export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
-  LONG_TEXT: <Text className="h-4 w-4 flex-shrink-0" />,
-  SHORT_TEXT: <Text className="h-4 w-4 flex-shrink-0" />,
-  MULTIPLE_CHOICE: <Check className="h-4 w-4 flex-shrink-0" />,
-  SINGLE_CHOICE: <FileQuestion className="h-4 w-4 flex-shrink-0" />,
+  long_text: <Text className="h-4 w-4 flex-shrink-0" />,
+  short_text: <Text className="h-4 w-4 flex-shrink-0" />,
+  multiple_choice: <Check className="h-4 w-4 flex-shrink-0" />,
+  single_choice: <FileQuestion className="h-4 w-4 flex-shrink-0" />,
 };
 
 export const QuestionsSidebar = () => {
   const [menuOpenId, setMenuOpenId] = useState('');
-  const questions = useQuestions();
+  const questions = useSurveyQuestions();
   const {activeQuestion, setActiveQuestion} = useActiveQuestion();
-  const {insertQuestion, deleteQuestion, duplicateQuestion} =
-    useQuestionActions();
+  const {deleteQuestion, duplicateQuestion, insertQuestion} =
+    useSurveyQuestionsActions();
+
+  const onNewQuestionClick = async () => {
+    insertQuestion({
+      id: uuidv4(),
+      type: QUESTION_TYPE.short_text,
+      text: '',
+      properties: {},
+      ref: uuidv4(),
+      validations: {},
+      description: '',
+    });
+  };
+
+  const onDeleteQuestionClick = async (id: string) => {
+    deleteQuestion({id});
+  };
+
+  const onDuplicateQuestionClick = async (id: string) => {
+    duplicateQuestion({id});
+  };
 
   return (
-    <aside className="flex max-w-[260px] flex-1 flex-col overflow-hidden bg-gray-900">
+    <aside className="flex min-w-[260px] max-w-[260px] flex-1 flex-col overflow-hidden bg-gray-900">
       <Button
         variant="ghost"
         className="my-4 justify-start rounded-none font-semibold text-white hover:bg-primary hover:text-white"
-        onClick={() => insertQuestion({type: 'SHORT_TEXT'})}
+        onClick={onNewQuestionClick}
       >
         <div className="mr-4 flex h-5 w-5 items-center justify-center rounded-[2px] bg-primary">
           <Plus className="h-5 w-5" />
@@ -83,7 +107,7 @@ export const QuestionsSidebar = () => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     onSelect={() => {
-                      duplicateQuestion({id: question.id});
+                      onDuplicateQuestionClick(question.id);
                       setMenuOpenId('');
                     }}
                   >
@@ -92,7 +116,7 @@ export const QuestionsSidebar = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onSelect={() => {
-                      deleteQuestion({id: question.id});
+                      onDeleteQuestionClick(question.id);
                       setMenuOpenId('');
                     }}
                     className="text-red-600"

@@ -1,11 +1,11 @@
 'use client';
 
-import {QuestionType} from '@prisma/client';
 import {Input} from '@/components/ui/input';
 import {SwitchSetting} from '@/features/survey-designer/components/switch-setting';
+import {QuestionType} from '@/lib/constants/question';
 import {QuestionConfig} from '@/lib/validations/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {useQuestionActions} from '../store/questions';
+import {useSurveyQuestionsActions} from '../store/survey-designer';
 
 type PropertySettingKey = Exclude<
   keyof QuestionConfig['properties'],
@@ -15,7 +15,7 @@ type PropertySettingKey = Exclude<
 type ValidationSettingKey = keyof QuestionConfig['validations'];
 
 export const QuestionSettings = () => {
-  const {updateQuestion} = useQuestionActions();
+  const {updateQuestion} = useSurveyQuestionsActions();
   const {activeQuestion} = useActiveQuestion();
 
   if (!activeQuestion) return null;
@@ -156,21 +156,21 @@ export const QuestionSettings = () => {
 };
 
 const propertySettingsMap: Record<QuestionType, PropertySettingKey[]> = {
-  SHORT_TEXT: ['placeholder'],
-  LONG_TEXT: ['placeholder'],
-  MULTIPLE_CHOICE: [
+  short_text: ['placeholder'],
+  long_text: ['placeholder'],
+  multiple_choice: [
     'allow_other_option',
     'allow_multiple_selection',
     'randomise',
   ],
-  SINGLE_CHOICE: ['randomise', 'allow_other_option'],
+  single_choice: ['randomise', 'allow_other_option'],
 };
 
 const validationSettingsMap: Record<QuestionType, ValidationSettingKey[]> = {
-  SHORT_TEXT: ['required', 'max_characters'],
-  LONG_TEXT: ['required', 'max_characters'],
-  MULTIPLE_CHOICE: ['required'],
-  SINGLE_CHOICE: ['required'],
+  short_text: ['required', 'max_characters'],
+  long_text: ['required', 'max_characters'],
+  multiple_choice: ['required'],
+  single_choice: ['required'],
 };
 
 const keyToLabelMap: Record<PropertySettingKey | ValidationSettingKey, string> =

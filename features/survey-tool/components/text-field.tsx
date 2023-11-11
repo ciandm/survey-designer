@@ -1,12 +1,12 @@
 import React from 'react';
 import {Controller} from 'react-hook-form';
-import {QuestionType} from '@prisma/client';
+import {QuestionType} from '@/lib/constants/question';
 import {QuestionConfig} from '@/lib/validations/question';
 import {QuestionFormControl} from './question-form';
 
 interface Props
   extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
-  type: Extract<QuestionType, 'SHORT_TEXT' | 'LONG_TEXT'>;
+  type: Extract<QuestionType, 'short_text' | 'long_text'>;
   question: QuestionConfig;
   view?: 'live' | 'editing';
   control?: QuestionFormControl;
@@ -14,13 +14,13 @@ interface Props
 
 export const TextField = ({
   value,
-  type = 'SHORT_TEXT',
+  type = 'short_text',
   question,
   view = 'live',
   control,
   ...rest
 }: Props) => {
-  const Tag = type === 'SHORT_TEXT' ? 'input' : 'textarea';
+  const Tag = type === 'short_text' ? 'input' : 'textarea';
 
   const hasCustomPlaceholder = !!question?.properties.placeholder;
 
@@ -32,7 +32,7 @@ export const TextField = ({
     placeholder: hasCustomPlaceholder
       ? question.properties.placeholder
       : 'Your answer here...',
-    rows: type === 'SHORT_TEXT' ? 1 : 3,
+    rows: type === 'short_text' ? 1 : 3,
     readOnly: view === 'editing',
     ...(view === 'editing' && {value}),
     ...(view === 'live' && {defaultValue: value}),

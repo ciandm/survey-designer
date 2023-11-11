@@ -12,37 +12,6 @@ datasource db {
 }
 
 model Survey {
-  id        String     @id @default(cuid())
-  name      String
-  schema    Json       @default("{}")
-  questions Question[]
-}
-
-model Question {
-  id          String       @id @default(cuid())
-  text        String
-  description String?
-  answers     Answer[]
-  survey      Survey?      @relation(fields: [surveyId], references: [id])
-  surveyId    String?
-  type        QuestionType @default(SHORT_TEXT)
-  order       Int          @default(1)
-
-  @@index([surveyId], name: "surveyId")
-}
-
-enum QuestionType {
-  SHORT_TEXT
-  LONG_TEXT
-  MULTIPLE_CHOICE
-  SINGLE_CHOICE
-}
-
-model Answer {
-  id         String   @id @default(cuid())
-  text       String
-  question   Question @relation(fields: [questionId], references: [id])
-  questionId String
-
-  @@index([questionId], name: "questionId")
+  id     String @id @default(cuid())
+  schema Json   @default("{}")
 }
