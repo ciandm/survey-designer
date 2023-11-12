@@ -2,7 +2,7 @@
 
 import {RefreshCw} from 'lucide-react';
 import Link from 'next/link';
-import {Button} from '@/components/ui/button';
+import {Button, buttonVariants} from '@/components/ui/button';
 import {cn} from '@/lib/utils';
 import {useUpdateSurveySchema} from '../hooks/use-update-survey-schema';
 import {useDesignerModeActions} from '../store/designer-mode';
@@ -44,7 +44,14 @@ export const EditorHeader = () => {
     <header className="flex items-center justify-between gap-2 border-b bg-background px-4 py-3">
       <div className="flex items-center">
         <Link href="/">
-          <span className="text-sm">Home</span>
+          <span
+            className={cn(
+              buttonVariants({variant: 'link'}),
+              'p-0 text-foreground',
+            )}
+          >
+            Home
+          </span>
         </Link>
         <span className="mx-2">/</span>
         <ContentEditable

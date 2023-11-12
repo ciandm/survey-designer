@@ -66,7 +66,7 @@ export const QuestionsSidebar = () => {
       <div className="p-4">
         <Button
           size="sm"
-          variant="outline"
+          variant="secondary"
           onClick={onNewQuestionClick}
           className="w-full"
         >
