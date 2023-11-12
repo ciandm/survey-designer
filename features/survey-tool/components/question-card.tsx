@@ -24,7 +24,7 @@ export const QuestionCard = ({
       value={{question, totalQuestions, questionNumber, view}}
     >
       <Card
-        className="flex w-full flex-1 flex-col items-center justify-center rounded-lg bg-card text-foreground"
+        className="flex w-full flex-1 flex-col items-center justify-center rounded-lg border-none bg-card text-foreground shadow-xl"
         {...rest}
       >
         <div className="flex w-full flex-col items-center justify-center py-16">

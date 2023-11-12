@@ -1,12 +1,13 @@
 import {createContext, useContext} from 'react';
 import {createStore, useStore} from 'zustand';
+import {immer} from 'zustand/middleware/immer';
 import {QuestionConfig} from '@/lib/validations/question';
 
 interface ResponsesProps {
   questions: QuestionConfig[];
   responses: {
     questionId: string;
-    response: string;
+    value: string[];
   }[];
   questionIds: string[];
   currentQuestionId: string;
@@ -14,7 +15,7 @@ interface ResponsesProps {
 
 interface ResponsesState extends ResponsesProps {
   actions: {
-    addResponse: (response: string) => void;
+    addResponse: (response: string[]) => void;
     setCurrentQuestionId: (fn: (questionId: string) => string) => void;
     resetResponses: () => void;
   };
@@ -29,44 +30,41 @@ export const createResponsesStore = (initProps?: Partial<ResponsesProps>) => {
     responses: [],
     questionIds: [],
   };
-  return createStore<ResponsesState>()((set) => ({
-    ...DEFAULT_PROPS,
-    ...initProps,
-    actions: {
-      addResponse: (response) =>
-        set((state) => {
-          const exisingResponse = state.responses.find(
-            (r) => r.questionId === state.currentQuestionId,
-          );
+  return createStore<ResponsesState>()(
+    immer((set) => ({
+      ...DEFAULT_PROPS,
+      ...initProps,
+      actions: {
+        addResponse: (response) =>
+          set((state) => {
+            const exisingResponse = state.responses.find(
+              (r) => r.questionId === state.currentQuestionId,
+            );
 
-          if (exisingResponse) {
-            return {
-              responses: state.responses.map((r) =>
-                r.questionId === state.currentQuestionId ? {...r, response} : r,
-              ),
-            };
-          }
-
-          return {
-            responses: [
-              ...state.responses,
-              {
+            if (exisingResponse) {
+              state.responses = state.responses.map((r) =>
+                r.questionId === state.currentQuestionId
+                  ? {...r, value: response}
+                  : r,
+              );
+            } else {
+              state.responses.push({
                 questionId: state.currentQuestionId,
-                response,
-              },
-            ],
-          };
-        }),
-      setCurrentQuestionId: (fn) =>
-        set((state) => ({
-          currentQuestionId: fn(state.currentQuestionId),
-        })),
-      resetResponses: () =>
-        set(() => ({
-          responses: [],
-        })),
-    },
-  }));
+                value: response,
+              });
+            }
+          }),
+        setCurrentQuestionId: (fn) =>
+          set((state) => {
+            state.currentQuestionId = fn(state.currentQuestionId);
+          }),
+        resetResponses: () =>
+          set((state) => {
+            state.responses = [];
+          }),
+      },
+    })),
+  );
 };
 
 export const ResponsesContext = createContext<BearStore | null>(null);

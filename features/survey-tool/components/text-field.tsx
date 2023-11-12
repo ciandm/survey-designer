@@ -56,9 +56,15 @@ export const TextField = ({
       <Controller
         control={control}
         name="response"
-        render={({field, fieldState}) => (
+        render={({field: {onChange, ...restField}, fieldState}) => (
           <>
-            {renderInputWrapper(<Tag {...commonProps} {...field} />)}
+            {renderInputWrapper(
+              <Tag
+                {...commonProps}
+                {...restField}
+                onChange={(e) => onChange([e.target.value])}
+              />,
+            )}
             <div className="mt-4 flex justify-between">
               {fieldState.error && (
                 <p
@@ -70,7 +76,7 @@ export const TextField = ({
               )}
               {question.validations.max_characters && (
                 <p className="ml-auto text-sm text-gray-500">
-                  {field.value.length}/
+                  {restField.value[0].length}/
                   {question.validations.max_characters.toLocaleString()}{' '}
                   characters
                 </p>

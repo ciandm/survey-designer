@@ -9,30 +9,100 @@ import {QuestionCard} from '@/features/survey-tool/components/question-card';
 import {QuestionChoices} from '@/features/survey-tool/components/question-choices';
 import {QuestionWording} from '@/features/survey-tool/components/question-wording';
 import {QuestionConfig} from '@/lib/validations/question';
-import {useResponsesContext} from '../store/responses';
-import {getPreviousQuestion, getQuestionStates} from '../utils/question';
+import {
+  UseResponsesWorkflowHandlers,
+  UseResponsesWorkflowProps,
+} from '../hooks/use-responses-workflow';
+import {getQuestionStates} from '../utils/question';
 
 interface State {
-  response: string;
+  response: string[];
 }
 
 export type QuestionFormControl = Control<State>;
 
-export const QuestionForm = () => {
-  const currentQuestionId = useResponsesContext(
-    (state) => state.currentQuestionId,
+type Props = {
+  questions: QuestionConfig[];
+} & UseResponsesWorkflowProps &
+  UseResponsesWorkflowHandlers;
+
+export const QuestionForm = ({
+  questions,
+  currentQuestionId,
+  responses,
+  handleAddResponse,
+  handleSetNextQuestion,
+  handleSetPreviousQuestion,
+}: Props) => {
+  const {isLastQuestion, questionIndex, canGoBack} = getQuestionStates(
+    questions,
+    currentQuestionId,
   );
 
-  return <QuestionFormInner key={currentQuestionId} />;
+  const question = questions[questionIndex];
+
+  const methods = useForm<State>({
+    defaultValues: {
+      response:
+        responses.find((r) => r.questionId === currentQuestionId)?.value ?? [],
+    },
+    resolver: zodResolver(createSchema(question)),
+  });
+
+  const {handleSubmit, control} = methods;
+
+  const onSubmit = handleSubmit((data) => {
+    handleAddResponse({questionId: currentQuestionId, value: data.response});
+
+    if (isLastQuestion) {
+      return console.log(JSON.stringify(responses, null, 2));
+    }
+
+    handleSetNextQuestion();
+  });
+
+  if (!question) {
+    return null;
+  }
+
+  return (
+    <form className="h-full w-full" onSubmit={onSubmit}>
+      <QuestionCard
+        view="live"
+        totalQuestions={questions.length}
+        questionNumber={questionIndex + 1}
+        question={question}
+      >
+        <QuestionWording />
+        <QuestionChoices control={control} />
+        <div className="mt-8 flex">
+          {canGoBack && (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleSetPreviousQuestion}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+          )}
+          <Button className="ml-auto" type="submit">
+            Next
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+      </QuestionCard>
+    </form>
+  );
 };
 
 const schema = z.object({
-  response: z.string().optional(),
+  response: z.string().array(),
 });
 
 const createSchema = (question: QuestionConfig) => {
   return schema.superRefine(({response}, ctx) => {
-    if (question.validations.required && !response) {
+    if (question.validations.required && !response.length) {
       return ctx.addIssue({
         message: 'This field is required',
         path: ['response'],
@@ -52,82 +122,4 @@ const createSchema = (question: QuestionConfig) => {
       });
     }
   });
-};
-
-const QuestionFormInner = () => {
-  const questions = useResponsesContext((state) => state.questions);
-  const currentQuestionId = useResponsesContext(
-    (state) => state.currentQuestionId,
-  );
-  const {addResponse, setCurrentQuestionId} = useResponsesContext(
-    (state) => state.actions,
-  );
-  const responses = useResponsesContext((state) => state.responses);
-  const {isLastQuestion, nextQuestion, questionIndex, canGoBack} =
-    getQuestionStates(questions, currentQuestionId);
-
-  const question = questions[questionIndex];
-
-  const methods = useForm<State>({
-    defaultValues: {
-      response:
-        responses.find((r) => r.questionId === currentQuestionId)?.response ??
-        '',
-    },
-    resolver: zodResolver(createSchema(question)),
-  });
-
-  const {handleSubmit, control} = methods;
-
-  const onSubmit = handleSubmit((data) => {
-    addResponse(data.response);
-
-    if (isLastQuestion) {
-      return console.log('End');
-    }
-
-    setCurrentQuestionId((currentId) => {
-      return nextQuestion?.id ?? currentId;
-    });
-  });
-
-  if (!question) {
-    return null;
-  }
-
-  return (
-    <FormProvider {...methods}>
-      <form className="h-full w-full" onSubmit={onSubmit}>
-        <QuestionCard
-          view="live"
-          totalQuestions={questions.length}
-          questionNumber={questionIndex + 1}
-          question={question}
-        >
-          <QuestionWording />
-          <QuestionChoices control={control} />
-          <div className="mt-8 flex">
-            {canGoBack && (
-              <Button
-                type="button"
-                onClick={() => {
-                  setCurrentQuestionId((currentId) => {
-                    const question = getPreviousQuestion(questions, currentId);
-                    return question?.id ?? currentId;
-                  });
-                }}
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
-              </Button>
-            )}
-            <Button className="ml-auto" type="submit">
-              Next
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
-        </QuestionCard>
-      </form>
-    </FormProvider>
-  );
 };

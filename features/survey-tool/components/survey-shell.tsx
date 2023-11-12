@@ -20,7 +20,7 @@ export const SurveyShell = ({surveyTitle, onBackClick, children}: Props) => {
           <h1 className="font-medium leading-tight">
             {surveyTitle || 'Untitled Survey'}
           </h1>
-          <Badge className="text-xs">Live preview</Badge>
+          <div />
         </div>
       </header>
       <main className="flex flex-1 items-center justify-center bg-muted py-20">
