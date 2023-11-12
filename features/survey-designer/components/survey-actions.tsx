@@ -33,6 +33,7 @@ import {toast} from '@/components/ui/use-toast';
 import {useDeleteSurvey} from '../hooks/use-delete-survey';
 import {useDuplicateSurvey} from '../hooks/use-duplicate-survey';
 import {useSurveyDetails} from '../store/survey-designer';
+import {DeleteSurveyAlert} from './delete-survey-alert';
 
 export const SurveyActions = () => {
   const {id} = useSurveyDetails();
@@ -67,7 +68,11 @@ export const SurveyActions = () => {
             description: 'Your survey has been duplicated successfully.',
             variant: 'default',
           });
-          router.push(`/survey/${survey.id}/editor`);
+          let query = '';
+          if (survey.schema.questions.length > 0) {
+            query = `?question=${survey.schema.questions[0].ref}`;
+          }
+          router.push(`/survey/${survey.id}/editor${query}`);
           router.refresh();
         },
       },
@@ -128,37 +133,30 @@ export const SurveyActions = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="secondary" onClick={() => setIsOpen(false)}>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => setIsOpen(false)}
+            >
               Close
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete survey.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isPendingDelete}>
-              Cancel
-            </AlertDialogCancel>
-            <Button
-              disabled={isPendingDelete}
-              variant="destructive"
-              onClick={handleDeleteSurvey}
-            >
-              Delete
-              {isPendingDelete && (
-                <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-              )}
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteSurveyAlert
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+      >
+        <AlertDialogCancel disabled={isPendingDelete}>Cancel</AlertDialogCancel>
+        <Button
+          disabled={isPendingDelete}
+          variant="destructive"
+          onClick={handleDeleteSurvey}
+        >
+          Delete
+          {isPendingDelete && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+        </Button>
+      </DeleteSurveyAlert>
     </>
   );
 };

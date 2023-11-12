@@ -18,10 +18,10 @@ export const ContentEditable = ({
     // @ts-ignore
     <ContentEditableExt
       className={cn(
-        'cursor-pointer whitespace-break-spaces rounded-[4px] text-sm outline-none ring-blue-500 focus:ring-2',
+        'cursor-pointer whitespace-break-spaces rounded-[4px] text-sm text-foreground outline-none ring-primary focus-within:ring-2',
         className,
         {
-          'text-gray-500': !html,
+          'text-muted-foreground': !html,
           [`before:content-[attr(data-placeholder)]`]: !html,
         },
       )}

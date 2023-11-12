@@ -2,7 +2,6 @@
 
 import {useDesignerMode} from '../store/designer-mode';
 import {ConfigPanel} from './config-panel';
-import {EditorFooter} from './editor-footer';
 import {EditorHeader} from './editor-header';
 import {EditorSection} from './editor-section';
 import {QuestionEditor} from './question-editor';
@@ -18,13 +17,12 @@ export const SurveyDesigner = () => {
 
   return (
     <>
-      <QuestionsSidebar />
       <div className="flex w-full flex-1 flex-col">
         <EditorHeader />
         <div className="flex h-full flex-1 overflow-hidden">
+          <QuestionsSidebar />
           <EditorSection>
             <QuestionEditor />
-            <EditorFooter />
           </EditorSection>
           <ConfigPanel />
         </div>
