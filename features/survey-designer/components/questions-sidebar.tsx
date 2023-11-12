@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useState} from 'react';
-import {Check, FileQuestion, MoreVertical, Plus, Text} from 'lucide-react';
+import {Check, FileQuestion, MoreVertical, Text} from 'lucide-react';
 import {v4 as uuidv4} from 'uuid';
 import {Button} from '@/components/ui/button';
 import {
@@ -62,19 +62,19 @@ export const QuestionsSidebar = () => {
   };
 
   return (
-    <aside className="flex min-w-[260px] max-w-[260px] flex-1 flex-col overflow-hidden bg-gray-900">
-      <Button
-        variant="ghost"
-        className="my-4 justify-start rounded-none font-semibold text-white hover:bg-primary hover:text-white"
-        onClick={onNewQuestionClick}
-      >
-        <div className="mr-4 flex h-5 w-5 items-center justify-center rounded-[2px] bg-primary">
-          <Plus className="h-5 w-5" />
-        </div>
-        New question
-      </Button>
+    <aside className="flex min-w-[260px] max-w-[260px] flex-1 flex-col overflow-hidden border-r">
+      <div className="p-4">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onNewQuestionClick}
+          className="w-full"
+        >
+          New question
+        </Button>
+      </div>
       <div className="flex flex-1 flex-col overflow-y-auto">
-        <ol className="flex flex-1 flex-col gap-2">
+        <ol className="flex flex-1 flex-col ">
           {questions.map((question, index) => (
             <SidebarQuestionItem
               key={question.id}
@@ -105,7 +105,7 @@ export const QuestionsSidebar = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 flex-shrink-0 text-gray-50 hover:bg-transparent hover:text-gray-50 focus:text-gray-50"
+                    className="w-8 flex-shrink-0 text-gray-500 hover:bg-transparent"
                   >
                     <span className="sr-only">Actions</span>
                     <MoreVertical className="h-4 w-4 text-inherit" />

@@ -24,30 +24,29 @@ export const SidebarQuestionItem = ({
       tabIndex={0}
       onClick={onClick}
       className={cn(
-        'group box-border flex min-h-[56px] cursor-pointer items-center justify-between p-2 text-left',
+        'group box-border flex min-h-[56px] cursor-pointer items-center justify-between px-2 py-3 text-left',
         {
-          'hover:bg-gray-800': !isSelected,
-          'bg-gray-800 ': isSelected,
+          'bg-muted': isSelected,
         },
       )}
     >
-      <li className="ml-3 mr-2 flex w-full items-center gap-2 text-gray-50">
+      <li className="ml-3 mr-2 flex w-full items-center gap-2">
         <div className="self-center">
           <div className="flex">
-            <span className="w-8 flex-shrink-0 text-sm font-semibold leading-tight">
+            <span className="w-8 flex-shrink-0 text-sm font-semibold leading-tight text-foreground">
               {index + 1}
             </span>
             <div className="flex flex-col items-start gap-2">
               <div className="line-clamp-2">
                 <p
                   className={cn('text-sm font-semibold leading-tight ', {
-                    'text-gray-500': !question.text,
+                    'text-foreground': !question.text,
                   })}
                 >
                   {question.text || '...'}
                 </p>
               </div>
-              <p className="text-xs uppercase leading-tight tracking-wide text-gray-500">
+              <p className="text-xs uppercase leading-tight tracking-wide text-muted-foreground">
                 {formatQuestionType(type)}
               </p>
             </div>

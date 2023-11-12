@@ -15,7 +15,7 @@ export const QuestionEditor = () => {
   const {updateQuestion} = useSurveyQuestionsActions();
 
   return (
-    <div className="flex w-full flex-1 overflow-y-auto bg-primary-foreground p-8">
+    <div className="flex w-full flex-1 overflow-y-auto bg-muted px-8 py-32">
       {activeQuestion ? (
         <QuestionCard
           question={activeQuestion}

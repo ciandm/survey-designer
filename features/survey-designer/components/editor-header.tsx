@@ -1,6 +1,7 @@
 'use client';
 
 import {RefreshCw} from 'lucide-react';
+import Link from 'next/link';
 import {Button} from '@/components/ui/button';
 import {cn} from '@/lib/utils';
 import {useUpdateSurveySchema} from '../hooks/use-update-survey-schema';
@@ -41,20 +42,24 @@ export const EditorHeader = () => {
 
   return (
     <header className="flex items-center justify-between gap-2 border-b bg-background px-4 py-3">
-      <div className="flex flex-col gap-1">
+      <div className="flex items-center">
+        <Link href="/">
+          <span className="text-sm">Home</span>
+        </Link>
+        <span className="mx-2">/</span>
         <ContentEditable
           html={survey.title}
-          className="text-md font-semibold"
+          className="text-sm font-semibold"
           placeholder="Untitled Survey"
           onChange={(e) => updateTitle(e.target.value)}
         />
       </div>
       <div className="flex gap-2">
         <UnsavedChangesButton />
-        <Button variant="secondary" onClick={handleOnPreviewClick}>
+        <Button size="sm" variant="secondary" onClick={handleOnPreviewClick}>
           Preview
         </Button>
-        <Button variant="secondary" onClick={() => alert('TODO: Publish')}>
+        <Button size="sm" onClick={() => alert('TODO: Publish')}>
           Publish
         </Button>
         <SurveyActions />
@@ -74,6 +79,7 @@ const UnsavedChangesButton = () => {
   return (
     <Button
       variant="secondary"
+      size="sm"
       onClick={() => handleUpdateSurveySchema({...schema})}
       disabled={isPendingUpdateSchema}
       className="mr-4"
