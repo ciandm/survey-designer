@@ -1,21 +1,36 @@
-import React, {useState} from 'react';
-import {QuestionConfig} from '@/lib/validations/question';
-import {getNextQuestion, getPreviousQuestion} from '../utils/question';
+import {useState} from 'react';
+import {SurveySchema} from '@/lib/validations/survey';
+import {
+  getNextQuestion,
+  getPreviousQuestion,
+  getQuestionStates,
+} from '../utils/question';
+import {QuestionFormState} from './use-question-form';
 
 export type QuestionResponse = {
   questionId: string;
   value: string[];
 };
 
-export const useResponsesWorkflow = ({
-  questions,
-}: {
-  questions: QuestionConfig[];
-}) => {
+type Step = 'welcome' | 'questions' | 'thank_you';
+
+export const useSurvey = ({schema}: {schema: SurveySchema}) => {
+  const {questions} = schema;
+  const [step, setStep] = useState<Step>(() => {
+    if (schema.welcome_screen) return 'welcome';
+    if (schema.questions.length) return 'questions';
+    return 'thank_you';
+  });
   const [responses, setResponses] = useState<QuestionResponse[]>([]);
   const [currentQuestionId, setCurrentQuestionId] = useState<string>(
     questions[0]?.id ?? '',
   );
+
+  const {questionIndex, isLastQuestion} = getQuestionStates(
+    questions,
+    currentQuestionId,
+  );
+  const question = questions[questionIndex];
 
   const handleAddResponse = ({questionId, value}: QuestionResponse) => {
     if (responses.find((r) => r.questionId === questionId)) {
@@ -41,21 +56,29 @@ export const useResponsesWorkflow = ({
     setCurrentQuestionId(previousQuestion.id);
   };
 
+  const onSubmit = (data: QuestionFormState) => {
+    handleAddResponse({questionId: currentQuestionId, value: data.response});
+
+    if (isLastQuestion) {
+      setStep('thank_you');
+      return;
+    }
+
+    handleSetNextQuestion();
+  };
+
   return {
+    step,
     responses,
     currentQuestionId,
+    question,
     handlers: {
       handleAddResponse,
       handleSetNextQuestion,
       handleSetPreviousQuestion,
     },
+    form: {
+      onSubmit,
+    },
   };
 };
-
-type UseResponsesWorkflowReturn = ReturnType<typeof useResponsesWorkflow>;
-export type UseResponsesWorkflowProps = Omit<
-  UseResponsesWorkflowReturn,
-  'handlers'
->;
-export type UseResponsesWorkflowHandlers =
-  UseResponsesWorkflowReturn['handlers'];

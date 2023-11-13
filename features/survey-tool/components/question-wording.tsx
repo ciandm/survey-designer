@@ -1,25 +1,31 @@
 'use client';
 
 import {cn} from '@/lib/utils';
+import {QuestionConfig} from '@/lib/validations/question';
 import {ContentEditable} from '../../survey-designer/components/content-editable';
-import {useQuestionCardContext} from './question-card';
 
 type Props = {
   onTitleChange?: (value: string) => void;
   onDescriptionChange?: (value: string) => void;
+  question: QuestionConfig;
+  view: 'live' | 'editing';
+  totalQuestions: number;
+  questionNumber: number;
 };
 
 export const QuestionWording = ({
   onDescriptionChange,
   onTitleChange,
+  question,
+  view,
+  questionNumber,
+  totalQuestions,
 }: Props) => {
-  const {question, questionNumber, totalQuestions, view} =
-    useQuestionCardContext();
-  const {text, validations, description} = question;
+  const {text, validations, description} = question ?? {};
 
   let content = null;
 
-  const titleClassName = cn('text-2xl font-bold', {
+  const titleClassName = cn('text-2xl font-medium', {
     [`after:content-['*']`]: validations.required && text,
   });
 

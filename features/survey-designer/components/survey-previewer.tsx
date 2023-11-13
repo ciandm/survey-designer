@@ -3,18 +3,14 @@
 import {ArrowLeft} from 'lucide-react';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
-import {QuestionForm} from '@/features/survey-tool/components/question-form';
-import {useResponsesWorkflow} from '@/features/survey-tool/hooks/use-responses-workflow';
+import {Survey} from '@/features/survey-tool/components/survey';
 import {useDesignerModeActions} from '../store/designer-mode';
-import {useSurveyDetails, useSurveyQuestions} from '../store/survey-designer';
+import {useSurveyDetails, useSurveySchema} from '../store/survey-designer';
 
 export const SurveyPreviewer = () => {
   const {title} = useSurveyDetails();
-  const questions = useSurveyQuestions();
+  const schema = useSurveySchema();
   const {updateMode} = useDesignerModeActions();
-  const {currentQuestionId, handlers, responses} = useResponsesWorkflow({
-    questions,
-  });
 
   return (
     <div className="flex w-full flex-col">
@@ -33,15 +29,9 @@ export const SurveyPreviewer = () => {
           <Badge>Live preview</Badge>
         </div>
       </header>
-      <div className="flex flex-1 items-center justify-center bg-muted p-8">
-        <div className="w-full max-w-5xl">
-          <QuestionForm
-            questions={questions}
-            currentQuestionId={currentQuestionId}
-            responses={responses}
-            key={currentQuestionId}
-            {...handlers}
-          />
+      <div className="h-full w-full flex-1 bg-muted">
+        <div className="container h-full w-full py-8">
+          <Survey schema={schema} />
         </div>
       </div>
     </div>

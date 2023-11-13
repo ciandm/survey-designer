@@ -9,6 +9,12 @@ export const surveySchema = z.object({
   id: z.string(),
   title: z.string(),
   questions: z.array(questionSchema),
+  welcome_screen: z
+    .object({
+      title: z.string(),
+      description: z.string(),
+    })
+    .optional(),
 });
 
 export const createSurveySchema = z.object({
