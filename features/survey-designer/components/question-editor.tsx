@@ -1,8 +1,8 @@
 'use client';
 
-import {QuestionCard} from '@/features/survey-tool/components/question-card';
-import {QuestionChoices} from '@/features/survey-tool/components/question-choices';
-import {QuestionWording} from '../../survey-tool/components/question-wording';
+import {QuestionProvider} from '@/features/survey-tool/components/question-provider';
+import {ResponseField} from '@/features/survey-tool/components/response-field';
+import {Question} from '../../survey-tool/components/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {
   useSurveyQuestions,
@@ -17,21 +17,24 @@ export const QuestionEditor = () => {
   return (
     <div className="flex w-full flex-1 overflow-y-auto bg-muted px-4 py-32">
       {activeQuestion ? (
-        <div className="flex w-full flex-col items-center justify-center bg-card p-8">
+        <div className="flex w-full flex-col items-center justify-center rounded-lg bg-card p-8 shadow-lg">
           <div className="w-full max-w-xl">
-            <QuestionWording
+            <QuestionProvider
               question={activeQuestion}
               questionNumber={activeQuestionIndex + 1}
               totalQuestions={questions.length}
               view="editing"
-              onTitleChange={(value) =>
-                updateQuestion({id: activeQuestion.id, text: value})
-              }
-              onDescriptionChange={(value) =>
-                updateQuestion({id: activeQuestion.id, description: value})
-              }
-            />
-            <QuestionChoices question={activeQuestion} view="editing" />
+            >
+              <Question
+                onTitleChange={(value) =>
+                  updateQuestion({id: activeQuestion.id, text: value})
+                }
+                onDescriptionChange={(value) =>
+                  updateQuestion({id: activeQuestion.id, description: value})
+                }
+              />
+              <ResponseField />
+            </QuestionProvider>
           </div>
         </div>
       ) : (

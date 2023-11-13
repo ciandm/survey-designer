@@ -1,26 +1,16 @@
 'use client';
 
 import {cn} from '@/lib/utils';
-import {QuestionConfig} from '@/lib/validations/question';
 import {ContentEditable} from '../../survey-designer/components/content-editable';
+import {useQuestionContext} from './question-provider';
 
 type Props = {
   onTitleChange?: (value: string) => void;
   onDescriptionChange?: (value: string) => void;
-  question: QuestionConfig;
-  view: 'live' | 'editing';
-  totalQuestions: number;
-  questionNumber: number;
 };
 
-export const QuestionWording = ({
-  onDescriptionChange,
-  onTitleChange,
-  question,
-  view,
-  questionNumber,
-  totalQuestions,
-}: Props) => {
+export const Question = ({onDescriptionChange, onTitleChange}: Props) => {
+  const {question, questionNumber, totalQuestions, view} = useQuestionContext();
   const {text, validations, description} = question ?? {};
 
   let content = null;

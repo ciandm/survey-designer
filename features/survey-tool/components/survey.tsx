@@ -6,8 +6,9 @@ import {SurveySchema} from '@/lib/validations/survey';
 import {QuestionFormState, useQuestionForm} from '../hooks/use-question-form';
 import {QuestionResponse, useSurvey} from '../hooks/use-survey';
 import {getQuestionStates} from '../utils/question';
-import {QuestionChoices} from './question-choices';
-import {QuestionWording} from './question-wording';
+import {Question} from './question';
+import {QuestionProvider} from './question-provider';
+import {ResponseField} from './response-field';
 
 export const Survey = ({schema}: {schema: SurveySchema}) => {
   const {questions = []} = schema;
@@ -34,13 +35,15 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
           responses={responses}
           key={currentQuestionId}
         >
-          <QuestionWording
+          <QuestionProvider
             question={question}
-            view="live"
             questionNumber={questionIndex + 1}
             totalQuestions={questions.length}
-          />
-          <QuestionChoices view="live" question={question} />
+            view="live"
+          >
+            <Question />
+            <ResponseField />
+          </QuestionProvider>
           <div className="mt-8 flex">
             {canGoBack && (
               <Button
@@ -95,7 +98,7 @@ const Form = ({
     <FormProvider {...methods}>
       <form
         onSubmit={onSubmit}
-        className="mx-auto flex h-full w-full flex-col items-center justify-center bg-card p-12"
+        className="mx-auto flex h-full w-full flex-col items-center justify-center rounded-md bg-card p-12 shadow-xl"
       >
         <div className="w-full max-w-2xl">{children}</div>
       </form>

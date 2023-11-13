@@ -1,14 +1,11 @@
 'use client';
 
-import {QuestionConfig} from '@/lib/validations/question';
+import {useQuestionContext} from './question-provider';
 import {TextField} from './text-field';
 
-interface Props {
-  question: QuestionConfig;
-  view: 'live' | 'editing';
-}
+export const ResponseField = () => {
+  const {question, view} = useQuestionContext();
 
-export const QuestionChoices = ({question, view}: Props) => {
   switch (question.type) {
     case 'short_text':
     case 'long_text':
