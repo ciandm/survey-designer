@@ -9,7 +9,7 @@ export const QuestionContainer = ({children}: {children: React.ReactNode}) => {
   const questions = useSurveyQuestions();
 
   return (
-    <Card className="flex w-full flex-col items-center justify-center rounded-none">
+    <Card className="flex w-full flex-col items-center justify-center rounded-xl bg-red-500">
       <div className="flex w-full flex-col items-center justify-center py-16">
         <div className="w-full flex-1 px-32">
           <p className="mb-2 text-sm text-muted-foreground">

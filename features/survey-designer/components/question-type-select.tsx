@@ -46,7 +46,6 @@ export const QuestionTypeSelect = () => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Simple</SelectLabel>
             {questionTypeOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}

@@ -2,7 +2,8 @@ import React from 'react';
 import {Controller} from 'react-hook-form';
 import {QuestionType} from '@/lib/constants/question';
 import {QuestionConfig} from '@/lib/validations/question';
-import {QuestionFormControl} from './question-form';
+import {QuestionFormControl} from '../hooks/use-question-form';
+import {QuestionFormConnect} from './survey';
 
 interface Props
   extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
@@ -28,7 +29,7 @@ export const TextField = ({
     type: 'text',
     id: 'name',
     className:
-      'peer block w-full border-0 p-2 text-gray-900 outline-none focus:ring-0 sm:text-sm sm:leading-6',
+      'peer block w-full border-0 py-2 text-gray-900 outline-none focus:ring-0 sm:text-sm sm:leading-6',
     placeholder: hasCustomPlaceholder
       ? question.properties.placeholder
       : 'Your answer here...',
@@ -51,34 +52,44 @@ export const TextField = ({
     );
   };
 
-  if (control) {
+  if (view === 'live') {
     return (
-      <Controller
-        control={control}
-        name="response"
-        render={({field, fieldState}) => (
-          <>
-            {renderInputWrapper(<Tag {...commonProps} {...field} />)}
-            <div className="mt-4 flex justify-between">
-              {fieldState.error && (
-                <p
-                  className="text-sm font-medium text-red-600"
-                  id="email-error"
-                >
-                  {fieldState.error.message}
-                </p>
-              )}
-              {question.validations.max_characters && (
-                <p className="ml-auto text-sm text-gray-500">
-                  {field.value.length}/
-                  {question.validations.max_characters.toLocaleString()}{' '}
-                  characters
-                </p>
-              )}
-            </div>
-          </>
+      <QuestionFormConnect>
+        {({control}) => (
+          <Controller
+            control={control}
+            name="response"
+            render={({field: {onChange, ...restField}, fieldState}) => (
+              <>
+                {renderInputWrapper(
+                  <Tag
+                    {...commonProps}
+                    {...restField}
+                    onChange={(e) => onChange([e.target.value])}
+                  />,
+                )}
+                <div className="mt-4 flex justify-between">
+                  {fieldState.error && (
+                    <p
+                      className="text-sm font-medium text-red-600"
+                      id="email-error"
+                    >
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                  {question.validations.max_characters && (
+                    <p className="ml-auto text-sm text-gray-500">
+                      {restField.value[0].length}/
+                      {question.validations.max_characters.toLocaleString()}{' '}
+                      characters
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
+          />
         )}
-      />
+      </QuestionFormConnect>
     );
   }
 
