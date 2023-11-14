@@ -19,6 +19,22 @@ type SurveySchemaStoreActions = {
   duplicateQuestion: (question: Pick<QuestionConfig, 'id' | 'ref'>) => void;
   changeQuestionType: (question: Pick<QuestionConfig, 'id' | 'type'>) => void;
   updateQuestion: (question: Partial<QuestionConfig> & {id: string}) => void;
+  updateQuestionChoice: (params: {
+    questionId: string;
+    newChoice: {
+      id: string;
+      value: string;
+    };
+  }) => void;
+  deleteQuestionChoice: (params: {
+    questionId: string;
+    choiceId: string;
+  }) => void;
+  duplicateQuestionChoice: (params: {
+    questionId: string;
+    choiceId: string;
+  }) => void;
+  insertQuestionChoice: (params: {questionId: string}) => void;
   setQuestions: (questions: QuestionConfig[]) => void;
   setSchema: (schema: SurveySchema) => void;
   setSavedSchema: (schema: SurveySchema) => void;
@@ -122,6 +138,85 @@ export const useSurveySchemaStore = create<SurveySchemaStoreState>()(
           state.schema.questions.splice(fieldIndex, 1, newField);
         });
       },
+      insertQuestionChoice: ({questionId}) => {
+        set((state) => {
+          const questionChoices = state.schema.questions.find(
+            (q) => q.id === questionId,
+          )?.properties.choices;
+
+          if (!questionChoices) return;
+
+          questionChoices.push({
+            id: uuidv4(),
+            value: '',
+          });
+        });
+      },
+      updateQuestionChoice: ({questionId, newChoice}) => {
+        set((state) => {
+          const fieldToUpdate = state.schema.questions.find(
+            (q) => q.id === questionId,
+          );
+          if (!fieldToUpdate) return;
+
+          const fieldIndex = state.schema.questions.findIndex(
+            (q) => q.id === questionId,
+          );
+
+          const newField: QuestionConfig = {
+            ...fieldToUpdate,
+            properties: {
+              ...fieldToUpdate.properties,
+              choices: fieldToUpdate.properties.choices?.map((choice) =>
+                choice.id === newChoice.id ? newChoice : choice,
+              ),
+            },
+          };
+
+          state.schema.questions.splice(fieldIndex, 1, newField);
+        });
+      },
+      deleteQuestionChoice: ({questionId, choiceId}) => {
+        set((state) => {
+          const questionChoices = state.schema.questions.find(
+            (q) => q.id === questionId,
+          )?.properties.choices;
+
+          if (!questionChoices) return;
+
+          const indexOfChoiceToDelete = questionChoices.findIndex(
+            (c) => c.id === choiceId,
+          );
+
+          if (indexOfChoiceToDelete === -1) return;
+
+          questionChoices.splice(indexOfChoiceToDelete, 1);
+        });
+      },
+      duplicateQuestionChoice: ({questionId, choiceId}) => {
+        set((state) => {
+          const questionChoices = state.schema.questions.find(
+            (q) => q.id === questionId,
+          )?.properties.choices;
+
+          if (!questionChoices) return;
+
+          const indexOfChoiceToDuplicate = questionChoices.findIndex(
+            (c) => c.id === choiceId,
+          );
+
+          if (indexOfChoiceToDuplicate === -1) return;
+
+          const choice = questionChoices[indexOfChoiceToDuplicate];
+
+          const newChoice = {
+            value: !!choice.value ? `${choice.value} (copy)` : '',
+            id: uuidv4(),
+          };
+
+          questionChoices.splice(indexOfChoiceToDuplicate + 1, 0, newChoice);
+        });
+      },
       changeQuestionType: ({id, type}) => {
         set((state) => {
           const fieldIndex = state.schema.questions.findIndex(
@@ -169,6 +264,7 @@ export const useSurveyQuestions = () =>
 export const useSurveyQuestionsActions = () =>
   useSurveySchemaStore((state) => {
     const {
+      updateQuestionChoice,
       insertQuestion,
       deleteQuestion,
       duplicateQuestion,
@@ -178,6 +274,7 @@ export const useSurveyQuestionsActions = () =>
     } = state.actions;
 
     return {
+      updateQuestionChoice,
       insertQuestion,
       deleteQuestion,
       duplicateQuestion,
@@ -186,6 +283,22 @@ export const useSurveyQuestionsActions = () =>
       setQuestions,
     };
   });
+
+export const {
+  updateQuestionChoice,
+  insertQuestion,
+  insertQuestionChoice,
+  deleteQuestion,
+  duplicateQuestion,
+  duplicateQuestionChoice,
+  changeQuestionType,
+  updateQuestion,
+  setQuestions,
+  deleteQuestionChoice,
+  setSavedSchema,
+  setSchema,
+  updateTitle,
+} = useSurveySchemaStore.getState().actions;
 
 export const useSurveySchema = () =>
   useSurveySchemaStore((state) => state.schema);
