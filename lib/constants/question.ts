@@ -6,3 +6,9 @@ export const QUESTION_TYPE = {
 } as const;
 
 export type QuestionType = keyof typeof QUESTION_TYPE;
+
+export const ID_PREFIXES = {
+  QUESTION: 'question-',
+  QUESTION_CHOICE: 'choice-',
+  OTHER_CHOICE: 'other-',
+} as const;

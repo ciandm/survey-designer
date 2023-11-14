@@ -1,6 +1,6 @@
 'use client';
 
-import {ChoiceField} from './choice-field';
+import {MultipleChoiceField} from './multiple-choice-field';
 import {useQuestionContext} from './question-provider';
 import {TextField} from './text-field';
 
@@ -12,6 +12,6 @@ export const ResponseField = () => {
     case 'long_text':
       return <TextField question={question} type={question.type} view={view} />;
     case 'multiple_choice':
-      return <ChoiceField />;
+      return <MultipleChoiceField />;
   }
 };

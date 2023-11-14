@@ -1,4 +1,6 @@
 import {useState} from 'react';
+import {ID_PREFIXES} from '@/lib/constants/question';
+import {ChoicesConfig, QuestionConfig} from '@/lib/validations/question';
 import {SurveySchema} from '@/lib/validations/survey';
 import {
   getNextQuestion,
@@ -15,11 +17,21 @@ export type QuestionResponse = {
 type Step = 'welcome' | 'questions' | 'thank_you';
 
 export const useSurvey = ({schema}: {schema: SurveySchema}) => {
-  const {questions} = schema;
   const [step, setStep] = useState<Step>(() => {
     if (schema.welcome_screen) return 'welcome';
     if (schema.questions.length) return 'questions';
     return 'thank_you';
+  });
+  const [questions] = useState<QuestionConfig[]>(() => {
+    return schema.questions.map((question) => ({
+      ...question,
+      properties: {
+        ...question.properties,
+        choices: question.properties.randomise
+          ? randomiseChoices(question.properties.choices)
+          : question.properties.choices,
+      },
+    }));
   });
   const [responses, setResponses] = useState<QuestionResponse[]>([]);
   const [currentQuestionId, setCurrentQuestionId] = useState<string>(
@@ -82,3 +94,13 @@ export const useSurvey = ({schema}: {schema: SurveySchema}) => {
     },
   };
 };
+
+function randomiseChoices(choices: ChoicesConfig = []) {
+  const copiedChoices = [...choices];
+
+  return copiedChoices.sort((choice) => {
+    if (choice.id.startsWith(ID_PREFIXES.OTHER_CHOICE)) return 1;
+
+    return Math.random() - 0.5;
+  });
+}
