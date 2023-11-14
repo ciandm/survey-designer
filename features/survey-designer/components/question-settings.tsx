@@ -158,12 +158,8 @@ export const QuestionSettings = () => {
 const propertySettingsMap: Record<QuestionType, PropertySettingKey[]> = {
   short_text: ['placeholder'],
   long_text: ['placeholder'],
-  multiple_choice: [
-    'allow_other_option',
-    'allow_multiple_selection',
-    'randomise',
-  ],
-  single_choice: ['randomise', 'allow_other_option'],
+  multiple_choice: ['allow_multiple_selection', 'randomise'],
+  single_choice: ['randomise'],
 };
 
 const validationSettingsMap: Record<QuestionType, ValidationSettingKey[]> = {

@@ -62,7 +62,3 @@ const createSchema = (question: QuestionConfig) => {
     }
   });
 };
-
-const checkIsTruthy = (response: string[]) => {
-  return response.length > 0;
-};

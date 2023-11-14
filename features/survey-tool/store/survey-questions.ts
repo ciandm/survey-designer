@@ -43,7 +43,7 @@ export const SurveyQuestionsContext =
 export function useResponsesContext<T>(
   selector: (state: SurveyQuestionsState) => T,
 ): T {
-  const store = useContext(ResponsesContext);
+  const store = useContext(SurveyQuestionsContext);
   if (!store) throw new Error('Missing BearContext.Provider in the tree');
   return useStore(store, selector);
 }
