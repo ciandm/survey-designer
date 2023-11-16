@@ -1,7 +1,9 @@
 'use client';
 
+import {QuestionOverflowWrapper} from '@/components/question-overflow-wrapper';
 import {QuestionProvider} from '@/features/survey-tool/components/question-provider';
 import {ResponseField} from '@/features/survey-tool/components/response-field';
+import {cn} from '@/lib/utils';
 import {Question} from '../../survey-tool/components/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {
@@ -15,10 +17,10 @@ export const QuestionEditor = () => {
   const {updateQuestion} = useSurveyQuestionsActions();
 
   return (
-    <div className="flex w-full flex-1 overflow-y-auto bg-muted px-4 py-32">
+    <div className="flex h-full w-full flex-1 bg-muted px-4 py-24">
       {activeQuestion ? (
-        <div className="flex w-full flex-col items-center justify-center rounded-lg bg-card p-8 shadow-lg">
-          <div className="w-full max-w-xl">
+        <QuestionOverflowWrapper className="w-full bg-card shadow-lg">
+          <div className="mx-auto my-auto flex min-h-0 w-full max-w-lg flex-col py-16">
             <QuestionProvider
               question={activeQuestion}
               questionNumber={activeQuestionIndex + 1}
@@ -36,7 +38,7 @@ export const QuestionEditor = () => {
               <ResponseField />
             </QuestionProvider>
           </div>
-        </div>
+        </QuestionOverflowWrapper>
       ) : (
         <p className="text-center text-gray-500">Click on a question to edit</p>
       )}

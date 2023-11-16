@@ -96,11 +96,8 @@ const Form = ({
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={onSubmit}
-        className="mx-auto flex h-full w-full flex-col items-center justify-center rounded-md bg-card p-12 shadow-xl"
-      >
-        <div className="w-full max-w-2xl">{children}</div>
+      <form className="flex-1" onSubmit={onSubmit}>
+        {children}
       </form>
     </FormProvider>
   );

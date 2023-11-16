@@ -1,6 +1,7 @@
 'use client';
 
 import {ArrowLeft} from 'lucide-react';
+import {QuestionOverflowWrapper} from '@/components/question-overflow-wrapper';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {Survey} from '@/features/survey-tool/components/survey';
@@ -13,8 +14,8 @@ export const SurveyPreviewer = () => {
   const {updateMode} = useDesignerModeActions();
 
   return (
-    <div className="flex w-full flex-col">
-      <header className="h-14 border-b">
+    <div className="flex h-screen w-full flex-col overflow-hidden">
+      <header className="h-12 flex-shrink-0 border-b">
         <div className="container flex h-full items-center justify-between">
           <Button
             size="icon"
@@ -29,9 +30,13 @@ export const SurveyPreviewer = () => {
           <Badge>Live preview</Badge>
         </div>
       </header>
-      <div className="h-full w-full flex-1 bg-muted">
-        <div className="container h-full w-full py-8">
-          <Survey schema={schema} />
+      <div className="flex w-full flex-grow overflow-hidden bg-muted">
+        <div className="flex flex-1 p-8">
+          <QuestionOverflowWrapper className="rounded-lg bg-card shadow-xl">
+            <div className="mx-auto w-full max-w-2xl py-16">
+              <Survey schema={schema} />
+            </div>
+          </QuestionOverflowWrapper>
         </div>
       </div>
     </div>
