@@ -3,9 +3,7 @@ import {SurveyDesigner} from '@/features/survey-designer/components/survey-desig
 const SurveyEditorPage = async ({params}: {params: {id: string}}) => {
   return (
     <div className="flex h-screen flex-col">
-      <main className="flex h-full min-h-0">
-        <SurveyDesigner />
-      </main>
+      <SurveyDesigner />
     </div>
   );
 };

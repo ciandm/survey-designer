@@ -109,7 +109,7 @@ export const MultipleChoiceField = () => {
 
   return (
     <div className="flex flex-col items-start">
-      <div className="flex w-full flex-col gap-2">
+      <div className="flex w-full max-w-sm flex-col gap-2">
         <span className="text-sm text-muted-foreground">
           {question.properties.allow_multiple_selection
             ? 'Pick one or more'

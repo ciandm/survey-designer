@@ -73,7 +73,7 @@ export const QuestionsSidebar = () => {
           New question
         </Button>
       </div>
-      <div className="flex flex-1 flex-col overflow-y-auto">
+      <div className="flex h-full flex-1 flex-col overflow-y-auto">
         <ol className="flex flex-1 flex-col ">
           {questions.map((question, index) => (
             <SidebarQuestionItem

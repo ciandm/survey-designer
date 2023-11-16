@@ -48,7 +48,7 @@ export const Question = ({onDescriptionChange, onTitleChange}: Props) => {
   }
 
   return (
-    <div className="mb-4 flex flex-col">
+    <div className="mb-8 flex flex-col">
       <p className="mb-2 text-sm text-muted-foreground">
         Question {questionNumber} of {totalQuestions}
       </p>
