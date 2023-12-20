@@ -1,5 +1,6 @@
 import {useEffect, useRef} from 'react';
 import {useQueryState} from 'next-usequerystate';
+import {getNextQuestionToSelect} from '@/lib/utils';
 import {useSurveyQuestions} from '../store/survey-designer';
 
 const QUERY_STATE_KEY = 'ref';
@@ -14,19 +15,9 @@ export const useActiveQuestion = ({
   const [activeQuestionParam, setActiveQuestion] = useQueryState(
     QUERY_STATE_KEY,
     {
-      defaultValue: questions[0]?.ref,
+      defaultValue: questions[0]?.ref ?? null,
     },
   );
-
-  useEffect(() => {
-    const isNotValidQuestion = !questions.find(
-      (question) => question.ref === activeQuestionParam,
-    );
-
-    if (isNotValidQuestion) {
-      setActiveQuestion(null);
-    }
-  }, [questions, activeQuestionParam, setActiveQuestion]);
 
   const activeQuestionIndex = questions.findIndex(
     (question) => question.ref === activeQuestionParam,

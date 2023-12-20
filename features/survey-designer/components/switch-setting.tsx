@@ -43,6 +43,7 @@ export const SwitchSetting = ({
             setIsChecked(checked);
             onCheckedChange?.(checked);
           }}
+          id={setting}
           defaultChecked={defaultChecked}
           {...rest}
         />

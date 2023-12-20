@@ -27,7 +27,6 @@ export const TextField = ({
 
   const commonProps = {
     type: 'text',
-    id: 'name',
     className:
       'peer block w-full border-0 py-2 text-gray-900 outline-none focus:ring-0 sm:text-sm sm:leading-6 bg-transparent',
     placeholder: hasCustomPlaceholder
