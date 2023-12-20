@@ -1,15 +1,15 @@
-import {useEffect} from 'react';
-import {useQueryState, UseQueryStateReturn} from 'next-usequerystate';
-import {QuestionConfig} from '@/lib/validations/question';
+import {useEffect, useRef} from 'react';
+import {useQueryState} from 'next-usequerystate';
 import {useSurveyQuestions} from '../store/survey-designer';
 
-const QUERY_STATE_KEY = 'question';
+const QUERY_STATE_KEY = 'ref';
 
-export const useActiveQuestion = (): {
-  activeQuestion: QuestionConfig | undefined;
-  activeQuestionIndex: number;
-  setActiveQuestion: UseQueryStateReturn<string, string>['1'];
-} => {
+export const useActiveQuestion = ({
+  onActiveQuestionChange,
+}: {
+  onActiveQuestionChange?: (ref: string) => void;
+} = {}) => {
+  const onActiveQuestionChangeRef = useRef(onActiveQuestionChange);
   const questions = useSurveyQuestions();
   const [activeQuestionParam, setActiveQuestion] = useQueryState(
     QUERY_STATE_KEY,
@@ -24,7 +24,7 @@ export const useActiveQuestion = (): {
     );
 
     if (isNotValidQuestion) {
-      setActiveQuestion(questions[0]?.ref);
+      setActiveQuestion(null);
     }
   }, [questions, activeQuestionParam, setActiveQuestion]);
 
@@ -32,7 +32,13 @@ export const useActiveQuestion = (): {
     (question) => question.ref === activeQuestionParam,
   );
 
-  const activeQuestion = questions[activeQuestionIndex];
+  const activeQuestion = questions[activeQuestionIndex] ?? questions[0] ?? null;
+
+  useEffect(() => {
+    if (activeQuestion && onActiveQuestionChangeRef.current) {
+      onActiveQuestionChangeRef.current(activeQuestion.ref);
+    }
+  }, [activeQuestion]);
 
   return {
     activeQuestion,

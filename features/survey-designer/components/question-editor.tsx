@@ -3,7 +3,6 @@
 import {QuestionOverflowWrapper} from '@/components/question-overflow-wrapper';
 import {QuestionProvider} from '@/features/survey-tool/components/question-provider';
 import {ResponseField} from '@/features/survey-tool/components/response-field';
-import {cn} from '@/lib/utils';
 import {Question} from '../../survey-tool/components/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {

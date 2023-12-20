@@ -9,10 +9,7 @@ import {
 import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
 import {formatQuestionType} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {
-  changeQuestionType,
-  useSurveyQuestionsActions,
-} from '../store/survey-designer';
+import {changeQuestionType} from '../store/survey-designer';
 
 const ALLOWED_TYPES = [
   QUESTION_TYPE.short_text,

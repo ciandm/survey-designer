@@ -154,7 +154,7 @@ export const MultipleChoiceField = () => {
 };
 
 const useChoiceField = () => {
-  const {question, view} = useQuestionContext();
+  const {question} = useQuestionContext();
   const onAddChoiceClick = () => {
     insertQuestionChoice({
       questionId: question.id,

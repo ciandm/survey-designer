@@ -18,7 +18,7 @@ export const ContentEditable = ({
     // @ts-ignore
     <ContentEditableExt
       className={cn(
-        'cursor-pointer whitespace-break-spaces rounded-[4px] text-sm text-foreground outline-none ring-primary focus-within:ring-2',
+        'cursor-text whitespace-break-spaces rounded-[4px] text-sm text-foreground outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-primary',
         className,
         {
           'text-muted-foreground': !html,
