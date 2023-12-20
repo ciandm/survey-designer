@@ -28,7 +28,12 @@ export default async function EditorLayout({
 
   return (
     <>
-      <SurveySchemaInitialiser schema={schema.data} />
+      <SurveySchemaInitialiser
+        survey={{
+          ...survey,
+          schema: schema.data,
+        }}
+      />
       {children}
     </>
   );

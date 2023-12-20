@@ -12,6 +12,7 @@ datasource db {
 }
 
 model Survey {
-  id     String @id @default(cuid())
-  schema Json   @default("{}")
+  id           String  @id @default(cuid())
+  schema       Json    @default("{}")
+  is_published Boolean @default(false)
 }

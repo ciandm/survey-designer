@@ -2,7 +2,6 @@
 
 import React, {useState} from 'react';
 import {Check, FileQuestion, MoreVertical, Text} from 'lucide-react';
-import {v4 as uuidv4} from 'uuid';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,14 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
-import {cn, getNextQuestionToSelect} from '@/lib/utils';
+import {QuestionType} from '@/lib/constants/question';
+import {cn} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {useQuestionCrud} from '../hooks/use-question-crud';
-import {
-  useSurveyQuestions,
-  useSurveyQuestionsActions,
-} from '../store/survey-designer';
+import {useSurveyQuestions} from '../store/survey-designer';
 import {SidebarQuestionItem} from './sidebar-question-item';
 
 export const ICON_MAP: Record<QuestionType, React.ReactNode> = {

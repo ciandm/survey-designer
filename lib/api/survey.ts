@@ -35,6 +35,20 @@ export async function deleteSurvey(surveyId: string): Promise<void> {
   await axios.delete(`${ENDPOINT}/${surveyId}`);
 }
 
+export async function publishSurvey(surveyId: string): Promise<SurveyResponse> {
+  const {data} = await axios.put(`${ENDPOINT}/${surveyId}/publish`);
+
+  return data;
+}
+
+export async function unpublishSurvey(
+  surveyId: string,
+): Promise<SurveyResponse> {
+  const {data} = await axios.delete(`${ENDPOINT}/${surveyId}/publish`);
+
+  return data;
+}
+
 export async function updateSurveySchema(
   schema: UpdateSurveySchema,
 ): Promise<SurveyResponse> {

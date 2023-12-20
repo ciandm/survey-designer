@@ -1,17 +1,22 @@
 'use client';
 
 import {useRef} from 'react';
-import {SurveySchema} from '@/lib/validations/survey';
+import {SurveyResponse} from '@/lib/validations/survey';
 import {useDesignerModeStore} from '../store/designer-mode';
-import {useSurveySchemaStore} from '../store/survey-designer';
+import {useSurveyDesignerStore} from '../store/survey-designer';
 
-export const SurveySchemaInitialiser = ({schema}: {schema: SurveySchema}) => {
+export const SurveySchemaInitialiser = ({
+  survey,
+}: {
+  survey: SurveyResponse['survey'];
+}) => {
   const isInitialised = useRef(false);
 
   if (!isInitialised.current) {
-    useSurveySchemaStore.setState({
-      schema,
-      savedSchema: schema,
+    useSurveyDesignerStore.setState({
+      schema: survey.schema,
+      savedSchema: survey.schema,
+      isPublished: survey.is_published,
     });
     useDesignerModeStore.setState({
       mode: 'edit',

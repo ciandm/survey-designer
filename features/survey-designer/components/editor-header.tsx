@@ -1,13 +1,25 @@
 'use client';
 
-import {RefreshCw} from 'lucide-react';
+import {useState} from 'react';
+import {CheckIcon} from '@radix-ui/react-icons';
+import {EyeIcon, Loader2, RefreshCw} from 'lucide-react';
 import Link from 'next/link';
+import {Badge} from '@/components/ui/badge';
 import {Button, buttonVariants} from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {cn} from '@/lib/utils';
+import {useManageSurveyPublication} from '../hooks/use-manage-survey-publication';
 import {useUpdateSurveySchema} from '../hooks/use-update-survey-schema';
 import {useDesignerModeActions} from '../store/designer-mode';
 import {
   useIsSurveyChanged,
+  useIsSurveyPublished,
   useSurveyDetails,
   useSurveyDetailsActions,
   useSurveyQuestions,
@@ -18,10 +30,13 @@ import {SurveyActions} from './survey-actions';
 
 export const EditorHeader = () => {
   const survey = useSurveyDetails();
+  const isPublished = useIsSurveyPublished();
   const questions = useSurveyQuestions();
   const isChanged = useIsSurveyChanged();
   const schema = useSurveySchema();
   const {mutateAsync: handleUpdateSurveySchema} = useUpdateSurveySchema();
+  const {mutateAsync: handleManageSurveyPublication} =
+    useManageSurveyPublication();
 
   const {updateTitle} = useSurveyDetailsActions();
   const {updateMode} = useDesignerModeActions();
@@ -63,12 +78,10 @@ export const EditorHeader = () => {
       </div>
       <div className="flex gap-2">
         <UnsavedChangesButton />
-        <Button size="sm" variant="secondary" onClick={handleOnPreviewClick}>
-          Preview
+        <Button size="icon" variant="ghost" onClick={handleOnPreviewClick}>
+          <EyeIcon className="h-4 w-4" />
         </Button>
-        <Button size="sm" onClick={() => alert('TODO: Publish')}>
-          Publish
-        </Button>
+        <PublishButton />
         <SurveyActions />
       </div>
     </header>
@@ -76,27 +89,77 @@ export const EditorHeader = () => {
 };
 
 const UnsavedChangesButton = () => {
-  const isDirty = useIsSurveyChanged();
   const schema = useSurveySchema();
   const {mutate: handleUpdateSurveySchema, isPending: isPendingUpdateSchema} =
     useUpdateSurveySchema();
+  const isChanged = useIsSurveyChanged();
 
-  if (!isDirty) return null;
+  if (!isChanged) return null;
 
   return (
     <Button
-      variant="secondary"
       size="sm"
+      variant="outline"
       onClick={() => handleUpdateSurveySchema({...schema})}
       disabled={isPendingUpdateSchema}
-      className="mr-4"
     >
+      Save changes
       <RefreshCw
-        className={cn('mr-2 h-4 w-4 flex-shrink-0', {
+        className={cn('ml-2 h-4 w-4 flex-shrink-0', {
           'animate-spin': isPendingUpdateSchema,
         })}
       />
-      Save changes
     </Button>
+  );
+};
+
+const PublishButton = () => {
+  const survey = useSurveyDetails();
+  const isPublished = useIsSurveyPublished();
+  const {mutateAsync: handleManageSurveyPublication} =
+    useManageSurveyPublication();
+  const schema = useSurveySchema();
+  const {mutateAsync: handleUpdateSurveySchema} = useUpdateSurveySchema();
+  const isChanged = useIsSurveyChanged();
+  const questions = useSurveyQuestions();
+  const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
+
+  const handleOnPublishClick = async () => {
+    setIsPublishDialogOpen(true);
+    try {
+      if (isChanged) {
+        await handleUpdateSurveySchema({
+          ...schema,
+          questions,
+        });
+      }
+      await handleManageSurveyPublication({
+        surveyId: survey.id,
+        action: isPublished ? 'unpublish' : 'publish',
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsPublishDialogOpen(false);
+    }
+  };
+
+  return (
+    <>
+      <Button onClick={handleOnPublishClick}>
+        {isPublished ? 'Unpublish' : 'Publish'}
+      </Button>
+      <Dialog open={isPublishDialogOpen}>
+        <DialogContent hideCloseButton>
+          <DialogHeader>
+            <DialogTitle>
+              {isPublished ? 'Unpublishing' : 'Publishing'} survey
+            </DialogTitle>
+            <DialogDescription>This may take a few seconds.</DialogDescription>
+          </DialogHeader>
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
