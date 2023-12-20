@@ -14,7 +14,7 @@ type SurveySchemaStoreProps = {
 
 type SurveySchemaStoreActions = {
   updateTitle: (title: string) => void;
-  insertQuestion: (question: QuestionConfig) => void;
+  insertQuestion: (question: QuestionConfig, index?: number) => void;
   deleteQuestion: (question: Pick<QuestionConfig, 'id'>) => void;
   duplicateQuestion: (question: Pick<QuestionConfig, 'id' | 'ref'>) => void;
   changeQuestionType: (question: Pick<QuestionConfig, 'id' | 'type'>) => void;
@@ -62,13 +62,18 @@ export const useSurveySchemaStore = create<SurveySchemaStoreState>()(
           state.schema.title = title;
         });
       },
-      insertQuestion: ({type, ref}) => {
+      insertQuestion: ({type, ref}, insertAtIndex) => {
         const newField = buildNewQuestionHelper(type, {
           ref: ref ?? uuidv4(),
           type,
         });
 
         set((state) => {
+          if (insertAtIndex !== undefined) {
+            state.schema.questions.splice(insertAtIndex, 0, newField);
+            return;
+          }
+
           state.schema.questions.push(newField);
         });
       },

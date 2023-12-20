@@ -35,6 +35,10 @@ export const useActiveQuestion = ({
   const activeQuestion = questions[activeQuestionIndex] ?? questions[0] ?? null;
 
   useEffect(() => {
+    onActiveQuestionChangeRef.current = onActiveQuestionChange;
+  }, [onActiveQuestionChange]);
+
+  useEffect(() => {
     if (activeQuestion && onActiveQuestionChangeRef.current) {
       onActiveQuestionChangeRef.current(activeQuestion.ref);
     }
