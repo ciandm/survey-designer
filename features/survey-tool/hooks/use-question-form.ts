@@ -1,11 +1,13 @@
 import {Control, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
+import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
 import {QuestionConfig} from '@/lib/validations/question';
 import {QuestionResponse} from './use-survey';
 
 export interface QuestionFormState {
   response: string[];
+  type: QuestionType;
 }
 
 type Props = {
@@ -23,6 +25,7 @@ export const useQuestionForm = ({
     defaultValues: {
       response:
         responses.find((r) => r.questionId === currentQuestionId)?.value ?? [],
+      type: question.type,
     },
     resolver: zodResolver(createSchema(question)),
   });
@@ -34,6 +37,7 @@ export type QuestionFormControl = Control<QuestionFormState>;
 
 const schema = z.object({
   response: z.string().array(),
+  type: z.nativeEnum(QUESTION_TYPE),
 });
 
 const createSchema = (question: QuestionConfig) => {

@@ -1,13 +1,12 @@
-import {QuestionType} from '@prisma/client';
 import {v4 as uuidv4} from 'uuid';
-import {QUESTION_TYPE} from '@/lib/constants/question';
+import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
 import {getNextQuestionToSelect} from '@/lib/utils';
 import {
   deleteQuestion,
+  duplicateQuestion,
   insertQuestion,
   useSurveyQuestions,
 } from '../store/survey-designer';
-import {duplicateQuestion} from '../store/survey-designer';
 import {useActiveQuestion} from './use-active-question';
 
 export const useQuestionCrud = () => {
@@ -28,7 +27,7 @@ export const useQuestionCrud = () => {
   };
 
   const handleCreateQuestion = ({
-    type = QuestionType.short_text,
+    type = QUESTION_TYPE.short_text,
     index,
   }: {
     type?: QuestionType;

@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {ID_PREFIXES} from '@/lib/constants/question';
+import {ID_PREFIXES, QuestionType} from '@/lib/constants/question';
 import {ChoicesConfig, QuestionConfig} from '@/lib/validations/question';
 import {SurveySchema} from '@/lib/validations/survey';
 import {
@@ -12,6 +12,7 @@ import {QuestionFormState} from './use-question-form';
 export type QuestionResponse = {
   questionId: string;
   value: string[];
+  type: QuestionType;
 };
 
 type Step = 'welcome' | 'questions' | 'thank_you';
@@ -44,14 +45,16 @@ export const useSurvey = ({schema}: {schema: SurveySchema}) => {
   );
   const question = questions[questionIndex];
 
-  const handleAddResponse = ({questionId, value}: QuestionResponse) => {
+  const handleAddResponse = ({questionId, value, type}: QuestionResponse) => {
     if (responses.find((r) => r.questionId === questionId)) {
       return setResponses(
-        responses.map((r) => (r.questionId === questionId ? {...r, value} : r)),
+        responses.map((r) =>
+          r.questionId === questionId ? {...r, value, type} : r,
+        ),
       );
     }
 
-    setResponses([...responses, {questionId, value}]);
+    setResponses([...responses, {questionId, value, type}]);
   };
 
   const handleSetNextQuestion = () => {
@@ -69,7 +72,11 @@ export const useSurvey = ({schema}: {schema: SurveySchema}) => {
   };
 
   const onSubmit = (data: QuestionFormState) => {
-    handleAddResponse({questionId: currentQuestionId, value: data.response});
+    handleAddResponse({
+      questionId: currentQuestionId,
+      value: data.response,
+      type: data.type,
+    });
 
     if (isLastQuestion) {
       setStep('thank_you');
