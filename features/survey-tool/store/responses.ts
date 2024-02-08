@@ -1,10 +1,10 @@
 import {createContext, useContext} from 'react';
 import {createStore, useStore} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
-import {QuestionConfig} from '@/lib/validations/question';
+import {QuestionSchema} from '@/lib/validations/survey';
 
 interface ResponsesProps {
-  questions: QuestionConfig[];
+  questions: QuestionSchema[];
   responses: {
     questionId: string;
     value: string[];

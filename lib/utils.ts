@@ -2,7 +2,7 @@ import {type ClassValue, clsx} from 'clsx';
 import {twMerge} from 'tailwind-merge';
 import {v4 as uuidv4} from 'uuid';
 import {QuestionType} from './constants/question';
-import {QuestionConfig} from './validations/question';
+import {QuestionSchema} from './validations/survey';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,8 +23,8 @@ export function formatQuestionType(type: QuestionType): string {
 
 export function buildNewQuestionHelper(
   type: QuestionType,
-  field: Partial<QuestionConfig>,
-): QuestionConfig {
+  field: Partial<QuestionSchema>,
+): QuestionSchema {
   switch (type) {
     case 'long_text':
     case 'short_text':
@@ -71,7 +71,7 @@ export function buildNewQuestionHelper(
 }
 
 export function getNextQuestionToSelect(
-  questions: QuestionConfig[],
+  questions: QuestionSchema[],
   questionId: string,
 ) {
   const questionIndex = questions.findIndex(

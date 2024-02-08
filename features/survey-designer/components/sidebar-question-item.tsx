@@ -1,7 +1,7 @@
 import React from 'react';
 import {QuestionType} from '@/lib/constants/question';
 import {cn, formatQuestionType} from '@/lib/utils';
-import {QuestionConfig} from '@/lib/validations/question';
+import {QuestionSchema} from '@/lib/validations/survey';
 
 interface SidebarQuestionItemProps {
   onClick?: React.MouseEventHandler<HTMLDivElement>;
@@ -9,7 +9,7 @@ interface SidebarQuestionItemProps {
   children: React.ReactNode;
   type: QuestionType;
   index: number;
-  question: QuestionConfig;
+  question: QuestionSchema;
 }
 export const SidebarQuestionItem = ({
   onClick,

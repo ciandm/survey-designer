@@ -1,7 +1,6 @@
 import {useState} from 'react';
-import {addOrUpdateSurveyResponse, deleteSurvey} from '@/lib/api/survey';
-import {ID_PREFIXES, QuestionType} from '@/lib/constants/question';
-import {ChoicesConfig, QuestionConfig} from '@/lib/validations/question';
+import {addOrUpdateSurveyResponse} from '@/lib/api/survey';
+import {QuestionType} from '@/lib/constants/question';
 import {SurveySchema} from '@/lib/validations/survey';
 import {
   getNextQuestion,

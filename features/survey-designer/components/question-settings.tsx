@@ -3,16 +3,16 @@
 import {Input} from '@/components/ui/input';
 import {SwitchSetting} from '@/features/survey-designer/components/switch-setting';
 import {QuestionType} from '@/lib/constants/question';
-import {QuestionConfig} from '@/lib/validations/question';
+import {QuestionSchema} from '@/lib/validations/survey';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {updateQuestion} from '../store/survey-designer';
 
 type PropertySettingKey = Exclude<
-  keyof QuestionConfig['properties'],
+  keyof QuestionSchema['properties'],
   'choices'
 >;
 
-type ValidationSettingKey = keyof QuestionConfig['validations'];
+type ValidationSettingKey = keyof QuestionSchema['validations'];
 
 export const QuestionSettings = () => {
   const {activeQuestion} = useActiveQuestion();

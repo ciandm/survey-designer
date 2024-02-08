@@ -4,7 +4,7 @@ import {create} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
 import {useShallow} from 'zustand/react/shallow';
 import {buildNewQuestionHelper} from '@/lib/utils';
-import {QuestionConfig} from '@/lib/validations/question';
+import {QuestionSchema} from '@/lib/validations/survey';
 import {SurveySchema} from '@/lib/validations/survey';
 
 type SurveyDesignerStoreProps = {
@@ -15,11 +15,11 @@ type SurveyDesignerStoreProps = {
 
 type SurveyDesignerStoreActions = {
   updateTitle: (title: string) => void;
-  insertQuestion: (question: QuestionConfig, index?: number) => void;
-  deleteQuestion: (question: Pick<QuestionConfig, 'id'>) => void;
-  duplicateQuestion: (question: Pick<QuestionConfig, 'id' | 'ref'>) => void;
-  changeQuestionType: (question: Pick<QuestionConfig, 'id' | 'type'>) => void;
-  updateQuestion: (question: Partial<QuestionConfig> & {id: string}) => void;
+  insertQuestion: (question: QuestionSchema, index?: number) => void;
+  deleteQuestion: (question: Pick<QuestionSchema, 'id'>) => void;
+  duplicateQuestion: (question: Pick<QuestionSchema, 'id' | 'ref'>) => void;
+  changeQuestionType: (question: Pick<QuestionSchema, 'id' | 'type'>) => void;
+  updateQuestion: (question: Partial<QuestionSchema> & {id: string}) => void;
   updateQuestionChoice: (params: {
     questionId: string;
     newChoice: {
@@ -36,7 +36,7 @@ type SurveyDesignerStoreActions = {
     choiceId: string;
   }) => void;
   insertQuestionChoice: (params: {questionId: string}) => void;
-  setQuestions: (questions: QuestionConfig[]) => void;
+  setQuestions: (questions: QuestionSchema[]) => void;
   setSchema: (schema: SurveySchema) => void;
   setSavedSchema: (schema: SurveySchema) => void;
   setPublished: (isPublished: boolean) => void;
@@ -124,7 +124,7 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
             (q) => q.id === field.id,
           );
 
-          const newField: QuestionConfig = {
+          const newField: QuestionSchema = {
             ...fieldToUpdate,
             ...field,
             properties: omitBy(
@@ -171,7 +171,7 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
             (q) => q.id === questionId,
           );
 
-          const newField: QuestionConfig = {
+          const newField: QuestionSchema = {
             ...fieldToUpdate,
             properties: {
               ...fieldToUpdate.properties,
