@@ -3,18 +3,13 @@
 import {QuestionOverflowWrapper} from '@/components/question-overflow-wrapper';
 import {QuestionProvider} from '@/features/survey-tool/components/question-provider';
 import {ResponseField} from '@/features/survey-tool/components/response-field';
-import {cn} from '@/lib/utils';
 import {Question} from '../../survey-tool/components/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {
-  useSurveyQuestions,
-  useSurveyQuestionsActions,
-} from '../store/survey-designer';
+import {updateQuestion, useSurveyQuestions} from '../store/survey-designer';
 
 export const QuestionEditor = () => {
   const questions = useSurveyQuestions();
   const {activeQuestion, activeQuestionIndex} = useActiveQuestion();
-  const {updateQuestion} = useSurveyQuestionsActions();
 
   return (
     <div className="flex h-full w-full flex-1 bg-muted px-4 py-24">

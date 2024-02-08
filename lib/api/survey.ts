@@ -35,6 +35,20 @@ export async function deleteSurvey(surveyId: string): Promise<void> {
   await axios.delete(`${ENDPOINT}/${surveyId}`);
 }
 
+export async function publishSurvey(surveyId: string): Promise<SurveyResponse> {
+  const {data} = await axios.put(`${ENDPOINT}/${surveyId}/publish`);
+
+  return data;
+}
+
+export async function unpublishSurvey(
+  surveyId: string,
+): Promise<SurveyResponse> {
+  const {data} = await axios.delete(`${ENDPOINT}/${surveyId}/publish`);
+
+  return data;
+}
+
 export async function updateSurveySchema(
   schema: UpdateSurveySchema,
 ): Promise<SurveyResponse> {
@@ -42,6 +56,17 @@ export async function updateSurveySchema(
     `${ENDPOINT}/${schema.survey.id}/schema`,
     schema,
   );
+
+  return data;
+}
+
+export async function addOrUpdateSurveyResponse(
+  surveyId: string,
+  answers: {questionId: string; value: string[]}[],
+): Promise<SurveyResponse> {
+  const {data} = await axios.put(`${ENDPOINT}/${surveyId}/respond`, {
+    answers,
+  });
 
   return data;
 }

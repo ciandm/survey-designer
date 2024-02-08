@@ -1,18 +1,15 @@
 import {useState} from 'react';
-import {DotsHorizontalIcon} from '@radix-ui/react-icons';
+import {
+  CopyIcon,
+  DotsHorizontalIcon,
+  TrashIcon,
+  UploadIcon,
+} from '@radix-ui/react-icons';
 import {Label} from '@radix-ui/react-label';
 import {Switch} from '@radix-ui/react-switch';
 import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import {AlertDialogCancel} from '@/components/ui/alert-dialog';
 import {Button} from '@/components/ui/button';
 import {
   Dialog,
@@ -62,17 +59,17 @@ export const SurveyActions = () => {
     duplicateSurvey(
       {surveyId: id},
       {
-        onSuccess: ({survey}) => {
+        onSuccess: ({survey: duplicatedSurvey}) => {
           toast({
             title: 'Survey duplicated',
             description: 'Your survey has been duplicated successfully.',
             variant: 'default',
           });
           let query = '';
-          if (survey.schema.questions.length > 0) {
-            query = `?question=${survey.schema.questions[0].ref}`;
+          if (duplicatedSurvey.schema.questions.length > 0) {
+            query = `?question=${duplicatedSurvey.schema.questions[0].ref}`;
           }
-          router.push(`/survey/${survey.id}/editor${query}`);
+          router.push(`/editor/${duplicatedSurvey.id}${query}`);
           router.refresh();
         },
       },
@@ -83,7 +80,7 @@ export const SurveyActions = () => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="secondary">
+          <Button variant="ghost" size="icon">
             <span className="sr-only">Actions</span>
             <DotsHorizontalIcon className="h-4 w-4" />
           </Button>
@@ -93,7 +90,15 @@ export const SurveyActions = () => {
             onSelect={handleDuplicateSurvey}
             disabled={isPendingDuplicate}
           >
-            Duplicate survey
+            Duplicate
+            <CopyIcon className="ml-auto h-4 w-4" />
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={handleDuplicateSurvey}
+            disabled={isPendingDuplicate}
+          >
+            Publish
+            <UploadIcon className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -101,7 +106,8 @@ export const SurveyActions = () => {
             className="text-red-600"
             disabled={isPendingDuplicate}
           >
-            Delete survey
+            Delete
+            <TrashIcon className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

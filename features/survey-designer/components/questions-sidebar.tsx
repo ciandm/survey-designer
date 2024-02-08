@@ -2,7 +2,6 @@
 
 import React, {useState} from 'react';
 import {Check, FileQuestion, MoreVertical, Text} from 'lucide-react';
-import {v4 as uuidv4} from 'uuid';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,13 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
-import {cn, getNextQuestionToSelect} from '@/lib/utils';
+import {QuestionType} from '@/lib/constants/question';
+import {cn} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {
-  useSurveyQuestions,
-  useSurveyQuestionsActions,
-} from '../store/survey-designer';
+import {useQuestionCrud} from '../hooks/use-question-crud';
+import {useSurveyQuestions} from '../store/survey-designer';
 import {SidebarQuestionItem} from './sidebar-question-item';
 
 export const ICON_MAP: Record<QuestionType, React.ReactNode> = {
@@ -31,35 +28,8 @@ export const QuestionsSidebar = () => {
   const [menuOpenId, setMenuOpenId] = useState('');
   const questions = useSurveyQuestions();
   const {activeQuestion, setActiveQuestion} = useActiveQuestion();
-  const {deleteQuestion, duplicateQuestion, insertQuestion} =
-    useSurveyQuestionsActions();
-
-  const onNewQuestionClick = async () => {
-    const ref = uuidv4();
-    insertQuestion({
-      id: uuidv4(),
-      type: QUESTION_TYPE.short_text,
-      text: '',
-      properties: {},
-      ref,
-      validations: {},
-      description: '',
-    });
-    setActiveQuestion(ref);
-  };
-
-  const onDeleteQuestionClick = async (id: string) => {
-    deleteQuestion({id});
-    if (activeQuestion?.id === id) {
-      setActiveQuestion(getNextQuestionToSelect(questions, id));
-    }
-  };
-
-  const onDuplicateQuestionClick = async (id: string) => {
-    const ref = uuidv4();
-    duplicateQuestion({id, ref});
-    setActiveQuestion(ref);
-  };
+  const {handleCreateQuestion, handleDeleteQuestion, handleDuplicateQuestion} =
+    useQuestionCrud();
 
   return (
     <aside className="flex min-w-[260px] max-w-[260px] flex-1 flex-col overflow-hidden border-r">
@@ -67,7 +37,7 @@ export const QuestionsSidebar = () => {
         <Button
           size="sm"
           variant="secondary"
-          onClick={onNewQuestionClick}
+          onClick={() => handleCreateQuestion()}
           className="w-full"
         >
           New question
@@ -114,7 +84,7 @@ export const QuestionsSidebar = () => {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     onSelect={() => {
-                      onDuplicateQuestionClick(question.id);
+                      handleDuplicateQuestion(question.id);
                       setMenuOpenId('');
                     }}
                   >
@@ -124,7 +94,7 @@ export const QuestionsSidebar = () => {
                   <DropdownMenuItem
                     disabled={questions.length === 1}
                     onSelect={() => {
-                      onDeleteQuestionClick(question.id);
+                      handleDeleteQuestion(question.id);
                       setMenuOpenId('');
                     }}
                     className="text-red-600"

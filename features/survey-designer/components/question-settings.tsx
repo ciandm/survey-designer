@@ -5,7 +5,7 @@ import {SwitchSetting} from '@/features/survey-designer/components/switch-settin
 import {QuestionType} from '@/lib/constants/question';
 import {QuestionConfig} from '@/lib/validations/question';
 import {useActiveQuestion} from '../hooks/use-active-question';
-import {useSurveyQuestionsActions} from '../store/survey-designer';
+import {updateQuestion} from '../store/survey-designer';
 
 type PropertySettingKey = Exclude<
   keyof QuestionConfig['properties'],
@@ -15,7 +15,6 @@ type PropertySettingKey = Exclude<
 type ValidationSettingKey = keyof QuestionConfig['validations'];
 
 export const QuestionSettings = () => {
-  const {updateQuestion} = useSurveyQuestionsActions();
   const {activeQuestion} = useActiveQuestion();
 
   if (!activeQuestion) return null;

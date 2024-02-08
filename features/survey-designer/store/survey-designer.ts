@@ -7,14 +7,15 @@ import {buildNewQuestionHelper} from '@/lib/utils';
 import {QuestionConfig} from '@/lib/validations/question';
 import {SurveySchema} from '@/lib/validations/survey';
 
-type SurveySchemaStoreProps = {
+type SurveyDesignerStoreProps = {
   schema: SurveySchema;
   savedSchema: SurveySchema;
+  isPublished: boolean;
 };
 
-type SurveySchemaStoreActions = {
+type SurveyDesignerStoreActions = {
   updateTitle: (title: string) => void;
-  insertQuestion: (question: QuestionConfig) => void;
+  insertQuestion: (question: QuestionConfig, index?: number) => void;
   deleteQuestion: (question: Pick<QuestionConfig, 'id'>) => void;
   duplicateQuestion: (question: Pick<QuestionConfig, 'id' | 'ref'>) => void;
   changeQuestionType: (question: Pick<QuestionConfig, 'id' | 'type'>) => void;
@@ -38,14 +39,16 @@ type SurveySchemaStoreActions = {
   setQuestions: (questions: QuestionConfig[]) => void;
   setSchema: (schema: SurveySchema) => void;
   setSavedSchema: (schema: SurveySchema) => void;
+  setPublished: (isPublished: boolean) => void;
 };
 
-export type SurveySchemaStoreState = SurveySchemaStoreProps & {
-  actions: SurveySchemaStoreActions;
+export type SurveyDesignerStoreState = SurveyDesignerStoreProps & {
+  actions: SurveyDesignerStoreActions;
 };
 
-export const useSurveySchemaStore = create<SurveySchemaStoreState>()(
+export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
   immer((set) => ({
+    isPublished: false,
     schema: {
       id: '',
       title: '',
@@ -62,13 +65,18 @@ export const useSurveySchemaStore = create<SurveySchemaStoreState>()(
           state.schema.title = title;
         });
       },
-      insertQuestion: ({type, ref}) => {
+      insertQuestion: ({type, ref}, insertAtIndex) => {
         const newField = buildNewQuestionHelper(type, {
           ref: ref ?? uuidv4(),
           type,
         });
 
         set((state) => {
+          if (insertAtIndex !== undefined) {
+            state.schema.questions.splice(insertAtIndex, 0, newField);
+            return;
+          }
+
           state.schema.questions.push(newField);
         });
       },
@@ -241,75 +249,58 @@ export const useSurveySchemaStore = create<SurveySchemaStoreState>()(
           state.savedSchema = schema;
         });
       },
+      setPublished: (isPublished) => {
+        set((state) => {
+          state.isPublished = isPublished;
+        });
+      },
     },
   })),
 );
 
 export const useSurveyDetails = () =>
-  useSurveySchemaStore(
+  useSurveyDesignerStore(
     useShallow(({schema}) => ({
       id: schema.id,
       title: schema.title,
     })),
   );
 export const useSurveyDetailsActions = () =>
-  useSurveySchemaStore((state) => {
+  useSurveyDesignerStore((state) => {
     const {updateTitle} = state.actions;
     return {updateTitle};
   });
 
 export const useSurveyQuestions = () =>
-  useSurveySchemaStore((state) => state.schema.questions);
-
-export const useSurveyQuestionsActions = () =>
-  useSurveySchemaStore((state) => {
-    const {
-      updateQuestionChoice,
-      insertQuestion,
-      deleteQuestion,
-      duplicateQuestion,
-      changeQuestionType,
-      updateQuestion,
-      setQuestions,
-    } = state.actions;
-
-    return {
-      updateQuestionChoice,
-      insertQuestion,
-      deleteQuestion,
-      duplicateQuestion,
-      changeQuestionType,
-      updateQuestion,
-      setQuestions,
-    };
-  });
+  useSurveyDesignerStore((state) => state.schema.questions);
 
 export const {
-  updateQuestionChoice,
-  insertQuestion,
-  insertQuestionChoice,
+  changeQuestionType,
   deleteQuestion,
+  deleteQuestionChoice,
   duplicateQuestion,
   duplicateQuestionChoice,
-  changeQuestionType,
-  updateQuestion,
+  insertQuestion,
+  insertQuestionChoice,
+  setPublished,
   setQuestions,
-  deleteQuestionChoice,
   setSavedSchema,
   setSchema,
+  updateQuestion,
+  updateQuestionChoice,
   updateTitle,
-} = useSurveySchemaStore.getState().actions;
+} = useSurveyDesignerStore.getState().actions;
 
 export const useSurveySchema = () =>
-  useSurveySchemaStore((state) => state.schema);
+  useSurveyDesignerStore((state) => state.schema);
 export const useSurveySchemaActions = () =>
-  useSurveySchemaStore((state) => ({
+  useSurveyDesignerStore((state) => ({
     setSchema: state.actions.setSchema,
     setSavedSchema: state.actions.setSavedSchema,
   }));
 
 export const useIsSurveyChanged = () => {
-  const {isChanged} = useSurveySchemaStore(
+  const {isChanged} = useSurveyDesignerStore(
     useShallow(({schema, savedSchema}) => ({
       isChanged: !isEqual(schema, savedSchema),
     })),
@@ -317,3 +308,6 @@ export const useIsSurveyChanged = () => {
 
   return isChanged;
 };
+
+export const useIsSurveyPublished = () =>
+  useSurveyDesignerStore((state) => state.isPublished);
