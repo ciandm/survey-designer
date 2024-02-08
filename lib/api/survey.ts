@@ -59,3 +59,14 @@ export async function updateSurveySchema(
 
   return data;
 }
+
+export async function addOrUpdateSurveyResponse(
+  surveyId: string,
+  answers: {questionId: string; value: string[]}[],
+): Promise<SurveyResponse> {
+  const {data} = await axios.put(`${ENDPOINT}/${surveyId}/respond`, {
+    answers,
+  });
+
+  return data;
+}

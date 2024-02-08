@@ -1,26 +1,21 @@
 import React from 'react';
 import {Controller} from 'react-hook-form';
-import {QuestionType} from '@/lib/constants/question';
-import {QuestionConfig} from '@/lib/validations/question';
 import {QuestionFormControl} from '../hooks/use-question-form';
+import {useQuestionContext} from './question-provider';
 import {QuestionFormConnect} from './survey';
 
 interface Props
   extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
-  type: Extract<QuestionType, 'short_text' | 'long_text'>;
-  question: QuestionConfig;
-  view?: 'live' | 'editing';
   control?: QuestionFormControl;
 }
 
 export const TextField = ({
   value,
   type = 'short_text',
-  question,
-  view = 'live',
   control,
   ...rest
 }: Props) => {
+  const {question, view} = useQuestionContext();
   const Tag = type === 'short_text' ? 'input' : 'textarea';
 
   const hasCustomPlaceholder = !!question?.properties.placeholder;

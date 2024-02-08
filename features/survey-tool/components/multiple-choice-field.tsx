@@ -115,7 +115,7 @@ export const MultipleChoiceField = () => {
             ? 'Pick one or more'
             : 'Pick one'}
         </span>
-        {question.properties.choices?.map((choice) => {
+        {choices?.map((choice) => {
           return (
             <div key={choice.id} className="flex flex-1">
               <Input

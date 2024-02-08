@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import {QUESTION_TYPE} from '../constants/question';
 import {questionSchema} from './question';
 
 export const deleteSurveySchema = z.object({
@@ -33,6 +34,16 @@ export const surveyResponse = z.object({
     schema: surveySchema,
     is_published: z.boolean(),
   }),
+});
+
+export const addOrUpdateSurveyResponseSchema = z.object({
+  answers: z.array(
+    z.object({
+      questionId: z.string(),
+      value: z.array(z.string()),
+      type: z.nativeEnum(QUESTION_TYPE),
+    }),
+  ),
 });
 
 export type SurveyResponse = z.infer<typeof surveyResponse>;
