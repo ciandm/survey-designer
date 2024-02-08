@@ -1,14 +1,14 @@
-import {QuestionConfig} from '@/lib/validations/question';
+import {QuestionSchema} from '@/lib/validations/survey';
 
 export const getQuestionIndex = (
-  questions: QuestionConfig[],
+  questions: QuestionSchema[],
   questionId?: string,
 ) => {
   return questions.findIndex((q) => q.id === questionId);
 };
 
 export const getNextQuestion = (
-  questions: QuestionConfig[],
+  questions: QuestionSchema[],
   questionId?: string,
 ) => {
   const index = getQuestionIndex(questions, questionId);
@@ -16,7 +16,7 @@ export const getNextQuestion = (
 };
 
 export const getPreviousQuestion = (
-  questions: QuestionConfig[],
+  questions: QuestionSchema[],
   questionId?: string,
 ) => {
   const index = getQuestionIndex(questions, questionId);
@@ -24,14 +24,14 @@ export const getPreviousQuestion = (
 };
 
 export const getQuestionById = (
-  questions: QuestionConfig[],
+  questions: QuestionSchema[],
   questionId?: string,
 ) => {
   return questions.find((q) => q.id === questionId);
 };
 
 export const getCanGoBack = (
-  questions: QuestionConfig[],
+  questions: QuestionSchema[],
   questionId?: string,
 ) => {
   const index = getQuestionIndex(questions, questionId);
@@ -39,7 +39,7 @@ export const getCanGoBack = (
 };
 
 export const getCanGoForward = (
-  questions: QuestionConfig[],
+  questions: QuestionSchema[],
   questionId?: string,
 ) => {
   const index = getQuestionIndex(questions, questionId);
@@ -47,7 +47,7 @@ export const getCanGoForward = (
 };
 
 export const getIsLastQuestion = (
-  questions: QuestionConfig[],
+  questions: QuestionSchema[],
   questionId?: string,
 ) => {
   const index = getQuestionIndex(questions, questionId);
@@ -55,7 +55,7 @@ export const getIsLastQuestion = (
 };
 
 export const getQuestionStates = (
-  questions: QuestionConfig[],
+  questions: QuestionSchema[],
   questionId: string,
 ) => {
   const canGoBack = getCanGoBack(questions, questionId);

@@ -1,12 +1,12 @@
 'use client';
 
 import React, {createContext, useContext} from 'react';
-import {QuestionConfig} from '@/lib/validations/question';
+import {QuestionSchema} from '@/lib/validations/survey';
 
 type QuestionView = 'live' | 'editing';
 
 interface QuestionCardProps {
-  question: QuestionConfig;
+  question: QuestionSchema;
   totalQuestions: number;
   questionNumber: number;
   view: QuestionView;

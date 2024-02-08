@@ -2,7 +2,7 @@ import {Control, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
 import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
-import {QuestionConfig} from '@/lib/validations/question';
+import {QuestionSchema} from '@/lib/validations/survey';
 import {QuestionResponse} from './use-survey';
 
 export interface QuestionFormState {
@@ -13,7 +13,7 @@ export interface QuestionFormState {
 type Props = {
   responses: QuestionResponse[];
   currentQuestionId: string;
-  question: QuestionConfig;
+  question: QuestionSchema;
 };
 
 export const useQuestionForm = ({
@@ -40,7 +40,7 @@ const schema = z.object({
   type: z.nativeEnum(QUESTION_TYPE),
 });
 
-const createSchema = (question: QuestionConfig) => {
+const createSchema = (question: QuestionSchema) => {
   return schema.superRefine(({response}, ctx) => {
     if (
       question.validations.required &&

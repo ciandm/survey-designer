@@ -2,14 +2,14 @@ import {useState} from 'react';
 import {SwitchProps} from '@radix-ui/react-switch';
 import {Label} from '@/components/ui/label';
 import {Switch} from '@/components/ui/switch';
-import {QuestionConfig} from '@/lib/validations/question';
+import {QuestionSchema} from '@/lib/validations/survey';
 
 type PropertySettingKey = Exclude<
-  keyof QuestionConfig['properties'],
+  keyof QuestionSchema['properties'],
   'choices'
 >;
 
-type ValidationSettingKey = keyof QuestionConfig['validations'];
+type ValidationSettingKey = keyof QuestionSchema['validations'];
 
 interface Props extends Omit<SwitchProps, 'children'> {
   setting: PropertySettingKey | ValidationSettingKey;

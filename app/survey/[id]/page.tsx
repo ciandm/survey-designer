@@ -1,7 +1,7 @@
 import {notFound} from 'next/navigation';
 import {Survey} from '@/features/survey-tool/components/survey';
 import {ID_PREFIXES} from '@/lib/constants/question';
-import {ChoicesConfig} from '@/lib/validations/question';
+import {ChoicesSchema} from '@/lib/validations/survey';
 import {SurveySchema, surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
@@ -63,7 +63,7 @@ function randomiseQuestionChoices(data: SurveySchema): SurveySchema {
   };
 }
 
-function randomiseChoices(choices: ChoicesConfig = []) {
+function randomiseChoices(choices: ChoicesSchema = []) {
   const copiedChoices = [...choices];
 
   return copiedChoices.sort((choice) => {

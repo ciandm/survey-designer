@@ -4,7 +4,7 @@ import {FormProvider, useFormContext} from 'react-hook-form';
 import {ArrowLeft, ArrowRight} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Progress} from '@/components/ui/progress';
-import {QuestionConfig} from '@/lib/validations/question';
+import {QuestionSchema} from '@/lib/validations/survey';
 import {SurveySchema} from '@/lib/validations/survey';
 import {QuestionFormState, useQuestionForm} from '../hooks/use-question-form';
 import {QuestionResponse, useSurvey} from '../hooks/use-survey';
@@ -84,7 +84,7 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
 };
 
 type FormProps = {
-  question: QuestionConfig;
+  question: QuestionSchema;
   children: React.ReactNode;
   responses: QuestionResponse[];
   currentQuestionId: string;
