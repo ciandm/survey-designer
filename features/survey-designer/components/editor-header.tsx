@@ -78,9 +78,7 @@ export const EditorHeader = () => {
       </div>
       <div className="flex gap-2">
         <UnsavedChangesButton />
-        <Button size="icon" variant="ghost" onClick={handleOnPreviewClick}>
-          <EyeIcon className="h-4 w-4" />
-        </Button>
+        {/* UI-TODO: Add Preview */}
         <PublishButton />
         <SurveyActions />
       </div>
