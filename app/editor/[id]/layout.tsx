@@ -36,8 +36,10 @@ export default async function EditorLayout({
           schema: schema.data,
         }}
       />
-      <EditorHeader />
-      <DesignerLinks />
+      <div className="flex flex-col">
+        <EditorHeader />
+        <DesignerLinks />
+      </div>
       <>{children}</>
     </>
   );

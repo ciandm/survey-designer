@@ -62,7 +62,7 @@ export const surveyResponsesSchema = z.array(
   z.object({
     surveyId: z.string(),
     id: z.string(),
-    answers: z.array(
+    responses: z.array(
       z.object({
         questionId: z.string(),
         value: z.array(z.string()),
@@ -81,6 +81,7 @@ export const responsesSchema = z.array(
 );
 
 export const addOrUpdateSurveyResponseSchema = z.object({
+  responseId: z.string().optional(),
   answers: responsesSchema,
 });
 

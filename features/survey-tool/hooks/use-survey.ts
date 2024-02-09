@@ -17,6 +17,8 @@ export type QuestionResponse = {
 
 type Step = 'welcome' | 'questions' | 'thank_you';
 
+const RESPONSES_LS_KEY = 'survey_responses';
+
 export const useSurvey = ({schema}: {schema: SurveySchema}) => {
   const {questions} = schema;
   const [step, setStep] = useState<Step>(() => {
@@ -24,7 +26,14 @@ export const useSurvey = ({schema}: {schema: SurveySchema}) => {
     if (schema.questions.length) return 'questions';
     return 'thank_you';
   });
-  const [responses, setResponses] = useState<QuestionResponse[]>([]);
+  const [responses, setResponses] = useState<QuestionResponse[]>(() => {
+    if (typeof window === 'undefined') return [];
+    const storedResponses = localStorage.getItem(RESPONSES_LS_KEY);
+    if (storedResponses) {
+      return JSON.parse(storedResponses);
+    }
+    return [];
+  });
   const [currentQuestionId, setCurrentQuestionId] = useState<string>(
     questions[0]?.id ?? '',
   );
@@ -75,14 +84,19 @@ export const useSurvey = ({schema}: {schema: SurveySchema}) => {
       type: data.type,
     });
 
-    await addOrUpdateSurveyResponse(schema.id, responses);
+    localStorage.setItem(RESPONSES_LS_KEY, JSON.stringify(responses));
 
     if (isLastQuestion) {
-      setStep('thank_you');
-      return;
+      try {
+        await addOrUpdateSurveyResponse(schema.id, responses);
+        localStorage.removeItem(RESPONSES_LS_KEY);
+        setStep('thank_you');
+      } catch (error) {
+        console.error('Error submitting survey response', error);
+      }
+    } else {
+      handleSetNextQuestion();
     }
-
-    handleSetNextQuestion();
   };
 
   return {

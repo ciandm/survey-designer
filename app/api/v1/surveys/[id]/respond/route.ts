@@ -22,20 +22,27 @@ export async function PUT(
   }
 
   try {
-    const survey = await prisma.surveyResponse.upsert({
-      where: {
-        surveyId: params.id,
-      },
-      create: {
-        surveyId: params.id,
-        answers: parsed.data.answers,
-      },
-      update: {
-        answers: parsed.data.answers,
-      },
-    });
+    const {responseId} = parsed.data;
+    if (responseId) {
+      const response = await prisma.surveyResponses.update({
+        where: {
+          id: responseId,
+        },
+        data: {
+          responses: parsed.data.answers,
+        },
+      });
 
-    return NextResponse.json({survey}, {status: 200});
+      return NextResponse.json({response}, {status: 200});
+    } else {
+      const survey = await prisma.surveyResponses.create({
+        data: {
+          surveyId: params.id,
+          responses: parsed.data.answers,
+        },
+      });
+      return NextResponse.json({survey}, {status: 200});
+    }
   } catch (error) {
     return NextResponse.json({error}, {status: 500});
   }

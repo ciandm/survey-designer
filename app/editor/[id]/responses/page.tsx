@@ -3,7 +3,7 @@ import {surveyResponsesSchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
 const ResponsesPage = async ({params}: {params: {id: string}}) => {
-  const surveyResponses = await prisma.surveyResponse.findMany({
+  const surveyResponses = await prisma.surveyResponses.findMany({
     where: {
       surveyId: params.id,
     },
@@ -17,7 +17,7 @@ const ResponsesPage = async ({params}: {params: {id: string}}) => {
 
   return (
     <div className="flex h-screen flex-col">
-      <pre>{JSON.stringify(parsedAnswers, null, 2)}</pre>
+      <pre>{JSON.stringify(parsedAnswers.data, null, 2)}</pre>
     </div>
   );
 };
