@@ -14,20 +14,29 @@ export async function PUT(
   context: z.infer<typeof routeContextSchema>,
 ) {
   const {params} = routeContextSchema.parse(context);
-  const parsed = addOrUpdateSurveyResponseSchema.safeParse(req.body);
+  const body = await req.json();
+  const parsed = addOrUpdateSurveyResponseSchema.safeParse(body);
 
   if (!parsed.success) {
     return NextResponse.json(parsed.error, {status: 400});
   }
 
-  const survey = await prisma.surveyResponse.update({
-    data: {
-      answers: parsed.data.answers,
-    },
-    where: {
-      id: params.id,
-    },
-  });
+  try {
+    const survey = await prisma.surveyResponse.upsert({
+      where: {
+        surveyId: params.id,
+      },
+      create: {
+        surveyId: params.id,
+        answers: parsed.data.answers,
+      },
+      update: {
+        answers: parsed.data.answers,
+      },
+    });
 
-  return NextResponse.json({survey}, {status: 200});
+    return NextResponse.json({survey}, {status: 200});
+  } catch (error) {
+    return NextResponse.json({error}, {status: 500});
+  }
 }

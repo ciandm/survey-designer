@@ -22,7 +22,7 @@ model SurveyResponse {
   id       String @id @default(cuid())
   survey   Survey @relation(fields: [surveyId], references: [id])
   surveyId String
-  answers  Json
+  answers  Json   @default("{}")
 
   @@unique([surveyId])
 }

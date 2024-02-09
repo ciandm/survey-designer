@@ -58,14 +58,30 @@ export const surveyResponse = z.object({
   }),
 });
 
+export const surveyResponsesSchema = z.array(
+  z.object({
+    surveyId: z.string(),
+    id: z.string(),
+    answers: z.array(
+      z.object({
+        questionId: z.string(),
+        value: z.array(z.string()),
+        type: z.nativeEnum(QUESTION_TYPE),
+      }),
+    ),
+  }),
+);
+
+export const responsesSchema = z.array(
+  z.object({
+    questionId: z.string(),
+    value: z.array(z.string()),
+    type: z.nativeEnum(QUESTION_TYPE),
+  }),
+);
+
 export const addOrUpdateSurveyResponseSchema = z.object({
-  answers: z.array(
-    z.object({
-      questionId: z.string(),
-      value: z.array(z.string()),
-      type: z.nativeEnum(QUESTION_TYPE),
-    }),
-  ),
+  answers: responsesSchema,
 });
 
 export type SurveyResponse = z.infer<typeof surveyResponse>;
