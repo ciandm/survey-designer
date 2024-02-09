@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: '/editor/:id',
-        destination: '/editor/:id/build',
+        destination: '/editor/:id/designer',
         permanent: true,
       },
     ];

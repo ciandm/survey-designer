@@ -1,6 +1,5 @@
 import {notFound} from 'next/navigation';
-import {DesignerLinks} from '@/features/survey-designer/components/designer-links';
-import {EditorHeader} from '@/features/survey-designer/components/editor-header';
+import {DesignerShell} from '@/features/survey-designer/components/designer-shell';
 import {SurveySchemaInitialiser} from '@/features/survey-designer/components/survey-schema-initiailiser';
 import {surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
@@ -36,11 +35,7 @@ export default async function EditorLayout({
           schema: schema.data,
         }}
       />
-      <div className="flex flex-col">
-        <EditorHeader />
-        <DesignerLinks />
-      </div>
-      <>{children}</>
+      <DesignerShell>{children}</DesignerShell>
     </>
   );
 }

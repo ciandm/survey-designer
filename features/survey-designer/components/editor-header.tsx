@@ -52,29 +52,17 @@ export const EditorHeader = () => {
   };
 
   return (
-    <header className="flex items-center justify-between gap-2 bg-background px-4 py-2">
-      <div>
-        <Link
-          href="/"
-          className={cn(
-            buttonVariants({variant: 'link'}),
-            'p-0 text-muted-foreground',
-          )}
-        >
-          <ArrowLeftIcon className="mr-2 h-4 w-4" />
-          Home
-        </Link>
-        <div className="flex items-center">
-          <ContentEditable
-            html={survey.title}
-            className="text-md font-medium"
-            placeholder="Untitled Survey"
-            onChange={(e) => updateTitle(e.target.value)}
-          />
-          <Badge variant="secondary" className="ml-3">
-            Published
-          </Badge>
-        </div>
+    <header className="flex h-16 w-full items-center justify-between gap-2 border-b bg-background px-4">
+      <div className="flex items-center">
+        <ContentEditable
+          html={survey.title}
+          className="text-md font-bold"
+          placeholder="Untitled Survey"
+          onChange={(e) => updateTitle(e.target.value)}
+        />
+        <Badge variant="secondary" className="ml-3">
+          Published
+        </Badge>
       </div>
       <div className="flex gap-2">
         <UnsavedChangesButton />

@@ -32,7 +32,7 @@ export const QuestionsSidebar = () => {
     useQuestionCrud();
 
   return (
-    <aside className="flex min-w-[260px] max-w-[260px] flex-1 flex-col overflow-hidden border-r">
+    <aside className="flex flex-1 flex-col overflow-hidden">
       <div className="p-4">
         <Button
           size="sm"
