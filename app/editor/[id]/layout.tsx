@@ -1,5 +1,5 @@
 import {notFound} from 'next/navigation';
-import {DesignerShell} from '@/features/survey-designer/components/designer-shell';
+import {EditorHeader} from '@/features/survey-designer/components/editor-header';
 import {SurveySchemaInitialiser} from '@/features/survey-designer/components/survey-schema-initiailiser';
 import {surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
@@ -35,7 +35,10 @@ export default async function EditorLayout({
           schema: schema.data,
         }}
       />
-      <DesignerShell>{children}</DesignerShell>
+      <div className="grid grid-rows-[60px_calc(100vh-60px)] overflow-hidden">
+        <EditorHeader />
+        <main className="border-t bg-muted">{children}</main>
+      </div>
     </>
   );
 }

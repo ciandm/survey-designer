@@ -1,14 +1,7 @@
 import {Controller} from 'react-hook-form';
-import {CheckCircle2Icon, Copy, Trash2} from 'lucide-react';
-import {Button} from '@/components/ui/button';
+import {CheckCircle2Icon} from 'lucide-react';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Input} from '@/components/ui/input';
-import {
-  deleteQuestionChoice,
-  duplicateQuestionChoice,
-  insertQuestionChoice,
-  updateQuestionChoice,
-} from '@/features/survey-designer/store/survey-designer';
 import {cn} from '@/lib/utils';
 import {useQuestionContext} from './question-provider';
 import {QuestionFormConnect} from './survey';
@@ -20,8 +13,6 @@ import {QuestionFormConnect} from './survey';
 
 export const MultipleChoiceField = () => {
   const {question, view} = useQuestionContext();
-  const {onAddChoiceClick, onChoiceChange, onChoiceDelete, onDuplicateChoice} =
-    useChoiceField();
 
   const {choices} = question.properties;
 
@@ -117,78 +108,12 @@ export const MultipleChoiceField = () => {
         </span>
         {choices?.map((choice) => {
           return (
-            <div key={choice.id} className="flex flex-1">
-              <Input
-                type="text"
-                value={choice.value}
-                onChange={(event) =>
-                  onChoiceChange(choice.id, event.target.value)
-                }
-              />
-              <div className="ml-1 flex gap-1">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onChoiceDelete(choice.id)}
-                  disabled={question.properties.choices?.length === 1}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={() => onDuplicateChoice(choice.id)}
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
-              </div>
+            <div key={choice.id} className="h-10 rounded-md border p-2">
+              {choice.value}
             </div>
           );
         })}
       </div>
-      <Button variant="secondary" className="mt-4" onClick={onAddChoiceClick}>
-        Add choice
-      </Button>
     </div>
   );
-};
-
-const useChoiceField = () => {
-  const {question} = useQuestionContext();
-  const onAddChoiceClick = () => {
-    insertQuestionChoice({
-      questionId: question.id,
-    });
-  };
-
-  const onChoiceChange = (choiceId: string, value: string) => {
-    updateQuestionChoice({
-      questionId: question.id,
-      newChoice: {
-        id: choiceId,
-        value,
-      },
-    });
-  };
-
-  const onChoiceDelete = (choiceId: string) => {
-    deleteQuestionChoice({
-      questionId: question.id,
-      choiceId,
-    });
-  };
-
-  const onDuplicateChoice = (choiceId: string) => {
-    duplicateQuestionChoice({
-      questionId: question.id,
-      choiceId,
-    });
-  };
-
-  return {
-    onAddChoiceClick,
-    onChoiceChange,
-    onChoiceDelete,
-    onDuplicateChoice,
-  };
 };

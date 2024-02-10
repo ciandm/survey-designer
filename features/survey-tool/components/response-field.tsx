@@ -1,8 +1,8 @@
 'use client';
 
+import {Separator} from '@/components/ui/separator';
 import {MultipleChoiceField} from './multiple-choice-field';
 import {useQuestionContext} from './question-provider';
-import {TextField} from './text-field';
 
 export const ResponseField = () => {
   const {question} = useQuestionContext();
@@ -10,8 +10,13 @@ export const ResponseField = () => {
   switch (question.type) {
     case 'short_text':
     case 'long_text':
-      return <TextField />;
+      return null;
     case 'multiple_choice':
-      return <MultipleChoiceField />;
+      return (
+        <>
+          <Separator className="my-4" />
+          <MultipleChoiceField />
+        </>
+      );
   }
 };

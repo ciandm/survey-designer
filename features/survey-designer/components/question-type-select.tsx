@@ -1,3 +1,4 @@
+import {Label} from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -26,7 +27,13 @@ const questionTypeOptions = Object.values(QUESTION_TYPE)
     label: formatQuestionType(value),
   }));
 
-export const QuestionTypeSelect = () => {
+export const QuestionTypeSelect = ({
+  id,
+  className,
+}: {
+  id?: string;
+  className?: string;
+}) => {
   const {activeQuestion} = useActiveQuestion();
 
   const onChangeFieldType = (newType: QuestionType) => {
@@ -37,25 +44,22 @@ export const QuestionTypeSelect = () => {
   };
 
   return (
-    <div className="border-b p-4">
-      <p className="mb-4 text-sm font-medium leading-none">Type</p>
-      <Select
-        value={activeQuestion?.type ?? QUESTION_TYPE.short_text}
-        onValueChange={(value) => onChangeFieldType(value as QuestionType)}
-      >
-        <SelectTrigger id="question-type" className="mt-2">
-          <SelectValue placeholder="Select a question type" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            {questionTypeOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </div>
+    <Select
+      value={activeQuestion?.type ?? QUESTION_TYPE.short_text}
+      onValueChange={(value) => onChangeFieldType(value as QuestionType)}
+    >
+      <SelectTrigger id={id} className={className}>
+        <SelectValue placeholder="Select a question type" />
+      </SelectTrigger>
+      <SelectContent id={id}>
+        <SelectGroup>
+          {questionTypeOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 };

@@ -85,11 +85,11 @@ const UnsavedChangesButton = () => {
   return (
     <Button
       size="sm"
-      variant="outline"
+      variant="ghost"
       onClick={() => handleUpdateSurveySchema({...schema})}
       disabled={isPendingUpdateSchema}
     >
-      Save changes
+      Save
       <RefreshCw
         className={cn('ml-2 h-4 w-4 flex-shrink-0', {
           'animate-spin': isPendingUpdateSchema,
