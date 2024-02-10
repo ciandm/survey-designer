@@ -1,12 +1,25 @@
 'use client';
 
 import {useState} from 'react';
-import {EraserIcon, PlusCircledIcon} from '@radix-ui/react-icons';
+import {
+  EraserIcon,
+  PlusCircledIcon,
+  QuestionMarkCircledIcon,
+} from '@radix-ui/react-icons';
 import {Trash2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
+import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {Separator} from '@/components/ui/separator';
 import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
@@ -21,6 +34,13 @@ import {
 import {QuestionTypeSelect} from './question-type-select';
 
 type Panel = 'question' | 'choices' | 'logic' | 'validation';
+
+const SORT_ORDER_OPTIONS = [
+  {label: 'None', value: 'none'},
+  {label: 'Ascending', value: 'asc'},
+  {label: 'Descending', value: 'desc'},
+  {label: 'Random', value: 'random'},
+] as const;
 
 export const ConfigPanel = () => {
   const {activeQuestion} = useActiveQuestion();
@@ -44,7 +64,6 @@ const ConfigPanelInner = () => {
             <Label htmlFor="question-type">Type</Label>
             <QuestionTypeSelect id="question-type" />
           </div>
-
           <div>
             <Label htmlFor="title">Title</Label>
             <Textarea
@@ -93,21 +112,58 @@ const ConfigPanelInner = () => {
               />
             </div>
           )}
-          <label className="flex items-center">
-            <Checkbox
-              className="mr-2"
-              onCheckedChange={(checked) => {
-                updateQuestion({
-                  id: activeQuestion.id,
-                  validations: {
-                    required: !!checked,
-                  },
-                });
-              }}
-              checked={activeQuestion.validations.required}
-            />
-            <span>Make this question required</span>
-          </label>
+          <div className="flex flex-col gap-1">
+            <label className="flex items-center">
+              <Checkbox
+                className="mr-2"
+                onCheckedChange={(checked) => {
+                  updateQuestion({
+                    id: activeQuestion.id,
+                    validations: {
+                      required: !!checked,
+                    },
+                  });
+                }}
+                checked={activeQuestion.validations.required}
+              />
+              <span>Make this question required</span>
+            </label>
+            {activeQuestion.validations.required && (
+              <>
+                <div className="mt-2 flex items-center justify-between">
+                  <Label htmlFor="required">Required error message</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button size="icon" variant="ghost" className="h-6 w-6">
+                        <QuestionMarkCircledIcon className="h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent side="left">
+                      <p className="text-xs leading-snug">
+                        If the question is required, this message will be shown
+                        if the user tries to submit the form without answering
+                        this question. Defaults to &quot;This field is
+                        required&quot;.
+                      </p>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <Textarea
+                  name="required"
+                  id="required"
+                  value={activeQuestion.properties.required_message}
+                  onChange={(e) =>
+                    updateQuestion({
+                      id: activeQuestion.id,
+                      properties: {
+                        required_message: e.target.value,
+                      },
+                    })
+                  }
+                />
+              </>
+            )}
+          </div>
         </Panel>
         {activeQuestion.type === 'multiple_choice' && (
           <Panel
@@ -176,35 +232,32 @@ const ConfigPanelInner = () => {
               </div>
             </div>
             <Separator />
-            <label className="flex items-center">
-              <Checkbox
-                className="mr-2"
-                onCheckedChange={(checked) => {
+            <label className="flex flex-col items-start">
+              <span className="mb-2">Sort choices</span>
+              <Select
+                value={activeQuestion.properties.sort_order ?? 'none'}
+                onValueChange={(value) => {
                   updateQuestion({
                     id: activeQuestion.id,
                     properties: {
-                      allow_multiple_selection: !!checked,
+                      sort_order: value === 'none' ? undefined : (value as any),
                     },
                   });
                 }}
-                checked={activeQuestion.properties.allow_multiple_selection}
-              />
-              <span>Allow multiple selection</span>
-            </label>
-            <label className="flex items-center">
-              <Checkbox
-                className="mr-2"
-                onCheckedChange={(checked) => {
-                  updateQuestion({
-                    id: activeQuestion.id,
-                    properties: {
-                      randomise: !!checked,
-                    },
-                  });
-                }}
-                checked={activeQuestion.properties.randomise}
-              />
-              <span>Randomise</span>
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {SORT_ORDER_OPTIONS.map((option) => (
+                      <SelectItem value={option.value} key={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </label>
           </Panel>
         )}

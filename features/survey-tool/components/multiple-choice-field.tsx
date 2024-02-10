@@ -1,7 +1,6 @@
 import {Controller} from 'react-hook-form';
 import {CheckCircle2Icon} from 'lucide-react';
 import {Checkbox} from '@/components/ui/checkbox';
-import {Input} from '@/components/ui/input';
 import {cn} from '@/lib/utils';
 import {useQuestionContext} from './question-provider';
 import {QuestionFormConnect} from './survey';
@@ -21,9 +20,7 @@ export const MultipleChoiceField = () => {
       <div className="flex flex-col items-start">
         <div className="flex w-full max-w-xs flex-col gap-3">
           <span className="text-sm text-muted-foreground">
-            {question.properties.allow_multiple_selection
-              ? 'Pick one or more'
-              : 'Pick one'}
+            Pick one or more
           </span>
           <QuestionFormConnect>
             {({control, formState}) => (
@@ -39,41 +36,28 @@ export const MultipleChoiceField = () => {
                       return (
                         <label
                           className={cn(
-                            'flex h-10 flex-1 cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors',
+                            'flex h-10 flex-1 cursor-pointer items-center gap-2 rounded-md border bg-white px-3 py-2 text-sm transition-colors',
                             {
                               'font-medium ring-2 ring-ring ring-offset-2':
                                 isSelected,
-                              'border-input hover:bg-muted': !isSelected,
+                              'border-input hover:bg-white/80': !isSelected,
                             },
                           )}
                         >
-                          {question.properties.allow_multiple_selection ? (
-                            <Checkbox
-                              checked={isSelected}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, choice.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (id) => id !== choice.id,
-                                      ),
-                                    );
-                              }}
-                              className="sr-only"
-                              name={field.name}
-                            />
-                          ) : (
-                            // TODO: Fix styling
-                            <input
-                              className="sr-only"
-                              type="radio"
-                              checked={isSelected}
-                              onChange={() => {
-                                field.onChange([choice.id]);
-                              }}
-                              name={field.name}
-                            />
-                          )}
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, choice.id])
+                                : field.onChange(
+                                    field.value?.filter(
+                                      (id) => id !== choice.id,
+                                    ),
+                                  );
+                            }}
+                            className="sr-only"
+                            name={field.name}
+                          />
                           {choice.value}
                           {isSelected && (
                             <span className="ml-auto">
@@ -101,11 +85,7 @@ export const MultipleChoiceField = () => {
   return (
     <div className="flex flex-col items-start">
       <div className="flex w-full max-w-sm flex-col gap-2">
-        <span className="text-sm text-muted-foreground">
-          {question.properties.allow_multiple_selection
-            ? 'Pick one or more'
-            : 'Pick one'}
-        </span>
+        <span className="text-sm text-muted-foreground">Pick one or more</span>
         {choices?.map((choice) => {
           return (
             <div key={choice.id} className="h-10 rounded-md border p-2">

@@ -58,9 +58,10 @@ function randomiseQuestionChoices(data: SurveySchema): SurveySchema {
           ...question,
           properties: {
             ...question.properties,
-            choices: question.properties.randomise
-              ? randomiseChoices(question.properties.choices)
-              : question.properties.choices,
+            choices:
+              question.properties.sort_order === 'random'
+                ? randomiseChoices(question.properties.choices)
+                : question.properties.choices,
           },
         };
       }

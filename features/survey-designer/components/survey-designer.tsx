@@ -94,9 +94,7 @@ export const SurveyDesigner = () => {
                     <div className="mt-4 flex flex-col items-start">
                       <div className="flex w-full max-w-sm flex-col gap-2">
                         <span className="text-sm text-muted-foreground">
-                          {question.properties.allow_multiple_selection
-                            ? 'Pick one or more'
-                            : 'Pick one'}
+                          Pick one or more
                         </span>
                         {question.properties.choices?.map((choice) => {
                           return (

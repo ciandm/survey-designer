@@ -9,9 +9,11 @@ import {SurveySchema} from '@/lib/validations/survey';
 import {QuestionFormState, useQuestionForm} from '../hooks/use-question-form';
 import {QuestionResponse, useSurvey} from '../hooks/use-survey';
 import {getQuestionStates} from '../utils/question';
+import {MultipleChoiceField} from './multiple-choice-field';
 import {Question} from './question';
 import {QuestionProvider} from './question-provider';
 import {ResponseField} from './response-field';
+import {TextField} from './text-field';
 
 export const Survey = ({schema}: {schema: SurveySchema}) => {
   const {questions = []} = schema;
@@ -50,7 +52,13 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
                 view="live"
               >
                 <Question />
-                <ResponseField />
+                <div className="pt-8">
+                  {question.type === 'multiple_choice' && (
+                    <MultipleChoiceField />
+                  )}
+                  {(question.type === 'short_text' ||
+                    question.type === 'long_text') && <TextField />}
+                </div>
               </QuestionProvider>
               <div className="mt-8 flex">
                 {canGoBack && (
