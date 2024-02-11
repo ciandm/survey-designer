@@ -1,4 +1,3 @@
-import {Label} from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -9,8 +8,7 @@ import {
 } from '@/components/ui/select';
 import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
 import {formatQuestionType} from '@/lib/utils';
-import {useActiveQuestion} from '../hooks/use-active-question';
-import {changeQuestionType} from '../store/survey-designer';
+import {QuestionSchema} from '@/lib/validations/survey';
 
 const ALLOWED_TYPES = [
   QUESTION_TYPE.short_text,
@@ -27,26 +25,23 @@ const questionTypeOptions = Object.values(QUESTION_TYPE)
     label: formatQuestionType(value),
   }));
 
+type Props = {
+  id?: string;
+  className?: string;
+  question: QuestionSchema;
+  onChange: (type: QuestionType) => void;
+};
+
 export const QuestionTypeSelect = ({
   id,
   className,
-}: {
-  id?: string;
-  className?: string;
-}) => {
-  const {activeQuestion} = useActiveQuestion();
-
-  const onChangeFieldType = (newType: QuestionType) => {
-    changeQuestionType({
-      id: activeQuestion?.id ?? '',
-      type: newType,
-    });
-  };
-
+  question,
+  onChange,
+}: Props) => {
   return (
     <Select
-      value={activeQuestion?.type ?? QUESTION_TYPE.short_text}
-      onValueChange={(value) => onChangeFieldType(value as QuestionType)}
+      value={question?.type ?? QUESTION_TYPE.short_text}
+      onValueChange={(value) => onChange(value as QuestionType)}
     >
       <SelectTrigger id={id} className={className}>
         <SelectValue placeholder="Select a question type" />
