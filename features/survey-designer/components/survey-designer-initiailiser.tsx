@@ -5,7 +5,7 @@ import {SurveyResponse} from '@/lib/validations/survey';
 import {useDesignerModeStore} from '../store/designer-mode';
 import {useSurveyDesignerStore} from '../store/survey-designer';
 
-export const SurveySchemaInitialiser = ({
+export const SurveyDesignerInitialiser = ({
   survey,
 }: {
   survey: SurveyResponse['survey'];
