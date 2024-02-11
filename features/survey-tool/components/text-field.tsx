@@ -20,13 +20,9 @@ export const TextField = ({
   const {question, view} = useQuestionContext();
   const Tag = type === 'short_text' ? Input : Textarea;
 
-  const hasCustomPlaceholder = !!question?.properties.placeholder;
-
   const commonProps = {
     type: 'text',
-    placeholder: hasCustomPlaceholder
-      ? question.properties.placeholder
-      : 'Your answer here...',
+    placeholder: question.properties.placeholder,
     rows: type === 'short_text' ? 1 : 3,
     readOnly: view === 'editing',
     ...(view === 'editing' && {value}),

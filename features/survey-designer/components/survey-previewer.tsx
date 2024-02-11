@@ -1,7 +1,6 @@
 'use client';
 
 import {ArrowLeft} from 'lucide-react';
-import {QuestionOverflowWrapper} from '@/components/question-overflow-wrapper';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {Survey} from '@/features/survey-tool/components/survey';
@@ -32,11 +31,9 @@ export const SurveyPreviewer = () => {
       </header>
       <div className="flex w-full flex-grow overflow-hidden bg-muted">
         <div className="flex flex-1 p-8">
-          <QuestionOverflowWrapper className="rounded-lg bg-card shadow-xl">
-            <div className="mx-auto w-full max-w-2xl py-16">
-              <Survey schema={schema} />
-            </div>
-          </QuestionOverflowWrapper>
+          <div className="mx-auto w-full max-w-2xl py-16">
+            <Survey schema={schema} />
+          </div>
         </div>
       </div>
     </div>

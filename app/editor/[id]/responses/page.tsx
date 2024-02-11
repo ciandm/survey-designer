@@ -16,7 +16,7 @@ const ResponsesPage = async ({params}: {params: {id: string}}) => {
   }
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex w-full flex-col overflow-auto">
       <pre>{JSON.stringify(parsedAnswers.data, null, 2)}</pre>
     </div>
   );

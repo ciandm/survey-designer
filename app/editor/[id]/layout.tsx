@@ -35,9 +35,12 @@ export default async function EditorLayout({
           schema: schema.data,
         }}
       />
-      <div className="grid grid-rows-[60px_calc(100vh-60px)] overflow-hidden">
+      <div className="grid h-screen min-h-0 grid-rows-[60px_1fr] overflow-hidden">
         <EditorHeader />
-        <main className="border-t bg-muted">{children}</main>
+        <main className="flex max-h-[calc(100vh-64px)] border-t bg-muted">
+          <div className="w-12 bg-primary"></div>
+          {children}
+        </main>
       </div>
     </>
   );

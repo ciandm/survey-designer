@@ -27,7 +27,10 @@ export async function PUT(
       id: params.id,
     },
     data: {
-      schema: parsed.data.survey,
+      schema: {
+        ...parsed.data.survey,
+        version: parsed.data.survey.version + 1,
+      },
     },
   });
 

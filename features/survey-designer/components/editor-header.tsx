@@ -1,11 +1,10 @@
 'use client';
 
 import {useState} from 'react';
-import {ArrowLeftIcon} from '@radix-ui/react-icons';
 import {Loader2, RefreshCw} from 'lucide-react';
 import Link from 'next/link';
-import {Badge} from '@/components/ui/badge';
-import {Button, buttonVariants} from '@/components/ui/button';
+import {useParams} from 'next/navigation';
+import {Button} from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -16,53 +15,23 @@ import {
 import {cn} from '@/lib/utils';
 import {useManageSurveyPublication} from '../hooks/use-manage-survey-publication';
 import {useUpdateSurveySchema} from '../hooks/use-update-survey-schema';
-import {useDesignerModeActions} from '../store/designer-mode';
 import {
   useIsSurveyChanged,
   useIsSurveyPublished,
   useSurveyDetails,
-  useSurveyDetailsActions,
   useSurveyQuestions,
   useSurveySchema,
 } from '../store/survey-designer';
-import {ContentEditable} from './content-editable';
 import {SurveyActions} from './survey-actions';
 
 export const EditorHeader = () => {
-  const survey = useSurveyDetails();
-  const questions = useSurveyQuestions();
-  const isChanged = useIsSurveyChanged();
-  const schema = useSurveySchema();
-  const {mutateAsync: handleUpdateSurveySchema} = useUpdateSurveySchema();
-  const {updateTitle} = useSurveyDetailsActions();
-  const {updateMode} = useDesignerModeActions();
-
-  const handleOnPreviewClick = async () => {
-    try {
-      if (isChanged) {
-        handleUpdateSurveySchema({
-          ...schema,
-          questions,
-        });
-      }
-      updateMode('preview');
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const params = useParams();
 
   return (
-    <header className="flex h-16 w-full items-center justify-between gap-2 border-b bg-background px-4">
-      <div className="flex items-center">
-        <ContentEditable
-          html={survey.title}
-          className="text-md font-bold"
-          placeholder="Untitled Survey"
-          onChange={(e) => updateTitle(e.target.value)}
-        />
-        <Badge variant="secondary" className="ml-3">
-          Published
-        </Badge>
+    <header className="flex h-16 w-full items-center justify-between gap-2 bg-background px-4">
+      <div className="flex items-center gap-4">
+        <Link href={`/editor/${params.id}/designer`}>Designer</Link>
+        <Link href={`/editor/${params.id}/responses`}>Responses</Link>
       </div>
       <div className="flex gap-2">
         <UnsavedChangesButton />

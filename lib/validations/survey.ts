@@ -22,9 +22,11 @@ export const questionSchema = z.object({
     required_message: z.string().default('This field is required').optional(),
   }),
   validations: z.object({
-    required: z.boolean().optional().default(false),
+    required: z.boolean().default(false).optional(),
     min_characters: z.number().optional(),
     max_characters: z.number().optional(),
+    min_selections: z.number().optional(),
+    max_selections: z.number().optional(),
   }),
 });
 
@@ -38,6 +40,7 @@ export const surveySchema = z.object({
       description: z.string(),
     })
     .optional(),
+  version: z.number().default(1),
 });
 
 export const createSurveySchema = z.object({

@@ -4,15 +4,13 @@ import {FormProvider, useFormContext} from 'react-hook-form';
 import {ArrowLeft, ArrowRight} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Progress} from '@/components/ui/progress';
-import {QuestionSchema} from '@/lib/validations/survey';
-import {SurveySchema} from '@/lib/validations/survey';
+import {cn} from '@/lib/utils';
+import {QuestionSchema, SurveySchema} from '@/lib/validations/survey';
 import {QuestionFormState, useQuestionForm} from '../hooks/use-question-form';
 import {QuestionResponse, useSurvey} from '../hooks/use-survey';
 import {getQuestionStates} from '../utils/question';
 import {MultipleChoiceField} from './multiple-choice-field';
-import {Question} from './question';
 import {QuestionProvider} from './question-provider';
-import {ResponseField} from './response-field';
 import {TextField} from './text-field';
 
 export const Survey = ({schema}: {schema: SurveySchema}) => {
@@ -51,7 +49,27 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
                 totalQuestions={questions.length}
                 view="live"
               >
-                <Question />
+                <div className="flex flex-col">
+                  <div className="flex items-center justify-between">
+                    <p className="mb-2 text-sm text-muted-foreground">
+                      Question {questionIndex + 1} of {questions.length}
+                    </p>
+                  </div>
+                  <h1
+                    className={cn('text-2xl font-medium', {
+                      'text-muted-foreground': !question.text,
+                      [`after:content-['*']`]:
+                        question.validations.required && question.text,
+                    })}
+                  >
+                    {!!question.text ? question.text : 'Untitled question'}
+                  </h1>
+                  {!!question.description && (
+                    <p className="mt-2 text-muted-foreground">
+                      {question.description}
+                    </p>
+                  )}
+                </div>
                 <div className="pt-8">
                   {question.type === 'multiple_choice' && (
                     <MultipleChoiceField />

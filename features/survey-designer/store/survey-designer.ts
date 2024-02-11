@@ -54,11 +54,13 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
       id: '',
       title: '',
       questions: [],
+      version: 1,
     },
     savedSchema: {
       id: '',
       title: '',
       questions: [],
+      version: 1,
     },
     actions: {
       updateTitle: (title) => {
@@ -84,7 +86,6 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
       deleteQuestion: ({id}) => {
         set((state) => {
           const questions = state.schema.questions || [];
-          if (questions.length === 1) return;
 
           const indexOfFieldToDelete = questions.findIndex((q) => q.id === id);
           if (indexOfFieldToDelete === -1) return;

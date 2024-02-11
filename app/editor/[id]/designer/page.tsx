@@ -1,16 +1,18 @@
 import {Metadata} from 'next';
+import {BuildPanel} from '@/features/survey-designer/components/build-panel';
 import {ConfigPanel} from '@/features/survey-designer/components/config-panel';
 import {SurveyDesigner} from '@/features/survey-designer/components/survey-designer';
+import {QUESTION_TYPE} from '@/lib/constants/question';
+
+QUESTION_TYPE;
 
 const DesignerPage = async () => {
   return (
-    <div className="flex h-screen">
-      <div className="bg-white">Add questions from here</div>
-      <div className="flex flex-1">
-        <SurveyDesigner />
-        <ConfigPanel />
-      </div>
-    </div>
+    <>
+      <BuildPanel />
+      <SurveyDesigner />
+      <ConfigPanel />
+    </>
   );
 };
 

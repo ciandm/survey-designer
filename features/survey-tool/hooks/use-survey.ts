@@ -1,6 +1,7 @@
 import {useState} from 'react';
+import {z} from 'zod';
 import {addOrUpdateSurveyResponse} from '@/lib/api/survey';
-import {QuestionType} from '@/lib/constants/question';
+import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
 import {SurveySchema} from '@/lib/validations/survey';
 import {
   getNextQuestion,
@@ -15,12 +16,23 @@ export type QuestionResponse = {
   type: QuestionType;
 };
 
+const localStorageSchema = z.object({
+  responses: z.array(
+    z.object({
+      questionId: z.string(),
+      value: z.array(z.string()),
+      type: z.nativeEnum(QUESTION_TYPE),
+    }),
+  ),
+  version: z.number(),
+});
+
 type Step = 'welcome' | 'questions' | 'thank_you';
 
 const RESPONSES_LS_KEY = 'survey_responses';
 
 export const useSurvey = ({schema}: {schema: SurveySchema}) => {
-  const {questions} = schema;
+  const {questions, version} = schema;
   const [step, setStep] = useState<Step>(() => {
     if (schema.welcome_screen) return 'welcome';
     if (schema.questions.length) return 'questions';
@@ -30,7 +42,11 @@ export const useSurvey = ({schema}: {schema: SurveySchema}) => {
     if (typeof window === 'undefined') return [];
     const storedResponses = localStorage.getItem(RESPONSES_LS_KEY);
     if (storedResponses) {
-      return JSON.parse(storedResponses);
+      const parsed = localStorageSchema.safeParse(JSON.parse(storedResponses));
+      if (parsed.success) {
+        const {responses, version} = parsed.data;
+        if (version === schema.version) return responses;
+      }
     }
     return [];
   });
@@ -84,7 +100,13 @@ export const useSurvey = ({schema}: {schema: SurveySchema}) => {
       type: data.type,
     });
 
-    localStorage.setItem(RESPONSES_LS_KEY, JSON.stringify(responses));
+    localStorage.setItem(
+      RESPONSES_LS_KEY,
+      JSON.stringify({
+        responses,
+        version,
+      }),
+    );
 
     if (isLastQuestion) {
       try {

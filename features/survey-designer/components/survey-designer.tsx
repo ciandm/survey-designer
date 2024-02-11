@@ -8,13 +8,19 @@ import {cn} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {useQuestionCrud} from '../hooks/use-question-crud';
 import {useDesignerMode} from '../store/designer-mode';
-import {updateQuestion, useSurveyQuestions} from '../store/survey-designer';
+import {
+  updateQuestion,
+  updateTitle,
+  useSurveyQuestions,
+  useSurveySchema,
+} from '../store/survey-designer';
 import {ContentEditable} from './content-editable';
 import {SurveyPreviewer} from './survey-previewer';
 
 export const SurveyDesigner = () => {
   const designerMode = useDesignerMode();
   const questions = useSurveyQuestions();
+  const {title} = useSurveySchema();
   const {handleCreateQuestion, handleDeleteQuestion, handleDuplicateQuestion} =
     useQuestionCrud();
   const {activeQuestion, setActiveQuestion} = useActiveQuestion({
@@ -37,9 +43,30 @@ export const SurveyDesigner = () => {
   }
 
   return (
-    <div className="flex h-full flex-1 overflow-auto bg-muted">
-      <section className="flex flex-1 flex-col p-6">
-        <div className="m-auto flex w-full flex-col gap-4">
+    <>
+      <section className="flex flex-1 flex-col items-start overflow-auto p-12">
+        <ContentEditable
+          className={cn('mb-8 text-2xl font-semibold', {
+            'text-muted-foreground': !title,
+          })}
+          placeholder="Untitled survey"
+          html={title ?? ''}
+          onChange={(e) => updateTitle(e.target.value)}
+        />
+        <div className="flex w-full flex-col gap-4">
+          {questions.length === 0 && (
+            <div className="flex flex-col items-center gap-4">
+              <p className="text-muted-foreground">
+                No questions yet. Click the button below to add a question.
+              </p>
+              <Button
+                onClick={() => handleCreateQuestion({index: 0})}
+                variant="outline"
+              >
+                Add question
+              </Button>
+            </div>
+          )}
           {questions.map((question, index) => (
             <Fragment key={question.id}>
               <div
@@ -57,7 +84,7 @@ export const SurveyDesigner = () => {
                   questionNumber={index + 1}
                   totalQuestions={questions.length}
                 >
-                  <div className="flex flex-col">
+                  <div className="flex flex-col items-start">
                     <div className="flex items-center justify-between">
                       <p className="mb-2 text-sm text-muted-foreground">
                         Question {index + 1} of {questions.length}
@@ -91,22 +118,17 @@ export const SurveyDesigner = () => {
                     />
                   </div>
                   {question.type === 'multiple_choice' && (
-                    <div className="mt-4 flex flex-col items-start">
-                      <div className="flex w-full max-w-sm flex-col gap-2">
-                        <span className="text-sm text-muted-foreground">
-                          Pick one or more
-                        </span>
-                        {question.properties.choices?.map((choice) => {
-                          return (
-                            <div
-                              key={choice.id}
-                              className="h-10 rounded-md border p-2"
-                            >
-                              {choice.value}
-                            </div>
-                          );
-                        })}
-                      </div>
+                    <div className="mt-6 flex w-full max-w-sm flex-col gap-2">
+                      {question.properties.choices?.map((choice) => {
+                        return (
+                          <div
+                            key={choice.id}
+                            className="flex h-12 items-center rounded-lg border bg-muted px-3"
+                          >
+                            <span className="truncate">{choice.value}</span>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                   <div className="gap mt-8 flex justify-between">
@@ -153,6 +175,6 @@ export const SurveyDesigner = () => {
           ))}
         </div>
       </section>
-    </div>
+    </>
   );
 };

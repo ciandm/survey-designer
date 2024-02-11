@@ -36,7 +36,7 @@ export const MultipleChoiceField = () => {
                       return (
                         <label
                           className={cn(
-                            'flex h-10 flex-1 cursor-pointer items-center gap-2 rounded-md border bg-white px-3 py-2 text-sm transition-colors',
+                            'flex h-16 flex-1 cursor-pointer items-center gap-2 rounded-md border bg-white px-5 py-4 text-sm transition-colors',
                             {
                               'font-medium ring-2 ring-ring ring-offset-2':
                                 isSelected,
@@ -58,10 +58,10 @@ export const MultipleChoiceField = () => {
                             className="sr-only"
                             name={field.name}
                           />
-                          {choice.value}
+                          {!!choice.value ? choice.value : '...'}
                           {isSelected && (
                             <span className="ml-auto">
-                              <CheckCircle2Icon className="h-4 w-4 text-primary" />
+                              <CheckCircle2Icon className="h-5 w-5 text-primary" />
                             </span>
                           )}
                         </label>
@@ -88,7 +88,7 @@ export const MultipleChoiceField = () => {
         <span className="text-sm text-muted-foreground">Pick one or more</span>
         {choices?.map((choice) => {
           return (
-            <div key={choice.id} className="h-10 rounded-md border p-2">
+            <div key={choice.id} className="h-10 rounded-md border p-10">
               {choice.value}
             </div>
           );
