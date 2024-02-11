@@ -74,3 +74,10 @@ export async function addOrUpdateSurveyResponse(
 export async function deleteSurveyResponses(surveyId: string): Promise<void> {
   await axios.delete(`${ENDPOINT}/${surveyId}/responses`);
 }
+
+export async function deleteSurveyResponse(
+  surveyId: string,
+  responseId: string,
+): Promise<void> {
+  await axios.delete(`${ENDPOINT}/${surveyId}/responses/${responseId}`);
+}

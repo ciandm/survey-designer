@@ -1,6 +1,7 @@
 import {notFound} from 'next/navigation';
+import {SurveyProvider} from '@/components/survey-provider';
 import {EditorHeader} from '@/features/survey-designer/components/editor-header';
-import {SurveySchemaInitialiser} from '@/features/survey-designer/components/survey-schema-initiailiser';
+import {SurveyDesignerInitialiser} from '@/features/survey-designer/components/survey-designer-initiailiser';
 import {surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
@@ -21,27 +22,29 @@ export default async function EditorLayout({
     return notFound();
   }
 
-  const schema = surveySchema.safeParse(survey.schema);
+  const parsedSurvey = surveySchema.safeParse(survey.schema);
 
-  if (!schema.success) {
+  if (!parsedSurvey.success) {
     return notFound();
   }
 
   return (
     <>
-      <SurveySchemaInitialiser
-        survey={{
-          ...survey,
-          schema: schema.data,
-        }}
-      />
-      <div className="grid h-screen min-h-0 grid-rows-[60px_1fr] overflow-hidden">
-        <EditorHeader />
-        <main className="flex max-h-[calc(100vh-64px)] border-t bg-muted">
-          <div className="w-12 bg-primary"></div>
-          {children}
-        </main>
-      </div>
+      <SurveyProvider survey={parsedSurvey.data}>
+        <SurveyDesignerInitialiser
+          survey={{
+            ...survey,
+            schema: parsedSurvey.data,
+          }}
+        />
+        <div className="grid h-screen min-h-0 grid-rows-[60px_1fr] overflow-hidden">
+          <EditorHeader />
+          <main className="flex max-h-[calc(100vh-64px)] border-t bg-muted">
+            <div className="w-12 bg-primary"></div>
+            {children}
+          </main>
+        </div>
+      </SurveyProvider>
     </>
   );
 }

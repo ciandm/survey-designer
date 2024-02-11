@@ -61,25 +61,19 @@ export const surveyResponse = z.object({
   }),
 });
 
-export const surveyResponsesSchema = z.array(
-  z.object({
-    surveyId: z.string(),
-    id: z.string(),
-    responses: z.array(
-      z.object({
-        questionId: z.string(),
-        value: z.array(z.string()),
-        type: z.nativeEnum(QUESTION_TYPE),
-      }),
-    ),
-  }),
-);
-
 export const responsesSchema = z.array(
   z.object({
     questionId: z.string(),
     value: z.array(z.string()),
     type: z.nativeEnum(QUESTION_TYPE),
+  }),
+);
+
+export const surveyResponsesSchema = z.array(
+  z.object({
+    surveyId: z.string(),
+    id: z.string(),
+    responses: responsesSchema,
   }),
 );
 
@@ -93,3 +87,6 @@ export type UpdateSurveySchema = z.infer<typeof updateSurveySchema>;
 export type CreateSurveySchema = z.infer<typeof createSurveySchema>;
 export type QuestionSchema = z.infer<typeof questionSchema>;
 export type ChoicesSchema = z.infer<typeof choicesSchema>;
+export type SurveyResponseSchema = z.infer<
+  typeof surveyResponsesSchema
+>[number];

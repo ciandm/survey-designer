@@ -3,6 +3,7 @@
 import {Fragment, useRef} from 'react';
 import {PlusIcon} from '@radix-ui/react-icons';
 import {Button} from '@/components/ui/button';
+import {Textarea} from '@/components/ui/textarea';
 import {QuestionProvider} from '@/features/survey-tool/components/question-provider';
 import {cn} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
@@ -47,12 +48,10 @@ export const SurveyDesigner = () => {
   return (
     <>
       <section className="flex flex-1 flex-col items-start overflow-auto p-6">
-        <ContentEditable
-          className={cn('mb-8 text-2xl font-semibold', {
-            'text-muted-foreground': !title,
-          })}
+        <Textarea
+          className="mb-8 text-2xl font-semibold"
           placeholder="Untitled survey"
-          html={title ?? ''}
+          value={title ?? ''}
           onChange={(e) => updateTitle(e.target.value)}
         />
         <div className="flex w-full flex-col gap-4">
@@ -92,32 +91,20 @@ export const SurveyDesigner = () => {
                         Question {index + 1} of {questions.length}
                       </p>
                     </div>
-                    <ContentEditable
+                    <h1
                       className={cn('text-2xl font-medium', {
                         'text-muted-foreground': !question.text,
                         [`after:content-['*']`]:
                           question.validations.required && question.text,
                       })}
-                      placeholder="Begin typing your question here..."
-                      html={question.text ?? ''}
-                      onChange={(e) =>
-                        updateQuestion?.({
-                          id: question.id,
-                          text: e.target.value,
-                        })
-                      }
-                    />
-                    <ContentEditable
-                      className="mt-2 text-muted-foreground"
-                      placeholder="Description (optional)"
-                      html={question.description ?? ''}
-                      onChange={(e) => {
-                        updateQuestion?.({
-                          id: question.id,
-                          description: e.target.value,
-                        });
-                      }}
-                    />
+                    >
+                      {!!question.text ? question.text : 'Untitled question'}
+                    </h1>
+                    {!!question.description && (
+                      <p className="mt-2 text-muted-foreground">
+                        {question.description}
+                      </p>
+                    )}
                   </div>
                   <div className="gap mt-8 flex justify-between gap-2">
                     <QuestionTypeSelect
