@@ -18,13 +18,15 @@ export const questionSchema = z.object({
     choices: choicesSchema.optional(),
     placeholder: z.string().optional(),
     allow_other_option: z.boolean().optional(),
-    allow_multiple_selection: z.boolean().optional(),
-    randomise: z.boolean().optional(),
+    sort_order: z.enum(['asc', 'desc', 'random']).optional(),
+    required_message: z.string().default('This field is required').optional(),
   }),
   validations: z.object({
-    required: z.boolean().optional(),
+    required: z.boolean().default(false).optional(),
     min_characters: z.number().optional(),
     max_characters: z.number().optional(),
+    min_selections: z.number().optional(),
+    max_selections: z.number().optional(),
   }),
 });
 
@@ -38,6 +40,7 @@ export const surveySchema = z.object({
       description: z.string(),
     })
     .optional(),
+  version: z.number().default(1),
 });
 
 export const createSurveySchema = z.object({
@@ -58,14 +61,31 @@ export const surveyResponse = z.object({
   }),
 });
 
+export const surveyResponsesSchema = z.array(
+  z.object({
+    surveyId: z.string(),
+    id: z.string(),
+    responses: z.array(
+      z.object({
+        questionId: z.string(),
+        value: z.array(z.string()),
+        type: z.nativeEnum(QUESTION_TYPE),
+      }),
+    ),
+  }),
+);
+
+export const responsesSchema = z.array(
+  z.object({
+    questionId: z.string(),
+    value: z.array(z.string()),
+    type: z.nativeEnum(QUESTION_TYPE),
+  }),
+);
+
 export const addOrUpdateSurveyResponseSchema = z.object({
-  answers: z.array(
-    z.object({
-      questionId: z.string(),
-      value: z.array(z.string()),
-      type: z.nativeEnum(QUESTION_TYPE),
-    }),
-  ),
+  responseId: z.string().optional(),
+  answers: responsesSchema,
 });
 
 export type SurveyResponse = z.infer<typeof surveyResponse>;

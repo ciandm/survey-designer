@@ -1,5 +1,7 @@
 import React from 'react';
 import {Controller} from 'react-hook-form';
+import {Input} from '@/components/ui/input';
+import {Textarea} from '@/components/ui/textarea';
 import {QuestionFormControl} from '../hooks/use-question-form';
 import {useQuestionContext} from './question-provider';
 import {QuestionFormConnect} from './survey';
@@ -16,17 +18,11 @@ export const TextField = ({
   ...rest
 }: Props) => {
   const {question, view} = useQuestionContext();
-  const Tag = type === 'short_text' ? 'input' : 'textarea';
-
-  const hasCustomPlaceholder = !!question?.properties.placeholder;
+  const Tag = type === 'short_text' ? Input : Textarea;
 
   const commonProps = {
     type: 'text',
-    className:
-      'peer block w-full border-0 py-2 text-gray-900 outline-none focus:ring-0 sm:text-sm sm:leading-6 bg-transparent',
-    placeholder: hasCustomPlaceholder
-      ? question.properties.placeholder
-      : 'Your answer here...',
+    placeholder: question.properties.placeholder,
     rows: type === 'short_text' ? 1 : 3,
     readOnly: view === 'editing',
     ...(view === 'editing' && {value}),
@@ -55,13 +51,11 @@ export const TextField = ({
             name="response"
             render={({field: {onChange, ...restField}, fieldState}) => (
               <>
-                {renderInputWrapper(
-                  <Tag
-                    {...commonProps}
-                    {...restField}
-                    onChange={(e) => onChange([e.target.value])}
-                  />,
-                )}
+                <Tag
+                  {...commonProps}
+                  {...restField}
+                  onChange={(e) => onChange([e.target.value])}
+                />
                 <div className="mt-4 flex justify-between">
                   {fieldState.error && (
                     <p

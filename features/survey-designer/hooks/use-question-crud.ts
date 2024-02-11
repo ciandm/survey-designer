@@ -14,9 +14,14 @@ export const useQuestionCrud = () => {
   const questions = useSurveyQuestions();
 
   const handleDeleteQuestion = (id: string) => {
+    const questionsBeforeDelete = questions;
     deleteQuestion({id});
     if (activeQuestion?.id === id) {
-      setActiveQuestion(getNextQuestionToSelect(questions, id));
+      if (questionsBeforeDelete.length === 1) {
+        setActiveQuestion(null);
+      } else {
+        setActiveQuestion(getNextQuestionToSelect(questions, id));
+      }
     }
   };
 

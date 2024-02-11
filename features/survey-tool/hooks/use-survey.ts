@@ -1,6 +1,7 @@
 import {useState} from 'react';
+import {z} from 'zod';
 import {addOrUpdateSurveyResponse} from '@/lib/api/survey';
-import {QuestionType} from '@/lib/constants/question';
+import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
 import {SurveySchema} from '@/lib/validations/survey';
 import {
   getNextQuestion,
@@ -15,16 +16,40 @@ export type QuestionResponse = {
   type: QuestionType;
 };
 
+const localStorageSchema = z.object({
+  responses: z.array(
+    z.object({
+      questionId: z.string(),
+      value: z.array(z.string()),
+      type: z.nativeEnum(QUESTION_TYPE),
+    }),
+  ),
+  version: z.number(),
+});
+
 type Step = 'welcome' | 'questions' | 'thank_you';
 
+const RESPONSES_LS_KEY = 'survey_responses';
+
 export const useSurvey = ({schema}: {schema: SurveySchema}) => {
-  const {questions} = schema;
+  const {questions, version} = schema;
   const [step, setStep] = useState<Step>(() => {
     if (schema.welcome_screen) return 'welcome';
     if (schema.questions.length) return 'questions';
     return 'thank_you';
   });
-  const [responses, setResponses] = useState<QuestionResponse[]>([]);
+  const [responses, setResponses] = useState<QuestionResponse[]>(() => {
+    if (typeof window === 'undefined') return [];
+    const storedResponses = localStorage.getItem(RESPONSES_LS_KEY);
+    if (storedResponses) {
+      const parsed = localStorageSchema.safeParse(JSON.parse(storedResponses));
+      if (parsed.success) {
+        const {responses, version} = parsed.data;
+        if (version === schema.version) return responses;
+      }
+    }
+    return [];
+  });
   const [currentQuestionId, setCurrentQuestionId] = useState<string>(
     questions[0]?.id ?? '',
   );
@@ -75,14 +100,25 @@ export const useSurvey = ({schema}: {schema: SurveySchema}) => {
       type: data.type,
     });
 
-    await addOrUpdateSurveyResponse(schema.id, responses);
+    localStorage.setItem(
+      RESPONSES_LS_KEY,
+      JSON.stringify({
+        responses,
+        version,
+      }),
+    );
 
     if (isLastQuestion) {
-      setStep('thank_you');
-      return;
+      try {
+        await addOrUpdateSurveyResponse(schema.id, responses);
+        localStorage.removeItem(RESPONSES_LS_KEY);
+        setStep('thank_you');
+      } catch (error) {
+        console.error('Error submitting survey response', error);
+      }
+    } else {
+      handleSetNextQuestion();
     }
-
-    handleSetNextQuestion();
   };
 
   return {

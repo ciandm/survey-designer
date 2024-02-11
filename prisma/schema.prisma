@@ -12,17 +12,20 @@ datasource db {
 }
 
 model Survey {
-  id             String           @id @default(cuid())
-  schema         Json             @default("{}")
-  is_published   Boolean          @default(false)
-  SurveyResponse SurveyResponse[]
+  id             String            @id @default(cuid())
+  schema         Json              @default("{}")
+  is_published   Boolean           @default(false)
+  SurveyResponse SurveyResponses[]
 }
 
-model SurveyResponse {
-  id       String @id @default(cuid())
-  survey   Survey @relation(fields: [surveyId], references: [id])
-  surveyId String
-  answers  Json
+model SurveyResponses {
+  id           String   @id @default(cuid())
+  survey       Survey   @relation(fields: [surveyId], references: [id])
+  surveyId     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
+  is_completed Boolean  @default(false)
+  responses    Json     @default("{}")
 
-  @@unique([surveyId])
+  @@index([surveyId], name: "surveyId")
 }

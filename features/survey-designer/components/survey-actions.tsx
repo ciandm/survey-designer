@@ -80,7 +80,7 @@ export const SurveyActions = () => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="outline" size="sm">
             <span className="sr-only">Actions</span>
             <DotsHorizontalIcon className="h-4 w-4" />
           </Button>
@@ -92,13 +92,6 @@ export const SurveyActions = () => {
           >
             Duplicate
             <CopyIcon className="ml-auto h-4 w-4" />
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onSelect={handleDuplicateSurvey}
-            disabled={isPendingDuplicate}
-          >
-            Publish
-            <UploadIcon className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem

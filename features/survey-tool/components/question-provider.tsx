@@ -9,7 +9,7 @@ interface QuestionCardProps {
   question: QuestionSchema;
   totalQuestions: number;
   questionNumber: number;
-  view: QuestionView;
+  view?: QuestionView;
 }
 
 export const QuestionProvider = ({
@@ -17,7 +17,7 @@ export const QuestionProvider = ({
   question,
   totalQuestions,
   questionNumber,
-  view,
+  view = 'editing',
 }: React.PropsWithChildren<QuestionCardProps>) => {
   return (
     <QuestionContext.Provider

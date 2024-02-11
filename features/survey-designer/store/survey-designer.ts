@@ -31,6 +31,7 @@ type SurveyDesignerStoreActions = {
     questionId: string;
     choiceId: string;
   }) => void;
+  deleteQuestionChoices: (params: {questionId: string}) => void;
   duplicateQuestionChoice: (params: {
     questionId: string;
     choiceId: string;
@@ -53,11 +54,13 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
       id: '',
       title: '',
       questions: [],
+      version: 1,
     },
     savedSchema: {
       id: '',
       title: '',
       questions: [],
+      version: 1,
     },
     actions: {
       updateTitle: (title) => {
@@ -83,7 +86,6 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
       deleteQuestion: ({id}) => {
         set((state) => {
           const questions = state.schema.questions || [];
-          if (questions.length === 1) return;
 
           const indexOfFieldToDelete = questions.findIndex((q) => q.id === id);
           if (indexOfFieldToDelete === -1) return;
@@ -190,7 +192,7 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
             (q) => q.id === questionId,
           )?.properties.choices;
 
-          if (!questionChoices) return;
+          if (!questionChoices || questionChoices.length === 1) return;
 
           const indexOfChoiceToDelete = questionChoices.findIndex(
             (c) => c.id === choiceId,
@@ -199,6 +201,21 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
           if (indexOfChoiceToDelete === -1) return;
 
           questionChoices.splice(indexOfChoiceToDelete, 1);
+        });
+      },
+      deleteQuestionChoices: ({questionId}) => {
+        set((state) => {
+          const question = state.schema.questions.find(
+            (q) => q.id === questionId,
+          );
+          if (!question) return;
+
+          question.properties.choices = [
+            {
+              id: uuidv4(),
+              value: '',
+            },
+          ];
         });
       },
       duplicateQuestionChoice: ({questionId, choiceId}) => {
@@ -278,6 +295,7 @@ export const {
   changeQuestionType,
   deleteQuestion,
   deleteQuestionChoice,
+  deleteQuestionChoices,
   duplicateQuestion,
   duplicateQuestionChoice,
   insertQuestion,

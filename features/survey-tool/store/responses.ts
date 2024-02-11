@@ -1,5 +1,6 @@
 import {createContext, useContext} from 'react';
 import {createStore, useStore} from 'zustand';
+import {createJSONStorage, persist} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
 import {QuestionSchema} from '@/lib/validations/survey';
 
@@ -31,39 +32,44 @@ export const createResponsesStore = (initProps?: Partial<ResponsesProps>) => {
     questionIds: [],
   };
   return createStore<ResponsesState>()(
-    immer((set) => ({
-      ...DEFAULT_PROPS,
-      ...initProps,
-      actions: {
-        addResponse: (response) =>
-          set((state) => {
-            const exisingResponse = state.responses.find(
-              (r) => r.questionId === state.currentQuestionId,
-            );
-
-            if (exisingResponse) {
-              state.responses = state.responses.map((r) =>
-                r.questionId === state.currentQuestionId
-                  ? {...r, value: response}
-                  : r,
+    persist(
+      immer((set) => ({
+        ...DEFAULT_PROPS,
+        ...initProps,
+        actions: {
+          addResponse: (response) =>
+            set((state) => {
+              const exisingResponse = state.responses.find(
+                (r) => r.questionId === state.currentQuestionId,
               );
-            } else {
-              state.responses.push({
-                questionId: state.currentQuestionId,
-                value: response,
-              });
-            }
-          }),
-        setCurrentQuestionId: (fn) =>
-          set((state) => {
-            state.currentQuestionId = fn(state.currentQuestionId);
-          }),
-        resetResponses: () =>
-          set((state) => {
-            state.responses = [];
-          }),
+
+              if (exisingResponse) {
+                state.responses = state.responses.map((r) =>
+                  r.questionId === state.currentQuestionId
+                    ? {...r, value: response}
+                    : r,
+                );
+              } else {
+                state.responses.push({
+                  questionId: state.currentQuestionId,
+                  value: response,
+                });
+              }
+            }),
+          setCurrentQuestionId: (fn) =>
+            set((state) => {
+              state.currentQuestionId = fn(state.currentQuestionId);
+            }),
+          resetResponses: () =>
+            set((state) => {
+              state.responses = [];
+            }),
+        },
+      })),
+      {
+        name: 'survey-responses',
       },
-    })),
+    ),
   );
 };
 
