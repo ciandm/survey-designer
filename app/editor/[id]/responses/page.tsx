@@ -9,15 +9,20 @@ const ResponsesPage = async ({params}: {params: {id: string}}) => {
     },
   });
 
-  const parsedAnswers = surveyResponsesSchema.safeParse(surveyResponses);
+  const parsedResponses = surveyResponsesSchema.safeParse(surveyResponses);
 
-  if (!parsedAnswers.success) {
+  if (!parsedResponses.success) {
     throw new Error('Invalid survey responses');
   }
 
   return (
-    <div className="flex w-full flex-col overflow-auto">
-      <pre>{JSON.stringify(parsedAnswers.data, null, 2)}</pre>
+    <div className="grid w-full max-w-5xl grid-cols-3 gap-2 overflow-auto p-8">
+      {parsedResponses.data.map((response) => (
+        <div className="flex flex-col bg-card p-4" key={response.id}>
+          {response.id}
+          <span>Responses: {response.responses.length + 1}</span>
+        </div>
+      ))}
     </div>
   );
 };

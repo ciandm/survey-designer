@@ -25,6 +25,7 @@ import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {
+  changeQuestionType,
   deleteQuestionChoice,
   deleteQuestionChoices,
   insertQuestionChoice,
@@ -45,7 +46,9 @@ const SORT_ORDER_OPTIONS = [
 export const ConfigPanel = () => {
   const {activeQuestion} = useActiveQuestion();
 
-  return <ConfigPanelInner key={activeQuestion?.id} />;
+  return (
+    <ConfigPanelInner key={`${activeQuestion.id}-${activeQuestion.type}`} />
+  );
 };
 
 const ConfigPanelInner = () => {
@@ -65,7 +68,16 @@ const ConfigPanelInner = () => {
       >
         <div>
           <Label htmlFor="question-type">Type</Label>
-          <QuestionTypeSelect id="question-type" />
+          <QuestionTypeSelect
+            question={activeQuestion}
+            onChange={(type) =>
+              changeQuestionType({
+                id: activeQuestion.id,
+                type,
+              })
+            }
+            id="question-type"
+          />
         </div>
         <div>
           <Label htmlFor="title">Title</Label>

@@ -70,3 +70,7 @@ export async function addOrUpdateSurveyResponse(
 
   return data;
 }
+
+export async function deleteSurveyResponses(surveyId: string): Promise<void> {
+  await axios.delete(`${ENDPOINT}/${surveyId}/responses`);
+}

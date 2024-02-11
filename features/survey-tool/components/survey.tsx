@@ -29,6 +29,16 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
 
   const value = (questionIndex / questions.length) * 100;
 
+  if (step === 'thank_you') {
+    return (
+      <>
+        <h1>Thank you!</h1>
+        <p>Thank you for completing this survey.</p>
+        <pre>{JSON.stringify(responses, null, 2)}</pre>
+      </>
+    );
+  }
+
   return (
     <>
       <Progress className="rounded-none" value={value} />
@@ -95,13 +105,6 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
                 </Button>
               </div>
             </Form>
-          )}
-          {step === 'thank_you' && (
-            <>
-              <h1>Thank you!</h1>
-              <p>Thank you for completing this survey.</p>
-              <pre>{JSON.stringify(responses, null, 2)}</pre>
-            </>
           )}
         </div>
       </div>

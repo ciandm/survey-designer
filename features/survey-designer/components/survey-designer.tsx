@@ -9,12 +9,14 @@ import {useActiveQuestion} from '../hooks/use-active-question';
 import {useQuestionCrud} from '../hooks/use-question-crud';
 import {useDesignerMode} from '../store/designer-mode';
 import {
+  changeQuestionType,
   updateQuestion,
   updateTitle,
   useSurveyQuestions,
   useSurveySchema,
 } from '../store/survey-designer';
 import {ContentEditable} from './content-editable';
+import {QuestionTypeSelect} from './question-type-select';
 import {SurveyPreviewer} from './survey-previewer';
 
 export const SurveyDesigner = () => {
@@ -44,7 +46,7 @@ export const SurveyDesigner = () => {
 
   return (
     <>
-      <section className="flex flex-1 flex-col items-start overflow-auto p-12">
+      <section className="flex flex-1 flex-col items-start overflow-auto p-6">
         <ContentEditable
           className={cn('mb-8 text-2xl font-semibold', {
             'text-muted-foreground': !title,
@@ -73,7 +75,7 @@ export const SurveyDesigner = () => {
                 onClick={() => setActiveQuestion(question.ref)}
                 ref={(el) => (itemsRef.current[index] = el as HTMLDivElement)}
                 className={cn(
-                  'cursor-pointer rounded-lg border border-zinc-200 bg-card p-8 ring-ring ring-offset-2 transition-shadow hover:ring-2',
+                  'cursor-pointer rounded-lg border border-zinc-200 bg-card p-4 ring-ring ring-offset-2 transition-shadow hover:ring-2',
                   {
                     'ring-2': activeQuestion?.id === question.id,
                   },
@@ -117,22 +119,18 @@ export const SurveyDesigner = () => {
                       }}
                     />
                   </div>
-                  {question.type === 'multiple_choice' && (
-                    <div className="mt-6 flex w-full max-w-sm flex-col gap-2">
-                      {question.properties.choices?.map((choice) => {
-                        return (
-                          <div
-                            key={choice.id}
-                            className="flex h-12 items-center rounded-lg border bg-muted px-3"
-                          >
-                            <span className="truncate">{choice.value}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                  <div className="gap mt-8 flex justify-between">
-                    <div>
+                  <div className="gap mt-8 flex justify-between gap-2">
+                    <QuestionTypeSelect
+                      className="w-1/2"
+                      question={question}
+                      onChange={(type) =>
+                        changeQuestionType({
+                          id: question.id,
+                          type,
+                        })
+                      }
+                    />
+                    <div className="flex gap-2">
                       <Button
                         variant="outline"
                         size="sm"
