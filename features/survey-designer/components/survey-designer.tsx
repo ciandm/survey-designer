@@ -49,7 +49,7 @@ export const SurveyDesigner = () => {
     <>
       <section className="flex flex-1 flex-col items-start overflow-auto p-6">
         <Textarea
-          className="mb-8 text-2xl font-semibold"
+          className="mb-8 text-xl font-medium"
           placeholder="Untitled survey"
           value={title ?? ''}
           onChange={(e) => updateTitle(e.target.value)}
@@ -92,7 +92,7 @@ export const SurveyDesigner = () => {
                       </p>
                     </div>
                     <h1
-                      className={cn('text-2xl font-medium', {
+                      className={cn('text-lg font-medium', {
                         'text-muted-foreground': !question.text,
                         [`after:content-['*']`]:
                           question.validations.required && question.text,
@@ -101,7 +101,7 @@ export const SurveyDesigner = () => {
                       {!!question.text ? question.text : 'Untitled question'}
                     </h1>
                     {!!question.description && (
-                      <p className="mt-2 text-muted-foreground">
+                      <p className="mt-1 text-sm text-muted-foreground">
                         {question.description}
                       </p>
                     )}

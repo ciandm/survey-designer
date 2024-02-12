@@ -15,7 +15,7 @@ export async function DELETE(
 ) {
   const {params} = routeContextSchema.parse(context);
 
-  await prisma.surveyResponses.deleteMany({
+  await prisma.surveyResult.deleteMany({
     where: {
       surveyId: params.id,
     },
@@ -37,7 +37,7 @@ export async function POST(
   }
 
   try {
-    await prisma.surveyResponses.create({
+    await prisma.surveyResult.create({
       data: {
         surveyId: params.id,
         responses: parsed.data.responses,

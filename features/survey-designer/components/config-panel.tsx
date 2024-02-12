@@ -6,7 +6,7 @@ import {
   PlusCircledIcon,
   QuestionMarkCircledIcon,
 } from '@radix-ui/react-icons';
-import {Trash2} from 'lucide-react';
+import {HelpCircleIcon, Trash2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Input} from '@/components/ui/input';
@@ -123,7 +123,6 @@ const ConfigPanelInner = () => {
                   },
                 })
               }
-              placeholder="Your answer here..."
             />
           </div>
         )}
@@ -150,7 +149,7 @@ const ConfigPanelInner = () => {
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button size="icon" variant="ghost" className="h-6 w-6">
-                      <QuestionMarkCircledIcon className="h-4 w-4" />
+                      <HelpCircleIcon className="h-4 w-4" />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent side="left">

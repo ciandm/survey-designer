@@ -16,6 +16,7 @@ import {z} from 'zod';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Input} from '@/components/ui/input';
+import {Textarea} from '@/components/ui/textarea';
 import {useToast} from '@/components/ui/use-toast';
 import {useSubmitSurvey} from '@/features/survey-designer/hooks/use-submit-survey';
 import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
@@ -119,7 +120,7 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
   if (step === 'welcome') {
     return (
       <div className="flex flex-1 items-center bg-muted">
-        <div className="container max-w-3xl py-16">
+        <div className="container max-w-2xl py-16">
           <h1>Welcome!</h1>
         </div>
       </div>
@@ -149,7 +150,11 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
                   )}
                   {(question.type === 'short_text' ||
                     question.type === 'long_text') && (
-                    <TextQuestionField index={index} id={field.questionId} />
+                    <TextQuestionField
+                      type={question.type}
+                      index={index}
+                      id={field.questionId}
+                    />
                   )}
                 </Question>
               );
@@ -178,21 +183,25 @@ type QuestionProps = {
 
 const Question = ({children, question, number, id}: QuestionProps) => {
   return (
-    <div className="flex flex-col gap-1">
-      <label
-        className={cn('text-md font-medium', {
-          'text-muted-foreground': !question.text,
-          [`after:content-['*']`]:
-            question.validations.required && question.text,
-        })}
-        htmlFor={id}
-      >
-        <span>{number}. </span>
-        {!!question.text ? question.text : 'Untitled question'}
-      </label>
-      {!!question.description && (
-        <p className="text-sm text-muted-foreground">{question.description}</p>
-      )}
+    <div className="flex flex-col gap-2">
+      <div>
+        <label
+          className={cn('text-sm font-medium leading-6', {
+            'text-muted-foreground': !question.text,
+            [`after:content-['*']`]:
+              question.validations.required && question.text,
+          })}
+          htmlFor={id}
+        >
+          <span>{number}. </span>
+          {!!question.text ? question.text : 'Untitled question'}
+        </label>
+        {!!question.description && (
+          <p className="mt-1 text-sm text-muted-foreground">
+            {question.description}
+          </p>
+        )}
+      </div>
       {children}
     </div>
   );
@@ -201,9 +210,11 @@ const Question = ({children, question, number, id}: QuestionProps) => {
 type TextQuestionFieldProps = {
   index: number;
   id: string;
+  type: QuestionType;
 };
 
-const TextQuestionField = ({index, id}: TextQuestionFieldProps) => {
+const TextQuestionField = ({index, id, type}: TextQuestionFieldProps) => {
+  const Component = type === 'short_text' ? Input : Textarea;
   return (
     <QuestionFormConnect>
       {({control}) => (
@@ -212,8 +223,7 @@ const TextQuestionField = ({index, id}: TextQuestionFieldProps) => {
             control={control}
             name={`fields.${index}.value`}
             render={({field: {onChange, ...restField}}) => (
-              <Input
-                className="mt-4"
+              <Component
                 onChange={(e) => onChange([e.target.value])}
                 id={id}
                 {...restField}
@@ -252,7 +262,7 @@ const MultipleChoiceField = ({
                 control={control}
                 name={`fields.${index}.value`}
                 render={({field}) => (
-                  <label className="flex items-center gap-2 text-muted-foreground">
+                  <label className="flex items-center gap-x-3 text-sm font-medium">
                     <Checkbox
                       {...field}
                       checked={field.value.includes(choice.id)}
@@ -275,7 +285,7 @@ const MultipleChoiceField = ({
           <ErrorMessage
             name={`fields.${index}.value`}
             render={({message}) => (
-              <p className="block pt-4 text-sm text-red-500">{message}</p>
+              <p className="text-sm text-red-500">{message}</p>
             )}
           />
         </>

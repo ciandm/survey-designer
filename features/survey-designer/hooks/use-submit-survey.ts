@@ -1,6 +1,6 @@
 import {useMutation} from '@tanstack/react-query';
 import {createSurveyResponse} from '@/lib/api/survey';
-import {ResponseSchema, SurveyResponse} from '@/lib/validations/survey';
+import {ResponseSchema} from '@/lib/validations/survey';
 
 export const useSubmitSurvey = () => {
   return useMutation<

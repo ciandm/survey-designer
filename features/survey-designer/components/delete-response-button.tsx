@@ -1,7 +1,7 @@
 'use client';
 
 import {Button} from '@/components/ui/button';
-import {useDeleteResponse} from '../hooks/use-delete-response';
+import {useDeleteSurveyResult} from '../hooks/use-delete-response';
 
 type Props = {
   surveyId: string;
@@ -9,10 +9,10 @@ type Props = {
 };
 
 export const DeleteResponseButton = ({surveyId, responseId}: Props) => {
-  const {mutate: handleDeleteResponses} = useDeleteResponse();
+  const {mutate: handleDeleteResult} = useDeleteSurveyResult();
 
   return (
-    <Button onClick={() => handleDeleteResponses({surveyId, responseId})}>
+    <Button onClick={() => handleDeleteResult({surveyId, responseId})}>
       Delete response
     </Button>
   );

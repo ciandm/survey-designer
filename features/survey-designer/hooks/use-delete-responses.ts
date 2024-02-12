@@ -1,8 +1,8 @@
 import {useMutation} from '@tanstack/react-query';
-import {deleteSurveyResponses} from '@/lib/api/survey';
+import {deleteSurveyResults} from '@/lib/api/survey';
 
 export const useDeleteResponses = () => {
   return useMutation<void, Error, {surveyId: string}>({
-    mutationFn: async ({surveyId}) => deleteSurveyResponses(surveyId),
+    mutationFn: async ({surveyId}) => deleteSurveyResults(surveyId),
   });
 };
