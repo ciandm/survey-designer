@@ -65,20 +65,20 @@ export async function createSurveyResponse(
   surveyId: string,
   responses: ResponseSchema[],
 ): Promise<null> {
-  const {data} = await axios.post(`${ENDPOINT}/${surveyId}/responses`, {
+  const {data} = await axios.post(`${ENDPOINT}/${surveyId}/results`, {
     responses,
   });
 
   return data;
 }
 
-export async function deleteSurveyResponses(surveyId: string): Promise<void> {
-  await axios.delete(`${ENDPOINT}/${surveyId}/responses`);
+export async function deleteSurveyResults(surveyId: string): Promise<void> {
+  await axios.delete(`${ENDPOINT}/${surveyId}/results`);
 }
 
-export async function deleteSurveyResponse(
+export async function deleteSurveyResult(
   surveyId: string,
   responseId: string,
 ): Promise<void> {
-  await axios.delete(`${ENDPOINT}/${surveyId}/responses/${responseId}`);
+  await axios.delete(`${ENDPOINT}/${surveyId}/results/${responseId}`);
 }

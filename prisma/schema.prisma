@@ -12,13 +12,13 @@ datasource db {
 }
 
 model Survey {
-  id             String            @id @default(cuid())
-  schema         Json              @default("{}")
-  is_published   Boolean           @default(false)
-  SurveyResponse SurveyResponses[]
+  id           String         @id @default(cuid())
+  schema       Json           @default("{}")
+  is_published Boolean        @default(false)
+  SurveyResult SurveyResult[]
 }
 
-model SurveyResponses {
+model SurveyResult {
   id           String   @id @default(cuid())
   survey       Survey   @relation(fields: [surveyId], references: [id])
   surveyId     String

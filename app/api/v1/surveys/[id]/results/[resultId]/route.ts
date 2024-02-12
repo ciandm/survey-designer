@@ -5,7 +5,7 @@ import prisma from '@/prisma/client';
 const routeContextSchema = z.object({
   params: z.object({
     id: z.string(),
-    responseId: z.string(),
+    resultId: z.string(),
   }),
 });
 
@@ -15,9 +15,9 @@ export async function DELETE(
 ) {
   const {params} = routeContextSchema.parse(context);
 
-  await prisma.surveyResponses.delete({
+  await prisma.surveyResult.delete({
     where: {
-      id: params.responseId,
+      id: params.resultId,
     },
   });
 
