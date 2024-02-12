@@ -43,13 +43,13 @@ export const surveySchema = z.object({
   version: z.number().default(1),
 });
 
-export const createSurveySchema = z.object({
+export const createSurveyInput = z.object({
   title: z.string(),
 });
 
 export type SurveySchema = z.infer<typeof surveySchema>;
 
-export const updateSurveySchema = z.object({
+export const updateSurveyInput = z.object({
   survey: surveySchema,
 });
 
@@ -61,32 +61,30 @@ export const surveyResponse = z.object({
   }),
 });
 
-export const responsesSchema = z.array(
-  z.object({
-    questionId: z.string(),
-    value: z.array(z.string()),
-    type: z.nativeEnum(QUESTION_TYPE),
-  }),
-);
+export const responseSchema = z.object({
+  questionId: z.string(),
+  value: z.array(z.string()),
+  type: z.nativeEnum(QUESTION_TYPE),
+});
 
 export const surveyResponsesSchema = z.array(
   z.object({
     surveyId: z.string(),
     id: z.string(),
-    responses: responsesSchema,
+    responses: z.array(responseSchema),
   }),
 );
 
-export const addOrUpdateSurveyResponseSchema = z.object({
-  responseId: z.string().optional(),
-  answers: responsesSchema,
+export const createResponseInput = z.object({
+  responses: z.array(responseSchema),
 });
 
 export type SurveyResponse = z.infer<typeof surveyResponse>;
-export type UpdateSurveySchema = z.infer<typeof updateSurveySchema>;
-export type CreateSurveySchema = z.infer<typeof createSurveySchema>;
+export type UpdateSurveySchema = z.infer<typeof updateSurveyInput>;
+export type CreateSurveySchema = z.infer<typeof createSurveyInput>;
 export type QuestionSchema = z.infer<typeof questionSchema>;
 export type ChoicesSchema = z.infer<typeof choicesSchema>;
 export type SurveyResponseSchema = z.infer<
   typeof surveyResponsesSchema
 >[number];
+export type ResponseSchema = SurveyResponseSchema['responses'][number];

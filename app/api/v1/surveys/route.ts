@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {v4 as uuidv4} from 'uuid';
-import {createSurveySchema, surveySchema} from '@/lib/validations/survey';
+import {createSurveyInput, surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
 export async function GET(req: NextRequest, res: NextResponse) {
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   }
 
   const body = await req.json();
-  const parsedData = createSurveySchema.safeParse(body);
+  const parsedData = createSurveyInput.safeParse(body);
 
   if (!parsedData.success) {
     return NextResponse.json(parsedData.error, {status: 400});
