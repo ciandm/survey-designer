@@ -1,5 +1,6 @@
 import {
   CreateSurveySchema,
+  ResponseSchema,
   SurveyResponse,
   UpdateSurveySchema,
 } from '../validations/survey';
@@ -49,7 +50,7 @@ export async function unpublishSurvey(
   return data;
 }
 
-export async function updateSurveySchema(
+export async function updateSurveyInput(
   schema: UpdateSurveySchema,
 ): Promise<SurveyResponse> {
   const {data} = await axios.put(
@@ -60,12 +61,12 @@ export async function updateSurveySchema(
   return data;
 }
 
-export async function addOrUpdateSurveyResponse(
+export async function createSurveyResponse(
   surveyId: string,
-  answers: {questionId: string; value: string[]}[],
-): Promise<SurveyResponse> {
-  const {data} = await axios.put(`${ENDPOINT}/${surveyId}/respond`, {
-    answers,
+  responses: ResponseSchema[],
+): Promise<null> {
+  const {data} = await axios.post(`${ENDPOINT}/${surveyId}/responses`, {
+    responses,
   });
 
   return data;

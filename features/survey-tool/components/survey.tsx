@@ -11,16 +11,19 @@ import {
 } from 'react-hook-form';
 import {ErrorMessage} from '@hookform/error-message';
 import {zodResolver} from '@hookform/resolvers/zod';
+import {Loader2} from 'lucide-react';
 import {z} from 'zod';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Input} from '@/components/ui/input';
-import {QuestionType} from '@/lib/constants/question';
+import {useToast} from '@/components/ui/use-toast';
+import {useSubmitSurvey} from '@/features/survey-designer/hooks/use-submit-survey';
+import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
 import {cn} from '@/lib/utils';
 import {QuestionSchema, SurveySchema} from '@/lib/validations/survey';
 
 export interface QuestionFormState {
-  fields: {questionId: string; value: string[]}[];
+  fields: {questionId: string; value: string[]; type: QuestionType}[];
   type: QuestionType;
 }
 
@@ -31,6 +34,7 @@ const createValidationSchema = (questions: QuestionSchema[]) => {
         z.object({
           questionId: z.string(),
           value: z.array(z.string()),
+          type: z.nativeEnum(QUESTION_TYPE),
         }),
       ),
     })
@@ -60,18 +64,21 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
   const [step, setStep] = useState<'welcome' | 'questions' | 'thank_you'>(
     'questions',
   );
+  const {toast} = useToast();
+  const {isPending: isSubmitPending, mutateAsync: handleSubmitSurvey} =
+    useSubmitSurvey();
 
   const methods = useForm<QuestionFormState>({
     defaultValues: {
       fields: questions.map((question) => ({
         questionId: question.id,
+        type: question.type,
         value: [],
       })),
     },
     resolver: zodResolver(createValidationSchema(questions)),
   });
 
-  console.log(methods.formState.errors);
   const {handleSubmit, control} = methods;
   const {fields} = useFieldArray({
     control,
@@ -79,9 +86,21 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
   });
 
   const onSubmit = handleSubmit(
-    (data) => {
+    async (data) => {
       console.log(data);
-      // onSubmitProp(data);
+      try {
+        await handleSubmitSurvey({
+          surveyId: schema.id,
+          responses: data.fields.map((field) => field),
+        });
+        toast({
+          title: 'Success',
+          description: 'Your survey has been submitted',
+        });
+        setStep('thank_you');
+      } catch (error) {
+        console.error(error);
+      }
     },
     (errors) => {
       console.log(errors);
@@ -110,7 +129,7 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
   return (
     <FormProvider {...methods}>
       <div className="flex flex-1 items-center bg-muted">
-        <div className="container max-w-3xl py-16">
+        <div className="container max-w-2xl py-16">
           <form className="flex flex-1 flex-col gap-12" onSubmit={onSubmit}>
             {fields.map((field, index) => {
               const question = questions[index];
@@ -120,7 +139,7 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
                   key={question.id}
                   question={question}
                   number={index + 1}
-                  id={field.id}
+                  id={field.questionId}
                 >
                   {question.type === 'multiple_choice' && (
                     <MultipleChoiceField
@@ -130,14 +149,17 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
                   )}
                   {(question.type === 'short_text' ||
                     question.type === 'long_text') && (
-                    <TextQuestionField index={index} id={field.id} />
+                    <TextQuestionField index={index} id={field.questionId} />
                   )}
                 </Question>
               );
             })}
             <div className="ml-auto mt-8 flex justify-between">
-              <Button type="submit">
-                <span>Submit</span>
+              <Button disabled={isSubmitPending} type="submit">
+                {isSubmitPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {isSubmitPending ? 'Submitting...' : 'Submit'}
               </Button>
             </div>
           </form>
@@ -158,18 +180,18 @@ const Question = ({children, question, number, id}: QuestionProps) => {
   return (
     <div className="flex flex-col gap-1">
       <label
-        className={cn('text-lg font-medium', {
+        className={cn('text-md font-medium', {
           'text-muted-foreground': !question.text,
           [`after:content-['*']`]:
             question.validations.required && question.text,
         })}
         htmlFor={id}
       >
-        <span className="text-muted-foreground">{number}. </span>
+        <span>{number}. </span>
         {!!question.text ? question.text : 'Untitled question'}
       </label>
       {!!question.description && (
-        <p className="text-muted-foreground">{question.description}</p>
+        <p className="text-sm text-muted-foreground">{question.description}</p>
       )}
       {children}
     </div>
@@ -201,7 +223,7 @@ const TextQuestionField = ({index, id}: TextQuestionFieldProps) => {
           <ErrorMessage
             name={`fields.${index}.value`}
             render={({message}) => (
-              <p className="mt-1 text-red-500">{message}</p>
+              <p className="mt-1 text-sm text-red-500">{message}</p>
             )}
           />
         </>
@@ -230,7 +252,7 @@ const MultipleChoiceField = ({
                 control={control}
                 name={`fields.${index}.value`}
                 render={({field}) => (
-                  <label className="flex items-center gap-1">
+                  <label className="flex items-center gap-2 text-muted-foreground">
                     <Checkbox
                       {...field}
                       checked={field.value.includes(choice.id)}
@@ -253,7 +275,7 @@ const MultipleChoiceField = ({
           <ErrorMessage
             name={`fields.${index}.value`}
             render={({message}) => (
-              <p className="mt-1 text-red-500">{message}</p>
+              <p className="block pt-4 text-sm text-red-500">{message}</p>
             )}
           />
         </>

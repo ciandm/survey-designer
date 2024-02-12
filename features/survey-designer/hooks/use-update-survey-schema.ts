@@ -1,5 +1,5 @@
 import {useIsMutating, useMutation} from '@tanstack/react-query';
-import {updateSurveySchema} from '@/lib/api/survey';
+import {updateSurveyInput} from '@/lib/api/survey';
 import {SurveyResponse, UpdateSurveySchema} from '@/lib/validations/survey';
 import {
   useSurveySchema,
@@ -14,7 +14,7 @@ export const useUpdateSurveySchema = () => {
   const {setSavedSchema, setSchema} = useSurveySchemaActions();
   return useMutation<SurveyResponse, Error, UpdateSurveySchema['survey']>({
     mutationFn: async ({id, title, questions}) => {
-      const response = await updateSurveySchema({
+      const response = await updateSurveyInput({
         survey: {
           id,
           title,
