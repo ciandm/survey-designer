@@ -2,9 +2,25 @@
 
 import {useState} from 'react';
 import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useDroppable,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+} from '@dnd-kit/sortable';
+import {
+  DragHandleDots2Icon,
   EraserIcon,
   PlusCircledIcon,
-  QuestionMarkCircledIcon,
 } from '@radix-ui/react-icons';
 import {HelpCircleIcon, Trash2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -29,6 +45,7 @@ import {
   deleteQuestionChoice,
   deleteQuestionChoices,
   insertQuestionChoice,
+  moveQuestionChoices,
   updateQuestion,
   updateQuestionChoice,
 } from '../store/survey-designer';
@@ -55,8 +72,38 @@ const ConfigPanelInner = () => {
   const {activeQuestion} = useActiveQuestion();
   const [openPanel, setOpenPanel] = useState<Panel>('question');
 
+  const {isOver, setNodeRef} = useDroppable({
+    id: 'droppable',
+  });
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+  const style = {
+    backgroundColor: isOver ? 'green' : 'red',
+  };
+
   if (!activeQuestion) {
     return null;
+  }
+
+  const choices = activeQuestion.properties.choices ?? [];
+
+  function handleDragEnd(event: DragEndEvent) {
+    const {active, over} = event;
+
+    console.log(active, over);
+    if (active.id !== over?.id) {
+      const choices = activeQuestion.properties.choices ?? [];
+      const oldIndex = choices.findIndex((choice) => choice.id === active.id);
+      const newIndex = choices.findIndex((choice) => choice.id === over?.id);
+
+      console.log(oldIndex, newIndex);
+      const newChoices = arrayMove(choices, oldIndex, newIndex);
+      moveQuestionChoices({questionId: activeQuestion.id, newChoices});
+    }
   }
 
   return (
@@ -208,45 +255,61 @@ const ConfigPanelInner = () => {
                 <PlusCircledIcon className="h-5 w-5" />
               </Button>
             </div>
-            <div className="flex flex-col gap-1">
-              {(activeQuestion.properties.choices ?? []).map((choice) => (
-                <div
-                  key={choice.id}
-                  className="grid grid-cols-[1fr_40px] gap-2"
-                >
-                  <Input
-                    type="text"
-                    value={choice.value}
-                    onChange={(e) =>
-                      updateQuestionChoice({
-                        questionId: activeQuestion.id,
-                        newChoice: {
-                          id: choice.id,
-                          value: e.target.value,
-                        },
-                      })
-                    }
-                  />
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() =>
-                      deleteQuestionChoice({
-                        questionId: activeQuestion.id,
-                        choiceId: choice.id,
-                      })
-                    }
-                    disabled={activeQuestion.properties.choices?.length === 1}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext items={choices.map((choice) => choice.id)}>
+                <div className="flex flex-col gap-1">
+                  {(choices ?? []).map((choice) => (
+                    <Sortable
+                      className="grid grid-cols-[40px_1fr_40px] gap-2"
+                      key={choice.id}
+                      id={choice.id}
+                      isDisabled={choices.length === 1}
+                    >
+                      <>
+                        <Input
+                          type="text"
+                          value={choice.value}
+                          onChange={(e) =>
+                            updateQuestionChoice({
+                              questionId: activeQuestion.id,
+                              newChoice: {
+                                id: choice.id,
+                                value: e.target.value,
+                              },
+                            })
+                          }
+                        />
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() =>
+                            deleteQuestionChoice({
+                              questionId: activeQuestion.id,
+                              choiceId: choice.id,
+                            })
+                          }
+                          disabled={
+                            activeQuestion.properties.choices?.length === 1
+                          }
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </>
+                    </Sortable>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+            </DndContext>
           </div>
           <Separator />
-          <label className="flex flex-col items-start">
-            <span className="mb-2">Sort choices</span>
+          <div>
+            <Label htmlFor="sort-choices" className="mb-1 text-sm font-medium">
+              Sort choices
+            </Label>
             <Select
               value={activeQuestion.properties.sort_order ?? 'none'}
               onValueChange={(value) => {
@@ -258,7 +321,7 @@ const ConfigPanelInner = () => {
                 });
               }}
             >
-              <SelectTrigger>
+              <SelectTrigger id="sort-choices">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -271,15 +334,19 @@ const ConfigPanelInner = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-          </label>
-          <label className="flex flex-col items-start">
-            <span className="mb-1">Minimum selection</span>
-            <Input type="number" />
-          </label>
-          <label className="flex flex-col items-start">
-            <span className="mb-1">Maximum selection</span>
-            <Input type="number" />
-          </label>
+          </div>
+          <div>
+            <Label htmlFor="minimum-selection" className="mb-1">
+              Minimum selection
+            </Label>
+            <Input type="number" id="minimum-selection" />
+          </div>
+          <div>
+            <Label htmlFor="maximum-selection" className="mb-1">
+              Maximum selection
+            </Label>
+            <Input type="number" id="maximum-selection" />
+          </div>
         </Panel>
       )}
       <Panel
@@ -299,6 +366,62 @@ const ConfigPanelInner = () => {
     </aside>
   );
 };
+
+function Droppable({children}: React.PropsWithChildren) {
+  const {isOver, setNodeRef} = useDroppable({
+    id: 'droppable',
+  });
+  const style = {
+    backgroundColor: isOver ? 'green' : undefined,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      {children}
+    </div>
+  );
+}
+
+function Sortable({
+  children,
+  className,
+  id,
+  isDisabled,
+}: React.PropsWithChildren<{
+  id: string;
+  className?: string;
+  isDisabled?: boolean;
+}>) {
+  const {attributes, listeners, setNodeRef, transform, isSorting} = useSortable(
+    {
+      id,
+      disabled: isDisabled,
+    },
+  );
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
+    : undefined;
+
+  return (
+    <>
+      <div ref={setNodeRef} style={style} className={className}>
+        <Button
+          size="icon"
+          variant="ghost"
+          disabled={isDisabled}
+          style={{cursor: isSorting ? 'grabbing' : 'grab'}}
+          {...listeners}
+          {...attributes}
+        >
+          <DragHandleDots2Icon className="h-4 w-4" />
+        </Button>
+        {children}
+      </div>
+    </>
+  );
+}
 
 type Props = {
   title: string;
