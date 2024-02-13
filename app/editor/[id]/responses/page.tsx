@@ -10,6 +10,10 @@ const ResponsesPage = async ({params}: {params: {id: string}}) => {
     },
   });
 
+  if (surveyResults.length === 0) {
+    return <div>No responses found</div>;
+  }
+
   return (
     <div className="w-full overflow-auto p-8">
       <div className="mx-auto flex w-full max-w-4xl flex-col items-start">

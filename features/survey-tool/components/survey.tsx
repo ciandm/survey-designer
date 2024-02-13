@@ -13,6 +13,7 @@ import {ErrorMessage} from '@hookform/error-message';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Loader2} from 'lucide-react';
 import {z} from 'zod';
+import {QuestionCard} from '@/components/question-card';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Input} from '@/components/ui/input';
@@ -136,11 +137,23 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
               const question = questions[index];
 
               return (
-                <Question
+                <QuestionCard
                   key={question.id}
                   question={question}
                   number={index + 1}
                   id={field.questionId}
+                  footer={
+                    <ErrorMessage
+                      name={`fields.${index}.value`}
+                      render={({message}) => (
+                        <footer className="bg-red-50 px-4 py-2">
+                          <p className="text-sm font-medium leading-5 text-red-500">
+                            {message}
+                          </p>
+                        </footer>
+                      )}
+                    />
+                  }
                 >
                   {question.type === 'multiple_choice' && (
                     <MultipleChoiceField
@@ -156,7 +169,7 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
                       id={field.questionId}
                     />
                   )}
-                </Question>
+                </QuestionCard>
               );
             })}
             <div className="ml-auto mt-8 flex justify-between">
@@ -230,12 +243,6 @@ const TextQuestionField = ({index, id, type}: TextQuestionFieldProps) => {
               />
             )}
           />
-          <ErrorMessage
-            name={`fields.${index}.value`}
-            render={({message}) => (
-              <p className="mt-1 text-sm text-red-500">{message}</p>
-            )}
-          />
         </>
       )}
     </QuestionFormConnect>
@@ -282,12 +289,6 @@ const MultipleChoiceField = ({
               />
             ))}
           </div>
-          <ErrorMessage
-            name={`fields.${index}.value`}
-            render={({message}) => (
-              <p className="text-sm text-red-500">{message}</p>
-            )}
-          />
         </>
       )}
     </QuestionFormConnect>

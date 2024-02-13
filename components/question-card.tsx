@@ -39,7 +39,7 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
           'group overflow-hidden rounded-lg border border-zinc-200 bg-card ring-ring ring-offset-2',
           {
             'ring-2': isActive,
-            'cursor-pointer transition-shadow hover:ring-2': isEditable,
+            'cursor-pointer transition-all hover:border-primary': isEditable,
           },
           className,
         )}
