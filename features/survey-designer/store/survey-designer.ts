@@ -27,6 +27,10 @@ type SurveyDesignerStoreActions = {
       value: string;
     };
   }) => void;
+  moveQuestionChoices: (params: {
+    questionId: string;
+    newChoices: NonNullable<QuestionSchema['properties']['choices']>;
+  }) => void;
   deleteQuestionChoice: (params: {
     questionId: string;
     choiceId: string;
@@ -186,6 +190,17 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
           state.schema.questions.splice(fieldIndex, 1, newField);
         });
       },
+      moveQuestionChoices: ({questionId, newChoices}) => {
+        set((state) => {
+          const question = state.schema.questions.find(
+            (q) => q.id === questionId,
+          );
+
+          if (!question?.properties.choices) return;
+
+          question.properties.choices = newChoices;
+        });
+      },
       deleteQuestionChoice: ({questionId, choiceId}) => {
         set((state) => {
           const questionChoices = state.schema.questions.find(
@@ -307,6 +322,7 @@ export const {
   updateQuestion,
   updateQuestionChoice,
   updateTitle,
+  moveQuestionChoices,
 } = useSurveyDesignerStore.getState().actions;
 
 export const useSurveySchema = () =>
