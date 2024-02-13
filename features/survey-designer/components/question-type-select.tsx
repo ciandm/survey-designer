@@ -30,6 +30,7 @@ type Props = {
   className?: string;
   question: QuestionSchema;
   onChange: (type: QuestionType) => void;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export const QuestionTypeSelect = ({
@@ -37,11 +38,13 @@ export const QuestionTypeSelect = ({
   className,
   question,
   onChange,
+  onOpenChange,
 }: Props) => {
   return (
     <Select
       value={question?.type ?? QUESTION_TYPE.short_text}
       onValueChange={(value) => onChange(value as QuestionType)}
+      onOpenChange={onOpenChange}
     >
       <SelectTrigger id={id} className={className}>
         <SelectValue placeholder="Select a question type" />

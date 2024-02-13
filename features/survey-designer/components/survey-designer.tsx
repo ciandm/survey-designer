@@ -2,21 +2,20 @@
 
 import {Fragment, useRef} from 'react';
 import {PlusIcon} from '@radix-ui/react-icons';
+import {CopyIcon, GripHorizontal, Trash2Icon} from 'lucide-react';
+import {QuestionCard} from '@/components/question-card';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
-import {QuestionProvider} from '@/features/survey-tool/components/question-provider';
 import {cn} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {useQuestionCrud} from '../hooks/use-question-crud';
 import {useDesignerMode} from '../store/designer-mode';
 import {
   changeQuestionType,
-  updateQuestion,
   updateTitle,
   useSurveyQuestions,
   useSurveySchema,
 } from '../store/survey-designer';
-import {ContentEditable} from './content-editable';
 import {QuestionTypeSelect} from './question-type-select';
 import {SurveyPreviewer} from './survey-previewer';
 
@@ -27,16 +26,14 @@ export const SurveyDesigner = () => {
   const {handleCreateQuestion, handleDeleteQuestion, handleDuplicateQuestion} =
     useQuestionCrud();
   const {activeQuestion, setActiveQuestion} = useActiveQuestion({
-    onActiveQuestionChange: (ref) => {
-      const index = questions.findIndex((question) => question.ref === ref);
-
-      if (index !== -1) {
-        itemsRef.current[index]?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        });
-      }
-    },
+    // onActiveQuestionChange: (ref) => {
+    //   const index = questions.findIndex((question) => question.ref === ref);
+    //   if (index !== -1) {
+    //     itemsRef.current[index]?.scrollIntoView({
+    //       block: 'center',
+    //     });
+    //   }
+    // },
   });
 
   const itemsRef = useRef<HTMLDivElement[]>([]);
@@ -68,96 +65,86 @@ export const SurveyDesigner = () => {
               </Button>
             </div>
           )}
-          {questions.map((question, index) => (
-            <Fragment key={question.id}>
-              <div
-                onClick={() => setActiveQuestion(question.ref)}
-                ref={(el) => (itemsRef.current[index] = el as HTMLDivElement)}
-                className={cn(
-                  'cursor-pointer rounded-lg border border-zinc-200 bg-card p-4 ring-ring ring-offset-2 transition-shadow hover:ring-2',
-                  {
-                    'ring-2': activeQuestion?.id === question.id,
-                  },
-                )}
-              >
-                <QuestionProvider
+          {questions.map((question, index) => {
+            const isActive = activeQuestion?.id === question.id;
+            return (
+              <Fragment key={question.id}>
+                <QuestionCard
                   question={question}
-                  questionNumber={index + 1}
-                  totalQuestions={questions.length}
-                >
-                  <div className="flex flex-col items-start">
-                    <div className="flex items-center justify-between">
-                      <p className="mb-2 text-sm text-muted-foreground">
-                        Question {index + 1} of {questions.length}
-                      </p>
-                    </div>
-                    <h1
-                      className={cn('text-lg font-medium', {
-                        'text-muted-foreground': !question.text,
-                        [`after:content-['*']`]:
-                          question.validations.required && question.text,
-                      })}
-                    >
-                      {!!question.text ? question.text : 'Untitled question'}
-                    </h1>
-                    {!!question.description && (
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {question.description}
-                      </p>
-                    )}
-                  </div>
-                  <div className="gap mt-8 flex justify-between gap-2">
-                    <QuestionTypeSelect
-                      className="w-1/2"
-                      question={question}
-                      onChange={(type) =>
-                        changeQuestionType({
-                          id: question.id,
-                          type,
-                        })
-                      }
-                    />
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDuplicateQuestion(question.id);
-                        }}
-                      >
-                        Duplicate
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteQuestion(question.id);
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </div>
-                </QuestionProvider>
-              </div>
-              {index !== questions.length - 1 && (
-                <div className="flex items-center gap-4">
-                  <div className="flex-1 border-t border-zinc-200" />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleCreateQuestion({index: index + 1})}
-                  >
-                    Add question
-                    <PlusIcon className="ml-2 h-4 w-4" />
-                  </Button>
-                  <div className="flex-1 border-t border-zinc-200" />
-                </div>
-              )}
-            </Fragment>
-          ))}
+                  id={question.id}
+                  number={index + 1}
+                  isActive={isActive}
+                  onClick={() => setActiveQuestion(question.ref)}
+                  ref={(el) => (itemsRef.current[index] = el as HTMLDivElement)}
+                  isEditable
+                  header={
+                    <header className="flex items-center justify-center pt-3">
+                      <GripHorizontal className="h-4 w-4 cursor-grab text-muted-foreground" />
+                    </header>
+                  }
+                  footer={
+                    <footer className="border-t bg-muted px-4 py-2">
+                      <div className="grid grid-cols-[200px_1fr] justify-items-end">
+                        <QuestionTypeSelect
+                          className="h-9 border-0 bg-transparent text-sm font-medium text-muted-foreground"
+                          question={question}
+                          onChange={(type) =>
+                            changeQuestionType({
+                              id: question.id,
+                              type,
+                            })
+                          }
+                          onOpenChange={(open) =>
+                            open && setActiveQuestion(question.ref)
+                          }
+                        />
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-muted-foreground"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDuplicateQuestion(question.id);
+                            }}
+                          >
+                            <CopyIcon className="mr-2 h-4 w-4" />
+                            Duplicate
+                          </Button>
+                          <Button
+                            className="text-muted-foreground"
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteQuestion(question.id);
+                            }}
+                          >
+                            <Trash2Icon className="mr-2 h-4 w-4" />
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    </footer>
+                  }
+                />
+              </Fragment>
+            );
+          })}
+          {questions.length > 0 && (
+            <div className="flex items-center gap-4">
+              <div className="flex-1 border-t border-zinc-200" />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleCreateQuestion()}
+              >
+                Add question
+                <PlusIcon className="ml-2 h-4 w-4" />
+              </Button>
+              <div className="flex-1 border-t border-zinc-200" />
+            </div>
+          )}
         </div>
       </section>
     </>
