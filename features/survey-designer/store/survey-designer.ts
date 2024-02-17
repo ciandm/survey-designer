@@ -41,7 +41,11 @@ type SurveyDesignerStoreActions = {
     choiceId: string;
   }) => void;
   insertQuestionChoice: (params: {questionId: string}) => void;
-  setQuestions: (questions: QuestionSchema[]) => void;
+  setQuestions: (
+    questions:
+      | QuestionSchema[]
+      | ((fn: SurveySchema['questions']) => SurveySchema['questions']),
+  ) => void;
   setSchema: (schema: SurveySchema) => void;
   setSavedSchema: (schema: SurveySchema) => void;
   setPublished: (isPublished: boolean) => void;
@@ -269,7 +273,14 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
         });
       },
       setQuestions: (questions) => {
-        set((state) => (state.schema.questions = questions));
+        set((state) => {
+          if (typeof questions === 'function') {
+            state.schema.questions = questions(state.schema.questions);
+            return;
+          }
+
+          state.schema.questions = questions;
+        });
       },
       setSchema: (schema) => {
         set((state) => {

@@ -23,6 +23,7 @@ import {
   PlusCircledIcon,
 } from '@radix-ui/react-icons';
 import {HelpCircleIcon, Trash2} from 'lucide-react';
+import {Sortable} from '@/components/sortable';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Input} from '@/components/ui/input';
@@ -262,6 +263,22 @@ const ConfigPanelInner = () => {
                           key={choice.id}
                           id={choice.id}
                           isDisabled={choices.length === 1}
+                          renderSortHandle={({
+                            attributes,
+                            listeners,
+                            isSorting,
+                          }) => (
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              disabled={choices.length === 1}
+                              style={{cursor: isSorting ? 'grabbing' : 'grab'}}
+                              {...listeners}
+                              {...attributes}
+                            >
+                              <DragHandleDots2Icon className="h-4 w-4" />
+                            </Button>
+                          )}
                         >
                           <>
                             <Input
@@ -388,7 +405,7 @@ function Droppable({children}: React.PropsWithChildren) {
   );
 }
 
-function Sortable({
+function Sortablex({
   children,
   className,
   id,
