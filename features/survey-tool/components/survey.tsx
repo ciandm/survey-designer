@@ -120,8 +120,8 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
 
   if (step === 'welcome') {
     return (
-      <div className="flex flex-1 items-center bg-muted">
-        <div className="container max-w-2xl py-16">
+      <div className="flex flex-1 bg-muted">
+        <div className="container max-w-2xl">
           <h1>Welcome!</h1>
         </div>
       </div>
@@ -130,8 +130,8 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-1 items-center bg-muted">
-        <div className="container max-w-2xl py-16">
+      <div className="flex flex-1 bg-muted py-16">
+        <div className="container max-w-2xl">
           <form className="flex flex-1 flex-col gap-12" onSubmit={onSubmit}>
             {fields.map((field, index) => {
               const question = questions[index];
@@ -187,39 +187,6 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
   );
 };
 
-type QuestionProps = {
-  question: QuestionSchema;
-  number: number;
-  children: React.ReactNode;
-  id: string;
-};
-
-const Question = ({children, question, number, id}: QuestionProps) => {
-  return (
-    <div className="flex flex-col gap-2">
-      <div>
-        <label
-          className={cn('text-sm font-medium leading-6', {
-            'text-muted-foreground': !question.text,
-            [`after:content-['*']`]:
-              question.validations.required && question.text,
-          })}
-          htmlFor={id}
-        >
-          <span>{number}. </span>
-          {!!question.text ? question.text : 'Untitled question'}
-        </label>
-        {!!question.description && (
-          <p className="mt-1 text-sm text-muted-foreground">
-            {question.description}
-          </p>
-        )}
-      </div>
-      {children}
-    </div>
-  );
-};
-
 type TextQuestionFieldProps = {
   index: number;
   id: string;
@@ -258,36 +225,42 @@ const MultipleChoiceField = ({
   index,
   choices = [],
 }: MultipleChoiceFieldProps) => {
+  const hasValidChoices =
+    choices.length > 0 && choices.every((choice) => !!choice.value);
   return (
     <QuestionFormConnect>
       {({control}) => (
         <>
           <div className="flex flex-col gap-2">
-            {choices.map((choice) => (
-              <Controller
-                key={choice.id}
-                control={control}
-                name={`fields.${index}.value`}
-                render={({field}) => (
-                  <label className="flex items-center gap-x-3 text-sm font-medium">
-                    <Checkbox
-                      {...field}
-                      checked={field.value.includes(choice.id)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          field.onChange([...field.value, choice.id]);
-                        } else {
-                          field.onChange(
-                            field.value.filter((value) => value !== choice.id),
-                          );
-                        }
-                      }}
-                    />
-                    <span>{choice.value}</span>
-                  </label>
-                )}
-              />
-            ))}
+            {hasValidChoices
+              ? choices.map((choice) => (
+                  <Controller
+                    key={choice.id}
+                    control={control}
+                    name={`fields.${index}.value`}
+                    render={({field}) => (
+                      <label className="flex items-center gap-x-3 text-sm font-medium">
+                        <Checkbox
+                          {...field}
+                          checked={field.value.includes(choice.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              field.onChange([...field.value, choice.id]);
+                            } else {
+                              field.onChange(
+                                field.value.filter(
+                                  (value) => value !== choice.id,
+                                ),
+                              );
+                            }
+                          }}
+                        />
+                        <span>{choice.value}</span>
+                      </label>
+                    )}
+                  />
+                ))
+              : null}
           </div>
         </>
       )}
