@@ -1,15 +1,23 @@
 import {useEffect, useRef} from 'react';
 import {useQueryState} from 'next-usequerystate';
-import {getNextQuestionToSelect} from '@/lib/utils';
+import {QuestionSchema} from '@/lib/validations/survey';
 import {useSurveyQuestions} from '../store/survey-designer';
 
 const QUERY_STATE_KEY = 'ref';
 
+type UseActiveQuestionOptions = {
+  onActiveQuestionChange?: (ref: string) => void;
+};
+
+type UseActiveQuestionResult = {
+  activeQuestion: QuestionSchema | null;
+  activeQuestionIndex: number;
+  setActiveQuestion: (ref: string | null) => void;
+};
+
 export const useActiveQuestion = ({
   onActiveQuestionChange,
-}: {
-  onActiveQuestionChange?: (ref: string) => void;
-} = {}) => {
+}: UseActiveQuestionOptions = {}): UseActiveQuestionResult => {
   const onActiveQuestionChangeRef = useRef(onActiveQuestionChange);
   const questions = useSurveyQuestions();
   const [activeQuestionParam, setActiveQuestion] = useQueryState(
