@@ -1,4 +1,6 @@
 import React from 'react';
+import {ContentEditable} from '@/features/survey-designer/components/content-editable';
+import {updateQuestion} from '@/features/survey-designer/store/survey-designer';
 import {cn} from '@/lib/utils';
 import {QuestionSchema} from '@/lib/validations/survey';
 
@@ -46,26 +48,69 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
         )}
       >
         {header}
-        <div className="p-4">
-          <div className="flex flex-col gap-2">
-            <div>
-              <label
-                className={cn('text-base font-medium leading-6', {
-                  'text-muted-foreground': !question.text,
-                  [`after:content-['*']`]:
-                    question.validations.required && question.text,
-                })}
-                htmlFor={id}
-              >
-                <span>{number}. </span>
-                {!!question.text ? question.text : 'Untitled question'}
-              </label>
-              {!!question.description && (
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {question.description}
-                </p>
+        <div className="px-8 py-6">
+          <div className="flex flex-col gap-1">
+            <div className="relative">
+              <span className="absolute -left-8 w-8 py-1 pr-1 text-right text-xs font-medium text-muted-foreground">
+                {number}.
+              </span>
+              {isEditable ? (
+                <ContentEditable
+                  tagName="h4"
+                  placeholder="Untitled question"
+                  onBlur={(e) => {
+                    updateQuestion({
+                      id,
+                      text: e.target.textContent?.trim() ?? undefined,
+                    });
+                  }}
+                  data-number={number}
+                  className={cn(
+                    'inline-block font-medium leading-6 focus:after:content-none',
+                    {
+                      [`after:content-['_*']`]:
+                        question.validations.required && question.text,
+                    },
+                  )}
+                  value={question.text ?? ''}
+                />
+              ) : (
+                <div className="relative">
+                  <span className="absolute -left-8 w-8 pr-1 pt-1 text-right text-xs font-medium text-muted-foreground">
+                    {number}.
+                  </span>
+                  <label
+                    className={cn('text-base font-medium leading-6', {
+                      [`after:content-['_*']`]:
+                        question.validations.required && question.text,
+                    })}
+                    htmlFor={id}
+                  >
+                    {!!question.text ? question.text : 'Untitled question'}
+                  </label>
+                </div>
               )}
             </div>
+            {isEditable ? (
+              <ContentEditable
+                tagName="p"
+                placeholder="Description (optional)"
+                onBlur={(e) => {
+                  updateQuestion({
+                    id,
+                    description: e.target.textContent?.trim() ?? undefined,
+                  });
+                }}
+                className="self-start text-sm text-muted-foreground"
+                value={question.description ?? ''}
+              />
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {!!question.description
+                  ? question.description
+                  : 'Description (optional)'}
+              </p>
+            )}
             {children}
           </div>
         </div>
