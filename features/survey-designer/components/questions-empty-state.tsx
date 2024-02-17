@@ -1,11 +1,7 @@
-import React from 'react';
-import {PlusIcon, QuestionMarkCircledIcon} from '@radix-ui/react-icons';
-import {Button} from '@/components/ui/button';
-import {useQuestionCrud} from '../hooks/use-question-crud';
+import {QuestionMarkCircledIcon} from '@radix-ui/react-icons';
+import {AddQuestion} from './add-question';
 
 export const QuestionsEmptyState = () => {
-  const {handleCreateQuestion} = useQuestionCrud();
-
   return (
     <div className="text-center">
       <QuestionMarkCircledIcon className="mx-auto mb-2 h-10 w-10" />
@@ -14,10 +10,7 @@ export const QuestionsEmptyState = () => {
         Get started by adding a new question
       </p>
       <div className="mt-6">
-        <Button onClick={() => handleCreateQuestion({index: 0})}>
-          <PlusIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
-          New Question
-        </Button>
+        <AddQuestion />
       </div>
     </div>
   );
