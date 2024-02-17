@@ -21,7 +21,6 @@ import {CopyIcon, GripHorizontal, Trash2Icon} from 'lucide-react';
 import {QuestionCard} from '@/components/question-card';
 import {Sortable} from '@/components/sortable';
 import {Button} from '@/components/ui/button';
-import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
 import {useActiveQuestion} from '../hooks/use-active-question';
 import {useQuestionCrud} from '../hooks/use-question-crud';
@@ -34,16 +33,15 @@ import {
   useSurveySchema,
 } from '../store/survey-designer';
 import {AddQuestion} from './add-question';
+import {ContentEditable} from './content-editable';
 import {QuestionTypeSelect} from './question-type-select';
-import {QuestionsEmptyState} from './questions-empty-state';
 import {SurveyPreviewer} from './survey-previewer';
 
 export const SurveyDesigner = () => {
   const designerMode = useDesignerMode();
   const questions = useSurveyQuestions();
   const {title} = useSurveySchema();
-  const {handleCreateQuestion, handleDeleteQuestion, handleDuplicateQuestion} =
-    useQuestionCrud();
+  const {handleDeleteQuestion, handleDuplicateQuestion} = useQuestionCrud();
   const {activeQuestion, setActiveQuestion} = useActiveQuestion();
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -74,11 +72,11 @@ export const SurveyDesigner = () => {
   return (
     <>
       <section className="flex flex-1 flex-col items-start overflow-auto bg-accent pb-6 pl-2 pr-4">
-        <Textarea
-          className="mb-8 mt-4 text-xl font-medium"
+        <ContentEditable
           placeholder="Untitled survey"
+          onBlur={(e) => updateTitle(e.target.textContent ?? '')}
           value={title ?? ''}
-          onChange={(e) => updateTitle(e.target.value)}
+          className="mb-8 mt-4 text-xl font-medium"
         />
         {questions.length === 0 ? (
           <div className="mx-auto flex flex-col items-center">
@@ -145,7 +143,7 @@ export const SurveyDesigner = () => {
                         }
                         isEditable
                         footer={
-                          <footer className="bg-accent px-4 py-2">
+                          <footer className="bg-accent px-5 py-2.5">
                             <div className="grid grid-cols-[200px_1fr] justify-items-end">
                               <QuestionTypeSelect
                                 className="h-9 border-0 bg-transparent text-sm font-medium text-muted-foreground"
