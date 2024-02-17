@@ -3,7 +3,8 @@
 import {useState} from 'react';
 import {Loader2, RefreshCw} from 'lucide-react';
 import Link from 'next/link';
-import {useParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
+import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
 import {
   Dialog,
@@ -26,6 +27,11 @@ import {SurveyActions} from './survey-actions';
 
 export const EditorHeader = () => {
   const params = useParams();
+  const isChanged = useIsSurveyChanged();
+  const schema = useSurveySchema();
+  const {mutate: handleUpdateSurveySchema, isPending: isPendingUpdateSchema} =
+    useUpdateSurveySchema();
+  const router = useRouter();
 
   return (
     <header className="flex h-16 w-full items-center justify-between gap-2 bg-background px-4">
@@ -34,37 +40,43 @@ export const EditorHeader = () => {
         <Link href={`/editor/${params.id}/responses`}>Responses</Link>
       </div>
       <div className="flex gap-2">
-        <UnsavedChangesButton />
+        {isChanged && (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() =>
+              handleUpdateSurveySchema(
+                {...schema},
+                {
+                  onSuccess: () => {
+                    toast('Survey saved', {
+                      description: 'Your survey has been saved successfully.',
+                      action: {
+                        label: 'View',
+                        onClick: () => {
+                          window.open(`/survey/${params.id}`);
+                        },
+                      },
+                    });
+                  },
+                },
+              )
+            }
+            disabled={isPendingUpdateSchema}
+          >
+            Save
+            <RefreshCw
+              className={cn('ml-2 h-4 w-4 flex-shrink-0', {
+                'animate-spin': isPendingUpdateSchema,
+              })}
+            />
+          </Button>
+        )}
         {/* UI-TODO: Add Preview */}
         <PublishButton />
         <SurveyActions />
       </div>
     </header>
-  );
-};
-
-const UnsavedChangesButton = () => {
-  const schema = useSurveySchema();
-  const {mutate: handleUpdateSurveySchema, isPending: isPendingUpdateSchema} =
-    useUpdateSurveySchema();
-  const isChanged = useIsSurveyChanged();
-
-  if (!isChanged) return null;
-
-  return (
-    <Button
-      size="sm"
-      variant="ghost"
-      onClick={() => handleUpdateSurveySchema({...schema})}
-      disabled={isPendingUpdateSchema}
-    >
-      Save
-      <RefreshCw
-        className={cn('ml-2 h-4 w-4 flex-shrink-0', {
-          'animate-spin': isPendingUpdateSchema,
-        })}
-      />
-    </Button>
   );
 };
 

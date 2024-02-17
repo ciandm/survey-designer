@@ -121,7 +121,7 @@ export const SurveyDesigner = () => {
                           {...attributes}
                           {...listeners}
                           className={cn(
-                            'flex items-center justify-center',
+                            'order-1 flex items-center justify-center',
                             isSorting ? 'cursor-grabbing' : 'cursor-grab',
                             {
                               'cursor-not-allowed': questions.length === 1,

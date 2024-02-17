@@ -66,7 +66,7 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
                   }}
                   data-number={number}
                   className={cn(
-                    'inline-block font-medium leading-6 focus:after:content-none',
+                    'inline-block text-base font-medium leading-6 focus:after:content-none',
                     {
                       [`after:content-['_*']`]:
                         question.validations.required && question.text,
