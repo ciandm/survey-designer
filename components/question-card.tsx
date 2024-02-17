@@ -105,11 +105,13 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
                 value={question.description ?? ''}
               />
             ) : (
-              <p className="text-sm text-muted-foreground">
-                {!!question.description
-                  ? question.description
-                  : 'Description (optional)'}
-              </p>
+              <>
+                {!!question.description && (
+                  <p className="text-sm text-muted-foreground">
+                    {question.description}
+                  </p>
+                )}
+              </>
             )}
             {children}
           </div>
