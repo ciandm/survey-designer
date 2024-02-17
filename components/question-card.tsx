@@ -36,10 +36,11 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
         onClick={onClick}
         ref={ref}
         className={cn(
-          'group overflow-hidden rounded-lg border border-zinc-200 bg-card ring-ring ring-offset-2',
+          'group overflow-hidden rounded-lg border border-slate-300 bg-card ring-ring ring-offset-2',
           {
             'ring-2': isActive,
-            'cursor-pointer transition-all hover:border-primary': isEditable,
+            'cursor-pointer transition-all hover:ring-2': isEditable,
+            'hover:ring-primary/50': isEditable && !isActive,
           },
           className,
         )}
