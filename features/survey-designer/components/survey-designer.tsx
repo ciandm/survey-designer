@@ -1,6 +1,6 @@
 'use client';
 
-import {Fragment, useRef} from 'react';
+import {useRef} from 'react';
 import {
   closestCenter,
   DndContext,
@@ -16,7 +16,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {PlusIcon} from '@radix-ui/react-icons';
+import {QuestionMarkCircledIcon} from '@radix-ui/react-icons';
 import {CopyIcon, GripHorizontal, Trash2Icon} from 'lucide-react';
 import {QuestionCard} from '@/components/question-card';
 import {Sortable} from '@/components/sortable';
@@ -33,6 +33,7 @@ import {
   useSurveyQuestions,
   useSurveySchema,
 } from '../store/survey-designer';
+import {AddQuestion} from './add-question';
 import {QuestionTypeSelect} from './question-type-select';
 import {QuestionsEmptyState} from './questions-empty-state';
 import {SurveyPreviewer} from './survey-previewer';
@@ -72,16 +73,25 @@ export const SurveyDesigner = () => {
 
   return (
     <>
-      <section className="flex flex-1 flex-col items-start overflow-auto bg-accent p-6">
+      <section className="flex flex-1 flex-col items-start overflow-auto bg-accent pb-6 pl-2 pr-4">
         <Textarea
-          className="mb-8 text-xl font-medium"
+          className="mb-8 mt-4 text-xl font-medium"
           placeholder="Untitled survey"
           value={title ?? ''}
           onChange={(e) => updateTitle(e.target.value)}
         />
         {questions.length === 0 ? (
-          <div className="mx-auto">
-            <QuestionsEmptyState />
+          <div className="mx-auto flex flex-col items-center">
+            <QuestionMarkCircledIcon className="mx-auto mb-2 h-10 w-10" />
+            <h3 className="mt-2 font-semibold text-foreground">
+              No questions yet
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Get started by adding a new question
+            </p>
+            <div className="mt-6">
+              <AddQuestion />
+            </div>
           </div>
         ) : (
           <div className="flex w-full flex-col gap-4">
@@ -101,6 +111,7 @@ export const SurveyDesigner = () => {
                       key={question.id}
                       id={question.id}
                       className="flex w-full flex-1 items-center gap-2"
+                      isDisabled={questions.length === 1}
                       renderSortHandle={({
                         attributes,
                         listeners,
@@ -111,14 +122,15 @@ export const SurveyDesigner = () => {
                           variant="ghost"
                           {...attributes}
                           {...listeners}
-                          className="flex items-center justify-center"
+                          className={cn(
+                            'flex items-center justify-center',
+                            isSorting ? 'cursor-grabbing' : 'cursor-grab',
+                            {
+                              'cursor-not-allowed': questions.length === 1,
+                            },
+                          )}
                         >
-                          <GripHorizontal
-                            className={cn(
-                              'h-4 w-4 text-muted-foreground',
-                              isSorting ? 'cursor-grabbing' : 'cursor-grab',
-                            )}
-                          />
+                          <GripHorizontal className="h-4 w-4 text-muted-foreground" />
                         </Button>
                       )}
                     >
@@ -182,17 +194,10 @@ export const SurveyDesigner = () => {
                   );
                 })}
                 {questions.length > 0 && (
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1 border-t border-zinc-200" />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleCreateQuestion()}
-                    >
-                      Add question
-                      <PlusIcon className="ml-2 h-4 w-4" />
-                    </Button>
-                    <div className="flex-1 border-t border-zinc-200" />
+                  <div className="flex items-center gap-2 pl-12">
+                    <div className="h-[1px] flex-1 border-t" />
+                    <AddQuestion />
+                    <div className="h-[1px] flex-1 border-t" />
                   </div>
                 )}
               </SortableContext>
