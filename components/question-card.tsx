@@ -1,5 +1,6 @@
 import React from 'react';
 import {ContentEditable} from '@/features/survey-designer/components/content-editable';
+import {setActiveElementRef} from '@/features/survey-designer/store/active-element-ref';
 import {updateElement} from '@/features/survey-designer/store/survey-designer';
 import {cn} from '@/lib/utils';
 import {ElementSchema} from '@/lib/validations/survey';
@@ -39,6 +40,12 @@ export const QuestionCard = React.forwardRef<HTMLDivElement, QuestionCardProps>(
           if (isEditable) {
             evt.stopPropagation();
             onClick?.();
+          }
+        }}
+        onDoubleClick={(evt) => {
+          if (isEditable && isActive) {
+            evt.stopPropagation();
+            setActiveElementRef(null);
           }
         }}
         tabIndex={0}

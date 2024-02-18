@@ -29,9 +29,11 @@ import {useDesignerMode} from '../store/designer-mode';
 import {
   changeElementType,
   setElements,
+  surveyElementsSelector,
+  surveySchemaSelector,
+  updateDescription,
   updateTitle,
-  useSurveyElements,
-  useSurveySchema,
+  useSurveyDesignerStore,
 } from '../store/survey-designer';
 import {AddQuestion} from './add-question';
 import {ContentEditable} from './content-editable';
@@ -40,8 +42,8 @@ import {SurveyPreviewer} from './survey-previewer';
 
 export const SurveyDesigner = () => {
   const designerMode = useDesignerMode();
-  const elements = useSurveyElements();
-  const {title} = useSurveySchema();
+  const elements = useSurveyDesignerStore(surveyElementsSelector);
+  const schema = useSurveyDesignerStore(surveySchemaSelector);
   const {handleRemoveElement, handleDuplicateElement} = useElementCrud();
   const {activeElement} = useActiveElement();
   const sensors = useSensors(
@@ -74,14 +76,27 @@ export const SurveyDesigner = () => {
     <>
       <section
         className="flex flex-1 flex-col items-start overflow-auto bg-accent pb-6 pl-2 pr-4"
-        onClick={() => setActiveElementRef(null)}
+        id="survey-designer"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            setActiveElementRef(null);
+          }
+        }}
       >
-        <ContentEditable
-          placeholder="Untitled survey"
-          onBlur={(e) => updateTitle(e.target.textContent ?? '')}
-          value={title ?? ''}
-          className="mb-8 mt-4 text-xl font-medium"
-        />
+        <div className="space-y-2 py-4">
+          <ContentEditable
+            placeholder="Untitled survey"
+            onBlur={(e) => updateTitle(e.target.textContent ?? '')}
+            value={schema.title ?? ''}
+            className="text-xl font-medium"
+          />
+          <ContentEditable
+            placeholder="Description (optional)"
+            onBlur={(e) => updateDescription(e.target.textContent ?? '')}
+            value={schema.description ?? ''}
+            className="text-base"
+          />
+        </div>
         {elements.length === 0 ? (
           <div className="mx-auto flex flex-col items-center">
             <QuestionMarkCircledIcon className="mx-auto mb-2 h-10 w-10" />
@@ -107,7 +122,7 @@ export const SurveyDesigner = () => {
                 strategy={verticalListSortingStrategy}
               >
                 {elements.map((element, index) => {
-                  const isActive = activeElement?.id === element.id;
+                  const isActive = activeElement?.ref === element.ref;
                   return (
                     <Sortable
                       key={element.id}

@@ -30,10 +30,19 @@ export const elementSchema = z.object({
   }),
 });
 
+export const screenSchema = z.object({
+  message: z.string().nullable(),
+});
+
 export const surveySchema = z.object({
   id: z.string(),
   title: z.string(),
+  description: z.string().optional(),
   elements: z.array(elementSchema),
+  screens: z.object({
+    welcome: screenSchema,
+    thank_you: screenSchema,
+  }),
   version: z.number().default(1),
 });
 

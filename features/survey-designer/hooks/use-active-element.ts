@@ -1,6 +1,9 @@
 import {ElementSchema} from '@/lib/validations/survey';
-import {useActiveElementId} from '../store/active-element-ref';
-import {useSurveyElements} from '../store/survey-designer';
+import {useActiveElementRef} from '../store/active-element-ref';
+import {
+  surveyElementsSelector,
+  useSurveyDesignerStore,
+} from '../store/survey-designer';
 
 type UseActiveElementResult = {
   activeElement: ElementSchema | null;
@@ -8,11 +11,11 @@ type UseActiveElementResult = {
 };
 
 export const useActiveElement = (): UseActiveElementResult => {
-  const elements = useSurveyElements();
-  const activeElementId = useActiveElementId();
+  const elements = useSurveyDesignerStore(surveyElementsSelector);
+  const activeElementRef = useActiveElementRef();
 
   const activeElementIndex = elements.findIndex(
-    (element) => element.ref === activeElementId,
+    (element) => element.ref === activeElementRef,
   );
 
   const activeElement = elements[activeElementIndex] ?? null;

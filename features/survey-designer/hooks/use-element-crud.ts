@@ -6,13 +6,14 @@ import {
   deleteElement,
   duplicateElement,
   insertElement,
-  useSurveyElements,
+  surveyElementsSelector,
+  useSurveyDesignerStore,
 } from '../store/survey-designer';
 import {useActiveElement} from './use-active-element';
 
 export const useElementCrud = () => {
   const {activeElement} = useActiveElement();
-  const elements = useSurveyElements();
+  const elements = useSurveyDesignerStore(surveyElementsSelector);
 
   const handleRemoveElement = (id: string) => {
     const questionsBeforeDelete = elements;

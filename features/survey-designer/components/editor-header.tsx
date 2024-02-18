@@ -17,18 +17,18 @@ import {cn} from '@/lib/utils';
 import {useManageSurveyPublication} from '../hooks/use-manage-survey-publication';
 import {useUpdateSurveySchema} from '../hooks/use-update-survey-schema';
 import {
+  surveyElementsSelector,
+  surveyPublishedSelector,
+  surveySchemaSelector,
   useIsSurveyChanged,
-  useIsSurveyPublished,
-  useSurveyDetails,
-  useSurveyElements,
-  useSurveySchema,
+  useSurveyDesignerStore,
 } from '../store/survey-designer';
 import {SurveyActions} from './survey-actions';
 
 export const EditorHeader = () => {
   const params = useParams();
   const isChanged = useIsSurveyChanged();
-  const schema = useSurveySchema();
+  const schema = useSurveyDesignerStore(surveySchemaSelector);
   const {mutate: handleUpdateSurveySchema, isPending: isPendingUpdateSchema} =
     useUpdateSurveySchema();
   const router = useRouter();
@@ -81,14 +81,14 @@ export const EditorHeader = () => {
 };
 
 const PublishButton = () => {
-  const survey = useSurveyDetails();
-  const isPublished = useIsSurveyPublished();
+  const survey = useSurveyDesignerStore(surveySchemaSelector);
+  const isPublished = useSurveyDesignerStore(surveyPublishedSelector);
   const {mutateAsync: handleManageSurveyPublication} =
     useManageSurveyPublication();
-  const schema = useSurveySchema();
+  const schema = useSurveyDesignerStore(surveySchemaSelector);
   const {mutateAsync: handleUpdateSurveySchema} = useUpdateSurveySchema();
   const isChanged = useIsSurveyChanged();
-  const elements = useSurveyElements();
+  const elements = useSurveyDesignerStore(surveyElementsSelector);
   const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
 
   const handleOnPublishClick = async () => {

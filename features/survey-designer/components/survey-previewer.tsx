@@ -5,11 +5,14 @@ import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {Survey} from '@/features/survey-tool/components/survey';
 import {useDesignerModeActions} from '../store/designer-mode';
-import {useSurveyDetails, useSurveySchema} from '../store/survey-designer';
+import {
+  surveySchemaSelector,
+  useSurveyDesignerStore,
+} from '../store/survey-designer';
 
 export const SurveyPreviewer = () => {
-  const {title} = useSurveyDetails();
-  const schema = useSurveySchema();
+  const {title} = useSurveyDesignerStore(surveySchemaSelector);
+  const schema = useSurveyDesignerStore(surveySchemaSelector);
   const {updateMode} = useDesignerModeActions();
 
   return (
