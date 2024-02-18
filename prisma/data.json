@@ -73,10 +73,10 @@
         }
       },
       {
-        "id": "f73d956b-4e80-47ae-8c3a-eb5351eac6bb",
+        "id": "2f23d0d4-9934-4c8e-bb36-5e39cda0736a",
         "text": "How likely are you to recommend our service to a friend or colleague?",
         "type": "multiple_choice",
-        "ref": "7e4df1b4-7904-4fe4-bbc9-4e9c189b30de",
+        "ref": "8b5a2a57-8f5c-46ab-9fb4-7b6de82c221d",
         "properties": {
           "choices": [
             {"id": "1", "value": "Very likely"},
