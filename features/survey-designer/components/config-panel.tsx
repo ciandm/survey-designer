@@ -15,7 +15,6 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  useSortable,
 } from '@dnd-kit/sortable';
 import {
   DragHandleDots2Icon,
@@ -39,7 +38,6 @@ import {
 } from '@/components/ui/select';
 import {Separator} from '@/components/ui/separator';
 import {Textarea} from '@/components/ui/textarea';
-import {cn} from '@/lib/utils';
 import {useActiveElement} from '../hooks/use-active-element';
 import {
   changeElementType,
@@ -47,13 +45,16 @@ import {
   deleteQuestionChoices,
   insertQuestionChoice,
   moveQuestionChoices,
+  surveyElementsSelector,
+  surveySchemaSelector,
+  surveyScreenSelector,
   updateElement,
   updateQuestionChoice,
-  useSurveyElements,
+  updateScreen,
+  updateTitle,
+  useSurveyDesignerStore,
 } from '../store/survey-designer';
 import {QuestionTypeSelect} from './question-type-select';
-
-type Panel = 'element' | 'choices' | 'logic' | 'validation';
 
 const SORT_ORDER_OPTIONS = [
   {label: 'None', value: 'none'},
@@ -72,8 +73,7 @@ export const ConfigPanel = () => {
 
 const ConfigPanelInner = () => {
   const {activeElement} = useActiveElement();
-  const elements = useSurveyElements();
-  const [openPanel, setOpenPanel] = useState<Panel>('element');
+  const elements = useSurveyDesignerStore(surveyElementsSelector);
 
   const {isOver, setNodeRef} = useDroppable({
     id: 'droppable',
@@ -101,15 +101,17 @@ const ConfigPanelInner = () => {
   }
 
   return (
-    <aside className="hidden max-w-sm flex-1 flex-col overflow-auto border-l bg-white lg:flex">
+    <aside className="hidden max-w-sm flex-1 flex-col overflow-auto border-l bg-white p-4 lg:flex">
       {activeElement ? (
         <>
-          <Panel
-            title="element"
-            isOpen={openPanel === 'element'}
-            onClick={() => setOpenPanel('element')}
-          >
+          <div className="flex flex-col space-y-6">
             <div>
+              <h2 className="text-base font-semibold leading-7">Question</h2>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                Make changes to the question
+              </p>
+            </div>
+            <div className="flex flex-col space-y-1.5">
               <Label htmlFor="element-type">Type</Label>
               <QuestionTypeSelect
                 element={activeElement}
@@ -122,7 +124,7 @@ const ConfigPanelInner = () => {
                 id="element-type"
               />
             </div>
-            <div>
+            <div className="flex flex-col space-y-1.5">
               <Label htmlFor="title">Title</Label>
               <Textarea
                 name="title"
@@ -136,7 +138,7 @@ const ConfigPanelInner = () => {
                 }
               />
             </div>
-            <div>
+            <div className="space-y-1.5">
               <Label htmlFor="description">Description (optional)</Label>
               <Textarea
                 name="description"
@@ -152,7 +154,7 @@ const ConfigPanelInner = () => {
             </div>
             {(activeElement.type === 'short_text' ||
               activeElement.type === 'long_text') && (
-              <div>
+              <div className="space-y-1.5">
                 <Label htmlFor="placeholder">Placeholder (optional)</Label>
                 <Textarea
                   name="placeholder"
@@ -169,8 +171,8 @@ const ConfigPanelInner = () => {
                 />
               </div>
             )}
-            <div className="flex flex-col gap-1">
-              <label className="flex items-center">
+            <div className="flex flex-col">
+              <div className="flex items-center">
                 <Checkbox
                   className="mr-2"
                   onCheckedChange={(checked) => {
@@ -181,14 +183,17 @@ const ConfigPanelInner = () => {
                       },
                     });
                   }}
+                  id="required"
                   checked={activeElement.validations.required}
                 />
-                <span>Make this element required</span>
-              </label>
+                <Label htmlFor="required">Make this question required</Label>
+              </div>
               {activeElement.validations.required && (
                 <>
-                  <div className="mt-2 flex items-center justify-between">
-                    <Label htmlFor="required">Required error message</Label>
+                  <div className="mt-3 flex items-center justify-between">
+                    <Label htmlFor="required-error-message">
+                      Required error message (optional)
+                    </Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button size="icon" variant="ghost" className="h-6 w-6">
@@ -197,17 +202,17 @@ const ConfigPanelInner = () => {
                       </PopoverTrigger>
                       <PopoverContent side="left">
                         <p className="text-xs leading-snug">
-                          If the element is required, this message will be shown
-                          if the user tries to submit the form without answering
-                          this element. Defaults to &quot;This field is
-                          required&quot;.
+                          If the question is required, this message will be
+                          shown if the user tries to submit the form without
+                          answering this question. Defaults to &quot;This field
+                          is required&quot;.
                         </p>
                       </PopoverContent>
                     </Popover>
                   </div>
                   <Textarea
                     name="required"
-                    id="required"
+                    id="required-error-message"
                     value={activeElement.properties.required_message}
                     onChange={(e) =>
                       updateElement({
@@ -221,165 +226,148 @@ const ConfigPanelInner = () => {
                 </>
               )}
             </div>
-          </Panel>
+          </div>
           {activeElement.type === 'multiple_choice' && (
-            <Panel
-              title="Choices"
-              isOpen={openPanel === 'choices'}
-              onClick={() => setOpenPanel('choices')}
-            >
-              <div>
-                <div className="mb-2 grid grid-cols-[1fr_40px_40px] items-center justify-between gap-2">
-                  <p className="text-sm text-muted-foreground">Choices</p>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() =>
-                      deleteQuestionChoices({elementId: activeElement.id})
-                    }
+            <>
+              <Separator className="my-6" />
+              <div className="space-y-6">
+                <div>
+                  <div className="mb-2 grid grid-cols-[1fr_40px_40px] items-center justify-between gap-2">
+                    <p className="text-sm font-medium">Choices</p>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() =>
+                        deleteQuestionChoices({elementId: activeElement.id})
+                      }
+                    >
+                      <EraserIcon className="h-5 w-5" />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() =>
+                        insertQuestionChoice({
+                          elementId: activeElement.id,
+                        })
+                      }
+                    >
+                      <PlusCircledIcon className="h-5 w-5" />
+                    </Button>
+                  </div>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
                   >
-                    <EraserIcon className="h-5 w-5" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() =>
-                      insertQuestionChoice({
-                        elementId: activeElement.id,
-                      })
-                    }
-                  >
-                    <PlusCircledIcon className="h-5 w-5" />
-                  </Button>
+                    <SortableContext items={choices.map((choice) => choice.id)}>
+                      <div className="flex flex-col gap-1">
+                        {(choices ?? []).map((choice) => (
+                          <Sortable
+                            className="grid grid-cols-[40px_1fr_40px] gap-2"
+                            key={choice.id}
+                            id={choice.id}
+                            isDisabled={choices.length === 1}
+                            renderSortHandle={({
+                              attributes,
+                              listeners,
+                              isSorting,
+                            }) => (
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                disabled={choices.length === 1}
+                                style={{
+                                  cursor: isSorting ? 'grabbing' : 'grab',
+                                }}
+                                {...listeners}
+                                {...attributes}
+                              >
+                                <DragHandleDots2Icon className="h-4 w-4" />
+                              </Button>
+                            )}
+                          >
+                            <>
+                              <Input
+                                type="text"
+                                value={choice.value}
+                                onChange={(e) =>
+                                  updateQuestionChoice({
+                                    elementId: activeElement.id,
+                                    newChoice: {
+                                      id: choice.id,
+                                      value: e.target.value,
+                                    },
+                                  })
+                                }
+                              />
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() =>
+                                  deleteQuestionChoice({
+                                    elementId: activeElement.id,
+                                    choiceId: choice.id,
+                                  })
+                                }
+                                disabled={
+                                  activeElement.properties.choices?.length === 1
+                                }
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </>
+                          </Sortable>
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 </div>
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd}
-                >
-                  <SortableContext items={choices.map((choice) => choice.id)}>
-                    <div className="flex flex-col gap-1">
-                      {(choices ?? []).map((choice) => (
-                        <Sortable
-                          className="grid grid-cols-[40px_1fr_40px] gap-2"
-                          key={choice.id}
-                          id={choice.id}
-                          isDisabled={choices.length === 1}
-                          renderSortHandle={({
-                            attributes,
-                            listeners,
-                            isSorting,
-                          }) => (
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              disabled={choices.length === 1}
-                              style={{cursor: isSorting ? 'grabbing' : 'grab'}}
-                              {...listeners}
-                              {...attributes}
-                            >
-                              <DragHandleDots2Icon className="h-4 w-4" />
-                            </Button>
-                          )}
-                        >
-                          <>
-                            <Input
-                              type="text"
-                              value={choice.value}
-                              onChange={(e) =>
-                                updateQuestionChoice({
-                                  elementId: activeElement.id,
-                                  newChoice: {
-                                    id: choice.id,
-                                    value: e.target.value,
-                                  },
-                                })
-                              }
-                            />
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              onClick={() =>
-                                deleteQuestionChoice({
-                                  elementId: activeElement.id,
-                                  choiceId: choice.id,
-                                })
-                              }
-                              disabled={
-                                activeElement.properties.choices?.length === 1
-                              }
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </>
-                        </Sortable>
-                      ))}
-                    </div>
-                  </SortableContext>
-                </DndContext>
+                <div className="space-y-1.5">
+                  <Label htmlFor="sort-choices" className="text-sm font-medium">
+                    Sort choices
+                  </Label>
+                  <Select
+                    value={activeElement.properties.sort_order ?? 'none'}
+                    onValueChange={(value) => {
+                      updateElement({
+                        id: activeElement.id,
+                        properties: {
+                          sort_order:
+                            value === 'none' ? undefined : (value as any),
+                        },
+                      });
+                    }}
+                  >
+                    <SelectTrigger id="sort-choices">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {SORT_ORDER_OPTIONS.map((option) => (
+                          <SelectItem value={option.value} key={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="minimum-selection" className="mb-1">
+                    Minimum selection (UI-TODO)
+                  </Label>
+                  <Input disabled type="number" id="minimum-selection" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="maximum-selection" className="mb-1">
+                    Maximum selection (UI-TODO)
+                  </Label>
+                  <Input type="number" id="maximum-selection" disabled />
+                </div>
               </div>
-              <Separator />
-              <div>
-                <Label
-                  htmlFor="sort-choices"
-                  className="mb-1 text-sm font-medium"
-                >
-                  Sort choices
-                </Label>
-                <Select
-                  value={activeElement.properties.sort_order ?? 'none'}
-                  onValueChange={(value) => {
-                    updateElement({
-                      id: activeElement.id,
-                      properties: {
-                        sort_order:
-                          value === 'none' ? undefined : (value as any),
-                      },
-                    });
-                  }}
-                >
-                  <SelectTrigger id="sort-choices">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {SORT_ORDER_OPTIONS.map((option) => (
-                        <SelectItem value={option.value} key={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="minimum-selection" className="mb-1">
-                  Minimum selection
-                </Label>
-                <Input type="number" id="minimum-selection" />
-              </div>
-              <div>
-                <Label htmlFor="maximum-selection" className="mb-1">
-                  Maximum selection
-                </Label>
-                <Input type="number" id="maximum-selection" />
-              </div>
-            </Panel>
+            </>
           )}
-          <Panel
-            title="Logic"
-            isOpen={openPanel === 'logic'}
-            onClick={() => setOpenPanel('logic')}
-          >
-            Logic content
-          </Panel>
-          <Panel
-            title="Validation"
-            onClick={() => setOpenPanel('validation')}
-            isOpen={openPanel === 'validation'}
-          >
-            Validation content
-          </Panel>
         </>
       ) : elements.length === 0 ? (
         <div className="flex justify-center p-4">
@@ -388,100 +376,61 @@ const ConfigPanelInner = () => {
           </p>
         </div>
       ) : (
-        <div className="p-4">
-          <Label htmlFor="element-type">Survey title</Label>
-          <Textarea id="element-type" />
-        </div>
+        <SurveyPanel />
       )}
     </aside>
   );
 };
 
-function Droppable({children}: React.PropsWithChildren) {
-  const {isOver, setNodeRef} = useDroppable({
-    id: 'droppable',
-  });
-  const style = {
-    backgroundColor: isOver ? 'green' : undefined,
-  };
+const SurveyPanel = () => {
+  const schema = useSurveyDesignerStore(surveySchemaSelector);
+  const {thank_you, welcome} = useSurveyDesignerStore(surveyScreenSelector);
 
   return (
-    <div ref={setNodeRef} style={style}>
-      {children}
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-base font-semibold leading-7">Survey</h2>
+        <p className="mt-1 text-sm leading-6 text-muted-foreground">
+          Configure your survey settings
+        </p>
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="survey-title">Title</Label>
+        <Textarea
+          id="survey-title"
+          value={schema.title}
+          onChange={(e) => updateTitle(e.target.value)}
+        />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="survey-description">Description</Label>
+        <Textarea id="survey-description" value={schema.description} />
+      </div>
+      <Separator />
+      <div>
+        <h2 className="text-base font-semibold leading-7">Screens</h2>
+        <p className="mt-1 text-sm leading-6 text-muted-foreground">
+          Make changes to the screens for your survey
+        </p>
+      </div>
+      <div className="space-y-6">
+        <div className="space-y-1.5">
+          <Label htmlFor="welcome-message">Welcome message</Label>
+          <Textarea
+            id="welcome-message"
+            value={welcome.message ?? ''}
+            onChange={(e) => updateScreen('welcome', e.target.value)}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="completed-message">Thank you message</Label>
+          <Textarea
+            id="completed-message"
+            value={thank_you.message ?? ''}
+            onChange={(e) => updateScreen('thank_you', e.target.value)}
+          />
+        </div>
+      </div>
     </div>
   );
-}
-
-function Sortablex({
-  children,
-  className,
-  id,
-  isDisabled,
-}: React.PropsWithChildren<{
-  id: string;
-  className?: string;
-  isDisabled?: boolean;
-}>) {
-  const {attributes, listeners, setNodeRef, transform, isSorting} = useSortable(
-    {
-      id,
-      disabled: isDisabled,
-    },
-  );
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
-
-  return (
-    <>
-      <div ref={setNodeRef} style={style} className={className}>
-        <Button
-          size="icon"
-          variant="ghost"
-          disabled={isDisabled}
-          style={{cursor: isSorting ? 'grabbing' : 'grab'}}
-          {...listeners}
-          {...attributes}
-        >
-          <DragHandleDots2Icon className="h-4 w-4" />
-        </Button>
-        {children}
-      </div>
-    </>
-  );
-}
-
-type Props = {
-  title: string;
-  children: React.ReactNode;
-  isOpen?: boolean;
-  onClick?: () => void;
 };
-
-const Panel = ({children, title, isOpen = false, onClick}: Props) => (
-  <div
-    className={cn('flex flex-col', {
-      'flex-1': isOpen,
-    })}
-  >
-    <button className="w-full border-b p-4 text-left" onClick={onClick}>
-      <h2
-        className={cn(
-          'text-md leading-none text-muted-foreground transition-colors hover:text-foreground',
-          {
-            'font-medium text-foreground': isOpen,
-          },
-        )}
-      >
-        {title}
-      </h2>
-    </button>
-    {isOpen && (
-      <div className="flex flex-1 flex-col gap-4 border-b bg-muted p-4">
-        {children}
-      </div>
-    )}
-  </div>
-);

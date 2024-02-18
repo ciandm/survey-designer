@@ -1,10 +1,5 @@
 import {useState} from 'react';
-import {
-  CopyIcon,
-  DotsHorizontalIcon,
-  TrashIcon,
-  UploadIcon,
-} from '@radix-ui/react-icons';
+import {CopyIcon, DotsHorizontalIcon, TrashIcon} from '@radix-ui/react-icons';
 import {Label} from '@radix-ui/react-label';
 import {Switch} from '@radix-ui/react-switch';
 import {Loader2} from 'lucide-react';
@@ -29,11 +24,14 @@ import {
 import {toast} from '@/components/ui/use-toast';
 import {useDeleteSurvey} from '../hooks/use-delete-survey';
 import {useDuplicateSurvey} from '../hooks/use-duplicate-survey';
-import {useSurveyDetails} from '../store/survey-designer';
+import {
+  surveySchemaSelector,
+  useSurveyDesignerStore,
+} from '../store/survey-designer';
 import {DeleteSurveyAlert} from './delete-survey-alert';
 
 export const SurveyActions = () => {
-  const {id} = useSurveyDetails();
+  const {id} = useSurveyDesignerStore(surveySchemaSelector);
   const [open, setIsOpen] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const router = useRouter();

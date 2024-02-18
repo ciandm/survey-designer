@@ -29,7 +29,7 @@ export const AddQuestion = ({className}: AddQuestionProps) => {
         className={cn('rounded-r-none border-r-0', className)}
         onClick={() => handleCreateElement()}
       >
-        Add element
+        Add question
       </Button>
       <Separator orientation="vertical" />
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>

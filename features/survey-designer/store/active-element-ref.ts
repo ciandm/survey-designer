@@ -1,4 +1,5 @@
 import {create} from 'zustand';
+import {immer} from 'zustand/middleware/immer';
 
 type ActiveElementStoreProps = {
   activeElementRef: string | null;
@@ -14,18 +15,22 @@ export type ActiveElementStoreState = ActiveElementStoreProps & {
   actions: ActiveElementStoreActions;
 };
 
-export const useActiveElementRef = create<ActiveElementStoreState>()((set) => ({
-  activeElementRef: null,
-  actions: {
-    setActiveElementRef: (id) => {
-      set(() => ({
-        activeElementRef: id,
-      }));
+const useActiveElementRefStore = create<ActiveElementStoreState>()(
+  immer((set) => ({
+    activeElementRef: null,
+    actions: {
+      setActiveElementRef: (id) => {
+        console.log(id);
+        set(() => ({
+          activeElementRef: id,
+        }));
+      },
     },
-  },
-}));
+  })),
+);
 
-export const useActiveElementId = () =>
-  useActiveElementRef((state) => state.activeElementRef);
+export const useActiveElementRef = () =>
+  useActiveElementRefStore((state) => state.activeElementRef);
 
-export const {setActiveElementRef} = useActiveElementRef.getState().actions;
+export const {setActiveElementRef} =
+  useActiveElementRefStore.getState().actions;
