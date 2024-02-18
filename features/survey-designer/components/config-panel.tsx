@@ -48,6 +48,7 @@ import {
   surveyElementsSelector,
   surveySchemaSelector,
   surveyScreenSelector,
+  updateDescription,
   updateElement,
   updateQuestionChoice,
   updateScreen,
@@ -404,7 +405,11 @@ const SurveyPanel = () => {
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="survey-description">Description</Label>
-        <Textarea id="survey-description" value={schema.description} />
+        <Textarea
+          id="survey-description"
+          value={schema.description}
+          onChange={(e) => updateDescription(e.target.value)}
+        />
       </div>
       <Separator />
       <div>
