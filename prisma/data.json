@@ -1,0 +1,105 @@
+[
+  {
+    "id": "9f6842e1-76b4-4d5f-a4cb-4f7fdddb2d63",
+    "title": "Sample Survey",
+    "description": "This is a sample survey for demonstration purposes.",
+    "elements": [
+      {
+        "id": "f73d956b-4e80-47ae-8c3a-eb5351eac6bb",
+        "text": "What is your favorite color?",
+        "type": "multiple_choice",
+        "description": "Choose one option",
+        "ref": "e93e72cf-2f7b-49b7-b0e5-f2956936b6fb",
+        "properties": {
+          "choices": [
+            {"id": "1", "value": "Red"},
+            {"id": "2", "value": "Blue"},
+            {"id": "3", "value": "Green"}
+          ],
+          "sort_order": "random",
+          "required_message": "Please select your favorite color."
+        },
+        "validations": {
+          "required": true
+        }
+      },
+      {
+        "id": "7e4df1b4-7904-4fe4-bbc9-4e9c189b30de",
+        "text": "How satisfied are you with our service?",
+        "type": "short_text",
+        "ref": "b6e4d681-1d80-47a7-9612-5a6bca3658db",
+        "properties": {
+          "placeholder": "Enter your response here",
+          "required_message": "Please provide your feedback."
+        },
+        "validations": {
+          "required": true,
+          "min_characters": 5
+        }
+      },
+      {
+        "id": "4f0b16b4-c5cd-426b-b6c7-932d9c01cf9a",
+        "text": "What is your age group?",
+        "type": "multiple_choice",
+        "ref": "0fc1ab58-48a3-41d4-a47b-f57334a0f5ad",
+        "properties": {
+          "choices": [
+            {"id": "1", "value": "Under 18"},
+            {"id": "2", "value": "18-24"},
+            {"id": "3", "value": "25-34"},
+            {"id": "4", "value": "35-44"},
+            {"id": "5", "value": "45-54"},
+            {"id": "6", "value": "55-64"},
+            {"id": "7", "value": "65 or over"}
+          ],
+          "required_message": "Please select your age group."
+        },
+        "validations": {
+          "required": true
+        }
+      },
+      {
+        "id": "3bfe5b11-9907-442a-8f0c-1ae21c60c06e",
+        "text": "What is your preferred mode of transportation?",
+        "type": "long_text",
+        "ref": "571b196e-1e13-499b-ba78-2b425f1fc6d2",
+        "properties": {
+          "placeholder": "Enter your response here",
+          "required_message": "Please provide your preferred mode of transportation."
+        },
+        "validations": {
+          "required": true,
+          "min_characters": 10
+        }
+      },
+      {
+        "id": "f73d956b-4e80-47ae-8c3a-eb5351eac6bb",
+        "text": "How likely are you to recommend our service to a friend or colleague?",
+        "type": "multiple_choice",
+        "ref": "7e4df1b4-7904-4fe4-bbc9-4e9c189b30de",
+        "properties": {
+          "choices": [
+            {"id": "1", "value": "Very likely"},
+            {"id": "2", "value": "Likely"},
+            {"id": "3", "value": "Neutral"},
+            {"id": "4", "value": "Unlikely"},
+            {"id": "5", "value": "Very unlikely"}
+          ],
+          "required_message": "Please select your response."
+        },
+        "validations": {
+          "required": true
+        }
+      }
+    ],
+    "screens": {
+      "welcome": {
+        "message": "Welcome to our survey!"
+      },
+      "thank_you": {
+        "message": "Thank you for completing the survey."
+      }
+    },
+    "version": 1
+  }
+]
