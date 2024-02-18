@@ -20,37 +20,36 @@ import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {useToast} from '@/components/ui/use-toast';
 import {useSubmitSurvey} from '@/features/survey-designer/hooks/use-submit-survey';
-import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
-import {cn} from '@/lib/utils';
-import {QuestionSchema, SurveySchema} from '@/lib/validations/survey';
+import {ELEMENT_TYPE, ElementType} from '@/lib/constants/element';
+import {ElementSchema, SurveySchema} from '@/lib/validations/survey';
 
 export interface QuestionFormState {
-  fields: {questionId: string; value: string[]; type: QuestionType}[];
-  type: QuestionType;
+  fields: {questionId: string; value: string[]; type: ElementType}[];
+  type: ElementType;
 }
 
-const createValidationSchema = (questions: QuestionSchema[]) => {
+const createValidationSchema = (elements: ElementSchema[]) => {
   return z
     .object({
       fields: z.array(
         z.object({
           questionId: z.string(),
           value: z.array(z.string()),
-          type: z.nativeEnum(QUESTION_TYPE),
+          type: z.nativeEnum(ELEMENT_TYPE),
         }),
       ),
     })
     .superRefine(({fields}, ctx) => {
       fields.forEach((field, index) => {
-        const question = questions[index];
+        const element = elements[index];
 
         if (
-          question.validations.required &&
+          element.validations.required &&
           (!field.value.length || field.value[0].length === 0)
         ) {
           return ctx.addIssue({
             message:
-              question.properties.required_message || 'This field is required',
+              element.properties.required_message || 'This field is required',
             path: ['fields', index, 'value'],
             code: z.ZodIssueCode.custom,
           });
@@ -62,7 +61,7 @@ const createValidationSchema = (questions: QuestionSchema[]) => {
 };
 
 export const Survey = ({schema}: {schema: SurveySchema}) => {
-  const {questions = []} = schema;
+  const {elements = []} = schema;
   const [step, setStep] = useState<'welcome' | 'questions' | 'thank_you'>(
     'questions',
   );
@@ -72,13 +71,13 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
 
   const methods = useForm<QuestionFormState>({
     defaultValues: {
-      fields: questions.map((question) => ({
-        questionId: question.id,
-        type: question.type,
+      fields: elements.map((element) => ({
+        questionId: element.id,
+        type: element.type,
         value: [],
       })),
     },
-    resolver: zodResolver(createValidationSchema(questions)),
+    resolver: zodResolver(createValidationSchema(elements)),
   });
 
   const {handleSubmit, control} = methods;
@@ -134,12 +133,12 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
         <div className="container max-w-2xl">
           <form className="flex flex-1 flex-col gap-12" onSubmit={onSubmit}>
             {fields.map((field, index) => {
-              const question = questions[index];
+              const element = elements[index];
 
               return (
                 <QuestionCard
-                  key={question.id}
-                  question={question}
+                  key={element.id}
+                  element={element}
                   number={index + 1}
                   id={field.questionId}
                   footer={
@@ -155,16 +154,16 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
                     />
                   }
                 >
-                  {question.type === 'multiple_choice' && (
+                  {element.type === 'multiple_choice' && (
                     <MultipleChoiceField
                       index={index}
-                      choices={question.properties.choices}
+                      choices={element.properties.choices}
                     />
                   )}
-                  {(question.type === 'short_text' ||
-                    question.type === 'long_text') && (
+                  {(element.type === 'short_text' ||
+                    element.type === 'long_text') && (
                     <TextQuestionField
-                      type={question.type}
+                      type={element.type}
                       index={index}
                       id={field.questionId}
                     />
@@ -190,7 +189,7 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
 type TextQuestionFieldProps = {
   index: number;
   id: string;
-  type: QuestionType;
+  type: ElementType;
 };
 
 const TextQuestionField = ({index, id, type}: TextQuestionFieldProps) => {
@@ -218,7 +217,7 @@ const TextQuestionField = ({index, id, type}: TextQuestionFieldProps) => {
 
 type MultipleChoiceFieldProps = {
   index: number;
-  choices: QuestionSchema['properties']['choices'];
+  choices: ElementSchema['properties']['choices'];
 };
 
 const MultipleChoiceField = ({

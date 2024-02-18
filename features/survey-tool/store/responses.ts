@@ -1,11 +1,11 @@
 import {createContext, useContext} from 'react';
 import {createStore, useStore} from 'zustand';
-import {createJSONStorage, persist} from 'zustand/middleware';
+import {persist} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
-import {QuestionSchema} from '@/lib/validations/survey';
+import {ElementSchema} from '@/lib/validations/survey';
 
 interface ResponsesProps {
-  questions: QuestionSchema[];
+  elements: ElementSchema[];
   responses: {
     questionId: string;
     value: string[];
@@ -26,7 +26,7 @@ type BearStore = ReturnType<typeof createResponsesStore>;
 
 export const createResponsesStore = (initProps?: Partial<ResponsesProps>) => {
   const DEFAULT_PROPS: ResponsesProps = {
-    questions: [],
+    elements: [],
     currentQuestionId: '',
     responses: [],
     questionIds: [],

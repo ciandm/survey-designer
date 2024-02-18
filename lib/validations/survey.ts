@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import {QUESTION_TYPE} from '../constants/question';
+import {ELEMENT_TYPE} from '../constants/element';
 
 export const choicesSchema = z.array(
   z.object({
@@ -8,10 +8,10 @@ export const choicesSchema = z.array(
   }),
 );
 
-export const questionSchema = z.object({
+export const elementSchema = z.object({
   id: z.string(),
   text: z.string(),
-  type: z.nativeEnum(QUESTION_TYPE),
+  type: z.nativeEnum(ELEMENT_TYPE),
   description: z.string().optional(),
   ref: z.string(),
   properties: z.object({
@@ -33,13 +33,7 @@ export const questionSchema = z.object({
 export const surveySchema = z.object({
   id: z.string(),
   title: z.string(),
-  questions: z.array(questionSchema),
-  welcome_screen: z
-    .object({
-      title: z.string(),
-      description: z.string(),
-    })
-    .optional(),
+  elements: z.array(elementSchema),
   version: z.number().default(1),
 });
 
@@ -64,7 +58,7 @@ export const surveyResponse = z.object({
 export const responseSchema = z.object({
   questionId: z.string(),
   value: z.array(z.string()),
-  type: z.nativeEnum(QUESTION_TYPE),
+  type: z.nativeEnum(ELEMENT_TYPE),
 });
 
 export const responsesSchema = z.array(responseSchema);
@@ -76,6 +70,6 @@ export const createResponseInput = z.object({
 export type SurveyResponse = z.infer<typeof surveyResponse>;
 export type UpdateSurveySchema = z.infer<typeof updateSurveyInput>;
 export type CreateSurveySchema = z.infer<typeof createSurveyInput>;
-export type QuestionSchema = z.infer<typeof questionSchema>;
+export type ElementSchema = z.infer<typeof elementSchema>;
 export type ChoicesSchema = z.infer<typeof choicesSchema>;
 export type ResponseSchema = z.infer<typeof responseSchema>;

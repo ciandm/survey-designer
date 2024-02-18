@@ -6,18 +6,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {QUESTION_TYPE, QuestionType} from '@/lib/constants/question';
+import {ELEMENT_TYPE, ElementType} from '@/lib/constants/element';
 import {formatQuestionType} from '@/lib/utils';
-import {QuestionSchema} from '@/lib/validations/survey';
+import {ElementSchema} from '@/lib/validations/survey';
 
 const ALLOWED_TYPES = [
-  QUESTION_TYPE.short_text,
-  QUESTION_TYPE.long_text,
-  QUESTION_TYPE.multiple_choice,
+  ELEMENT_TYPE.short_text,
+  ELEMENT_TYPE.long_text,
+  ELEMENT_TYPE.multiple_choice,
 ];
 
-const questionTypeOptions = Object.values(QUESTION_TYPE)
-  // TODO: Remove this when we have more question types
+const questionTypeOptions = Object.values(ELEMENT_TYPE)
+  // TODO: Remove this when we have more element types
   // @ts-ignore
   .filter((val) => ALLOWED_TYPES.includes(val))
   .map((value) => ({
@@ -28,26 +28,26 @@ const questionTypeOptions = Object.values(QUESTION_TYPE)
 type Props = {
   id?: string;
   className?: string;
-  question: QuestionSchema;
-  onChange: (type: QuestionType) => void;
+  element: ElementSchema;
+  onChange: (type: ElementType) => void;
   onOpenChange?: (open: boolean) => void;
 };
 
 export const QuestionTypeSelect = ({
   id,
   className,
-  question,
+  element,
   onChange,
   onOpenChange,
 }: Props) => {
   return (
     <Select
-      value={question?.type ?? QUESTION_TYPE.short_text}
-      onValueChange={(value) => onChange(value as QuestionType)}
+      value={element?.type ?? ELEMENT_TYPE.short_text}
+      onValueChange={(value) => onChange(value as ElementType)}
       onOpenChange={onOpenChange}
     >
       <SelectTrigger id={id} className={className}>
-        <SelectValue placeholder="Select a question type" />
+        <SelectValue placeholder="Select a element type" />
       </SelectTrigger>
       <SelectContent id={id}>
         <SelectGroup>

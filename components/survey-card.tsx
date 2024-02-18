@@ -12,7 +12,7 @@ import {
 import {DeleteSurveyButton} from './delete-survey-button';
 
 export const SurveyCard = ({survey}: {survey: SurveySchema}) => {
-  const questionCount = survey.questions.length;
+  const questionCount = survey.elements.length;
   return (
     <Card>
       <CardHeader>

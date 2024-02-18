@@ -1,10 +1,10 @@
 import {createContext, useContext} from 'react';
 import {createStore, useStore} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
-import {QuestionSchema} from '@/lib/validations/survey';
+import {ElementSchema} from '@/lib/validations/survey';
 
 interface SurveyQuestionsProps {
-  questions: QuestionSchema[];
+  elements: ElementSchema[];
   currentQuestionId: string;
 }
 
@@ -20,7 +20,7 @@ export const createSurveyQuestionsStore = (
   initProps?: Partial<SurveyQuestionsProps>,
 ) => {
   const DEFAULT_PROPS: SurveyQuestionsProps = {
-    questions: [],
+    elements: [],
     currentQuestionId: '',
   };
   return createStore<SurveyQuestionsState>()(

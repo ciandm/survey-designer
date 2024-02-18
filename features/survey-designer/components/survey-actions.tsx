@@ -66,8 +66,8 @@ export const SurveyActions = () => {
             variant: 'default',
           });
           let query = '';
-          if (duplicatedSurvey.schema.questions.length > 0) {
-            query = `?question=${duplicatedSurvey.schema.questions[0].ref}`;
+          if (duplicatedSurvey.schema.elements.length > 0) {
+            query = `?element=${duplicatedSurvey.schema.elements[0].ref}`;
           }
           router.push(`/editor/${duplicatedSurvey.id}${query}`);
           router.refresh();

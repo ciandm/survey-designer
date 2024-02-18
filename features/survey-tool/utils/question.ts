@@ -1,69 +1,66 @@
-import {QuestionSchema} from '@/lib/validations/survey';
+import {ElementSchema} from '@/lib/validations/survey';
 
-export const getQuestionIndex = (
-  questions: QuestionSchema[],
-  questionId?: string,
+export const getElementIndex = (
+  elements: ElementSchema[],
+  elementId?: string,
 ) => {
-  return questions.findIndex((q) => q.id === questionId);
+  return elements.findIndex((q) => q.id === elementId);
 };
 
-export const getNextQuestion = (
-  questions: QuestionSchema[],
-  questionId?: string,
+export const getNextElement = (
+  elements: ElementSchema[],
+  elementId?: string,
 ) => {
-  const index = getQuestionIndex(questions, questionId);
-  return questions[index + 1];
+  const index = getElementIndex(elements, elementId);
+  return elements[index + 1];
 };
 
-export const getPreviousQuestion = (
-  questions: QuestionSchema[],
-  questionId?: string,
+export const getPreviousElement = (
+  elements: ElementSchema[],
+  elementId?: string,
 ) => {
-  const index = getQuestionIndex(questions, questionId);
-  return questions[index - 1];
+  const index = getElementIndex(elements, elementId);
+  return elements[index - 1];
 };
 
-export const getQuestionById = (
-  questions: QuestionSchema[],
-  questionId?: string,
+export const getElementById = (
+  elements: ElementSchema[],
+  elementId?: string,
 ) => {
-  return questions.find((q) => q.id === questionId);
+  return elements.find((q) => q.id === elementId);
 };
 
-export const getCanGoBack = (
-  questions: QuestionSchema[],
-  questionId?: string,
-) => {
-  const index = getQuestionIndex(questions, questionId);
+export const getCanGoBack = (elements: ElementSchema[], elementId?: string) => {
+  const index = getElementIndex(elements, elementId);
   return index > 0;
 };
 
 export const getCanGoForward = (
-  questions: QuestionSchema[],
-  questionId?: string,
+  elements: ElementSchema[],
+  elementId?: string,
 ) => {
-  const index = getQuestionIndex(questions, questionId);
-  return index < questions.length - 1;
+  const index = getElementIndex(elements, elementId);
+  return index < elements.length - 1;
 };
 
-export const getIsLastQuestion = (
-  questions: QuestionSchema[],
-  questionId?: string,
+export const getIsLastElement = (
+  elements: ElementSchema[],
+  elementId?: string,
 ) => {
-  const index = getQuestionIndex(questions, questionId);
-  return index === questions.length - 1;
+  const index = getElementIndex(elements, elementId);
+  return index === elements.length - 1;
 };
 
-export const getQuestionStates = (
-  questions: QuestionSchema[],
-  questionId: string,
+export const getElementStates = (
+  elements: ElementSchema[],
+  elementId: string,
 ) => {
-  const canGoBack = getCanGoBack(questions, questionId);
-  const canGoForward = getCanGoForward(questions, questionId);
-  const questionIndex = getQuestionIndex(questions, questionId);
-  const isLastQuestion = getIsLastQuestion(questions, questionId);
-  const nextQuestion = getNextQuestion(questions, questionId);
-  const prevQuestion = getPreviousQuestion(questions, questionId);
+  const canGoBack = getCanGoBack(elements, elementId);
+  const canGoForward = getCanGoForward(elements, elementId);
+  const questionIndex = getElementIndex(elements, elementId);
+  const isLastQuestion = getIsLastElement(elements, elementId);
+  const nextQuestion = getNextElement(elements, elementId);
+  const prevQuestion = getPreviousElement(elements, elementId);
 
   return {
     canGoBack,

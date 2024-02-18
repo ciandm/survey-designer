@@ -1,6 +1,5 @@
 import {useState} from 'react';
 import {ChevronDownIcon} from '@radix-ui/react-icons';
-import {Check} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {
   Command,
@@ -11,16 +10,16 @@ import {
 } from '@/components/ui/command';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Separator} from '@/components/ui/separator';
-import {QUESTION_OPTIONS, QuestionType} from '@/lib/constants/question';
+import {ELEMENT_OPTIONS, ElementType} from '@/lib/constants/element';
 import {cn} from '@/lib/utils';
-import {useQuestionCrud} from '../hooks/use-question-crud';
+import {useElementCrud} from '../hooks/use-element-crud';
 
 type AddQuestionProps = {
   className?: string;
 };
 
 export const AddQuestion = ({className}: AddQuestionProps) => {
-  const {handleCreateQuestion} = useQuestionCrud();
+  const {handleCreateElement} = useElementCrud();
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   return (
@@ -28,9 +27,9 @@ export const AddQuestion = ({className}: AddQuestionProps) => {
       <Button
         variant="outline"
         className={cn('rounded-r-none border-r-0', className)}
-        onClick={() => handleCreateQuestion()}
+        onClick={() => handleCreateElement()}
       >
-        Add question
+        Add element
       </Button>
       <Separator orientation="vertical" />
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
@@ -44,13 +43,13 @@ export const AddQuestion = ({className}: AddQuestionProps) => {
             <CommandInput placeholder="Type to search..." />
             <CommandEmpty>Nothing to display.</CommandEmpty>
             <CommandGroup>
-              {QUESTION_OPTIONS.map((option) => (
+              {ELEMENT_OPTIONS.map((option) => (
                 <CommandItem
                   className="p-3"
                   key={option.value}
                   value={option.value}
                   onSelect={(currentValue) => {
-                    handleCreateQuestion({type: currentValue as QuestionType});
+                    handleCreateElement({type: currentValue as ElementType});
                     setPopoverOpen(false);
                   }}
                 >

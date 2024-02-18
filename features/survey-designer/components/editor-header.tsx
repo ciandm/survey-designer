@@ -20,7 +20,7 @@ import {
   useIsSurveyChanged,
   useIsSurveyPublished,
   useSurveyDetails,
-  useSurveyQuestions,
+  useSurveyElements,
   useSurveySchema,
 } from '../store/survey-designer';
 import {SurveyActions} from './survey-actions';
@@ -88,7 +88,7 @@ const PublishButton = () => {
   const schema = useSurveySchema();
   const {mutateAsync: handleUpdateSurveySchema} = useUpdateSurveySchema();
   const isChanged = useIsSurveyChanged();
-  const questions = useSurveyQuestions();
+  const elements = useSurveyElements();
   const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
 
   const handleOnPublishClick = async () => {
@@ -97,7 +97,7 @@ const PublishButton = () => {
       if (isChanged) {
         await handleUpdateSurveySchema({
           ...schema,
-          questions,
+          elements,
         });
       }
       await handleManageSurveyPublication({
