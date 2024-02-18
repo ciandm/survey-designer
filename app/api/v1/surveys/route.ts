@@ -29,21 +29,21 @@ export async function POST(req: NextRequest, res: NextResponse) {
     }
 
     const {
-      data: {questions, title},
+      data: {elements, title},
     } = parsedSchema;
 
     const createdSurvey = await prisma.survey.create({
       data: {
         schema: {
           title: title ? `${title} (Copy)` : 'Untitled Survey (Copy)',
-          questions: questions.map((question) => ({
-            ...question,
+          elements: elements.map((element) => ({
+            ...element,
             id: uuidv4(),
             ref: uuidv4(),
             properties: {
-              ...question.properties,
+              ...element.properties,
               choices:
-                question.properties.choices?.map((choice) => ({
+                element.properties.choices?.map((choice) => ({
                   ...choice,
                   id: uuidv4(),
                 })) ?? [],
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     data: {
       schema: {
         title: parsedData.data.title,
-        questions: [],
+        elements: [],
       },
     },
   });

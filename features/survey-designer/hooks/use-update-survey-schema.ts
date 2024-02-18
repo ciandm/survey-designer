@@ -13,12 +13,12 @@ export const useUpdateSurveySchema = () => {
   const {version} = useSurveySchema();
   const {setSavedSchema, setSchema} = useSurveySchemaActions();
   return useMutation<SurveyResponse, Error, UpdateSurveySchema['survey']>({
-    mutationFn: async ({id, title, questions}) => {
+    mutationFn: async ({id, title, elements: questions}) => {
       const response = await updateSurveyInput({
         survey: {
           id,
           title,
-          questions,
+          elements: questions,
           version,
         },
       });

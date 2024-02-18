@@ -1,7 +1,7 @@
 import {Metadata, ResolvingMetadata} from 'next';
 import {notFound} from 'next/navigation';
 import {Survey} from '@/features/survey-tool/components/survey';
-import {ID_PREFIXES} from '@/lib/constants/question';
+import {ID_PREFIXES} from '@/lib/constants/element';
 import {ChoicesSchema} from '@/lib/validations/survey';
 import {SurveySchema, surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
@@ -52,21 +52,21 @@ export const dynamic = 'force-dynamic';
 function randomiseQuestionChoices(data: SurveySchema): SurveySchema {
   return {
     ...data,
-    questions: data.questions.map((question) => {
-      if (question.type === 'multiple_choice') {
+    elements: data.elements.map((element) => {
+      if (element.type === 'multiple_choice') {
         return {
-          ...question,
+          ...element,
           properties: {
-            ...question.properties,
+            ...element.properties,
             choices:
-              question.properties.sort_order === 'random'
-                ? randomiseChoices(question.properties.choices)
-                : question.properties.choices,
+              element.properties.sort_order === 'random'
+                ? randomiseChoices(element.properties.choices)
+                : element.properties.choices,
           },
         };
       }
 
-      return question;
+      return element;
     }),
   };
 }

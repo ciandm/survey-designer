@@ -1,14 +1,14 @@
 import {type ClassValue, clsx} from 'clsx';
 import {twMerge} from 'tailwind-merge';
 import {v4 as uuidv4} from 'uuid';
-import {QuestionType} from './constants/question';
-import {QuestionSchema} from './validations/survey';
+import {ElementType} from './constants/element';
+import {ElementSchema} from './validations/survey';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatQuestionType(type: QuestionType): string {
+export function formatQuestionType(type: ElementType): string {
   switch (type) {
     case 'short_text':
       return 'Short Text';
@@ -19,10 +19,10 @@ export function formatQuestionType(type: QuestionType): string {
   }
 }
 
-export function buildNewQuestionHelper(
-  type: QuestionType,
-  field: Partial<QuestionSchema>,
-): QuestionSchema {
+export function buildNewElementHelper(
+  type: ElementType,
+  field: Partial<ElementSchema>,
+): ElementSchema {
   switch (type) {
     case 'long_text':
     case 'short_text':
@@ -67,16 +67,16 @@ export function buildNewQuestionHelper(
   }
 }
 
-export function getNextQuestionToSelect(
-  questions: QuestionSchema[],
-  questionId: string,
+export function getNextElementToSelect(
+  elements: ElementSchema[],
+  elementId: string,
 ) {
-  const questionIndex = questions.findIndex(
-    (question) => question.id === questionId,
+  const questionIndex = elements.findIndex(
+    (element) => element.id === elementId,
   );
 
-  const prevQuestion = questions[questionIndex - 1];
-  const nextQuestion = questions[questionIndex + 1];
+  const prevQuestion = elements[questionIndex - 1];
+  const nextQuestion = elements[questionIndex + 1];
 
   return (prevQuestion || nextQuestion).ref;
 }

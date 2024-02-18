@@ -64,39 +64,39 @@ export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[240px]">Question</TableHead>
+            <TableHead className="w-[240px]">element</TableHead>
             <TableHead>Response</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {survey.questions.map((question, index) => {
+          {survey.elements.map((element, index) => {
             const response = data.find(
-              (response) => response.questionId === question.id,
+              (response) => response.questionId === element.id,
             );
             if (!response) return null;
             return (
-              <TableRow key={question.id}>
+              <TableRow key={element.id}>
                 <TableCell
                   className=" w-[240px] max-w-[240px] overflow-hidden text-ellipsis align-top text-sm font-semibold"
-                  title={question.text}
+                  title={element.text}
                 >
                   <span className="truncate">
                     {index + 1}.{' '}
-                    {!!question.text ? question.text : 'Untitled question'}
+                    {!!element.text ? element.text : 'Untitled element'}
                   </span>
                   <Badge variant="outline" className="mt-2">
-                    {question.type}
+                    {element.type}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  {(question.type === 'short_text' ||
-                    question.type === 'long_text') && <>{response.value[0]}</>}
-                  {question.type === 'multiple_choice' && (
+                  {(element.type === 'short_text' ||
+                    element.type === 'long_text') && <>{response.value[0]}</>}
+                  {element.type === 'multiple_choice' && (
                     <div className="flex flex-col gap-1">
                       {response.value.map((value, index) => {
                         const rv = getResponseValueByResponseId(
                           value,
-                          question.properties.choices,
+                          element.properties.choices,
                         );
                         return (
                           <div key={index} className="flex items-center">

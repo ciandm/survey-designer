@@ -22,14 +22,15 @@ import {QuestionCard} from '@/components/question-card';
 import {Sortable} from '@/components/sortable';
 import {Button} from '@/components/ui/button';
 import {cn} from '@/lib/utils';
-import {useActiveQuestion} from '../hooks/use-active-question';
-import {useQuestionCrud} from '../hooks/use-question-crud';
+import {useActiveElement} from '../hooks/use-active-element';
+import {useElementCrud} from '../hooks/use-element-crud';
+import {setActiveElementRef} from '../store/active-element-ref';
 import {useDesignerMode} from '../store/designer-mode';
 import {
-  changeQuestionType,
-  setQuestions,
+  changeElementType,
+  setElements,
   updateTitle,
-  useSurveyQuestions,
+  useSurveyElements,
   useSurveySchema,
 } from '../store/survey-designer';
 import {AddQuestion} from './add-question';
@@ -39,10 +40,10 @@ import {SurveyPreviewer} from './survey-previewer';
 
 export const SurveyDesigner = () => {
   const designerMode = useDesignerMode();
-  const questions = useSurveyQuestions();
+  const elements = useSurveyElements();
   const {title} = useSurveySchema();
-  const {handleDeleteQuestion, handleDuplicateQuestion} = useQuestionCrud();
-  const {activeQuestion, setActiveQuestion} = useActiveQuestion();
+  const {handleRemoveElement, handleDuplicateElement} = useElementCrud();
+  const {activeElement} = useActiveElement();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -56,11 +57,11 @@ export const SurveyDesigner = () => {
     const {active, over} = event;
 
     if (active.id !== over?.id) {
-      setQuestions((questions) => {
-        const oldIndex = questions.findIndex((q) => q.id === active.id);
-        const newIndex = questions.findIndex((q) => q.id === over?.id);
+      setElements((elements) => {
+        const oldIndex = elements.findIndex((q) => q.id === active.id);
+        const newIndex = elements.findIndex((q) => q.id === over?.id);
 
-        return arrayMove(questions, oldIndex, newIndex);
+        return arrayMove(elements, oldIndex, newIndex);
       });
     }
   }
@@ -71,14 +72,17 @@ export const SurveyDesigner = () => {
 
   return (
     <>
-      <section className="flex flex-1 flex-col items-start overflow-auto bg-accent pb-6 pl-2 pr-4">
+      <section
+        className="flex flex-1 flex-col items-start overflow-auto bg-accent pb-6 pl-2 pr-4"
+        onClick={() => setActiveElementRef(null)}
+      >
         <ContentEditable
           placeholder="Untitled survey"
           onBlur={(e) => updateTitle(e.target.textContent ?? '')}
           value={title ?? ''}
           className="mb-8 mt-4 text-xl font-medium"
         />
-        {questions.length === 0 ? (
+        {elements.length === 0 ? (
           <div className="mx-auto flex flex-col items-center">
             <QuestionMarkCircledIcon className="mx-auto mb-2 h-10 w-10" />
             <h3 className="mt-2 font-semibold text-foreground">
@@ -99,17 +103,17 @@ export const SurveyDesigner = () => {
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={questions.map((question) => question.id)}
+                items={elements.map((element) => element.id)}
                 strategy={verticalListSortingStrategy}
               >
-                {questions.map((question, index) => {
-                  const isActive = activeQuestion?.id === question.id;
+                {elements.map((element, index) => {
+                  const isActive = activeElement?.id === element.id;
                   return (
                     <Sortable
-                      key={question.id}
-                      id={question.id}
+                      key={element.id}
+                      id={element.id}
                       className="flex w-full flex-1 items-center gap-2"
-                      isDisabled={questions.length === 1}
+                      isDisabled={elements.length === 1}
                       renderSortHandle={({
                         attributes,
                         listeners,
@@ -124,7 +128,7 @@ export const SurveyDesigner = () => {
                             'order-1 flex items-center justify-center',
                             isSorting ? 'cursor-grabbing' : 'cursor-grab',
                             {
-                              'cursor-not-allowed': questions.length === 1,
+                              'cursor-not-allowed': elements.length === 1,
                             },
                           )}
                         >
@@ -133,11 +137,11 @@ export const SurveyDesigner = () => {
                       )}
                     >
                       <QuestionCard
-                        question={question}
-                        id={question.id}
+                        element={element}
+                        id={element.id}
                         number={index + 1}
                         isActive={isActive}
-                        onClick={() => setActiveQuestion(question.ref)}
+                        onClick={() => setActiveElementRef(element.ref)}
                         ref={(el) =>
                           (itemsRef.current[index] = el as HTMLDivElement)
                         }
@@ -147,15 +151,15 @@ export const SurveyDesigner = () => {
                             <div className="grid grid-cols-[200px_1fr] justify-items-end">
                               <QuestionTypeSelect
                                 className="h-9 border-0 bg-transparent text-sm font-medium text-muted-foreground"
-                                question={question}
+                                element={element}
                                 onChange={(type) =>
-                                  changeQuestionType({
-                                    id: question.id,
+                                  changeElementType({
+                                    id: element.id,
                                     type,
                                   })
                                 }
                                 onOpenChange={(open) =>
-                                  open && setActiveQuestion(question.ref)
+                                  open && setActiveElementRef(element.ref)
                                 }
                               />
                               <div className="flex items-center gap-2">
@@ -165,7 +169,7 @@ export const SurveyDesigner = () => {
                                   className="text-muted-foreground"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDuplicateQuestion(question.id);
+                                    handleDuplicateElement(element.id);
                                   }}
                                 >
                                   <CopyIcon className="mr-2 h-4 w-4" />
@@ -177,7 +181,7 @@ export const SurveyDesigner = () => {
                                   size="sm"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDeleteQuestion(question.id);
+                                    handleRemoveElement(element.id);
                                   }}
                                 >
                                   <Trash2Icon className="mr-2 h-4 w-4" />
@@ -191,7 +195,7 @@ export const SurveyDesigner = () => {
                     </Sortable>
                   );
                 })}
-                {questions.length > 0 && (
+                {elements.length > 0 && (
                   <div className="flex items-center gap-2 pl-12">
                     <div className="h-[1px] flex-1 border-t" />
                     <AddQuestion />

@@ -40,19 +40,20 @@ import {
 import {Separator} from '@/components/ui/separator';
 import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
-import {useActiveQuestion} from '../hooks/use-active-question';
+import {useActiveElement} from '../hooks/use-active-element';
 import {
-  changeQuestionType,
+  changeElementType,
   deleteQuestionChoice,
   deleteQuestionChoices,
   insertQuestionChoice,
   moveQuestionChoices,
-  updateQuestion,
+  updateElement,
   updateQuestionChoice,
+  useSurveyElements,
 } from '../store/survey-designer';
 import {QuestionTypeSelect} from './question-type-select';
 
-type Panel = 'question' | 'choices' | 'logic' | 'validation';
+type Panel = 'element' | 'choices' | 'logic' | 'validation';
 
 const SORT_ORDER_OPTIONS = [
   {label: 'None', value: 'none'},
@@ -62,16 +63,17 @@ const SORT_ORDER_OPTIONS = [
 ] as const;
 
 export const ConfigPanel = () => {
-  const {activeQuestion} = useActiveQuestion();
+  const {activeElement} = useActiveElement();
 
   return (
-    <ConfigPanelInner key={`${activeQuestion?.id}-${activeQuestion?.type}`} />
+    <ConfigPanelInner key={`${activeElement?.id}-${activeElement?.type}`} />
   );
 };
 
 const ConfigPanelInner = () => {
-  const {activeQuestion} = useActiveQuestion();
-  const [openPanel, setOpenPanel] = useState<Panel>('question');
+  const {activeElement} = useActiveElement();
+  const elements = useSurveyElements();
+  const [openPanel, setOpenPanel] = useState<Panel>('element');
 
   const {isOver, setNodeRef} = useDroppable({
     id: 'droppable',
@@ -83,41 +85,41 @@ const ConfigPanelInner = () => {
     }),
   );
 
-  const choices = activeQuestion?.properties.choices ?? [];
+  const choices = activeElement?.properties.choices ?? [];
 
   function handleDragEnd(event: DragEndEvent) {
     const {active, over} = event;
 
-    if (active.id !== over?.id && activeQuestion) {
-      const choices = activeQuestion?.properties.choices ?? [];
+    if (active.id !== over?.id && activeElement) {
+      const choices = activeElement?.properties.choices ?? [];
       const oldIndex = choices.findIndex((choice) => choice.id === active.id);
       const newIndex = choices.findIndex((choice) => choice.id === over?.id);
 
       const newChoices = arrayMove(choices, oldIndex, newIndex);
-      moveQuestionChoices({questionId: activeQuestion.id, newChoices});
+      moveQuestionChoices({elementId: activeElement.id, newChoices});
     }
   }
 
   return (
     <aside className="hidden max-w-sm flex-1 flex-col overflow-auto border-l bg-white lg:flex">
-      {activeQuestion ? (
+      {activeElement ? (
         <>
           <Panel
-            title="Question"
-            isOpen={openPanel === 'question'}
-            onClick={() => setOpenPanel('question')}
+            title="element"
+            isOpen={openPanel === 'element'}
+            onClick={() => setOpenPanel('element')}
           >
             <div>
-              <Label htmlFor="question-type">Type</Label>
+              <Label htmlFor="element-type">Type</Label>
               <QuestionTypeSelect
-                question={activeQuestion}
+                element={activeElement}
                 onChange={(type) =>
-                  changeQuestionType({
-                    id: activeQuestion.id,
+                  changeElementType({
+                    id: activeElement.id,
                     type,
                   })
                 }
-                id="question-type"
+                id="element-type"
               />
             </div>
             <div>
@@ -125,10 +127,10 @@ const ConfigPanelInner = () => {
               <Textarea
                 name="title"
                 id="title"
-                value={activeQuestion.text}
+                value={activeElement.text}
                 onChange={(e) =>
-                  updateQuestion({
-                    id: activeQuestion.id,
+                  updateElement({
+                    id: activeElement.id,
                     text: e.target.value,
                   })
                 }
@@ -139,26 +141,26 @@ const ConfigPanelInner = () => {
               <Textarea
                 name="description"
                 id="description"
-                value={activeQuestion.description}
+                value={activeElement.description}
                 onChange={(e) =>
-                  updateQuestion({
-                    id: activeQuestion.id,
+                  updateElement({
+                    id: activeElement.id,
                     description: e.target.value,
                   })
                 }
               />
             </div>
-            {(activeQuestion.type === 'short_text' ||
-              activeQuestion.type === 'long_text') && (
+            {(activeElement.type === 'short_text' ||
+              activeElement.type === 'long_text') && (
               <div>
                 <Label htmlFor="placeholder">Placeholder (optional)</Label>
                 <Textarea
                   name="placeholder"
                   id="placeholder"
-                  value={activeQuestion.properties.placeholder}
+                  value={activeElement.properties.placeholder}
                   onChange={(e) =>
-                    updateQuestion({
-                      id: activeQuestion.id,
+                    updateElement({
+                      id: activeElement.id,
                       properties: {
                         placeholder: e.target.value,
                       },
@@ -172,18 +174,18 @@ const ConfigPanelInner = () => {
                 <Checkbox
                   className="mr-2"
                   onCheckedChange={(checked) => {
-                    updateQuestion({
-                      id: activeQuestion.id,
+                    updateElement({
+                      id: activeElement.id,
                       validations: {
                         required: !!checked,
                       },
                     });
                   }}
-                  checked={activeQuestion.validations.required}
+                  checked={activeElement.validations.required}
                 />
-                <span>Make this question required</span>
+                <span>Make this element required</span>
               </label>
-              {activeQuestion.validations.required && (
+              {activeElement.validations.required && (
                 <>
                   <div className="mt-2 flex items-center justify-between">
                     <Label htmlFor="required">Required error message</Label>
@@ -195,10 +197,10 @@ const ConfigPanelInner = () => {
                       </PopoverTrigger>
                       <PopoverContent side="left">
                         <p className="text-xs leading-snug">
-                          If the question is required, this message will be
-                          shown if the user tries to submit the form without
-                          answering this question. Defaults to &quot;This field
-                          is required&quot;.
+                          If the element is required, this message will be shown
+                          if the user tries to submit the form without answering
+                          this element. Defaults to &quot;This field is
+                          required&quot;.
                         </p>
                       </PopoverContent>
                     </Popover>
@@ -206,10 +208,10 @@ const ConfigPanelInner = () => {
                   <Textarea
                     name="required"
                     id="required"
-                    value={activeQuestion.properties.required_message}
+                    value={activeElement.properties.required_message}
                     onChange={(e) =>
-                      updateQuestion({
-                        id: activeQuestion.id,
+                      updateElement({
+                        id: activeElement.id,
                         properties: {
                           required_message: e.target.value,
                         },
@@ -220,7 +222,7 @@ const ConfigPanelInner = () => {
               )}
             </div>
           </Panel>
-          {activeQuestion.type === 'multiple_choice' && (
+          {activeElement.type === 'multiple_choice' && (
             <Panel
               title="Choices"
               isOpen={openPanel === 'choices'}
@@ -233,7 +235,7 @@ const ConfigPanelInner = () => {
                     size="icon"
                     variant="outline"
                     onClick={() =>
-                      deleteQuestionChoices({questionId: activeQuestion.id})
+                      deleteQuestionChoices({elementId: activeElement.id})
                     }
                   >
                     <EraserIcon className="h-5 w-5" />
@@ -243,7 +245,7 @@ const ConfigPanelInner = () => {
                     variant="outline"
                     onClick={() =>
                       insertQuestionChoice({
-                        questionId: activeQuestion.id,
+                        elementId: activeElement.id,
                       })
                     }
                   >
@@ -286,7 +288,7 @@ const ConfigPanelInner = () => {
                               value={choice.value}
                               onChange={(e) =>
                                 updateQuestionChoice({
-                                  questionId: activeQuestion.id,
+                                  elementId: activeElement.id,
                                   newChoice: {
                                     id: choice.id,
                                     value: e.target.value,
@@ -299,12 +301,12 @@ const ConfigPanelInner = () => {
                               variant="outline"
                               onClick={() =>
                                 deleteQuestionChoice({
-                                  questionId: activeQuestion.id,
+                                  elementId: activeElement.id,
                                   choiceId: choice.id,
                                 })
                               }
                               disabled={
-                                activeQuestion.properties.choices?.length === 1
+                                activeElement.properties.choices?.length === 1
                               }
                             >
                               <Trash2 className="h-4 w-4" />
@@ -325,10 +327,10 @@ const ConfigPanelInner = () => {
                   Sort choices
                 </Label>
                 <Select
-                  value={activeQuestion.properties.sort_order ?? 'none'}
+                  value={activeElement.properties.sort_order ?? 'none'}
                   onValueChange={(value) => {
-                    updateQuestion({
-                      id: activeQuestion.id,
+                    updateElement({
+                      id: activeElement.id,
                       properties: {
                         sort_order:
                           value === 'none' ? undefined : (value as any),
@@ -379,11 +381,16 @@ const ConfigPanelInner = () => {
             Validation content
           </Panel>
         </>
-      ) : (
+      ) : elements.length === 0 ? (
         <div className="flex justify-center p-4">
           <p className="text-center text-muted-foreground">
-            Create a question to get started
+            Create a element to get started
           </p>
+        </div>
+      ) : (
+        <div className="p-4">
+          <Label htmlFor="element-type">Survey title</Label>
+          <Textarea id="element-type" />
         </div>
       )}
     </aside>

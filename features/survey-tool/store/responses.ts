@@ -2,10 +2,10 @@ import {createContext, useContext} from 'react';
 import {createStore, useStore} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 import {immer} from 'zustand/middleware/immer';
-import {QuestionSchema} from '@/lib/validations/survey';
+import {ElementSchema} from '@/lib/validations/survey';
 
 interface ResponsesProps {
-  questions: QuestionSchema[];
+  questions: ElementSchema[];
   responses: {
     questionId: string;
     value: string[];
