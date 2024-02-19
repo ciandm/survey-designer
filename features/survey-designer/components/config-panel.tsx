@@ -1,9 +1,6 @@
 'use client';
 
-import {useState} from 'react';
 import {
-  closestCenter,
-  DndContext,
   DragEndEvent,
   KeyboardSensor,
   PointerSensor,
@@ -11,23 +8,13 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-} from '@dnd-kit/sortable';
-import {
-  DragHandleDots2Icon,
-  EraserIcon,
-  PlusCircledIcon,
-} from '@radix-ui/react-icons';
-import {HelpCircleIcon, Trash2} from 'lucide-react';
-import {Sortable} from '@/components/sortable';
+import {arrayMove, sortableKeyboardCoordinates} from '@dnd-kit/sortable';
+import {EraserIcon, PlusCircledIcon} from '@radix-ui/react-icons';
+import {HelpCircleIcon} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -38,23 +25,27 @@ import {
 } from '@/components/ui/select';
 import {Separator} from '@/components/ui/separator';
 import {Textarea} from '@/components/ui/textarea';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import {useActiveElement} from '../hooks/use-active-element';
 import {
   changeElementType,
-  deleteQuestionChoice,
   deleteQuestionChoices,
-  insertQuestionChoice,
   moveQuestionChoices,
   surveyElementsSelector,
   surveySchemaSelector,
   surveyScreenSelector,
   updateDescription,
   updateElement,
-  updateQuestionChoice,
   updateScreen,
   updateTitle,
   useSurveyDesignerStore,
 } from '../store/survey-designer';
+import {QuestionChoices} from './question-choices';
 import {QuestionTypeSelect} from './question-type-select';
 
 const SORT_ORDER_OPTIONS = [
@@ -195,21 +186,27 @@ const ConfigPanelInner = () => {
                     <Label htmlFor="required-error-message">
                       Required error message (optional)
                     </Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button size="icon" variant="ghost" className="h-6 w-6">
-                          <HelpCircleIcon className="h-4 w-4" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent side="left">
-                        <p className="text-xs leading-snug">
-                          If the question is required, this message will be
-                          shown if the user tries to submit the form without
-                          answering this question. Defaults to &quot;This field
-                          is required&quot;.
-                        </p>
-                      </PopoverContent>
-                    </Popover>
+                    <TooltipProvider delayDuration={100}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-6 w-6"
+                          >
+                            <HelpCircleIcon className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="left" className="max-w-xs">
+                          <p className="text-xs leading-snug">
+                            If the question is required, this message will be
+                            shown if the user tries to submit the form without
+                            answering this question. Defaults to &quot;This
+                            field is required&quot;.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                   <Textarea
                     name="required"
@@ -233,96 +230,75 @@ const ConfigPanelInner = () => {
               <Separator className="my-6" />
               <div className="space-y-6">
                 <div>
-                  <div className="mb-2 grid grid-cols-[1fr_40px_40px] items-center justify-between gap-2">
-                    <p className="text-sm font-medium">Choices</p>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() =>
-                        deleteQuestionChoices({elementId: activeElement.id})
-                      }
-                    >
-                      <EraserIcon className="h-5 w-5" />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() =>
-                        insertQuestionChoice({
-                          elementId: activeElement.id,
-                        })
-                      }
-                    >
-                      <PlusCircledIcon className="h-5 w-5" />
-                    </Button>
-                  </div>
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
+                  <QuestionChoices
+                    elementId={activeElement.id}
+                    choices={choices}
                   >
-                    <SortableContext items={choices.map((choice) => choice.id)}>
-                      <div className="flex flex-col gap-1">
-                        {(choices ?? []).map((choice) => (
-                          <Sortable
-                            className="grid grid-cols-[40px_1fr_40px] gap-2"
-                            key={choice.id}
-                            id={choice.id}
-                            isDisabled={choices.length === 1}
-                            renderSortHandle={({
-                              attributes,
-                              listeners,
-                              isSorting,
-                            }) => (
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                disabled={choices.length === 1}
-                                style={{
-                                  cursor: isSorting ? 'grabbing' : 'grab',
-                                }}
-                                {...listeners}
-                                {...attributes}
+                    {({handleInsertChoice, isAddChoiceDisabled}) => (
+                      <>
+                        <div className="mb-2 grid grid-cols-[1fr_40px_40px] items-center justify-between gap-2">
+                          <p className="text-sm font-medium">Choices</p>
+                          <TooltipProvider delayDuration={100}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  onClick={() =>
+                                    deleteQuestionChoices({
+                                      elementId: activeElement.id,
+                                    })
+                                  }
+                                  disabled={choices.length === 1}
+                                >
+                                  <EraserIcon className="h-5 w-5" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent
+                                side="bottom"
+                                className="max-w-xs"
                               >
-                                <DragHandleDots2Icon className="h-4 w-4" />
-                              </Button>
-                            )}
-                          >
-                            <>
-                              <Input
-                                type="text"
-                                value={choice.value}
-                                onChange={(e) =>
-                                  updateQuestionChoice({
-                                    elementId: activeElement.id,
-                                    newChoice: {
-                                      id: choice.id,
-                                      value: e.target.value,
-                                    },
-                                  })
-                                }
-                              />
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                onClick={() =>
-                                  deleteQuestionChoice({
-                                    elementId: activeElement.id,
-                                    choiceId: choice.id,
-                                  })
-                                }
-                                disabled={
-                                  activeElement.properties.choices?.length === 1
-                                }
+                                <p className="text-xs leading-snug">
+                                  Delete choices
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <TooltipProvider delayDuration={100}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  onClick={handleInsertChoice}
+                                  disabled={isAddChoiceDisabled}
+                                >
+                                  <PlusCircledIcon className="h-5 w-5" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent
+                                side="bottom"
+                                className="max-w-xs"
                               >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </>
-                          </Sortable>
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
+                                <p className="text-xs leading-snug">
+                                  Add choice
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <QuestionChoices.List>
+                          {choices.map((choice, index) => (
+                            <QuestionChoices.Choice
+                              index={index}
+                              choice={choice}
+                              key={choice.id}
+                            />
+                          ))}
+                        </QuestionChoices.List>
+                      </>
+                    )}
+                  </QuestionChoices>
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="sort-choices" className="text-sm font-medium">
