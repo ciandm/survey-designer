@@ -16,11 +16,13 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {QuestionMarkCircledIcon} from '@radix-ui/react-icons';
+import {PlusIcon, QuestionMarkCircledIcon} from '@radix-ui/react-icons';
 import {CopyIcon, GripHorizontal, Trash2Icon} from 'lucide-react';
 import {QuestionCard} from '@/components/question-card';
 import {Sortable} from '@/components/sortable';
 import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
 import {useActiveElement} from '../hooks/use-active-element';
 import {useElementCrud} from '../hooks/use-element-crud';
@@ -37,6 +39,7 @@ import {
 } from '../store/survey-designer';
 import {AddQuestion} from './add-question';
 import {ContentEditable} from './content-editable';
+import {QuestionChoices} from './question-choices';
 import {QuestionTypeSelect} from './question-type-select';
 import {SurveyPreviewer} from './survey-previewer';
 
@@ -206,7 +209,59 @@ export const SurveyDesigner = () => {
                             </div>
                           </footer>
                         }
-                      />
+                      >
+                        <div className="mt-4 max-w-sm">
+                          {element.type === 'multiple_choice' && (
+                            <>
+                              <QuestionChoices
+                                elementId={element.id}
+                                choices={element.properties.choices}
+                              >
+                                {({
+                                  handleInsertChoice,
+                                  isAddChoiceDisabled,
+                                }) => (
+                                  <>
+                                    <QuestionChoices.List>
+                                      {element.properties.choices?.map(
+                                        (choice, index) => (
+                                          <QuestionChoices.Choice
+                                            index={index}
+                                            choice={choice}
+                                            key={choice.id}
+                                          />
+                                        ),
+                                      )}
+                                    </QuestionChoices.List>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="m-2 ml-12"
+                                      onClick={handleInsertChoice}
+                                      disabled={isAddChoiceDisabled}
+                                    >
+                                      <PlusIcon className="mr-2 h-4 w-4" />
+                                      Add choice
+                                    </Button>
+                                  </>
+                                )}
+                              </QuestionChoices>
+                            </>
+                          )}
+                          {element.type === 'short_text' && (
+                            <Input
+                              readOnly
+                              placeholder={element.properties.placeholder}
+                            />
+                          )}
+                          {element.type === 'long_text' && (
+                            <Textarea
+                              readOnly
+                              placeholder={element.properties.placeholder}
+                            />
+                          )}
+                        </div>
+                      </QuestionCard>
                     </Sortable>
                   );
                 })}
