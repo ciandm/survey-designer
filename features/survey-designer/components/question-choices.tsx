@@ -23,7 +23,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import {DragHandleDots2Icon} from '@radix-ui/react-icons';
-import {HelpCircleIcon, Trash2} from 'lucide-react';
+import {Trash2} from 'lucide-react';
 import {Sortable} from '@/components/sortable';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
