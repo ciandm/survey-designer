@@ -13,7 +13,11 @@ import {ErrorMessage} from '@hookform/error-message';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Loader2} from 'lucide-react';
 import {z} from 'zod';
-import {QuestionCard} from '@/components/question-card';
+import {
+  ElementCard,
+  ElementCardContent,
+  ElementCardTitle,
+} from '@/components/element-card';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Input} from '@/components/ui/input';
@@ -131,44 +135,42 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
     <FormProvider {...methods}>
       <div className="flex flex-1 bg-muted py-16">
         <div className="container max-w-2xl">
-          <form className="flex flex-1 flex-col gap-12" onSubmit={onSubmit}>
+          <form className="flex flex-1 flex-col gap-6" onSubmit={onSubmit}>
             {fields.map((field, index) => {
               const element = elements[index];
 
               return (
-                <QuestionCard
-                  key={element.id}
-                  element={element}
-                  number={index + 1}
-                  id={field.questionId}
-                  footer={
-                    <ErrorMessage
-                      name={`fields.${index}.value`}
-                      render={({message}) => (
-                        <footer className="bg-red-50 px-4 py-2">
-                          <p className="text-sm font-medium leading-5 text-red-500">
-                            {message}
-                          </p>
-                        </footer>
+                <ElementCard key={element.id}>
+                  <ElementCardContent number={index + 1}>
+                    <ElementCardTitle id={element.id} element={element} />
+                    <div className="mt-4">
+                      {element.type === 'multiple_choice' && (
+                        <MultipleChoiceField
+                          index={index}
+                          choices={element.properties.choices}
+                        />
                       )}
-                    />
-                  }
-                >
-                  {element.type === 'multiple_choice' && (
-                    <MultipleChoiceField
-                      index={index}
-                      choices={element.properties.choices}
-                    />
-                  )}
-                  {(element.type === 'short_text' ||
-                    element.type === 'long_text') && (
-                    <TextQuestionField
-                      type={element.type}
-                      index={index}
-                      id={field.questionId}
-                    />
-                  )}
-                </QuestionCard>
+                      {(element.type === 'short_text' ||
+                        element.type === 'long_text') && (
+                        <TextQuestionField
+                          type={element.type}
+                          index={index}
+                          id={field.questionId}
+                        />
+                      )}
+                    </div>
+                  </ElementCardContent>
+                  <ErrorMessage
+                    name={`fields.${index}.value`}
+                    render={({message}) => (
+                      <footer className="bg-red-50 px-4 py-2">
+                        <p className="text-sm font-medium leading-5 text-red-500">
+                          {message}
+                        </p>
+                      </footer>
+                    )}
+                  />
+                </ElementCard>
               );
             })}
             <div className="ml-auto mt-8 flex justify-between">
