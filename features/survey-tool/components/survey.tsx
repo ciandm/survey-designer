@@ -13,7 +13,7 @@ import {ErrorMessage} from '@hookform/error-message';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Loader2} from 'lucide-react';
 import {z} from 'zod';
-import {QuestionCard} from '@/components/question-card';
+import {QuestionCard} from '@/components/element-card';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {Input} from '@/components/ui/input';

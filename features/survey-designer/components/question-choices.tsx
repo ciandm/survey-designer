@@ -105,7 +105,7 @@ type ChoicesListProps = {
   children: React.ReactNode;
 };
 
-const ChoicesList = ({children}: ChoicesListProps) => {
+export const QuestionChoicesList = ({children}: ChoicesListProps) => {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -144,14 +144,12 @@ const ChoicesList = ({children}: ChoicesListProps) => {
   );
 };
 
-QuestionChoices.List = ChoicesList;
-
 type ChoiceFieldProps = {
   choice: ChoicesSchema[number];
   index: number;
 };
 
-const ChoiceField = ({choice, index}: ChoiceFieldProps) => {
+export const QuestionChoicesField = ({choice, index}: ChoiceFieldProps) => {
   const id = useId();
   const {setFocusIndex, focusInputs, choices, elementId} =
     useQuestionChoicesContext();
@@ -227,8 +225,6 @@ const ChoiceField = ({choice, index}: ChoiceFieldProps) => {
     </Sortable>
   );
 };
-
-QuestionChoices.Choice = ChoiceField;
 
 type Context = {
   focusIndex: number | null;

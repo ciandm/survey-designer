@@ -45,7 +45,11 @@ import {
   updateTitle,
   useSurveyDesignerStore,
 } from '../store/survey-designer';
-import {QuestionChoices} from './question-choices';
+import {
+  QuestionChoices,
+  QuestionChoicesField,
+  QuestionChoicesList,
+} from './question-choices';
 import {QuestionTypeSelect} from './question-type-select';
 
 const SORT_ORDER_OPTIONS = [
@@ -287,15 +291,15 @@ const ConfigPanelInner = () => {
                             </Tooltip>
                           </TooltipProvider>
                         </div>
-                        <QuestionChoices.List>
+                        <QuestionChoicesList>
                           {choices.map((choice, index) => (
-                            <QuestionChoices.Choice
+                            <QuestionChoicesField
                               index={index}
                               choice={choice}
                               key={choice.id}
                             />
                           ))}
-                        </QuestionChoices.List>
+                        </QuestionChoicesList>
                       </>
                     )}
                   </QuestionChoices>
