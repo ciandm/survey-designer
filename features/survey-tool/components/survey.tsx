@@ -1,31 +1,31 @@
 'use client';
 
 import {useState} from 'react';
-import {
-  Controller,
-  FormProvider,
-  useFieldArray,
-  useForm,
-  useFormContext,
-  UseFormReturn,
-} from 'react-hook-form';
+import {UseControllerReturn, useFieldArray, useForm} from 'react-hook-form';
 import {ErrorMessage} from '@hookform/error-message';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Loader2} from 'lucide-react';
 import {z} from 'zod';
-import {
-  ElementCard,
-  ElementCardContent,
-  ElementCardTitle,
-} from '@/components/element-card';
+import {ElementCard, ElementCardContent} from '@/components/element-card';
 import {Button} from '@/components/ui/button';
-import {Checkbox} from '@/components/ui/checkbox';
-import {Input} from '@/components/ui/input';
-import {Textarea} from '@/components/ui/textarea';
+import {
+  Form,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
 import {useToast} from '@/components/ui/use-toast';
 import {useSubmitSurvey} from '@/features/survey-designer/hooks/use-submit-survey';
 import {ELEMENT_TYPE, ElementType} from '@/lib/constants/element';
+import {cn} from '@/lib/utils';
 import {ElementSchema, SurveySchema} from '@/lib/validations/survey';
+import {
+  LongTextField,
+  MultipleChoiceField,
+  ShortTextField,
+  SingleChoiceField,
+} from './type-field';
 
 export interface QuestionFormState {
   fields: {questionId: string; value: string[]; type: ElementType}[];
@@ -132,45 +132,61 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
   }
 
   return (
-    <FormProvider {...methods}>
+    <Form {...methods}>
       <div className="flex flex-1 bg-muted py-16">
         <div className="container max-w-2xl">
           <form className="flex flex-1 flex-col gap-6" onSubmit={onSubmit}>
-            {fields.map((field, index) => {
+            {fields.map((_, index) => {
               const element = elements[index];
 
               return (
-                <ElementCard key={element.id}>
-                  <ElementCardContent number={index + 1}>
-                    <ElementCardTitle id={element.id} element={element} />
-                    <div className="mt-4">
-                      {element.type === 'multiple_choice' && (
-                        <MultipleChoiceField
-                          index={index}
-                          choices={element.properties.choices}
+                <FormField
+                  key={element.id}
+                  control={control}
+                  name={`fields.${index}.value`}
+                  render={(controllerProps) => (
+                    <FormItem>
+                      <ElementCard key={element.id}>
+                        <ElementCardContent number={index + 1}>
+                          <div className="flex flex-col gap-1">
+                            <FormLabel
+                              className={cn(
+                                'break-normal text-base font-medium leading-6',
+                                {
+                                  [`after:content-['_*']`]:
+                                    element.validations.required &&
+                                    element.text,
+                                },
+                              )}
+                            >
+                              {!!element.text
+                                ? element.text
+                                : 'Untitled element'}
+                            </FormLabel>
+                            {!!element.description && (
+                              <FormDescription>
+                                {element.description}
+                              </FormDescription>
+                            )}
+                          </div>
+                          <div className="mt-4">
+                            {renderTypeField({element, controllerProps, index})}
+                          </div>
+                        </ElementCardContent>
+                        <ErrorMessage
+                          name={`fields.${index}.value`}
+                          render={({message}) => (
+                            <footer className="bg-red-50 px-4 py-2">
+                              <p className="text-sm font-medium leading-5 text-red-500">
+                                {message}
+                              </p>
+                            </footer>
+                          )}
                         />
-                      )}
-                      {(element.type === 'short_text' ||
-                        element.type === 'long_text') && (
-                        <TextQuestionField
-                          type={element.type}
-                          index={index}
-                          id={field.questionId}
-                        />
-                      )}
-                    </div>
-                  </ElementCardContent>
-                  <ErrorMessage
-                    name={`fields.${index}.value`}
-                    render={({message}) => (
-                      <footer className="bg-red-50 px-4 py-2">
-                        <p className="text-sm font-medium leading-5 text-red-500">
-                          {message}
-                        </p>
-                      </footer>
-                    )}
-                  />
-                </ElementCard>
+                      </ElementCard>
+                    </FormItem>
+                  )}
+                />
               );
             })}
             <div className="ml-auto mt-8 flex justify-between">
@@ -184,97 +200,34 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
           </form>
         </div>
       </div>
-    </FormProvider>
+    </Form>
   );
 };
 
-type TextQuestionFieldProps = {
+type RenderTypeFieldArgs = {
+  element: ElementSchema;
   index: number;
-  id: string;
-  type: ElementType;
+  controllerProps: UseControllerReturn<
+    QuestionFormState,
+    `fields.${number}.value`
+  >;
 };
 
-const TextQuestionField = ({index, id, type}: TextQuestionFieldProps) => {
-  const Component = type === 'short_text' ? Input : Textarea;
-  return (
-    <QuestionFormConnect>
-      {({control}) => (
-        <>
-          <Controller
-            control={control}
-            name={`fields.${index}.value`}
-            render={({field: {onChange, ...restField}}) => (
-              <Component
-                onChange={(e) => onChange([e.target.value])}
-                id={id}
-                {...restField}
-              />
-            )}
-          />
-        </>
-      )}
-    </QuestionFormConnect>
-  );
-};
-
-type MultipleChoiceFieldProps = {
-  index: number;
-  choices: ElementSchema['properties']['choices'];
-};
-
-const MultipleChoiceField = ({
+function renderTypeField({
+  element,
+  controllerProps: {field},
   index,
-  choices = [],
-}: MultipleChoiceFieldProps) => {
-  const hasValidChoices =
-    choices.length > 0 && choices.every((choice) => !!choice.value);
-  return (
-    <QuestionFormConnect>
-      {({control}) => (
-        <>
-          <div className="flex flex-col gap-2">
-            {hasValidChoices
-              ? choices.map((choice) => (
-                  <Controller
-                    key={choice.id}
-                    control={control}
-                    name={`fields.${index}.value`}
-                    render={({field}) => (
-                      <label className="flex items-center gap-x-3 text-sm font-medium">
-                        <Checkbox
-                          {...field}
-                          checked={field.value.includes(choice.id)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              field.onChange([...field.value, choice.id]);
-                            } else {
-                              field.onChange(
-                                field.value.filter(
-                                  (value) => value !== choice.id,
-                                ),
-                              );
-                            }
-                          }}
-                        />
-                        <span>{choice.value}</span>
-                      </label>
-                    )}
-                  />
-                ))
-              : null}
-          </div>
-        </>
-      )}
-    </QuestionFormConnect>
-  );
-};
-
-export const QuestionFormConnect = ({
-  children,
-}: {
-  children: (methods: UseFormReturn<QuestionFormState>) => React.ReactNode;
-}) => {
-  const methods = useFormContext<QuestionFormState>();
-
-  return <>{children({...methods})}</>;
-};
+}: RenderTypeFieldArgs) {
+  switch (element.type) {
+    case 'short_text':
+      return <ShortTextField field={field} />;
+    case 'long_text':
+      return <LongTextField field={field} />;
+    case 'multiple_choice':
+      return (
+        <MultipleChoiceField field={field} element={element} index={index} />
+      );
+    case 'single_choice':
+      return <SingleChoiceField element={element} field={field} />;
+  }
+}

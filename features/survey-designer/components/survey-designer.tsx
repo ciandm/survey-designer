@@ -17,7 +17,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import {PlusIcon, QuestionMarkCircledIcon} from '@radix-ui/react-icons';
-import {GripHorizontal} from 'lucide-react';
+import {CopyIcon, GripHorizontal, Trash2Icon} from 'lucide-react';
 import {
   ElementCard,
   ElementCardContent,
@@ -25,6 +25,7 @@ import {
 } from '@/components/element-card';
 import {Sortable} from '@/components/sortable';
 import {Button} from '@/components/ui/button';
+import {FormDescription, FormLabel} from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
@@ -33,6 +34,7 @@ import {useElementCrud} from '../hooks/use-element-crud';
 import {setActiveElementRef} from '../store/active-element-ref';
 import {useDesignerMode} from '../store/designer-mode';
 import {
+  changeElementType,
   setElements,
   surveyElementsSelector,
   surveySchemaSelector,
@@ -47,6 +49,7 @@ import {
   QuestionChoicesField,
   QuestionChoicesList,
 } from './question-choices';
+import {QuestionTypeSelect} from './question-type-select';
 import {SurveyPreviewer} from './survey-previewer';
 
 export const SurveyDesigner = () => {
@@ -172,7 +175,8 @@ export const SurveyDesigner = () => {
                       <ElementCardContent number={index + 1}>
                         <ElementCardTitle element={element} id={element.id} />
                         <div className="mt-4 max-w-sm">
-                          {element.type === 'multiple_choice' && (
+                          {(element.type === 'multiple_choice' ||
+                            element.type === 'single_choice') && (
                             <>
                               <QuestionChoices
                                 elementId={element.id}
@@ -223,6 +227,49 @@ export const SurveyDesigner = () => {
                           )}
                         </div>
                       </ElementCardContent>
+                      <footer className="bg-accent px-5 py-2.5">
+                        <div className="grid grid-cols-[200px_1fr] justify-items-end">
+                          <QuestionTypeSelect
+                            className="h-9 border-0 bg-transparent text-sm font-medium text-muted-foreground"
+                            element={element}
+                            onChange={(type) =>
+                              changeElementType({
+                                id: element.id,
+                                type,
+                              })
+                            }
+                            onOpenChange={(open) =>
+                              open && setActiveElementRef(element.ref)
+                            }
+                          />
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-muted-foreground"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDuplicateElement(element.id);
+                              }}
+                            >
+                              <CopyIcon className="mr-2 h-4 w-4" />
+                              Duplicate
+                            </Button>
+                            <Button
+                              className="text-muted-foreground"
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleRemoveElement(element.id);
+                              }}
+                            >
+                              <Trash2Icon className="mr-2 h-4 w-4" />
+                              Delete
+                            </Button>
+                          </div>
+                        </div>
+                      </footer>
                     </ElementCard>
                   </Sortable>
                 );

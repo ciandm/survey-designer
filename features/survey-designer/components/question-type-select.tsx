@@ -14,6 +14,7 @@ const ALLOWED_TYPES = [
   ELEMENT_TYPE.short_text,
   ELEMENT_TYPE.long_text,
   ELEMENT_TYPE.multiple_choice,
+  ELEMENT_TYPE.single_choice,
 ];
 
 const questionTypeOptions = Object.values(ELEMENT_TYPE)
