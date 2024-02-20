@@ -41,7 +41,7 @@ export const ElementCardContent = ({
 }: ElementCardContentProps) => {
   return (
     <div className="px-8 py-6">
-      <div className="relative">
+      <div className="relative flex flex-col">
         <span className="absolute -left-8 w-8 self-start py-1 pr-1 text-right text-xs font-medium text-muted-foreground">
           {number}.
         </span>
@@ -98,9 +98,9 @@ export const ElementCardTitle = ({id, element}: ElementCardTitle) => {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1">
       <label
-        className={cn('text-base font-medium leading-6', {
+        className={cn('break-normal text-base font-medium leading-6', {
           [`after:content-['_*']`]:
             element.validations.required && element.text,
         })}
