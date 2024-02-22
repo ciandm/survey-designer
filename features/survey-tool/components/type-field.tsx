@@ -10,7 +10,7 @@ import {Input} from '@/components/ui/input';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Textarea} from '@/components/ui/textarea';
 import {ElementSchema} from '@/lib/validations/survey';
-import {QuestionFormState} from './survey';
+import {QuestionFormState} from './survey-form';
 
 type FieldProps = {
   field: ControllerRenderProps<QuestionFormState, `fields.${number}.value`>;

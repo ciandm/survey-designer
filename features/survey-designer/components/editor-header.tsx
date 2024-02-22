@@ -32,12 +32,12 @@ const links = [
     href: '/editor/:id/designer',
   },
   {
-    label: 'Responses',
-    href: '/editor/:id/responses',
-  },
-  {
     label: 'Preview',
     href: '/editor/:id/preview',
+  },
+  {
+    label: 'Responses',
+    href: '/editor/:id/responses',
   },
 ];
 

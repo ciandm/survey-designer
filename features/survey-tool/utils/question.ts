@@ -123,7 +123,7 @@ function randomiseChoices(choices: ChoicesSchema = []) {
 function sortChoices(element: ElementSchema): ElementSchema {
   if (!element.properties.sort_order) return element;
 
-  const copiedElement = {...element};
+  const copiedElement = {...element, properties: {...element.properties}};
 
   switch (copiedElement.properties.sort_order) {
     case 'asc':
