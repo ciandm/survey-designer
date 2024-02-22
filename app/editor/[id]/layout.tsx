@@ -37,9 +37,11 @@ export default async function EditorLayout({
             schema: parsedSurvey.data,
           }}
         />
-        <div className="flex h-screen min-h-0 grid-rows-[64px_1fr] flex-col overflow-hidden">
-          <EditorHeader />
-          <main className="flex max-h-[calc(100vh-64px)] overflow-y-auto border-t bg-muted">
+        <div className="flex h-screen max-h-screen flex-col">
+          <div className="flex flex-shrink-0">
+            <EditorHeader />
+          </div>
+          <main className="relative h-full flex-1 overflow-hidden bg-muted">
             {children}
           </main>
         </div>

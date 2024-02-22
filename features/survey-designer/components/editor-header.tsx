@@ -71,7 +71,7 @@ export const EditorHeader = () => {
 
   return (
     <DropdownMenu.Root>
-      <nav className="flex h-16 items-center justify-between">
+      <nav className="flex h-16 w-full flex-shrink-0 items-center justify-between border-b bg-white">
         <DropdownMenu.Trigger asChild className="block md:hidden">
           <Button size="sm" variant="ghost" onClick={() => setOpen(!open)}>
             <HamburgerMenuIcon />

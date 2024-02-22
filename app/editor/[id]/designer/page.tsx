@@ -5,11 +5,13 @@ import {SurveyDesigner} from '@/features/survey-designer/components/survey-desig
 
 const DesignerPage = async () => {
   return (
-    <>
+    <div className="flex h-full overflow-hidden">
       <BuildPanel />
+      {/* <div className="overflow-y-auto"> */}
       <SurveyDesigner />
+      {/* </div> */}
       <ConfigPanel />
-    </>
+    </div>
   );
 };
 

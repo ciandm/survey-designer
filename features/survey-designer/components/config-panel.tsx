@@ -97,7 +97,7 @@ const ConfigPanelInner = () => {
   }
 
   return (
-    <aside className="hidden max-w-sm flex-1 flex-col overflow-auto border-l bg-white p-4 lg:flex">
+    <aside className="hidden max-w-sm flex-1 flex-col self-auto overflow-y-auto border-l bg-white p-4 lg:flex">
       {activeElement ? (
         <>
           <div className="flex flex-col space-y-6">
@@ -380,6 +380,7 @@ const SurveyPanel = () => {
         <Label htmlFor="survey-title">Title</Label>
         <Textarea
           id="survey-title"
+          key={schema.title}
           defaultValue={schema.title}
           onBlur={(e) => updateTitle(e.target.value)}
           onKeyDown={(e) => {
@@ -394,8 +395,15 @@ const SurveyPanel = () => {
         <Label htmlFor="survey-description">Description</Label>
         <Textarea
           id="survey-description"
-          value={schema.description}
-          onChange={(e) => updateDescription(e.target.value)}
+          key={schema.description}
+          defaultValue={schema.description}
+          onBlur={(e) => updateDescription(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              e.currentTarget.blur();
+            }
+          }}
         />
       </div>
       <Separator />
