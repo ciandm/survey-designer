@@ -33,14 +33,16 @@ ElementCard.displayName = 'ElementCard';
 type ElementCardContentProps = {
   number: number;
   children?: React.ReactNode;
+  className?: string;
 };
 
 export const ElementCardContent = ({
   children,
   number,
+  className,
 }: ElementCardContentProps) => {
   return (
-    <div className="px-8 py-6">
+    <div className={cn('px-8 py-6', className)}>
       <div className="relative flex flex-col">
         <span className="absolute -left-8 w-8 self-start py-1 pr-1 text-right text-xs font-medium text-muted-foreground">
           {number}.
