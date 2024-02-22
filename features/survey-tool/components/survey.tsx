@@ -4,7 +4,8 @@ import {useState} from 'react';
 import {UseControllerReturn, useFieldArray, useForm} from 'react-hook-form';
 import {ErrorMessage} from '@hookform/error-message';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {Loader2} from 'lucide-react';
+import {CheckCircleIcon, Loader2} from 'lucide-react';
+import Link from 'next/link';
 import {Button} from '@/components/ui/button';
 import {
   Form,
@@ -31,11 +32,16 @@ export interface QuestionFormState {
   type: ElementType;
 }
 
-export const Survey = ({schema}: {schema: SurveySchema}) => {
+type Step = 'welcome' | 'questions' | 'thank_you';
+
+type SurveyProps = {
+  schema: SurveySchema;
+  initialStep?: Exclude<Step, 'thank_you'>;
+};
+
+export const Survey = ({schema, initialStep = 'questions'}: SurveyProps) => {
   const {elements = []} = schema;
-  const [step, setStep] = useState<'welcome' | 'questions' | 'thank_you'>(
-    'questions',
-  );
+  const [step, setStep] = useState<Step>(initialStep);
   const {toast} = useToast();
   const {isPending: isSubmitPending, mutateAsync: handleSubmitSurvey} =
     useSubmitSurvey();
@@ -81,10 +87,23 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
 
   if (step === 'thank_you') {
     return (
-      <>
-        <h1>Thank you!</h1>
-        <p>Thank you for completing this survey.</p>
-      </>
+      <section className="flex h-screen bg-muted">
+        <div className="container my-auto flex max-w-lg flex-col items-center gap-6">
+          <CheckCircleIcon className="h-16 w-16 text-green-500" />
+          <div className="space-y-3 text-center">
+            <p className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+              Thank you!
+            </p>
+            <p className="text-lg leading-8 text-gray-600">
+              {schema.screens.thank_you.message ||
+                'Your response has been submitted.'}
+            </p>
+          </div>
+          <Button asChild>
+            <Link href="/">Back to home</Link>
+          </Button>
+        </div>
+      </section>
     );
   }
 
