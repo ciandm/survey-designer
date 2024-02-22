@@ -1,6 +1,5 @@
 import {ControllerRenderProps, useFormContext} from 'react-hook-form';
-import {Checkbox} from '@radix-ui/react-checkbox';
-import {RadioGroup} from '@radix-ui/react-dropdown-menu';
+import {Checkbox} from '@/components/ui/checkbox';
 import {
   FormControl,
   FormField,
@@ -8,7 +7,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
-import {RadioGroupItem} from '@/components/ui/radio-group';
+import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Textarea} from '@/components/ui/textarea';
 import {ElementSchema} from '@/lib/validations/survey';
 import {QuestionFormState} from './survey';
@@ -60,22 +59,26 @@ export const MultipleChoiceField = ({
           control={control}
           name={`fields.${index}.value`}
           render={({field}) => (
-            <label className="flex items-center gap-x-3 text-sm font-medium">
-              <Checkbox
-                {...field}
-                checked={field.value.includes(choice.id)}
-                onCheckedChange={(checked) => {
-                  if (checked) {
-                    field.onChange([...field.value, choice.id]);
-                  } else {
-                    field.onChange(
-                      field.value.filter((value) => value !== choice.id),
-                    );
-                  }
-                }}
-              />
-              <span>{choice.value}</span>
-            </label>
+            <FormItem className="flex items-center space-x-2 space-y-0">
+              <FormControl>
+                <Checkbox
+                  {...field}
+                  checked={field.value.includes(choice.id)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      field.onChange([...field.value, choice.id]);
+                    } else {
+                      field.onChange(
+                        field.value.filter((value) => value !== choice.id),
+                      );
+                    }
+                  }}
+                />
+              </FormControl>
+              <FormLabel className="flex items-center gap-x-3 text-sm font-medium">
+                {choice.value}
+              </FormLabel>
+            </FormItem>
           )}
         />
       ))}

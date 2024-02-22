@@ -1,4 +1,9 @@
-import {CheckboxIcon, FileTextIcon, InputIcon} from '@radix-ui/react-icons';
+import {
+  CheckboxIcon,
+  FileTextIcon,
+  InputIcon,
+  RadiobuttonIcon,
+} from '@radix-ui/react-icons';
 
 export const ELEMENT_TYPE = {
   short_text: 'short_text',
@@ -23,10 +28,15 @@ export const ID_PREFIXES = {
 
 export const ELEMENT_OPTIONS = [
   {
-    label: 'Multiple Choice',
+    label: 'Multiple choice',
     value: ELEMENT_TYPE.multiple_choice,
     icon: CheckboxIcon,
   },
   {label: 'Short text', value: ELEMENT_TYPE.short_text, icon: InputIcon},
   {label: 'Long text', value: ELEMENT_TYPE.long_text, icon: FileTextIcon},
+  {
+    label: 'Single choice',
+    value: ELEMENT_TYPE.single_choice,
+    icon: RadiobuttonIcon,
+  },
 ];
