@@ -16,6 +16,8 @@ export function formatQuestionType(type: ElementType): string {
       return 'Long Text';
     case 'multiple_choice':
       return 'Multiple Choice';
+    case 'single_choice':
+      return 'Single Choice';
   }
 }
 
@@ -42,6 +44,7 @@ export function buildNewElementHelper(
       };
 
     case 'multiple_choice':
+    case 'single_choice':
       return {
         id: field?.id ?? uuidv4(),
         ref: field?.ref ?? uuidv4(),

@@ -229,7 +229,8 @@ const ConfigPanelInner = () => {
               )}
             </div>
           </div>
-          {activeElement.type === 'multiple_choice' && (
+          {(activeElement.type === 'multiple_choice' ||
+            activeElement.type === 'single_choice') && (
             <>
               <Separator className="my-6" />
               <div className="space-y-6">

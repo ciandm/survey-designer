@@ -90,7 +90,10 @@ export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
                 </TableCell>
                 <TableCell>
                   {(element.type === 'short_text' ||
-                    element.type === 'long_text') && <>{response.value[0]}</>}
+                    element.type === 'long_text' ||
+                    element.type === 'single_choice') && (
+                    <>{response.value[0]}</>
+                  )}
                   {element.type === 'multiple_choice' && (
                     <div className="flex flex-col gap-1">
                       {response.value.map((value, index) => {
