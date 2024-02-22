@@ -5,8 +5,6 @@ import {UseControllerReturn, useFieldArray, useForm} from 'react-hook-form';
 import {ErrorMessage} from '@hookform/error-message';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Loader2} from 'lucide-react';
-import {z} from 'zod';
-import {ElementCard, ElementCardContent} from '@/components/element-card';
 import {Button} from '@/components/ui/button';
 import {
   Form,
@@ -17,9 +15,10 @@ import {
 } from '@/components/ui/form';
 import {useToast} from '@/components/ui/use-toast';
 import {useSubmitSurvey} from '@/features/survey-designer/hooks/use-submit-survey';
-import {ELEMENT_TYPE, ElementType} from '@/lib/constants/element';
+import {ElementType} from '@/lib/constants/element';
 import {cn} from '@/lib/utils';
 import {ElementSchema, SurveySchema} from '@/lib/validations/survey';
+import {createSurveyValidationSchema} from '../utils/survey';
 import {
   LongTextField,
   MultipleChoiceField,
@@ -31,38 +30,6 @@ export interface QuestionFormState {
   fields: {questionId: string; value: string[]; type: ElementType}[];
   type: ElementType;
 }
-
-const createValidationSchema = (elements: ElementSchema[]) => {
-  return z
-    .object({
-      fields: z.array(
-        z.object({
-          questionId: z.string(),
-          value: z.array(z.string()),
-          type: z.nativeEnum(ELEMENT_TYPE),
-        }),
-      ),
-    })
-    .superRefine(({fields}, ctx) => {
-      fields.forEach((field, index) => {
-        const element = elements[index];
-
-        if (
-          element.validations.required &&
-          (!field.value.length || field.value[0].length === 0)
-        ) {
-          return ctx.addIssue({
-            message:
-              element.properties.required_message || 'This field is required',
-            path: ['fields', index, 'value'],
-            code: z.ZodIssueCode.custom,
-          });
-        }
-      });
-
-      return ctx;
-    });
-};
 
 export const Survey = ({schema}: {schema: SurveySchema}) => {
   const {elements = []} = schema;
@@ -81,7 +48,7 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
         value: [],
       })),
     },
-    resolver: zodResolver(createValidationSchema(elements)),
+    resolver: zodResolver(createSurveyValidationSchema(elements)),
   });
 
   const {handleSubmit, control} = methods;
@@ -123,7 +90,7 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
 
   if (step === 'welcome') {
     return (
-      <div className="flex flex-1 bg-muted">
+      <div className="flex flex-1">
         <div className="container max-w-2xl">
           <h1>Welcome!</h1>
         </div>
@@ -133,32 +100,42 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
 
   return (
     <Form {...methods}>
-      <div className="flex flex-1 bg-muted py-16">
-        <div className="container max-w-2xl">
-          <form className="flex flex-1 flex-col gap-6" onSubmit={onSubmit}>
-            {fields.map((_, index) => {
-              const element = elements[index];
+      <div className="flex flex-1 bg-muted sm:py-8 md:py-16">
+        <div className="sm:container md:max-w-2xl">
+          <form
+            className="flex flex-1 flex-col rounded-md border bg-muted sm:bg-card"
+            onSubmit={onSubmit}
+          >
+            <header className="flex flex-col space-y-1 border-b bg-card p-3 sm:bg-transparent sm:p-5">
+              <h1 className="text-lg font-semibold">{schema.title}</h1>
+              <p className="text-sm text-muted-foreground">
+                {schema.description}
+              </p>
+            </header>
+            <div className="sm:space-py-4 sm:mt-4">
+              {fields.map((_, index) => {
+                const element = elements[index];
 
-              return (
-                <FormField
-                  key={element.id}
-                  control={control}
-                  name={`fields.${index}.value`}
-                  render={(controllerProps) => (
-                    <FormItem>
-                      <ElementCard key={element.id}>
-                        <ElementCardContent number={index + 1}>
+                return (
+                  <FormField
+                    key={element.id}
+                    control={control}
+                    name={`fields.${index}.value`}
+                    render={(controllerProps) => (
+                      <FormItem>
+                        <div className="space-y-4 px-4 py-5 sm:px-6 sm:py-4">
                           <div className="flex flex-col gap-1">
                             <FormLabel
                               className={cn(
                                 'break-normal text-base font-medium leading-6',
                                 {
-                                  [`after:content-['_*']`]:
+                                  [`after:content-['*']`]:
                                     element.validations.required &&
                                     element.text,
                                 },
                               )}
                             >
+                              {index + 1}.{' '}
                               {!!element.text
                                 ? element.text
                                 : 'Untitled element'}
@@ -170,33 +147,39 @@ export const Survey = ({schema}: {schema: SurveySchema}) => {
                             )}
                           </div>
                           <div className="mt-4">
-                            {renderTypeField({element, controllerProps, index})}
+                            {renderTypeField({
+                              element,
+                              controllerProps,
+                              index,
+                            })}
                           </div>
-                        </ElementCardContent>
-                        <ErrorMessage
-                          name={`fields.${index}.value`}
-                          render={({message}) => (
-                            <footer className="bg-red-50 px-4 py-2">
+                          <ErrorMessage
+                            name={`fields.${index}.value`}
+                            render={({message}) => (
                               <p className="text-sm font-medium leading-5 text-red-500">
                                 {message}
                               </p>
-                            </footer>
-                          )}
-                        />
-                      </ElementCard>
-                    </FormItem>
-                  )}
-                />
-              );
-            })}
-            <div className="ml-auto mt-8 flex justify-between">
-              <Button disabled={isSubmitPending} type="submit">
+                            )}
+                          />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                );
+              })}
+            </div>
+            <footer className="flex border-t bg-card p-6 sm:border-0 sm:bg-transparent">
+              <Button
+                disabled={isSubmitPending}
+                type="submit"
+                className="ml-auto w-40"
+              >
                 {isSubmitPending && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 {isSubmitPending ? 'Submitting...' : 'Submit'}
               </Button>
-            </div>
+            </footer>
           </form>
         </div>
       </div>

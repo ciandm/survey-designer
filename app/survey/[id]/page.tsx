@@ -1,8 +1,7 @@
 import {Metadata, ResolvingMetadata} from 'next';
 import {notFound} from 'next/navigation';
 import {Survey} from '@/features/survey-tool/components/survey';
-import {ID_PREFIXES} from '@/lib/constants/element';
-import {ChoicesSchema} from '@/lib/validations/survey';
+import {sortQuestionChoices} from '@/features/survey-tool/utils/question';
 import {SurveySchema, surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
@@ -12,34 +11,43 @@ type Props = {
   };
 };
 
-const SurveyPage = async ({params}: Props) => {
-  const survey = await prisma.survey.findUnique({
-    where: {
-      id: params.id,
-    },
-  });
+async function getSurvey(id: string): Promise<SurveySchema | null> {
+  try {
+    const survey = await prisma.survey.findUnique({
+      where: {
+        id,
+      },
+    });
 
-  if (!survey) {
+    if (!survey) {
+      return null;
+    }
+
+    const parsedSurvey = surveySchema.safeParse(survey.schema);
+
+    if (!parsedSurvey.success) {
+      console.error('Invalid survey schema', parsedSurvey.error);
+      return null;
+    }
+
+    return parsedSurvey.data;
+  } catch (e) {
+    console.error(e);
     return null;
   }
+}
 
-  if (!survey.is_published) {
-    return <h1>This survey does not exist</h1>;
-  }
+const SurveyPage = async ({params}: Props) => {
+  const survey = await getSurvey(params.id);
 
-  const schema = surveySchema.safeParse(survey.schema);
-
-  if (!schema.success) {
+  if (!survey) {
     return notFound();
   }
 
-  const schemaWithRandomisedChoices = randomiseQuestionChoices(schema.data);
+  const schemaWithRandomisedChoices = sortQuestionChoices(survey);
 
   return (
     <div className="flex h-screen flex-col">
-      <header className="flex justify-center border-b p-4">
-        {schema.data.title}
-      </header>
       <Survey schema={schemaWithRandomisedChoices} />
     </div>
   );
@@ -48,38 +56,6 @@ const SurveyPage = async ({params}: Props) => {
 export default SurveyPage;
 
 export const dynamic = 'force-dynamic';
-
-function randomiseQuestionChoices(data: SurveySchema): SurveySchema {
-  return {
-    ...data,
-    elements: data.elements.map((element) => {
-      if (element.type === 'multiple_choice') {
-        return {
-          ...element,
-          properties: {
-            ...element.properties,
-            choices:
-              element.properties.sort_order === 'random'
-                ? randomiseChoices(element.properties.choices)
-                : element.properties.choices,
-          },
-        };
-      }
-
-      return element;
-    }),
-  };
-}
-
-function randomiseChoices(choices: ChoicesSchema = []) {
-  const copiedChoices = [...choices];
-
-  return copiedChoices.sort((choice) => {
-    if (choice.id.startsWith(ID_PREFIXES.OTHER_CHOICE)) return 1;
-
-    return Math.random() - 0.5;
-  });
-}
 
 export async function generateMetadata(
   {params}: Props,

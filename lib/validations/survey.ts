@@ -8,6 +8,8 @@ export const choicesSchema = z.array(
   }),
 );
 
+export const SORT_ORDER = z.enum(['asc', 'desc', 'random']);
+
 export const elementSchema = z.object({
   id: z.string(),
   text: z.string(),
@@ -18,7 +20,7 @@ export const elementSchema = z.object({
     choices: choicesSchema.optional(),
     placeholder: z.string().optional(),
     allow_other_option: z.boolean().optional(),
-    sort_order: z.enum(['asc', 'desc', 'random']).optional(),
+    sort_order: SORT_ORDER.optional(),
     required_message: z.string().default('This field is required').optional(),
   }),
   validations: z.object({
@@ -82,3 +84,4 @@ export type CreateSurveySchema = z.infer<typeof createSurveyInput>;
 export type ElementSchema = z.infer<typeof elementSchema>;
 export type ChoicesSchema = z.infer<typeof choicesSchema>;
 export type ResponseSchema = z.infer<typeof responseSchema>;
+export type SortOrder = z.infer<typeof SORT_ORDER>;
