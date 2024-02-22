@@ -380,8 +380,14 @@ const SurveyPanel = () => {
         <Label htmlFor="survey-title">Title</Label>
         <Textarea
           id="survey-title"
-          value={schema.title}
-          onChange={(e) => updateTitle(e.target.value)}
+          defaultValue={schema.title}
+          onBlur={(e) => updateTitle(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              e.currentTarget.blur();
+            }
+          }}
         />
       </div>
       <div className="space-y-1.5">

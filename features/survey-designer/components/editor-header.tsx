@@ -1,9 +1,11 @@
 'use client';
 
 import {useState} from 'react';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import {HamburgerMenuIcon} from '@radix-ui/react-icons';
 import {Loader2, RefreshCw} from 'lucide-react';
 import Link from 'next/link';
-import {useParams, useRouter} from 'next/navigation';
+import {useParams, usePathname, useRouter} from 'next/navigation';
 import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
 import {
@@ -23,60 +25,123 @@ import {
   useIsSurveyChanged,
   useSurveyDesignerStore,
 } from '../store/survey-designer';
-import {SurveyActions} from './survey-actions';
+
+const links = [
+  {
+    label: 'Designer',
+    href: '/editor/:id/designer',
+  },
+  {
+    label: 'Responses',
+    href: '/editor/:id/responses',
+  },
+  {
+    label: 'Preview',
+    href: '/editor/:id/preview',
+  },
+];
 
 export const EditorHeader = () => {
   const params = useParams();
+  const pathname = usePathname();
   const isChanged = useIsSurveyChanged();
   const schema = useSurveyDesignerStore(surveySchemaSelector);
   const {mutate: handleUpdateSurveySchema, isPending: isPendingUpdateSchema} =
     useUpdateSurveySchema();
-  const router = useRouter();
+  const [open, setOpen] = useState(false);
+
+  const onSaveChanges = async () => {
+    handleUpdateSurveySchema(
+      {...schema},
+      {
+        onSuccess: () => {
+          toast('Survey saved', {
+            description: 'Your survey has been saved successfully.',
+            action: {
+              label: 'View',
+              onClick: () => {
+                window.open(`/survey/${params.id}`);
+              },
+            },
+          });
+        },
+      },
+    );
+  };
 
   return (
-    <header className="flex h-16 w-full items-center justify-between gap-2 bg-background px-4">
-      <div className="flex items-center gap-4">
-        <Link href={`/editor/${params.id}/designer`}>Designer</Link>
-        <Link href={`/editor/${params.id}/responses`}>Responses</Link>
-      </div>
-      <div className="flex gap-2">
-        {isChanged && (
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={() =>
-              handleUpdateSurveySchema(
-                {...schema},
-                {
-                  onSuccess: () => {
-                    toast('Survey saved', {
-                      description: 'Your survey has been saved successfully.',
-                      action: {
-                        label: 'View',
-                        onClick: () => {
-                          window.open(`/survey/${params.id}`);
-                        },
-                      },
-                    });
-                  },
-                },
-              )
-            }
-            disabled={isPendingUpdateSchema}
-          >
-            Save
-            <RefreshCw
-              className={cn('ml-2 h-4 w-4 flex-shrink-0', {
-                'animate-spin': isPendingUpdateSchema,
-              })}
-            />
+    <DropdownMenu.Root>
+      <nav className="flex h-16 items-center justify-between">
+        <DropdownMenu.Trigger asChild className="block md:hidden">
+          <Button size="sm" variant="ghost" onClick={() => setOpen(!open)}>
+            <HamburgerMenuIcon />
           </Button>
-        )}
-        {/* UI-TODO: Add Preview */}
-        <PublishButton />
-        <SurveyActions />
-      </div>
-    </header>
+        </DropdownMenu.Trigger>
+
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content className="mt-4 w-screen bg-card">
+            <div className="space-y-1 pb-2">
+              {links.map((link) => {
+                const href = link.href.replace(':id', params.id as string);
+                const isActive = pathname === href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={href}
+                    className={cn(
+                      'flex items-center border-l-4 border-transparent p-2 font-medium text-muted-foreground transition-colors hover:border-muted-foreground',
+                      {
+                        'border-primary bg-muted text-foreground': isActive,
+                      },
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+        <div className="hidden h-full w-full items-center space-x-2 md:flex">
+          {links.map((link) => {
+            const href = link.href.replace(':id', params.id as string);
+            const isActive = pathname === href;
+            return (
+              <Link
+                key={link.href}
+                href={href}
+                className={cn(
+                  'flex h-full items-center border-b-2 border-transparent px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-muted-foreground',
+                  {
+                    'border-primary text-foreground': isActive,
+                  },
+                )}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </div>
+        <div className="ml-auto mr-4 flex space-x-4">
+          {isChanged && (
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={onSaveChanges}
+              disabled={isPendingUpdateSchema}
+            >
+              Save
+              <RefreshCw
+                className={cn('ml-2 h-4 w-4 flex-shrink-0', {
+                  'animate-spin': isPendingUpdateSchema,
+                })}
+              />
+            </Button>
+          )}
+          <PublishButton />
+        </div>
+      </nav>
+    </DropdownMenu.Root>
   );
 };
 
