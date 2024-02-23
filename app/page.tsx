@@ -14,7 +14,6 @@ const Home = async () => {
         {surveys.map((survey) => {
           const parsedSurvey = surveySchema.safeParse(survey.schema);
           if (!parsedSurvey.success) {
-            console.log(parsedSurvey.error);
             return null;
           }
           return <SurveyCard survey={parsedSurvey.data} key={survey.id} />;

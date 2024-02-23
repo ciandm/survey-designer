@@ -83,13 +83,24 @@ function hasChoices(element: ElementSchema) {
   return element.type === 'multiple_choice' || element.type === 'single_choice';
 }
 
-export function sortQuestionChoices(survey: SurveySchema): SurveySchema {
+export function sortChoices(survey: SurveySchema): SurveySchema {
   const {elements} = survey;
   const copiedSurvey = {...survey};
 
   const newElements = elements.map((element) => {
     if (hasChoices(element)) {
-      return sortChoices(element);
+      switch (element.properties.sort_order) {
+        case 'asc':
+          element.properties.choices = element.properties.choices?.reverse();
+          break;
+        case 'random':
+          element.properties.choices = randomiseChoices(
+            element.properties.choices,
+          );
+          break;
+        default:
+          break;
+      }
     }
 
     return element;
@@ -97,17 +108,6 @@ export function sortQuestionChoices(survey: SurveySchema): SurveySchema {
 
   copiedSurvey.elements = newElements;
   return copiedSurvey;
-}
-
-export function randomiseQuestionChoices(
-  element: ElementSchema,
-): ElementSchema {
-  const copiedElement = {...element};
-  const {choices} = copiedElement.properties;
-
-  copiedElement.properties.choices = randomiseChoices(choices);
-
-  return copiedElement;
 }
 
 function randomiseChoices(choices: ChoicesSchema = []) {
@@ -118,24 +118,4 @@ function randomiseChoices(choices: ChoicesSchema = []) {
 
     return Math.random() - 0.5;
   });
-}
-
-function sortChoices(element: ElementSchema): ElementSchema {
-  if (!element.properties.sort_order) return element;
-
-  const copiedElement = {...element, properties: {...element.properties}};
-
-  switch (copiedElement.properties.sort_order) {
-    case 'asc':
-      copiedElement.properties.choices =
-        copiedElement.properties.choices?.reverse();
-      break;
-    case 'random':
-      copiedElement.properties.choices = randomiseChoices(
-        copiedElement.properties.choices,
-      );
-      break;
-  }
-
-  return copiedElement;
 }

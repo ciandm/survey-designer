@@ -116,84 +116,73 @@ export const SurveyForm = ({
 
   return (
     <Form {...methods}>
-      <div className="sm:container md:max-w-2xl">
-        <form
-          className="flex flex-1 flex-col rounded-md border bg-muted sm:bg-card"
-          onSubmit={onSubmit}
-        >
-          <header className="flex flex-col space-y-1 border-b bg-card p-3 sm:bg-transparent sm:p-5">
-            <h1 className="text-lg font-semibold">{schema.title}</h1>
-            <p className="text-sm text-muted-foreground">
-              {schema.description}
-            </p>
-          </header>
-          <div className="sm:space-py-4 sm:mt-4">
-            {fields.map((_, index) => {
-              const element = elements[index];
+      <form onSubmit={onSubmit}>
+        <div className="sm:space-py-4 sm:mt-4">
+          {fields.map((_, index) => {
+            const element = elements[index];
 
-              return (
-                <FormField
-                  key={element.id}
-                  control={control}
-                  name={`fields.${index}.value`}
-                  render={(controllerProps) => (
-                    <FormItem>
-                      <div className="space-y-4 px-4 py-5 sm:px-6 sm:py-4">
-                        <div className="flex flex-col gap-1">
-                          <FormLabel
-                            className={cn(
-                              'break-normal text-base font-medium leading-6',
-                              {
-                                [`after:content-['*']`]:
-                                  element.validations.required && element.text,
-                              },
-                            )}
-                          >
-                            {index + 1}.{' '}
-                            {!!element.text ? element.text : 'Untitled element'}
-                          </FormLabel>
-                          {!!element.description && (
-                            <FormDescription>
-                              {element.description}
-                            </FormDescription>
+            return (
+              <FormField
+                key={element.id}
+                control={control}
+                name={`fields.${index}.value`}
+                render={(controllerProps) => (
+                  <FormItem>
+                    <div className="space-y-4 px-4 py-5 sm:px-6 sm:py-4">
+                      <div className="flex flex-col gap-1">
+                        <FormLabel
+                          className={cn(
+                            'break-normal text-base font-medium leading-6',
+                            {
+                              [`after:content-['*']`]:
+                                element.validations.required && element.text,
+                            },
                           )}
-                        </div>
-                        <div className="mt-4">
-                          {renderTypeField({
-                            element,
-                            controllerProps,
-                            index,
-                          })}
-                        </div>
-                        <ErrorMessage
-                          name={`fields.${index}.value`}
-                          render={({message}) => (
-                            <p className="text-sm font-medium leading-5 text-red-500">
-                              {message}
-                            </p>
-                          )}
-                        />
+                        >
+                          {index + 1}.{' '}
+                          {!!element.text ? element.text : 'Untitled element'}
+                        </FormLabel>
+                        {!!element.description && (
+                          <FormDescription>
+                            {element.description}
+                          </FormDescription>
+                        )}
                       </div>
-                    </FormItem>
-                  )}
-                />
-              );
-            })}
-          </div>
-          <footer className="flex border-t bg-card p-6 sm:border-0 sm:bg-transparent">
-            <Button
-              disabled={isSubmitPending}
-              type="submit"
-              className="ml-auto w-40"
-            >
-              {isSubmitPending && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              {isSubmitPending ? 'Submitting...' : 'Submit'}
-            </Button>
-          </footer>
-        </form>
-      </div>
+                      <div className="mt-4">
+                        {renderTypeField({
+                          element,
+                          controllerProps,
+                          index,
+                        })}
+                      </div>
+                      <ErrorMessage
+                        name={`fields.${index}.value`}
+                        render={({message}) => (
+                          <p className="text-sm font-medium leading-5 text-red-500">
+                            {message}
+                          </p>
+                        )}
+                      />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            );
+          })}
+        </div>
+        <footer className="flex border-t bg-card p-6 sm:border-0 sm:bg-transparent">
+          <Button
+            disabled={isSubmitPending}
+            type="submit"
+            className="ml-auto w-40"
+          >
+            {isSubmitPending && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {isSubmitPending ? 'Submitting...' : 'Submit'}
+          </Button>
+        </footer>
+      </form>
     </Form>
   );
 };

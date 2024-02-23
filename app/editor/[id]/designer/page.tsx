@@ -1,15 +1,24 @@
 import {Metadata} from 'next';
-import {BuildPanel} from '@/features/survey-designer/components/build-panel';
 import {ConfigPanel} from '@/features/survey-designer/components/config-panel';
-import {SurveyDesigner} from '@/features/survey-designer/components/survey-designer';
+import {ElementsDndContext} from '@/features/survey-designer/components/elements-dnd-context';
+import {ElementsList} from '@/features/survey-designer/components/elements-list';
+import {ElementsToolbar} from '@/features/survey-designer/components/elements-tool-bar';
+import {SurveyTitleEditor} from '@/features/survey-designer/components/survey-title-editor';
 
 const DesignerPage = async () => {
   return (
     <div className="flex h-full overflow-hidden">
-      <BuildPanel />
-      {/* <div className="overflow-y-auto"> */}
-      <SurveyDesigner />
-      {/* </div> */}
+      <div className="hidden max-w-[240px] flex-1 flex-col gap-2 self-baseline md:flex">
+        <ElementsToolbar />
+      </div>
+      <section className="flex flex-1 flex-col overflow-auto bg-accent px-4 pb-6 sm:pl-2 sm:pr-4">
+        <SurveyTitleEditor />
+        <div className="flex w-full flex-col gap-4">
+          <ElementsDndContext>
+            <ElementsList />
+          </ElementsDndContext>
+        </div>
+      </section>
       <ConfigPanel />
     </div>
   );

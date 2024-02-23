@@ -1,6 +1,7 @@
 'use client';
 
-import {sortQuestionChoices} from '@/features/survey-tool/utils/question';
+import {Card} from '@/components/ui/card';
+import {sortChoices} from '@/features/survey-tool/utils/question';
 import {SurveyForm} from '../../survey-tool/components/survey-form';
 import {
   surveySchemaSelector,
@@ -9,12 +10,17 @@ import {
 
 export const SurveyPreviewer = () => {
   const survey = useSurveyDesignerStore(surveySchemaSelector);
-  const schemaWithRandomisedChoices = sortQuestionChoices(survey);
+  const schema = sortChoices(survey);
 
   return (
-    <SurveyForm
-      shouldSubmitResults={false}
-      schema={schemaWithRandomisedChoices}
-    />
+    <div className="container max-w-2xl">
+      <header className="mb-2 flex flex-col space-y-1 bg-card p-3 sm:bg-transparent sm:p-5">
+        <h1 className="text-lg font-semibold">{schema.title}</h1>
+        <p className="text-sm text-muted-foreground">{schema.description}</p>
+      </header>
+      <Card>
+        <SurveyForm shouldSubmitResults={false} schema={schema} />
+      </Card>
+    </div>
   );
 };
