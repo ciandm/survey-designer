@@ -86,7 +86,7 @@ export const SurveyDesigner = () => {
 
   return (
     <section
-      className="flex flex-1 flex-col items-start overflow-auto bg-accent pb-6 pl-2 pr-4"
+      className="flex flex-1 flex-col items-start overflow-auto bg-accent px-4 pb-6 sm:pl-2 sm:pr-4"
       id="survey-designer"
       onClick={(e) => {
         if (e.target === e.currentTarget) {

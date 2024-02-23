@@ -1,6 +1,6 @@
 import {Metadata, ResolvingMetadata} from 'next';
 import {notFound} from 'next/navigation';
-import {Survey} from '@/features/survey-tool/components/survey';
+import {SurveyForm} from '@/features/survey-tool/components/survey-form';
 import {sortQuestionChoices} from '@/features/survey-tool/utils/question';
 import {SurveySchema, surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
@@ -47,8 +47,8 @@ const SurveyPage = async ({params}: Props) => {
   const schemaWithRandomisedChoices = sortQuestionChoices(survey);
 
   return (
-    <div className="flex h-screen flex-col">
-      <Survey schema={schemaWithRandomisedChoices} />
+    <div className="bg-muted md:py-12">
+      <SurveyForm schema={schemaWithRandomisedChoices} />
     </div>
   );
 };

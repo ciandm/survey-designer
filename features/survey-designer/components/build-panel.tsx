@@ -8,7 +8,7 @@ export const BuildPanel = () => {
   const {handleCreateElement} = useElementCrud();
 
   return (
-    <div className="hidden max-w-[240px] flex-1 flex-col gap-2 md:flex">
+    <div className="hidden max-w-[240px] flex-1 flex-col gap-2 self-baseline md:flex">
       <div className="flex flex-col gap-2 p-4">
         {ELEMENT_OPTIONS.map((option) => (
           <Button
