@@ -10,7 +10,7 @@ type ElementCardProps = DetailedHTMLProps<
   HTMLDivElement
 >;
 
-export const ElementCard = React.forwardRef<HTMLDivElement, ElementCardProps>(
+const ElementCardRoot = React.forwardRef<HTMLDivElement, ElementCardProps>(
   ({children, className, ...rest}, ref) => {
     return (
       <div
@@ -28,7 +28,7 @@ export const ElementCard = React.forwardRef<HTMLDivElement, ElementCardProps>(
   },
 );
 
-ElementCard.displayName = 'ElementCard';
+ElementCardRoot.displayName = 'ElementCardRoot';
 
 type ElementCardContentProps = {
   number: number;
@@ -36,7 +36,7 @@ type ElementCardContentProps = {
   className?: string;
 };
 
-export const ElementCardContent = ({
+const ElementCardContent = ({
   children,
   number,
   className,
@@ -58,7 +58,7 @@ type ElementCardTitle = {
   element: ElementSchema;
 };
 
-export const ElementCardTitle = ({id, element}: ElementCardTitle) => {
+const ElementCardTitle = ({id, element}: ElementCardTitle) => {
   const pathname = usePathname();
   const isEditable = pathname.includes('/editor');
 
@@ -115,4 +115,10 @@ export const ElementCardTitle = ({id, element}: ElementCardTitle) => {
       )}
     </div>
   );
+};
+
+export const ElementCard = {
+  Root: ElementCardRoot,
+  Content: ElementCardContent,
+  Title: ElementCardTitle,
 };

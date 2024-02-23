@@ -33,12 +33,12 @@ type QuestionChoiceStoreActions = {
       value: string;
     };
   }) => void;
-  moveQuestionChoices: (params: {
+  moveChoices: (params: {
     elementId: string;
     newChoices: NonNullable<ElementSchema['properties']['choices']>;
   }) => void;
   deleteQuestionChoice: (params: {elementId: string; choiceId: string}) => void;
-  deleteQuestionChoices: (params: {elementId: string}) => void;
+  deleteChoices: (params: {elementId: string}) => void;
   duplicateQuestionChoice: (params: {
     elementId: string;
     choiceId: string;
@@ -180,13 +180,12 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
       },
       insertQuestionChoice: ({elementId}) => {
         set((state) => {
-          const questionChoices = state.schema.elements.find(
-            (q) => q.id === elementId,
-          )?.properties.choices;
+          const Choices = state.schema.elements.find((q) => q.id === elementId)
+            ?.properties.choices;
 
-          if (!questionChoices) return;
+          if (!Choices) return;
 
-          questionChoices.push({
+          Choices.push({
             id: uuidv4(),
             value: '',
           });
@@ -216,7 +215,7 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
           state.schema.elements.splice(fieldIndex, 1, newField);
         });
       },
-      moveQuestionChoices: ({elementId: elementId, newChoices}) => {
+      moveChoices: ({elementId: elementId, newChoices}) => {
         set((state) => {
           const element = state.schema.elements.find((q) => q.id === elementId);
 
@@ -227,22 +226,21 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
       },
       deleteQuestionChoice: ({elementId: elementId, choiceId}) => {
         set((state) => {
-          const questionChoices = state.schema.elements.find(
-            (q) => q.id === elementId,
-          )?.properties.choices;
+          const Choices = state.schema.elements.find((q) => q.id === elementId)
+            ?.properties.choices;
 
-          if (!questionChoices || questionChoices.length === 1) return;
+          if (!Choices || Choices.length === 1) return;
 
-          const indexOfChoiceToDelete = questionChoices.findIndex(
+          const indexOfChoiceToDelete = Choices.findIndex(
             (c) => c.id === choiceId,
           );
 
           if (indexOfChoiceToDelete === -1) return;
 
-          questionChoices.splice(indexOfChoiceToDelete, 1);
+          Choices.splice(indexOfChoiceToDelete, 1);
         });
       },
-      deleteQuestionChoices: ({elementId: elementId}) => {
+      deleteChoices: ({elementId: elementId}) => {
         set((state) => {
           const element = state.schema.elements.find((q) => q.id === elementId);
           if (!element) return;
@@ -257,26 +255,25 @@ export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
       },
       duplicateQuestionChoice: ({elementId: elementId, choiceId}) => {
         set((state) => {
-          const questionChoices = state.schema.elements.find(
-            (q) => q.id === elementId,
-          )?.properties.choices;
+          const Choices = state.schema.elements.find((q) => q.id === elementId)
+            ?.properties.choices;
 
-          if (!questionChoices) return;
+          if (!Choices) return;
 
-          const indexOfChoiceToDuplicate = questionChoices.findIndex(
+          const indexOfChoiceToDuplicate = Choices.findIndex(
             (c) => c.id === choiceId,
           );
 
           if (indexOfChoiceToDuplicate === -1) return;
 
-          const choice = questionChoices[indexOfChoiceToDuplicate];
+          const choice = Choices[indexOfChoiceToDuplicate];
 
           const newChoice = {
             value: !!choice.value ? `${choice.value} (copy)` : '',
             id: uuidv4(),
           };
 
-          questionChoices.splice(indexOfChoiceToDuplicate + 1, 0, newChoice);
+          Choices.splice(indexOfChoiceToDuplicate + 1, 0, newChoice);
         });
       },
       changeElementType: ({id, type}) => {
@@ -347,7 +344,7 @@ export const {
   changeElementType,
   deleteElement,
   deleteQuestionChoice,
-  deleteQuestionChoices,
+  deleteChoices,
   duplicateElement,
   duplicateQuestionChoice,
   insertElement,
@@ -360,6 +357,6 @@ export const {
   updateQuestionChoice,
   updateTitle,
   updateDescription,
-  moveQuestionChoices,
+  moveChoices,
   updateScreen,
 } = useSurveyDesignerStore.getState().actions;

@@ -20,7 +20,6 @@ const useActiveElementRefStore = create<ActiveElementStoreState>()(
     activeElementRef: null,
     actions: {
       setActiveElementRef: (id) => {
-        console.log(id);
         set(() => ({
           activeElementRef: id,
         }));

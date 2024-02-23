@@ -1,7 +1,8 @@
 import {Metadata, ResolvingMetadata} from 'next';
 import {notFound} from 'next/navigation';
+import {Card} from '@/components/ui/card';
 import {SurveyForm} from '@/features/survey-tool/components/survey-form';
-import {sortQuestionChoices} from '@/features/survey-tool/utils/question';
+import {sortChoices} from '@/features/survey-tool/utils/question';
 import {SurveySchema, surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
@@ -10,6 +11,34 @@ type Props = {
     id: string;
   };
 };
+
+const SurveyPage = async ({params}: Props) => {
+  const survey = await getSurvey(params.id);
+
+  if (!survey) {
+    return notFound();
+  }
+
+  const schema = sortChoices(survey);
+
+  return (
+    <div className="bg-muted sm:py-8">
+      <div className="container max-w-2xl">
+        <header className="mb-2 flex flex-col space-y-1 bg-card p-3 sm:bg-transparent sm:p-5">
+          <h1 className="text-lg font-semibold">{schema.title}</h1>
+          <p className="text-sm text-muted-foreground">{schema.description}</p>
+        </header>
+        <Card>
+          <SurveyForm schema={schema} />
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default SurveyPage;
+
+export const dynamic = 'force-dynamic';
 
 async function getSurvey(id: string): Promise<SurveySchema | null> {
   try {
@@ -36,26 +65,6 @@ async function getSurvey(id: string): Promise<SurveySchema | null> {
     return null;
   }
 }
-
-const SurveyPage = async ({params}: Props) => {
-  const survey = await getSurvey(params.id);
-
-  if (!survey) {
-    return notFound();
-  }
-
-  const schemaWithRandomisedChoices = sortQuestionChoices(survey);
-
-  return (
-    <div className="bg-muted md:py-12">
-      <SurveyForm schema={schemaWithRandomisedChoices} />
-    </div>
-  );
-};
-
-export default SurveyPage;
-
-export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(
   {params}: Props,
