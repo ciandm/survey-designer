@@ -101,5 +101,219 @@
       }
     },
     "version": 1
+  },
+  {
+    "id": "d1c90388-1b1a-4dc4-b5f3-76b2d587bc39",
+    "title": "Another Sample Survey",
+    "description": "This is another sample survey for demonstration purposes.",
+    "elements": [
+      {
+        "id": "50cbf7f3-74cc-40d8-a9a3-73d4642ec4d1",
+        "text": "What is your favorite animal?",
+        "type": "multiple_choice",
+        "description": "Choose one option",
+        "ref": "a6a15f1d-4b42-4d95-bfb3-2a0bb0d9abf9",
+        "properties": {
+          "choices": [
+            {"id": "1", "value": "Dog"},
+            {"id": "2", "value": "Cat"},
+            {"id": "3", "value": "Bird"},
+            {"id": "4", "value": "Fish"},
+            {"id": "5", "value": "Other"}
+          ],
+          "sort_order": "random",
+          "required_message": "Please select your favorite animal."
+        },
+        "validations": {
+          "required": true
+        }
+      },
+      {
+        "id": "a71255e7-7f6a-4d5d-9e85-912fb76a13b5",
+        "text": "How satisfied are you with our product?",
+        "type": "short_text",
+        "ref": "2f51ed13-b5fb-456b-8729-61973d76eef1",
+        "properties": {
+          "placeholder": "Enter your response here",
+          "required_message": "Please provide your feedback."
+        },
+        "validations": {
+          "required": true,
+          "min_characters": 5
+        }
+      },
+      {
+        "id": "bb2b3358-cc15-4c87-8dbf-9b9e0c2aa05d",
+        "text": "What is your occupation?",
+        "type": "multiple_choice",
+        "ref": "cd8571a9-bf8c-4979-9fb8-c3ec46f8a990",
+        "properties": {
+          "choices": [
+            {"id": "1", "value": "Student"},
+            {"id": "2", "value": "Employed full-time"},
+            {"id": "3", "value": "Employed part-time"},
+            {"id": "4", "value": "Self-employed"},
+            {"id": "5", "value": "Unemployed"},
+            {"id": "6", "value": "Retired"}
+          ],
+          "required_message": "Please select your occupation."
+        },
+        "validations": {
+          "required": true
+        }
+      },
+      {
+        "id": "26b0286e-b68e-4901-9062-f25cc2fa6b11",
+        "text": "What is your preferred leisure activity?",
+        "type": "long_text",
+        "ref": "1b2ef38d-33b3-4827-a5a1-1c2e46d6f227",
+        "properties": {
+          "placeholder": "Enter your response here",
+          "required_message": "Please provide your preferred leisure activity."
+        },
+        "validations": {
+          "required": true,
+          "min_characters": 10
+        }
+      },
+      {
+        "id": "c1408c2c-b00d-40b1-a96b-69a18af3f5f5",
+        "text": "How likely are you to recommend our company to others?",
+        "type": "multiple_choice",
+        "ref": "f6e4f9ae-8b61-4c16-a754-1e01dd20ac8e",
+        "properties": {
+          "choices": [
+            {"id": "1", "value": "Very likely"},
+            {"id": "2", "value": "Likely"},
+            {"id": "3", "value": "Neutral"},
+            {"id": "4", "value": "Unlikely"},
+            {"id": "5", "value": "Very unlikely"}
+          ],
+          "required_message": "Please select your response."
+        },
+        "validations": {
+          "required": true
+        }
+      }
+    ],
+    "screens": {
+      "welcome": {
+        "message": "Welcome to our survey!"
+      },
+      "thank_you": {
+        "message": "Thank you for completing the survey."
+      }
+    },
+    "version": 1
+  },
+  {
+    "id": "f3a2e5d2-58e1-4e2c-8351-32a01d6a3274",
+    "title": "Yet Another Sample Survey",
+    "description": "This is yet another sample survey for demonstration purposes.",
+    "elements": [
+      {
+        "id": "9a1d87fd-1b53-4c45-b5bb-3f5960a5b04e",
+        "text": "What is your favorite food?",
+        "type": "multiple_choice",
+        "description": "Choose one option",
+        "ref": "24e4b0a6-eb69-4af0-99ff-81ab3756f63f",
+        "properties": {
+          "choices": [
+            {"id": "1", "value": "Pizza"},
+            {"id": "2", "value": "Burger"},
+            {"id": "3", "value": "Sushi"},
+            {"id": "4", "value": "Pasta"},
+            {"id": "5", "value": "Tacos"},
+            {"id": "6", "value": "Other"}
+          ],
+          "sort_order": "random",
+          "required_message": "Please select your favorite food."
+        },
+        "validations": {
+          "required": true
+        }
+      },
+      {
+        "id": "f2d88b69-5fb3-4f5f-a276-4f6e1a5bc1a1",
+        "text": "How satisfied are you with our website?",
+        "type": "short_text",
+        "ref": "9d60b70a-72a9-4a84-9c2d-f0fd7f380b6e",
+        "properties": {
+          "placeholder": "Enter your response here",
+          "required_message": "Please provide your feedback."
+        },
+        "validations": {
+          "required": true,
+          "min_characters": 5
+        }
+      },
+      {
+        "id": "cc1fd32a-4cd3-4b58-95ab-7f2e6dcb3715",
+        "text": "Which social media platform do you use most frequently?",
+        "type": "multiple_choice",
+        "ref": "902c1637-8d35-41a8-a7d8-3bea55c60f6b",
+        "properties": {
+          "choices": [
+            {"id": "1", "value": "Facebook"},
+            {"id": "2", "value": "Instagram"},
+            {"id": "3", "value": "Twitter"},
+            {"id": "4", "value": "LinkedIn"},
+            {"id": "5", "value": "TikTok"},
+            {"id": "6", "value": "Other"}
+          ],
+          "required_message": "Please select your most frequently used social media platform."
+        },
+        "validations": {
+          "required": true
+        }
+      },
+      {
+        "id": "7c4af206-7f84-45e3-bc39-c3ee90dd21f7",
+        "text": "What is your level of education?",
+        "type": "multiple_choice",
+        "ref": "70ab77c0-3435-474b-a926-5f32099a7ec3",
+        "properties": {
+          "choices": [
+            {"id": "1", "value": "High school or less"},
+            {"id": "2", "value": "Some college"},
+            {"id": "3", "value": "Bachelor's degree"},
+            {"id": "4", "value": "Master's degree"},
+            {"id": "5", "value": "Doctoral degree"}
+          ],
+          "required_message": "Please select your level of education."
+        },
+        "validations": {
+          "required": true
+        }
+      },
+      {
+        "id": "3d9e7eaf-62b4-4597-b66a-13fb1d6c31f4",
+        "text": "How likely are you to purchase from us again?",
+        "type": "multiple_choice",
+        "ref": "b5e6ff76-01c6-4d0b-80aa-d23b2e0972f2",
+        "properties": {
+          "choices": [
+            {"id": "1", "value": "Very likely"},
+            {"id": "2", "value": "Likely"},
+            {"id": "3", "value": "Neutral"},
+            {"id": "4", "value": "Unlikely"},
+            {"id": "5", "value": "Very unlikely"}
+          ],
+          "required_message": "Please select your response."
+        },
+        "validations": {
+          "required": true
+        }
+      }
+    ],
+    "screens": {
+      "welcome": {
+        "message": "Welcome to our survey!"
+      },
+      "thank_you": {
+        "message": "Thank you for completing the survey."
+      }
+    },
+    "version": 1
   }
 ]

@@ -16,6 +16,7 @@ export const SurveyDesignerInitialiser = ({
       schema: survey.schema,
       savedSchema: survey.schema,
       isPublished: survey.is_published,
+      id: survey.id,
     });
 
     isInitialised.current = true;

@@ -87,7 +87,8 @@ export function sortChoices(survey: SurveySchema): SurveySchema {
   const {elements} = survey;
   const copiedSurvey = {...survey};
 
-  const newElements = elements.map((element) => {
+  const newElements = elements.map((el) => {
+    const element = {...el};
     if (hasChoices(element)) {
       switch (element.properties.sort_order) {
         case 'asc':

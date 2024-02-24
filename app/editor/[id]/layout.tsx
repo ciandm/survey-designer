@@ -1,4 +1,5 @@
 import {notFound} from 'next/navigation';
+import {DeleteSurveyDialog} from '@/components/delete-survey';
 import {SurveyProvider} from '@/components/survey-provider';
 import {Header} from '@/features/survey-designer/components/header';
 import {SurveyDesignerInitialiser} from '@/features/survey-designer/components/survey-designer-initiailiser';
@@ -30,7 +31,7 @@ export default async function EditorLayout({
 
   return (
     <>
-      <SurveyProvider survey={parsedSurvey.data}>
+      <SurveyProvider schema={parsedSurvey.data} id={survey.id}>
         <SurveyDesignerInitialiser
           survey={{
             ...survey,

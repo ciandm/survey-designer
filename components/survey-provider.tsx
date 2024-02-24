@@ -4,17 +4,21 @@ import React, {createContext, useContext} from 'react';
 import {SurveySchema} from '@/lib/validations/survey';
 
 export const SurveyContext = createContext<{
-  survey: SurveySchema;
+  schema: SurveySchema;
+  id: string;
 } | null>(null);
 
 type Props = {
-  survey: SurveySchema;
+  schema: SurveySchema;
   children: React.ReactNode;
+  id: string;
 };
 
-export const SurveyProvider = ({children, survey}: Props) => {
+export const SurveyProvider = ({children, schema, id}: Props) => {
   return (
-    <SurveyContext.Provider value={{survey}}>{children}</SurveyContext.Provider>
+    <SurveyContext.Provider value={{schema, id}}>
+      {children}
+    </SurveyContext.Provider>
   );
 };
 
