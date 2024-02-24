@@ -4,6 +4,7 @@ import {SurveyResponse, UpdateSurveySchema} from '@/lib/validations/survey';
 import {
   setSavedSchema,
   setSchema,
+  surveyIdSelector,
   surveySchemaSelector,
   useSurveyDesignerStore,
 } from '../store/survey-designer';
@@ -13,10 +14,11 @@ export const USE_UPDATE_SURVEY_SCHEMA_MUTATION =
 
 export const useUpdateSurveySchema = () => {
   const {version} = useSurveyDesignerStore(surveySchemaSelector);
-  return useMutation<SurveyResponse, Error, UpdateSurveySchema['survey']>({
+  const surveyId = useSurveyDesignerStore(surveyIdSelector);
+  return useMutation<SurveyResponse, Error, UpdateSurveySchema['schema']>({
     mutationFn: async (args) => {
-      const response = await updateSurveyInput({
-        survey: {
+      const response = await updateSurveyInput(surveyId, {
+        schema: {
           ...args,
           version: version + 1,
         },

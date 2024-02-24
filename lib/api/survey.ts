@@ -37,7 +37,7 @@ export async function deleteSurvey(surveyId: string): Promise<void> {
 }
 
 export async function publishSurvey(surveyId: string): Promise<SurveyResponse> {
-  const {data} = await axios.put(`${ENDPOINT}/${surveyId}/publish`);
+  const {data} = await axios.patch(`${ENDPOINT}/${surveyId}/publish`);
 
   return data;
 }
@@ -51,12 +51,10 @@ export async function unpublishSurvey(
 }
 
 export async function updateSurveyInput(
+  surveyId: string,
   schema: UpdateSurveySchema,
 ): Promise<SurveyResponse> {
-  const {data} = await axios.put(
-    `${ENDPOINT}/${schema.survey.id}/schema`,
-    schema,
-  );
+  const {data} = await axios.put(`${ENDPOINT}/${surveyId}/schema`, schema);
 
   return data;
 }

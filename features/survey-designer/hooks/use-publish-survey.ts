@@ -1,31 +1,37 @@
 import {useState} from 'react';
-import {publishSurvey} from '../actions/survey';
+import {useMutation} from '@tanstack/react-query';
+import {publishSurvey, unpublishSurvey} from '@/lib/api/survey';
+import {SurveyResponse} from '@/lib/validations/survey';
 import {
   setPublished,
-  surveyPublishedSelector,
-  surveySchemaSelector,
+  surveyIdSelector,
   useSurveyDesignerStore,
 } from '../store/survey-designer';
 
-type Status =
-  | 'idle'
-  | 'publishing'
-  | 'unpublishing'
-  | 'published'
-  | 'unpublished'
-  | 'error';
+type PublishAction = 'publish' | 'unpublish';
 
 export const usePublishSurvey = () => {
-  const isPublished = useSurveyDesignerStore(surveyPublishedSelector);
-  const schema = useSurveyDesignerStore(surveySchemaSelector);
-  const [status, setStatus] = useState<Status>('idle');
+  const surveyId = useSurveyDesignerStore(surveyIdSelector);
+  const [action, setAction] = useState<PublishAction | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handlePublish = async (action: 'publish' | 'unpublish') => {
-    setStatus(action === 'publish' ? 'publishing' : 'unpublishing');
+  const {
+    mutateAsync: handlePublishSurvey,
+    reset: resetMutation,
+    ...rest
+  } = useMutation<SurveyResponse, Error, {action: PublishAction}>({
+    mutationFn: async ({action}) => {
+      const fn = action === 'publish' ? publishSurvey : unpublishSurvey;
+      return await fn(surveyId);
+    },
+  });
+
+  const handlePublish = async (action: PublishAction) => {
+    setAction(action);
+    setIsDialogOpen(true);
     try {
-      const {is_published} = await publishSurvey(schema.id, action);
-      setPublished(is_published);
-      setStatus(is_published ? 'published' : 'unpublished');
+      const {survey} = await handlePublishSurvey({action});
+      setPublished(survey.is_published);
     } catch (e) {
       // UI-TODO: Show error message
       console.error(e);
@@ -33,20 +39,16 @@ export const usePublishSurvey = () => {
   };
 
   const handleOpenChange = () => {
-    setStatus('idle');
+    setIsDialogOpen(false);
+    setAction(null);
+    resetMutation();
   };
 
   return {
-    isPublished,
-    publish: {
-      handlePublish,
-      status,
-      pending: status === 'publishing' || status === 'unpublishing',
-      success: status === 'published' || status === 'unpublished',
-    },
-    dialog: {
-      isOpen: status !== 'idle',
-      handleOpenChange,
-    },
+    action,
+    handlePublish,
+    handleOpenChange,
+    isDialogOpen,
+    ...rest,
   };
 };

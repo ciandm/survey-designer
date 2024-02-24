@@ -1,45 +1,47 @@
 'use client';
 
-import {CheckIcon} from '@radix-ui/react-icons';
-import {Loader2} from 'lucide-react';
+import {CheckIcon, ExclamationTriangleIcon} from '@radix-ui/react-icons';
+import {InfoIcon, Loader2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
 import {usePublishSurvey} from '../hooks/use-publish-survey';
+import {
+  surveyPublishedSelector,
+  useSurveyDesignerStore,
+} from '../store/survey-designer';
 import {CopySurveyUrl} from './copy-survey-url';
 
-export const PublishSurvey = () => {
-  const {dialog, publish, isPublished} = usePublishSurvey();
+export const PublishDialog = () => {
+  const isPublished = useSurveyDesignerStore(surveyPublishedSelector);
+  const {action, handlePublish, handleOpenChange, isDialogOpen, status} =
+    usePublishSurvey();
 
   return (
     <>
       <Button
-        onClick={() =>
-          publish.handlePublish(isPublished ? 'unpublish' : 'publish')
-        }
+        onClick={() => handlePublish(isPublished ? 'unpublish' : 'publish')}
         size="sm"
       >
         {isPublished ? 'Unpublish' : 'Publish'}
       </Button>
       <Dialog
-        open={dialog.isOpen}
-        onOpenChange={publish.pending ? undefined : dialog.handleOpenChange}
+        open={isDialogOpen}
+        onOpenChange={status === 'pending' ? undefined : handleOpenChange}
       >
-        <DialogContent hideCloseButton={publish.pending}>
-          {(publish.status === 'publishing' ||
-            publish.status === 'unpublishing') && (
+        <DialogContent hideCloseButton={status === 'pending'}>
+          {status === 'pending' && (
             <DialogHeader className="flex-row items-center gap-2">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <div className="space-y-0.5">
                 <DialogTitle className="text-base">
-                  {publish.status === 'publishing'
-                    ? 'Publishing'
-                    : 'Unpublishing'}{' '}
+                  {action === 'publish' ? 'Publishing' : 'Unpublishing'}{' '}
                   survey...
                 </DialogTitle>
                 <DialogDescription>
@@ -48,36 +50,53 @@ export const PublishSurvey = () => {
               </div>
             </DialogHeader>
           )}
-          {publish.success && (
+          {status === 'success' && (
             <>
-              {publish.status === 'published' ? (
-                <>
-                  <DialogHeader className="flex-row items-center gap-2">
-                    <CheckIcon className="h-8 w-8 text-green-500" />
-                    <div className="space-y-0.5">
-                      <DialogTitle className="text-base">
-                        Survey published successfully!
-                      </DialogTitle>
-                      <DialogDescription>
-                        Your survey is now live and available for responses.
-                      </DialogDescription>
-                    </div>
-                  </DialogHeader>
-                  <CopySurveyUrl />
-                </>
-              ) : (
-                <DialogHeader className="flex-row items-center gap-2">
-                  <CheckIcon className="h-8 w-8 text-green-500" />
-                  <div className="space-y-0.5">
-                    <DialogTitle className="text-base">
-                      Survey unpublished.
-                    </DialogTitle>
-                    <DialogDescription>
-                      Your survey is no longer available for responses.
-                    </DialogDescription>
-                  </div>
-                </DialogHeader>
-              )}
+              <DialogHeader className="flex-row items-center gap-2">
+                <CheckIcon className="h-5 w-5 text-green-500" />
+                <div className="space-y-0.5">
+                  <DialogTitle className="text-base">
+                    {action === 'publish'
+                      ? 'Survey published successfully!'
+                      : 'Survey unpublished.'}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {action === 'publish'
+                      ? 'Your survey is now live and available for responses.'
+                      : 'Your survey is no longer available for responses.'}
+                  </DialogDescription>
+                </div>
+              </DialogHeader>
+              {action === 'publish' && <CopySurveyUrl />}
+            </>
+          )}
+          {status === 'error' && (
+            <>
+              <DialogHeader className="flex-row items-center gap-2">
+                <InfoIcon className="mt-2 h-5 w-5 self-start text-red-500" />
+                <div className="space-y-0.5">
+                  <DialogTitle className="text-base">
+                    Error {action === 'publish' ? 'publishing' : 'unpublishing'}{' '}
+                    survey
+                  </DialogTitle>
+                  <DialogDescription className="mb-4">
+                    An error occurred while{' '}
+                    {action === 'publish' ? 'publishing' : 'unpublishing'} your
+                    survey. Please try again.
+                  </DialogDescription>
+                </div>
+              </DialogHeader>
+              <DialogFooter>
+                <Button
+                  onClick={() =>
+                    handlePublish(isPublished ? 'unpublish' : 'publish')
+                  }
+                  size="sm"
+                  variant="secondary"
+                >
+                  Retry
+                </Button>
+              </DialogFooter>
             </>
           )}
         </DialogContent>

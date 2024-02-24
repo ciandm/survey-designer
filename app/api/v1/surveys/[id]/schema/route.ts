@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {z} from 'zod';
-import {updateSurveyInput} from '@/lib/validations/survey';
+import {updateSchemaInput} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
 const routeContextSchema = z.object({
@@ -16,7 +16,7 @@ export async function PUT(
   const {params} = routeContextSchema.parse(context);
 
   const body = await req.json();
-  const parsed = updateSurveyInput.safeParse(body);
+  const parsed = updateSchemaInput.safeParse(body);
 
   if (!parsed.success) {
     return NextResponse.json(parsed.error, {status: 400});
@@ -28,8 +28,8 @@ export async function PUT(
     },
     data: {
       schema: {
-        ...parsed.data.survey,
-        version: parsed.data.survey.version + 1,
+        ...parsed.data.schema,
+        version: parsed.data.schema.version + 1,
       },
     },
   });

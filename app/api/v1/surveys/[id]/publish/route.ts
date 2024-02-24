@@ -26,7 +26,7 @@ export async function DELETE(
   return NextResponse.json({survey}, {status: 200});
 }
 
-export async function PUT(
+export async function PATCH(
   req: NextRequest,
   context: z.infer<typeof routeContextSchema>,
 ) {
