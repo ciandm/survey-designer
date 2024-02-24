@@ -1,19 +1,19 @@
+'use client';
+
 import {useState} from 'react';
-import {CopyIcon, DotsHorizontalIcon, TrashIcon} from '@radix-ui/react-icons';
-import {Label} from '@radix-ui/react-label';
-import {Switch} from '@radix-ui/react-switch';
+import {DotsHorizontalIcon} from '@radix-ui/react-icons';
 import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
-import {AlertDialogCancel} from '@/components/ui/alert-dialog';
-import {Button} from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,11 +28,71 @@ import {
   surveySchemaSelector,
   useSurveyDesignerStore,
 } from '../store/survey-designer';
-import {DeleteSurveyAlert} from './delete-survey-alert';
 
 export const SurveyActions = () => {
+  const {deleteSurveyProps, duplicateSurveyProps} = useSurveyActions();
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="secondary" size="sm">
+            <span className="sr-only">Actions</span>
+            <DotsHorizontalIcon className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-[200px]">
+          <DropdownMenuItem
+            onSelect={duplicateSurveyProps.handleDuplicateSurvey}
+            disabled={duplicateSurveyProps.isPending}
+          >
+            Duplicate survey
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={() => deleteSurveyProps.setOpen(true)}
+            className="text-red-600"
+            disabled={duplicateSurveyProps.isPending}
+          >
+            Delete survey
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <AlertDialog
+        open={deleteSurveyProps.isOpen}
+        onOpenChange={deleteSurveyProps.setOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              survey.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteSurveyProps.isPending}>
+              Cancel
+            </AlertDialogCancel>
+            <Button
+              disabled={deleteSurveyProps.isPending}
+              variant="destructive"
+              onClick={deleteSurveyProps.handleDeleteSurvey}
+            >
+              Delete
+              {deleteSurveyProps.isPending && (
+                <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+              )}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
+
+const useSurveyActions = () => {
   const {id} = useSurveyDesignerStore(surveySchemaSelector);
-  const [open, setIsOpen] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const router = useRouter();
 
@@ -63,97 +123,23 @@ export const SurveyActions = () => {
             description: 'Your survey has been duplicated successfully.',
             variant: 'default',
           });
-          let query = '';
-          if (duplicatedSurvey.schema.elements.length > 0) {
-            query = `?element=${duplicatedSurvey.schema.elements[0].ref}`;
-          }
-          router.push(`/editor/${duplicatedSurvey.id}${query}`);
+          router.push(`/editor/${duplicatedSurvey.id}/designer`);
           router.refresh();
         },
       },
     );
   };
 
-  return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">
-            <span className="sr-only">Actions</span>
-            <DotsHorizontalIcon className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem
-            onSelect={handleDuplicateSurvey}
-            disabled={isPendingDuplicate}
-          >
-            Duplicate
-            <CopyIcon className="ml-auto h-4 w-4" />
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onSelect={() => setShowDeleteDialog(true)}
-            className="text-red-600"
-            disabled={isPendingDuplicate}
-          >
-            Delete
-            <TrashIcon className="ml-auto h-4 w-4" />
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <Dialog open={open} onOpenChange={setIsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Content filter preferences</DialogTitle>
-            <DialogDescription>
-              The content filter flags text that may violate our content policy.
-              It&apos;s powered by our moderation endpoint which is free to use
-              to moderate your OpenAI API traffic. Learn more.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-6">
-            <h4 className="text-sm text-muted-foreground">
-              Playground Warnings
-            </h4>
-            <div className="flex items-start justify-between space-x-4 pt-3">
-              <Switch name="show" id="show" defaultChecked={true} />
-              <Label className="grid gap-1 font-normal" htmlFor="show">
-                <span className="font-semibold">
-                  Show a warning when content is flagged
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  A warning will be shown when sexual, hateful, violent or
-                  self-harm content is detected.
-                </span>
-              </Label>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setIsOpen(false)}
-            >
-              Close
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <DeleteSurveyAlert
-        open={showDeleteDialog}
-        onOpenChange={setShowDeleteDialog}
-      >
-        <AlertDialogCancel disabled={isPendingDelete}>Cancel</AlertDialogCancel>
-        <Button
-          disabled={isPendingDelete}
-          variant="destructive"
-          onClick={handleDeleteSurvey}
-        >
-          Delete
-          {isPendingDelete && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
-        </Button>
-      </DeleteSurveyAlert>
-    </>
-  );
+  return {
+    deleteSurveyProps: {
+      isOpen: showDeleteDialog,
+      setOpen: setShowDeleteDialog,
+      handleDeleteSurvey,
+      isPending: isPendingDelete,
+    },
+    duplicateSurveyProps: {
+      handleDuplicateSurvey,
+      isPending: isPendingDuplicate,
+    },
+  };
 };
