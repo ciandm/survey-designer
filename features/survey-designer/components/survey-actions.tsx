@@ -14,13 +14,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {toast} from '@/components/ui/use-toast';
 import {duplicateSurvey} from '../actions/survey';
-import {
-  surveyIdSelector,
-  useSurveyDesignerStore,
-} from '../store/survey-designer-store';
+import {useSurveyId} from '../store/survey-designer-store';
 
 export const SurveyActions = () => {
-  const surveyId = useSurveyDesignerStore(surveyIdSelector);
+  const surveyId = useSurveyId();
   const {handleDuplicateSurvey, isDuplicatePending} = useDuplicateSurvey();
   const onConfirmDelete = useDeleteSurveyConfirm();
   const router = useRouter();

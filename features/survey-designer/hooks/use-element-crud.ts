@@ -3,17 +3,16 @@ import {ELEMENT_TYPE, ElementType} from '@/lib/constants/element';
 import {getNextElementToSelect} from '@/lib/utils';
 import {setActiveElementRef} from '../store/active-element-ref';
 import {
-  deleteElement,
-  duplicateElement,
-  insertElement,
-  surveyElementsSelector,
+  useDesignerActions,
   useSurveyDesignerStore,
+  useSurveyElements,
 } from '../store/survey-designer-store';
 import {useActiveElement} from './use-active-element';
 
 export const useElementCrud = () => {
   const {activeElement} = useActiveElement();
-  const elements = useSurveyDesignerStore(surveyElementsSelector);
+  const elements = useSurveyElements();
+  const {insertElement, deleteElement, duplicateElement} = useDesignerActions();
 
   const handleRemoveElement = (id: string) => {
     const questionsBeforeDelete = elements;

@@ -1,16 +1,14 @@
 'use client';
 
-import React from 'react';
 import {
-  surveySchemaSelector,
-  updateDescription,
-  updateTitle,
-  useSurveyDesignerStore,
+  useDesignerActions,
+  useSurveySchema,
 } from '../store/survey-designer-store';
 import {ContentEditable} from './content-editable';
 
 export const SurveyTitleEditor = () => {
-  const schema = useSurveyDesignerStore(surveySchemaSelector);
+  const schema = useSurveySchema();
+  const {updateTitle, updateDescription} = useDesignerActions();
 
   if (schema.elements.length === 0) return null;
 

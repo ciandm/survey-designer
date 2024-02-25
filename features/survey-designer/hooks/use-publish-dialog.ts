@@ -2,18 +2,15 @@ import {useState} from 'react';
 import {useMutation} from '@tanstack/react-query';
 import {publishSurvey, unpublishSurvey} from '@/lib/api/survey';
 import {SurveyResponse} from '@/lib/validations/survey';
-import {
-  setPublished,
-  surveyIdSelector,
-  useSurveyDesignerStore,
-} from '../store/survey-designer';
+import {useDesignerActions, useSurveyId} from '../store/survey-designer-store';
 
 type PublishAction = 'publish' | 'unpublish';
 
 export const usePublishDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [action, setAction] = useState<PublishAction | null>(null);
-  const surveyId = useSurveyDesignerStore(surveyIdSelector);
+  const surveyId = useSurveyId();
+  const {setPublished} = useDesignerActions();
 
   const {
     mutateAsync: handlePublishSurvey,

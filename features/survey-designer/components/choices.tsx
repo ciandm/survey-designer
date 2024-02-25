@@ -35,13 +35,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {ChoicesSchema} from '@/lib/validations/survey';
-import {
-  deleteChoices,
-  deleteQuestionChoice,
-  insertQuestionChoice,
-  moveChoices,
-  updateQuestionChoice,
-} from '../store/survey-designer-store';
+import {useDesignerActions} from '../store/survey-designer-store';
 
 type ChoicesProps = {
   children: React.ReactNode;
@@ -76,6 +70,7 @@ type ChoicesListProps = {
 };
 
 export const ChoicesList = ({children}: ChoicesListProps) => {
+  const {moveChoices} = useDesignerActions();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -127,6 +122,7 @@ export const ChoicesField = ({choice, index}: ChoiceFieldProps) => {
     choices,
     elementId,
   } = useChoicesContext();
+  const {updateQuestionChoice} = useDesignerActions();
 
   return (
     <Sortable
@@ -276,6 +272,8 @@ type UseChoicesProps = {
 };
 
 const useChoices = ({elementId, choices = []}: UseChoicesProps) => {
+  const {insertQuestionChoice, deleteQuestionChoice, deleteChoices} =
+    useDesignerActions();
   const [focusIndex, setFocusIndex] = useState<number | null>(null);
   const focusInputs = useRef<HTMLInputElement[]>([]);
 

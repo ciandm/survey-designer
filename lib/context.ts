@@ -1,6 +1,10 @@
 import * as React from 'react';
 
-export function createContext<T>() {
+type Options = {
+  shouldThrow?: boolean;
+};
+
+export function createContext<T>(options: Options = {}) {
   const ctx = React.createContext<T | undefined>(undefined);
 
   function useContext() {

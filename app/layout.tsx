@@ -2,7 +2,6 @@ import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
 import {DeleteSurveyDialog} from '@/components/delete-survey';
 import {Toaster} from '@/components/ui/sonner';
-import {PublishDialog} from '@/features/survey-designer/components/publish-dialog';
 import {QueryClientProvider} from '@/lib/query-client/provider';
 import {cn} from '@/lib/utils';
 import './globals.css';
@@ -22,9 +21,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
   let content = (
     <>
       <QueryClientProvider>
-        <PublishDialog>
-          <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
-        </PublishDialog>
+        <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
       </QueryClientProvider>
       <Toaster />
     </>

@@ -12,14 +12,11 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
-import {
-  surveyPublishedSelector,
-  useSurveyDesignerStore,
-} from '../store/survey-designer';
+import {useSurveyPublished} from '../store/survey-designer-store';
 import {CopySurveyUrl} from './copy-survey-url';
 
 export const ShareSurvey = () => {
-  const isPublished = useSurveyDesignerStore(surveyPublishedSelector);
+  const isPublished = useSurveyPublished();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const description = isPublished
