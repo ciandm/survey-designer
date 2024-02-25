@@ -376,7 +376,7 @@ export const useIsSurveyChanged = () => {
     savedSchema: state.savedSchema,
   }));
 
-  return isEqual(schema, savedSchema);
+  return !isEqual(schema, savedSchema);
 };
 
 export const useDesignerActions = () => {
