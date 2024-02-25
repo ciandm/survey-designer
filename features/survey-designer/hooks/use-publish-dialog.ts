@@ -10,10 +10,10 @@ import {
 
 type PublishAction = 'publish' | 'unpublish';
 
-export const usePublishSurvey = () => {
-  const surveyId = useSurveyDesignerStore(surveyIdSelector);
+export const usePublishDialog = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [action, setAction] = useState<PublishAction | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const surveyId = useSurveyDesignerStore(surveyIdSelector);
 
   const {
     mutateAsync: handlePublishSurvey,
@@ -26,9 +26,9 @@ export const usePublishSurvey = () => {
     },
   });
 
-  const handlePublish = async (action: PublishAction) => {
+  const onPublish = async (action: PublishAction) => {
     setAction(action);
-    setIsDialogOpen(true);
+    setIsOpen(true);
     try {
       const {survey} = await handlePublishSurvey({action});
       setPublished(survey.is_published);
@@ -38,17 +38,29 @@ export const usePublishSurvey = () => {
     }
   };
 
-  const handleOpenChange = () => {
-    setIsDialogOpen(false);
+  const onRetry = async () => {
+    if (action) {
+      try {
+        await handlePublishSurvey({action});
+      } catch (e) {
+        // UI-TODO: Show error message
+        console.error(e);
+      }
+    }
+  };
+
+  const onOpenChange = () => {
+    setIsOpen((prev) => !prev);
     setAction(null);
     resetMutation();
   };
 
   return {
     action,
-    handlePublish,
-    handleOpenChange,
-    isDialogOpen,
+    isOpen,
+    onPublish,
+    onOpenChange,
+    onRetry,
     ...rest,
   };
 };

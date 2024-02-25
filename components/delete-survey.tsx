@@ -1,10 +1,10 @@
 'use client';
 
-import React, {useState, useTransition} from 'react';
+import React, {useState} from 'react';
 import {Slot} from '@radix-ui/react-slot';
+import {useMutation} from '@tanstack/react-query';
 import {Loader2} from 'lucide-react';
-import {usePathname, useRouter} from 'next/navigation';
-import {deleteSurvey} from '@/features/survey-designer/actions/survey';
+import {deleteSurvey} from '@/lib/api/survey';
 import {createContext} from '@/lib/context';
 import {
   AlertDialog,
@@ -22,23 +22,15 @@ type DeleteSurveyProps = {
 };
 
 export const DeleteSurveyDialog = ({children}: DeleteSurveyProps) => {
-  const {setSurveyId, surveyId, handleDeleteSurvey, isDeletePending} =
-    useDeleteSurvey();
-
-  const onOpenChange = (open: boolean) => {
-    setSurveyId((prev) => (open ? prev : ''));
-  };
-
-  const onTriggerClick = (surveyId: string) => {
-    setSurveyId(surveyId);
-  };
+  const {isOpen, onDeleteSurvey, onOpenConfirmation, onClose, status} =
+    useDeleteSurveyDialog();
 
   return (
     <>
-      <DeleteSurveyDialogProvider value={{onTriggerClick, isDeletePending}}>
+      <DeleteSurveyDialogProvider value={onOpenConfirmation}>
         {children}
       </DeleteSurveyDialogProvider>
-      <AlertDialog open={!!surveyId} onOpenChange={onOpenChange}>
+      <AlertDialog open={isOpen} onOpenChange={onClose}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure absolutely sure?</AlertDialogTitle>
@@ -48,16 +40,16 @@ export const DeleteSurveyDialog = ({children}: DeleteSurveyProps) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeletePending}>
+            <AlertDialogCancel disabled={status === 'pending'}>
               Cancel
             </AlertDialogCancel>
             <Button
-              disabled={isDeletePending}
+              disabled={status === 'pending'}
               variant="destructive"
-              onClick={() => handleDeleteSurvey(surveyId)}
+              onClick={onDeleteSurvey}
             >
               Delete
-              {isDeletePending && (
+              {status === 'pending' && (
                 <Loader2 className="ml-2 h-4 w-4 animate-spin" />
               )}
             </Button>
@@ -68,55 +60,80 @@ export const DeleteSurveyDialog = ({children}: DeleteSurveyProps) => {
   );
 };
 
-export const DeleteSurveyDialogTrigger = React.forwardRef<
+export const DeleteSurveyTrigger = React.forwardRef<
   HTMLButtonElement,
-  ButtonProps & {surveyId: string}
->(({children, asChild, surveyId, ...rest}, ref) => {
-  const {onTriggerClick, isDeletePending} = useDeleteSurveyDialogContext();
-
+  ButtonProps & {surveyId: string; onDeleted?: () => void}
+>(({children, asChild, surveyId, onDeleted, ...rest}, ref) => {
+  const onConfirmDelete = useDeleteSurveyConfirm();
   const Comp = asChild ? Slot : Button;
 
   return (
     <Comp
-      onClick={() => onTriggerClick(surveyId)}
+      onClick={() => onConfirmDelete({surveyId}).then(onDeleted)}
       {...rest}
       ref={ref}
-      disabled={isDeletePending}
     >
       {children}
     </Comp>
   );
 });
 
-DeleteSurveyDialogTrigger.displayName = 'DeleteSurveyDialogTrigger';
+type DeleteSurveyOptions = {
+  surveyId: string;
+  catchError?: boolean;
+};
 
-const [DeleteSurveyDialogProvider, useDeleteSurveyDialogContext] =
-  createContext<{
-    onTriggerClick: (surveyId: string) => void;
-    isDeletePending: boolean;
+DeleteSurveyTrigger.displayName = 'DeleteSurveyDialogTrigger';
+
+const [DeleteSurveyDialogProvider, useDeleteSurveyConfirm] =
+  createContext<(options: DeleteSurveyOptions) => Promise<void>>();
+
+const useDeleteSurveyDialog = () => {
+  const [options, setOptions] = useState<DeleteSurveyOptions | null>(null);
+  const awaitingPromiseRef = React.useRef<{
+    resolve: () => void;
+    reject: () => void;
   }>();
+  const {mutateAsync: handleDeleteSurvey, status} = useMutation<
+    void,
+    Error,
+    void
+  >({
+    mutationFn: async () => deleteSurvey(options?.surveyId ?? ''),
+  });
 
-const useDeleteSurvey = () => {
-  const [surveyId, setSurveyId] = useState('');
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const handleDeleteSurvey = async (surveyId: string) => {
-    startTransition(async () => {
-      await deleteSurvey(surveyId);
-      setSurveyId('');
-      if (pathname.includes('editor')) {
-        router.push('/');
-      }
-      router.refresh();
+  const onOpenConfirmation = (options: DeleteSurveyOptions) => {
+    setOptions(options);
+    return new Promise<void>((resolve, reject) => {
+      awaitingPromiseRef.current = {resolve, reject};
     });
   };
 
+  const onClose = () => {
+    if (options?.catchError && awaitingPromiseRef.current) {
+      awaitingPromiseRef.current.reject();
+    }
+    setOptions(null);
+  };
+
+  const onDeleteSurvey = async () => {
+    await handleDeleteSurvey();
+    if (awaitingPromiseRef.current) {
+      awaitingPromiseRef.current.resolve();
+    }
+
+    setOptions(null);
+  };
+
+  const isOpen = !!options;
+
   return {
-    handleDeleteSurvey,
-    isDeletePending: isPending,
-    surveyId,
-    setSurveyId,
+    isOpen,
+    onDeleteSurvey,
+    onOpenConfirmation,
+    onClose,
+    status,
   };
 };
+
+export {useDeleteSurveyConfirm};

@@ -34,9 +34,11 @@ type SurveyProps = {
   schema: SurveySchema;
   initialStep?: Exclude<Step, 'thank_you'>;
   shouldSubmitResults?: boolean;
+  surveyId: string;
 };
 
 export const SurveyForm = ({
+  surveyId,
   schema,
   initialStep = 'questions',
   shouldSubmitResults = true,
@@ -68,7 +70,7 @@ export const SurveyForm = ({
       try {
         if (shouldSubmitResults) {
           await handleSubmitSurvey({
-            surveyId: schema.id,
+            surveyId,
             responses: data.fields.map((field) => field),
           });
         }

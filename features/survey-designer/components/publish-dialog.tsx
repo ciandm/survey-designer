@@ -1,6 +1,7 @@
 'use client';
 
-import {CheckIcon, ExclamationTriangleIcon} from '@radix-ui/react-icons';
+import React from 'react';
+import {CheckIcon} from '@radix-ui/react-icons';
 import {InfoIcon, Loader2} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {
@@ -11,29 +12,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {usePublishSurvey} from '../hooks/use-publish-survey';
-import {
-  surveyPublishedSelector,
-  useSurveyDesignerStore,
-} from '../store/survey-designer';
+import {createContext} from '@/lib/context';
+import {usePublishDialog} from '../hooks/use-publish-dialog';
 import {CopySurveyUrl} from './copy-survey-url';
 
-export const PublishDialog = () => {
-  const isPublished = useSurveyDesignerStore(surveyPublishedSelector);
-  const {action, handlePublish, handleOpenChange, isDialogOpen, status} =
-    usePublishSurvey();
+export const PublishDialog = ({children}: {children: React.ReactNode}) => {
+  const {onPublish, onOpenChange, status, action, isOpen, onRetry} =
+    usePublishDialog();
 
   return (
-    <>
-      <Button
-        onClick={() => handlePublish(isPublished ? 'unpublish' : 'publish')}
-        size="sm"
-      >
-        {isPublished ? 'Unpublish' : 'Publish'}
-      </Button>
+    <PublishDialogProvider value={onPublish}>
+      {children}
       <Dialog
-        open={isDialogOpen}
-        onOpenChange={status === 'pending' ? undefined : handleOpenChange}
+        open={isOpen}
+        onOpenChange={status === 'pending' ? undefined : onOpenChange}
       >
         <DialogContent hideCloseButton={status === 'pending'}>
           {status === 'pending' && (
@@ -87,13 +79,7 @@ export const PublishDialog = () => {
                 </div>
               </DialogHeader>
               <DialogFooter>
-                <Button
-                  onClick={() =>
-                    handlePublish(isPublished ? 'unpublish' : 'publish')
-                  }
-                  size="sm"
-                  variant="secondary"
-                >
+                <Button onClick={onRetry} size="sm" variant="secondary">
                   Retry
                 </Button>
               </DialogFooter>
@@ -101,6 +87,12 @@ export const PublishDialog = () => {
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </PublishDialogProvider>
   );
 };
+
+type Context = (action: 'publish' | 'unpublish') => void;
+
+const [PublishDialogProvider, usePublishTrigger] = createContext<Context>();
+
+export {usePublishTrigger};

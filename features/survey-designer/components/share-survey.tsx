@@ -35,7 +35,7 @@ export const ShareSurvey = () => {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="right-0 w-[480px]">
-          <div className="space-y-2">
+          <div className="mb-4 space-y-1">
             <h3 className="text-base font-medium">Share survey</h3>
             <p className="text-sm text-muted-foreground">{description}</p>
           </div>
@@ -59,7 +59,7 @@ export const ShareSurvey = () => {
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader className="text-left">
-            <DrawerTitle>Share survey</DrawerTitle>
+            <DrawerTitle>Share</DrawerTitle>
             <DrawerDescription>{description}</DrawerDescription>
           </DrawerHeader>
           {isPublished && (

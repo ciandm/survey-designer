@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
 import {DeleteSurveyDialog} from '@/components/delete-survey';
 import {Toaster} from '@/components/ui/sonner';
+import {PublishDialog} from '@/features/survey-designer/components/publish-dialog';
 import {QueryClientProvider} from '@/lib/query-client/provider';
 import {cn} from '@/lib/utils';
 import './globals.css';
@@ -20,7 +21,11 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: {children: React.ReactNode}) {
   let content = (
     <>
-      <QueryClientProvider>{children}</QueryClientProvider>
+      <QueryClientProvider>
+        <PublishDialog>
+          <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
+        </PublishDialog>
+      </QueryClientProvider>
       <Toaster />
     </>
   );
@@ -51,7 +56,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       <body
         className={cn('bg-background font-sans antialiased', inter.variable)}
       >
-        <DeleteSurveyDialog>{content}</DeleteSurveyDialog>
+        {content}
       </body>
     </html>
   );

@@ -3,7 +3,10 @@
 import {useTransition} from 'react';
 import {DotsHorizontalIcon} from '@radix-ui/react-icons';
 import {useRouter} from 'next/navigation';
-import {DeleteSurveyDialogTrigger} from '@/components/delete-survey';
+import {
+  DeleteSurveyTrigger,
+  useDeleteSurveyConfirm,
+} from '@/components/delete-survey';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -22,6 +25,15 @@ import {
 export const SurveyActions = () => {
   const surveyId = useSurveyDesignerStore(surveyIdSelector);
   const {handleDuplicateSurvey, isDuplicatePending} = useDuplicateSurvey();
+  const onConfirmDelete = useDeleteSurveyConfirm();
+  const router = useRouter();
+
+  const onDeleteSurveySelect = async () => {
+    onConfirmDelete({surveyId}).then(() => {
+      router.push('/');
+      router.refresh();
+    });
+  };
 
   return (
     <DropdownMenu>
@@ -39,11 +51,12 @@ export const SurveyActions = () => {
           Duplicate survey
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DeleteSurveyDialogTrigger surveyId={surveyId} asChild>
-          <DropdownMenuItem className="text-red-600">
-            Delete survey
-          </DropdownMenuItem>
-        </DeleteSurveyDialogTrigger>
+        <DropdownMenuItem
+          className="text-red-600"
+          onSelect={onDeleteSurveySelect}
+        >
+          Delete survey
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

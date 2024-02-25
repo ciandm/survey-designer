@@ -1,18 +1,5 @@
-import React from 'react';
-import Link from 'next/link';
-import {
-  DeleteSurveyDialog,
-  DeleteSurveyDialogTrigger,
-} from '@/components/delete-survey';
-import {Button} from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import {SurveyCard} from '@/features/home/components/survey-card';
+import {SurveyCardActions} from '@/features/home/components/survey-card-actions';
 import {surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
@@ -33,29 +20,9 @@ const Home = async () => {
           const {data} = parsedSchema;
 
           return (
-            <React.Fragment key={survey.id}>
-              <Card>
-                <CardHeader>
-                  <CardTitle>{data.title}</CardTitle>
-                  <CardDescription>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Aliquam
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>{data.elements.length} questions</CardContent>
-                <CardFooter className="justify-between">
-                  <DeleteSurveyDialogTrigger
-                    surveyId={survey.id}
-                    variant="secondary"
-                  >
-                    Delete
-                  </DeleteSurveyDialogTrigger>
-                  <Button variant="default" asChild>
-                    <Link href={`/editor/${survey.id}/designer`}>View</Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            </React.Fragment>
+            <SurveyCard schema={data} key={survey.id}>
+              <SurveyCardActions surveyId={survey.id} />
+            </SurveyCard>
           );
         })}
       </ul>
