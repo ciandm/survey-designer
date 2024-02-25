@@ -4,7 +4,6 @@ import {getNextElementToSelect} from '@/lib/utils';
 import {setActiveElementRef} from '../store/active-element-ref';
 import {
   useDesignerActions,
-  useSurveyDesignerStore,
   useSurveyElements,
 } from '../store/survey-designer-store';
 import {useActiveElement} from './use-active-element';
