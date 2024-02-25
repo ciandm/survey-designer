@@ -1,4 +1,5 @@
-import {SurveyCard} from '@/components/survey-card';
+import {SurveyCard} from '@/features/home/components/survey-card';
+import {SurveyCardActions} from '@/features/home/components/survey-card-actions';
 import {surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
@@ -12,11 +13,17 @@ const Home = async () => {
       </h2>
       <ul className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {surveys.map((survey) => {
-          const parsedSurvey = surveySchema.safeParse(survey.schema);
-          if (!parsedSurvey.success) {
+          const parsedSchema = surveySchema.safeParse(survey.schema);
+          if (!parsedSchema.success) {
             return null;
           }
-          return <SurveyCard survey={parsedSurvey.data} key={survey.id} />;
+          const {data} = parsedSchema;
+
+          return (
+            <SurveyCard schema={data} key={survey.id}>
+              <SurveyCardActions surveyId={survey.id} />
+            </SurveyCard>
+          );
         })}
       </ul>
     </div>

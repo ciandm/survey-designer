@@ -7,6 +7,7 @@ import {buildNewElementHelper} from '@/lib/utils';
 import {ElementSchema, SurveySchema} from '@/lib/validations/survey';
 
 type SurveyDesignerStoreProps = {
+  id: string;
   schema: SurveySchema;
   savedSchema: SurveySchema;
   isPublished: boolean;
@@ -68,7 +69,6 @@ export type SurveyDesignerStoreState = SurveyDesignerStoreProps & {
 };
 
 const initialSchema: SurveySchema = {
-  id: '',
   title: '',
   elements: [],
   version: 1,
@@ -84,6 +84,7 @@ const initialSchema: SurveySchema = {
 
 export const useSurveyDesignerStore = create<SurveyDesignerStoreState>()(
   immer((set) => ({
+    id: '',
     isPublished: false,
     schema: initialSchema,
     savedSchema: initialSchema,
@@ -325,6 +326,7 @@ export const surveyScreenSelector = (state: SurveyDesignerStoreState) =>
   state.schema.screens;
 export const surveySchemaSelector = (state: SurveyDesignerStoreState) =>
   state.schema;
+export const surveyIdSelector = (state: SurveyDesignerStoreState) => state.id;
 export const surveyElementsSelector = (state: SurveyDesignerStoreState) =>
   state.schema.elements;
 export const surveyPublishedSelector = (state: SurveyDesignerStoreState) =>

@@ -4,13 +4,14 @@ import {Card} from '@/components/ui/card';
 import {sortChoices} from '@/features/survey-tool/utils/question';
 import {SurveyForm} from '../../survey-tool/components/survey-form';
 import {
+  surveyIdSelector,
   surveySchemaSelector,
   useSurveyDesignerStore,
 } from '../store/survey-designer';
 
 export const SurveyPreviewer = () => {
-  const survey = useSurveyDesignerStore(surveySchemaSelector);
-  const schema = sortChoices(survey);
+  const id = useSurveyDesignerStore(surveyIdSelector);
+  const schema = sortChoices(useSurveyDesignerStore(surveySchemaSelector));
 
   return (
     <div className="container max-w-2xl">
@@ -19,7 +20,7 @@ export const SurveyPreviewer = () => {
         <p className="text-sm text-muted-foreground">{schema.description}</p>
       </header>
       <Card>
-        <SurveyForm shouldSubmitResults={false} schema={schema} />
+        <SurveyForm shouldSubmitResults={false} schema={schema} surveyId={id} />
       </Card>
     </div>
   );

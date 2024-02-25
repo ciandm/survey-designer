@@ -13,13 +13,13 @@ type Props = {
 };
 
 const SurveyPage = async ({params}: Props) => {
-  const survey = await getSurvey(params.id);
+  const initialSchema = await getSchema(params.id);
 
-  if (!survey) {
+  if (!initialSchema) {
     return notFound();
   }
 
-  const schema = sortChoices(survey);
+  const schema = sortChoices(initialSchema);
 
   return (
     <div className="bg-muted sm:py-8">
@@ -29,7 +29,7 @@ const SurveyPage = async ({params}: Props) => {
           <p className="text-sm text-muted-foreground">{schema.description}</p>
         </header>
         <Card>
-          <SurveyForm schema={schema} />
+          <SurveyForm surveyId={params.id} schema={schema} />
         </Card>
       </div>
     </div>
@@ -40,7 +40,7 @@ export default SurveyPage;
 
 export const dynamic = 'force-dynamic';
 
-async function getSurvey(id: string): Promise<SurveySchema | null> {
+async function getSchema(id: string): Promise<SurveySchema | null> {
   try {
     const survey = await prisma.survey.findUnique({
       where: {
@@ -48,7 +48,7 @@ async function getSurvey(id: string): Promise<SurveySchema | null> {
       },
     });
 
-    if (!survey) {
+    if (!survey || !survey.is_published) {
       return null;
     }
 

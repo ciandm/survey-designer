@@ -19,7 +19,7 @@ import {ChoicesSchema, responsesSchema} from '@/lib/validations/survey';
 import {useDeleteSurveyResult} from '../hooks/use-delete-response';
 
 export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
-  const {survey} = useSurveyProvider();
+  const {schema, id} = useSurveyProvider();
   const {mutate, isPending} = useDeleteSurveyResult();
   const router = useRouter();
   const {toast} = useToast();
@@ -43,7 +43,7 @@ export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
           onClick={() =>
             mutate(
               {
-                surveyId: survey.id,
+                surveyId: id,
                 responseId: surveyResult.id,
               },
               {
@@ -64,12 +64,12 @@ export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[240px]">element</TableHead>
+            <TableHead className="w-[240px]">Question</TableHead>
             <TableHead>Response</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {survey.elements.map((element, index) => {
+          {schema.elements.map((element, index) => {
             const response = data.find(
               (response) => response.questionId === element.id,
             );

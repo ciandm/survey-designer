@@ -1,6 +1,6 @@
 'use client';
 
-import {useRef} from 'react';
+import {useEffect, useRef} from 'react';
 import {SurveyResponse} from '@/lib/validations/survey';
 import {useSurveyDesignerStore} from '../store/survey-designer';
 
@@ -11,15 +11,18 @@ export const SurveyDesignerInitialiser = ({
 }) => {
   const isInitialised = useRef(false);
 
-  if (!isInitialised.current) {
-    useSurveyDesignerStore.setState({
-      schema: survey.schema,
-      savedSchema: survey.schema,
-      isPublished: survey.is_published,
-    });
+  useEffect(() => {
+    if (!isInitialised.current) {
+      useSurveyDesignerStore.setState({
+        schema: survey.schema,
+        savedSchema: survey.schema,
+        isPublished: survey.is_published,
+        id: survey.id,
+      });
 
-    isInitialised.current = true;
-  }
+      isInitialised.current = true;
+    }
+  }, [survey]);
 
   return null;
 };
