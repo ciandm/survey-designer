@@ -41,7 +41,7 @@ import {
   insertQuestionChoice,
   moveChoices,
   updateQuestionChoice,
-} from '../store/survey-designer';
+} from '../store/survey-designer-store';
 
 type ChoicesProps = {
   children: React.ReactNode;

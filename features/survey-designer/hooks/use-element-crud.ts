@@ -8,7 +8,7 @@ import {
   insertElement,
   surveyElementsSelector,
   useSurveyDesignerStore,
-} from '../store/survey-designer';
+} from '../store/survey-designer-store';
 import {useActiveElement} from './use-active-element';
 
 export const useElementCrud = () => {

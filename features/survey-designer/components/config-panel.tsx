@@ -34,7 +34,7 @@ import {
   updateScreen,
   updateTitle,
   useSurveyDesignerStore,
-} from '../store/survey-designer';
+} from '../store/survey-designer-store';
 import {
   Choices,
   ChoicesAddChoice,

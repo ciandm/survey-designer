@@ -2,7 +2,7 @@
 
 import {useEffect, useRef} from 'react';
 import {SurveyResponse} from '@/lib/validations/survey';
-import {useSurveyDesignerStore} from '../store/survey-designer';
+import {useSurveyDesignerStore} from '../store/survey-designer-store';
 
 export const SurveyDesignerInitialiser = ({
   survey,

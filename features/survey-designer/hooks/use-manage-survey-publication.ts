@@ -1,7 +1,7 @@
 import {useMutation} from '@tanstack/react-query';
 import {publishSurvey, unpublishSurvey} from '@/lib/api/survey';
 import {SurveyResponse} from '@/lib/validations/survey';
-import {setPublished} from '../store/survey-designer';
+import {setPublished} from '../store/survey-designer-store';
 
 type PublishSurveyParams = {
   surveyId: string;

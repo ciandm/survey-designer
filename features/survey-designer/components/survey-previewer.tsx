@@ -7,7 +7,7 @@ import {
   surveyIdSelector,
   surveySchemaSelector,
   useSurveyDesignerStore,
-} from '../store/survey-designer';
+} from '../store/survey-designer-store';
 
 export const SurveyPreviewer = () => {
   const id = useSurveyDesignerStore(surveyIdSelector);

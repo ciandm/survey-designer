@@ -6,7 +6,7 @@ import {
   updateDescription,
   updateTitle,
   useSurveyDesignerStore,
-} from '../store/survey-designer';
+} from '../store/survey-designer-store';
 import {ContentEditable} from './content-editable';
 
 export const SurveyTitleEditor = () => {

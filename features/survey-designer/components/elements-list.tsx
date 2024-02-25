@@ -16,7 +16,7 @@ import {
   changeElementType,
   surveyElementsSelector,
   useSurveyDesignerStore,
-} from '../store/survey-designer';
+} from '../store/survey-designer-store';
 import {AddQuestion} from './add-question';
 import {Choices, ChoicesAddChoice, ChoicesField, ChoicesList} from './choices';
 import {ElementsEmptyState} from './elements-empty-state';

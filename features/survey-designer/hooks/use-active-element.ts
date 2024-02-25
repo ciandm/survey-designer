@@ -3,7 +3,7 @@ import {useActiveElementRef} from '../store/active-element-ref';
 import {
   surveyElementsSelector,
   useSurveyDesignerStore,
-} from '../store/survey-designer';
+} from '../store/survey-designer-store';
 
 type UseActiveElementResult = {
   activeElement: ElementSchema | null;
