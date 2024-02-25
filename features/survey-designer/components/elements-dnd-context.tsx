@@ -17,17 +17,17 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import {
-  setElements,
-  surveyElementsSelector,
-  useSurveyDesignerStore,
-} from '../store/survey-designer';
+  useDesignerActions,
+  useSurveyElements,
+} from '../store/survey-designer-store';
 
 type ElementsDndContextProps = {
   children: React.ReactNode;
 };
 
 export const ElementsDndContext = ({children}: ElementsDndContextProps) => {
-  const elements = useSurveyDesignerStore(surveyElementsSelector);
+  const elements = useSurveyElements();
+  const {setElements} = useDesignerActions();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {

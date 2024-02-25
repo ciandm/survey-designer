@@ -3,15 +3,11 @@
 import {Card} from '@/components/ui/card';
 import {sortChoices} from '@/features/survey-tool/utils/question';
 import {SurveyForm} from '../../survey-tool/components/survey-form';
-import {
-  surveyIdSelector,
-  surveySchemaSelector,
-  useSurveyDesignerStore,
-} from '../store/survey-designer';
+import {useSurveyId, useSurveySchema} from '../store/survey-designer-store';
 
 export const SurveyPreviewer = () => {
-  const id = useSurveyDesignerStore(surveyIdSelector);
-  const schema = sortChoices(useSurveyDesignerStore(surveySchemaSelector));
+  const id = useSurveyId();
+  const schema = sortChoices(useSurveySchema());
 
   return (
     <div className="container max-w-2xl">

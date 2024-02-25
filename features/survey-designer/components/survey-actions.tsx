@@ -3,10 +3,7 @@
 import {useTransition} from 'react';
 import {DotsHorizontalIcon} from '@radix-ui/react-icons';
 import {useRouter} from 'next/navigation';
-import {
-  DeleteSurveyTrigger,
-  useDeleteSurveyConfirm,
-} from '@/components/delete-survey';
+import {useDeleteSurveyConfirm} from '@/components/delete-survey';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -17,13 +14,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {toast} from '@/components/ui/use-toast';
 import {duplicateSurvey} from '../actions/survey';
-import {
-  surveyIdSelector,
-  useSurveyDesignerStore,
-} from '../store/survey-designer';
+import {useSurveyId} from '../store/survey-designer-store';
 
 export const SurveyActions = () => {
-  const surveyId = useSurveyDesignerStore(surveyIdSelector);
+  const surveyId = useSurveyId();
   const {handleDuplicateSurvey, isDuplicatePending} = useDuplicateSurvey();
   const onConfirmDelete = useDeleteSurveyConfirm();
   const router = useRouter();

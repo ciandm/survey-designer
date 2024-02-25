@@ -1,19 +1,17 @@
 'use client';
 
-import React from 'react';
 import {useParams} from 'next/navigation';
 import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
 import {useUpdateSurveySchema} from '../hooks/use-update-survey-schema';
 import {
-  surveySchemaSelector,
   useIsSurveyChanged,
-  useSurveyDesignerStore,
-} from '../store/survey-designer';
+  useSurveySchema,
+} from '../store/survey-designer-store';
 
 export const SaveChanges = () => {
   const {id} = useParams();
-  const schema = useSurveyDesignerStore(surveySchemaSelector);
+  const schema = useSurveySchema();
   const {mutate: handleUpdateSurveySchema, isPending: isPendingUpdateSchema} =
     useUpdateSurveySchema();
   const isChanged = useIsSurveyChanged();

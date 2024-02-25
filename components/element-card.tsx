@@ -1,7 +1,7 @@
 import React, {DetailedHTMLProps, HTMLAttributes} from 'react';
 import {usePathname} from 'next/navigation';
 import {ContentEditable} from '@/features/survey-designer/components/content-editable';
-import {updateElement} from '@/features/survey-designer/store/survey-designer';
+import {useDesignerActions} from '@/features/survey-designer/store/survey-designer-store';
 import {cn} from '@/lib/utils';
 import {ElementSchema} from '@/lib/validations/survey';
 
@@ -61,6 +61,7 @@ type ElementCardTitle = {
 const ElementCardTitle = ({id, element}: ElementCardTitle) => {
   const pathname = usePathname();
   const isEditable = pathname.includes('/editor');
+  const {updateElement} = useDesignerActions();
 
   if (isEditable) {
     return (

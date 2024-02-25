@@ -24,17 +24,11 @@ import {
 } from '@/components/ui/tooltip';
 import {useActiveElement} from '../hooks/use-active-element';
 import {
-  changeElementType,
-  deleteChoices,
-  surveyElementsSelector,
-  surveySchemaSelector,
-  surveyScreenSelector,
-  updateDescription,
-  updateElement,
-  updateScreen,
-  updateTitle,
-  useSurveyDesignerStore,
-} from '../store/survey-designer';
+  useDesignerActions,
+  useSurveyElements,
+  useSurveySchema,
+  useSurveyScreens,
+} from '../store/survey-designer-store';
 import {
   Choices,
   ChoicesAddChoice,
@@ -61,7 +55,8 @@ export const ConfigPanel = () => {
 
 const ConfigPanelInner = () => {
   const {activeElement} = useActiveElement();
-  const elements = useSurveyDesignerStore(surveyElementsSelector);
+  const elements = useSurveyElements();
+  const {changeElementType, updateElement} = useDesignerActions();
 
   const choices = activeElement?.properties.choices ?? [];
 
@@ -310,8 +305,9 @@ const ConfigPanelInner = () => {
 };
 
 const SurveyGeneralSettings = () => {
-  const schema = useSurveyDesignerStore(surveySchemaSelector);
-  const {thank_you, welcome} = useSurveyDesignerStore(surveyScreenSelector);
+  const schema = useSurveySchema();
+  const {thank_you, welcome} = useSurveyScreens();
+  const {updateTitle, updateDescription, updateScreen} = useDesignerActions();
 
   return (
     <div className="space-y-6">

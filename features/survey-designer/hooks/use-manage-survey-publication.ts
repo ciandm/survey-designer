@@ -1,7 +1,7 @@
 import {useMutation} from '@tanstack/react-query';
 import {publishSurvey, unpublishSurvey} from '@/lib/api/survey';
 import {SurveyResponse} from '@/lib/validations/survey';
-import {setPublished} from '../store/survey-designer';
+import {useDesignerActions} from '../store/survey-designer-store';
 
 type PublishSurveyParams = {
   surveyId: string;
@@ -9,6 +9,7 @@ type PublishSurveyParams = {
 };
 
 export const useManageSurveyPublication = () => {
+  const {setPublished} = useDesignerActions();
   return useMutation<SurveyResponse, Error, PublishSurveyParams>({
     mutationFn: async ({surveyId, action = 'publish'}) => {
       const fn = action === 'publish' ? publishSurvey : unpublishSurvey;

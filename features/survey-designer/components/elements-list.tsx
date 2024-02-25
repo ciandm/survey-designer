@@ -13,19 +13,19 @@ import {useActiveElement} from '../hooks/use-active-element';
 import {useElementCrud} from '../hooks/use-element-crud';
 import {setActiveElementRef} from '../store/active-element-ref';
 import {
-  changeElementType,
-  surveyElementsSelector,
-  useSurveyDesignerStore,
-} from '../store/survey-designer';
+  useDesignerActions,
+  useSurveyElements,
+} from '../store/survey-designer-store';
 import {AddQuestion} from './add-question';
 import {Choices, ChoicesAddChoice, ChoicesField, ChoicesList} from './choices';
 import {ElementsEmptyState} from './elements-empty-state';
 import {QuestionTypeSelect} from './question-type-select';
 
 export const ElementsList = () => {
-  const elements = useSurveyDesignerStore(surveyElementsSelector);
+  const elements = useSurveyElements();
   const {handleRemoveElement, handleDuplicateElement} = useElementCrud();
   const {activeElement} = useActiveElement();
+  const {changeElementType} = useDesignerActions();
 
   const itemsRef = useRef<HTMLDivElement[]>([]);
 
