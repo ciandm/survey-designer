@@ -15,6 +15,8 @@ async function seedDatabase() {
           id: surveyData.id,
           schema: surveyData,
           is_published: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         },
       });
 

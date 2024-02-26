@@ -64,6 +64,8 @@ export const surveyResponse = z.object({
     id: z.string(),
     schema: surveySchema,
     is_published: z.boolean(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
   }),
 });
 

@@ -16,6 +16,8 @@ model Survey {
   schema       Json           @default("{}")
   is_published Boolean        @default(false)
   SurveyResult SurveyResult[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now())
 }
 
 model SurveyResult {
