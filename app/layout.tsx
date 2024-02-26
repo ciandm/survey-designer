@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
 import {DeleteSurveyDialog} from '@/components/delete-survey';
+import {LoadingOverlay} from '@/components/loading-overlay';
 import {Toaster} from '@/components/ui/sonner';
 import {QueryClientProvider} from '@/lib/query-client/provider';
 import {cn} from '@/lib/utils';
@@ -21,7 +22,9 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
   let content = (
     <>
       <QueryClientProvider>
-        <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
+        <LoadingOverlay>
+          <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
+        </LoadingOverlay>
       </QueryClientProvider>
       <Toaster />
     </>
