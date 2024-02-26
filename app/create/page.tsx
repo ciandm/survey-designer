@@ -1,4 +1,5 @@
 import {CreateForm} from '@/features/create/components/create-form';
+import {PreviousSurveys} from './previous-surveys';
 
 const CreatePage = () => {
   return (
@@ -14,6 +15,7 @@ const CreatePage = () => {
           <div className="flex-1 border-t" />
         </div>
         <h2 className="mb-4 text-base font-medium">Copy a previous survey</h2>
+        <PreviousSurveys />
       </div>
     </div>
   );

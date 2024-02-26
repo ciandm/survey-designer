@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {toast} from '@/components/ui/use-toast';
+import {siteUrls} from '@/lib/hrefs';
 import {duplicateSurvey} from '../actions/survey';
 import {useSurveyId} from '../store/survey-designer-store';
 
@@ -68,7 +69,7 @@ const useDuplicateSurvey = () => {
         description: 'Your survey has been duplicated successfully.',
         variant: 'default',
       });
-      router.push(`/editor/${duplicatedSurveyId}/designer`);
+      router.push(siteUrls.designerPage({surveyId: duplicatedSurveyId}));
       router.refresh();
     });
   };
