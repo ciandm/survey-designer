@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {useDeleteSurveyConfirm} from '@/components/delete-survey';
 import {Button} from '@/components/ui/button';
+import {siteUrls} from '@/lib/hrefs';
 
 export const SurveyCardActions = ({surveyId}: {surveyId: string}) => {
   const onConfirmDelete = useDeleteSurveyConfirm();
@@ -18,7 +19,7 @@ export const SurveyCardActions = ({surveyId}: {surveyId: string}) => {
         Delete
       </Button>
       <Button variant="default" asChild>
-        <Link href={`/editor/${surveyId}/designer`}>View</Link>
+        <Link href={siteUrls.designerPage({surveyId})}>View</Link>
       </Button>
     </>
   );
