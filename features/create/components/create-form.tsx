@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {useCreateSurvey} from '@/features/survey-designer/hooks/use-create-survey';
-import {siteUrls} from '@/lib/hrefs';
+import {getSiteUrl} from '@/lib/hrefs';
 
 const createFormSchema = z.object({
   title: z.string().min(1, 'You must provide a title.'),
@@ -98,7 +98,7 @@ const useCreateForm = () => {
         position: 'bottom-center',
         description: 'Redirecting...',
       });
-      router.push(siteUrls.designerPage({surveyId: survey.id}));
+      router.push(getSiteUrl.designerPage({surveyId: survey.id}));
     } catch (error) {
       console.log(error);
     }

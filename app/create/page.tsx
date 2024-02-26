@@ -1,5 +1,4 @@
 import {Suspense} from 'react';
-import {Loader2} from 'lucide-react';
 import {CreateForm} from '@/features/create/components/create-form';
 import {PreviousSurveys} from '@/features/create/components/previous-surveys';
 
@@ -17,7 +16,7 @@ const CreatePage = () => {
           <div className="flex-1 border-t" />
         </div>
         <h2 className="mb-4 text-base font-medium">Copy a previous survey</h2>
-        <Suspense fallback={<Loader2 className="h-4 w-4 animate-spin" />}>
+        <Suspense fallback={<PreviousSurveys.Skeleton />}>
           <PreviousSurveys />
         </Suspense>
       </div>

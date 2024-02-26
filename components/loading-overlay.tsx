@@ -1,19 +1,21 @@
 'use client';
 
 import React, {useState} from 'react';
-import {useAwaitingRef} from '@/app/hooks/use-awaiting-ref';
 import {createContext} from '@/lib/context';
 import {Dialog, DialogOverlay} from './ui/dialog';
 
 export const LoadingOverlay = ({children}: React.PropsWithChildren) => {
-  const {isOpen, onClose, onOpen, options} = useLoadingOverlay();
+  const {isOpen, handleOpenOverlay, handleHideOverlay, options} =
+    useLoadingOverlay();
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
+      <Dialog open={isOpen}>
         <DialogOverlay>{options?.content}</DialogOverlay>
       </Dialog>
-      <LoadingOverlayProvider value={onOpen}>{children}</LoadingOverlayProvider>
+      <LoadingOverlayProvider value={{handleHideOverlay, handleOpenOverlay}}>
+        {children}
+      </LoadingOverlayProvider>
     </>
   );
 };
@@ -25,28 +27,27 @@ type LoadingOverlayOptions = {
 
 const useLoadingOverlay = () => {
   const [options, setOptions] = useState<LoadingOverlayOptions | null>(null);
-  const awaitingPromiseRef = useAwaitingRef();
 
-  const onOpen = async (options: LoadingOverlayOptions) => {
+  const handleOpenOverlay = async (options: LoadingOverlayOptions) => {
     setOptions(options);
-    return new Promise<void>((resolve, reject) => {
-      awaitingPromiseRef.current = {resolve, reject};
+    return new Promise<void>((resolve) => {
+      resolve();
     });
   };
 
-  const onClose = () => {
-    if (options?.catchError && awaitingPromiseRef.current) {
-      awaitingPromiseRef.current.reject();
-    }
+  const handleHideOverlay = () => {
     setOptions(null);
   };
 
   const isOpen = options !== null;
 
-  return {onOpen, onClose, isOpen, options};
+  return {isOpen, options, handleOpenOverlay, handleHideOverlay};
 };
 
-type Context = (options: LoadingOverlayOptions) => Promise<void>;
+type Context = {
+  handleOpenOverlay: (options: LoadingOverlayOptions) => Promise<void>;
+  handleHideOverlay: () => void;
+};
 
 const [LoadingOverlayProvider, useLoadingOverlayTrigger] =
   createContext<Context>();

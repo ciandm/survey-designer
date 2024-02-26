@@ -1,4 +1,4 @@
-export const siteUrls = {
+export const getSiteUrl = {
   designerPage: ({surveyId}: {surveyId: string}) =>
     `/editor/${surveyId}/designer`,
   previewPage: ({surveyId}: {surveyId: string}) =>
