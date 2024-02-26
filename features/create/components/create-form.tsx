@@ -17,11 +17,12 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
+import {Textarea} from '@/components/ui/textarea';
 import {useCreateSurvey} from '@/features/survey-designer/hooks/use-create-survey';
 import {getSiteUrl} from '@/lib/hrefs';
 
 const createFormSchema = z.object({
-  title: z.string().min(1, 'You must provide a title.'),
+  title: z.string().min(1, 'You must provide a title'),
   description: z.string().optional(),
 });
 
@@ -41,10 +42,10 @@ export const CreateForm = () => {
               <FormItem>
                 <FormLabel>Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="Untitled Survey" {...field} />
+                  <Input placeholder="Untitled survey" {...field} />
                 </FormControl>
                 <FormDescription>
-                  A good title is short and clear.
+                  A good title is short and clear
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -57,10 +58,10 @@ export const CreateForm = () => {
               <FormItem>
                 <FormLabel>Description (optional)</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Textarea {...field} />
                 </FormControl>
                 <FormDescription>
-                  Add a description to provide context.
+                  Add a description to provide context about the survey
                 </FormDescription>
                 <FormMessage />
               </FormItem>

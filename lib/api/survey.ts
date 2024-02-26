@@ -1,5 +1,5 @@
 import {
-  CreateSurveySchema,
+  CreateSurveyInput,
   ResponseSchema,
   SurveyResponse,
   UpdateSurveySchema,
@@ -15,22 +15,22 @@ async function getSurveyById(surveyId: string): Promise<SurveyResponse> {
 }
 
 async function createSurvey(
-  params: CreateSurveySchema,
+  params: CreateSurveyInput,
 ): Promise<SurveyResponse> {
   const {data} = await axios.post(ENDPOINT, params);
 
   return data;
 }
 
+export type DuplicateSurveyParams = {
+  surveyId: string;
+} & CreateSurveyInput;
+
 async function duplicateSurvey({
   surveyId,
   title,
   description,
-}: {
-  surveyId: string;
-  title: string;
-  description?: string;
-}): Promise<SurveyResponse> {
+}: DuplicateSurveyParams): Promise<SurveyResponse> {
   const {data} = await axios.post(
     `${ENDPOINT}?survey_to_duplicate=${surveyId}`,
     {

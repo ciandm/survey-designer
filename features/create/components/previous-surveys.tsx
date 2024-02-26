@@ -1,3 +1,4 @@
+import React from 'react';
 import {Skeleton} from '@/components/ui/skeleton';
 import {db} from '@/lib/db/survey';
 import {PreviousSurveyContainer} from './previous-survey-container';
@@ -37,10 +38,24 @@ export const PreviousSurveys = async () => {
 
 PreviousSurveys.Skeleton = function PreviousSurveysSkeleton() {
   return (
-    <ul className="flex flex-col rounded-lg border">
-      <Skeleton className="h-20 rounded-none bg-card" />
-      <Skeleton className="h-20 rounded-none border-t bg-card" />
-      <Skeleton className="h-20 rounded-none border-t bg-card" />
+    <ul className="flex flex-col rounded-lg border bg-card">
+      {...Array.from({length: 3}).map((_, i) => (
+        <li key={i} className="flex flex-col px-5 py-8 sm:flex-row">
+          <div className="flex-1">
+            <Skeleton className="h-4 w-1/2" />
+            <div className="mt-1 flex gap-2">
+              <div className="flex gap-1 text-xs text-muted-foreground">
+                <Skeleton className="h-3 w-16" />
+                <Skeleton className="h-3 w-16" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 flex w-full justify-between gap-0.5 sm:mt-0 sm:w-auto sm:flex-grow-0 sm:flex-col sm:items-end">
+            <Skeleton className="h-3 w-16 sm:w-24" />
+            <Skeleton className="h-3 w-16" />
+          </div>
+        </li>
+      ))}
     </ul>
   );
 };
