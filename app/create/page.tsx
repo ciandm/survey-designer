@@ -2,8 +2,8 @@ import {CreateForm} from '@/features/create/components/create-form';
 
 const CreatePage = () => {
   return (
-    <div className="min-h-screen bg-muted p-4 lg:px-0 lg:py-12">
-      <div className="container max-w-5xl">
+    <div className="min-h-screen bg-muted p-4 md:px-0 md:py-12">
+      <div className="w-full md:container md:max-w-2xl">
         <h1 className="mb-4 text-2xl font-semibold tracking-tight">
           Create a new survey
         </h1>
