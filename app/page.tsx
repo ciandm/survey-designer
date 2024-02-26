@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
 import {SurveyCard} from '@/features/home/components/survey-card';
@@ -48,7 +49,9 @@ const Home = async () => {
         <h1 className="text-xl font-semibold tracking-tight transition-colors first:mt-0">
           Surveys
         </h1>
-        <Button>Create Survey</Button>
+        <Button asChild>
+          <Link href="/create">Create Survey</Link>
+        </Button>
       </div>
       <Separator className="mb-6 mt-4" />
       <ul className="flex flex-col gap-4 sm:grid sm:grid-cols-[repeat(auto-fit,minmax(480px,1fr))] md:gap-4">

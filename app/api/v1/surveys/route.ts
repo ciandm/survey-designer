@@ -35,6 +35,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     const createdSurvey = await prisma.survey.create({
       data: {
         schema: {
+          ...parsedSchema.data,
           title: title ? `${title} (Copy)` : 'Untitled Survey (Copy)',
           elements: elements.map((element) => ({
             ...element,
@@ -81,24 +82,20 @@ export async function POST(req: NextRequest, res: NextResponse) {
     data: {
       schema: {
         title: parsedData.data.title,
+        description: parsedData.data.description,
         elements: [],
+        version: 1,
+        screens: {
+          welcome: {
+            message: null,
+          },
+          thank_you: {
+            message: null,
+          },
+        },
       },
     },
   });
 
-  const schema = JSON.parse(JSON.stringify(survey.schema));
-
-  const updatedSurvey = await prisma.survey.update({
-    where: {
-      id: survey.id,
-    },
-    data: {
-      schema: {
-        ...schema,
-        id: survey.id,
-      },
-    },
-  });
-
-  return NextResponse.json({survey: updatedSurvey}, {status: 200});
+  return NextResponse.json({survey}, {status: 200});
 }

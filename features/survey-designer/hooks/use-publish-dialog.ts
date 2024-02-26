@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {useMutation} from '@tanstack/react-query';
-import {publishSurvey, unpublishSurvey} from '@/lib/api/survey';
+import {api} from '@/lib/api/survey';
 import {SurveyResponse} from '@/lib/validations/survey';
 import {useDesignerActions, useSurveyId} from '../store/survey-designer-store';
 
@@ -18,7 +18,7 @@ export const usePublishDialog = () => {
     ...rest
   } = useMutation<SurveyResponse, Error, {action: PublishAction}>({
     mutationFn: async ({action}) => {
-      const fn = action === 'publish' ? publishSurvey : unpublishSurvey;
+      const fn = action === 'publish' ? api.publishSurvey : api.unpublishSurvey;
       return await fn(surveyId);
     },
   });

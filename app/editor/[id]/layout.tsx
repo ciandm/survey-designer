@@ -3,8 +3,7 @@ import {SurveyProvider} from '@/components/survey-provider';
 import {DesignerProvider} from '@/features/survey-designer/components/designer-provider';
 import {Header} from '@/features/survey-designer/components/header';
 import {PublishDialog} from '@/features/survey-designer/components/publish-dialog';
-import {surveySchema} from '@/lib/validations/survey';
-import prisma from '@/prisma/client';
+import {db} from '@/lib/db/survey';
 
 export default async function EditorLayout({
   children,
@@ -13,26 +12,16 @@ export default async function EditorLayout({
   children: React.ReactNode;
   params: {id: string};
 }) {
-  const survey = await prisma.survey.findUnique({
-    where: {
-      id: params.id,
-    },
-  });
+  const survey = await db.getSurveyById(params.id);
 
   if (!survey) {
     return notFound();
   }
 
-  const parsedSurvey = surveySchema.safeParse(survey.schema);
-
-  if (!parsedSurvey.success) {
-    return notFound();
-  }
-
   return (
     <>
-      <SurveyProvider schema={parsedSurvey.data} id={survey.id}>
-        <DesignerProvider survey={{...survey, schema: parsedSurvey.data}}>
+      <SurveyProvider schema={survey.schema} id={survey.id}>
+        <DesignerProvider survey={survey}>
           <PublishDialog>
             <div
               className="flex h-screen max-h-screen flex-col"

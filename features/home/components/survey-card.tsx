@@ -2,6 +2,8 @@
 
 import {DotsHorizontalIcon} from '@radix-ui/react-icons';
 import Link from 'next/link';
+import {useRouter} from 'next/navigation';
+import {useDeleteSurveyConfirm} from '@/components/delete-survey';
 import {Button} from '@/components/ui/button';
 import {Card, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {
@@ -27,6 +29,15 @@ export const SurveyCard = ({
   survey,
   responsesCount,
 }: SurveyCardProps) => {
+  const onConfirmDelete = useDeleteSurveyConfirm();
+  const router = useRouter();
+
+  const onDelete = () => {
+    onConfirmDelete({surveyId: survey.id}).then(() => {
+      router.refresh();
+    });
+  };
+
   return (
     <DropdownMenu key={survey.id}>
       <Card className="p-0">
@@ -97,7 +108,7 @@ export const SurveyCard = ({
 
         <DropdownMenuSeparator />
         <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Delete survey</DropdownMenuItem>
+        <DropdownMenuItem onSelect={onDelete}>Delete survey</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
