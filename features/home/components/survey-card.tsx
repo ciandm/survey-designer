@@ -33,20 +33,25 @@ export const SurveyCard = ({
         <CardHeader className="bg-muted p-6">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
-              <div className="flex items-center gap-2">
+              <div className="flex gap-2">
                 <div
                   className={cn(
-                    'flex h-4 w-4 items-center justify-center rounded-full bg-muted',
+                    'mt-1 flex h-4 w-4 items-center justify-center rounded-full bg-gray-500/10',
                     {'bg-green-500/20': survey.is_published},
                   )}
                 >
                   <div
-                    className={cn('h-2 w-2 rounded-full bg-muted-foreground', {
+                    className={cn('h-2 w-2 rounded-full bg-gray-500/75', {
                       'bg-green-500': survey.is_published,
                     })}
                   />
                 </div>
-                <CardTitle className="text-base">{schema.title}</CardTitle>
+                <div className="flex flex-col gap-1">
+                  <CardTitle className="text-base">{schema.title}</CardTitle>
+                  <p className="text-xs text-muted-foreground">
+                    {survey.is_published ? 'Published' : 'Draft'}
+                  </p>
+                </div>
               </div>
             </div>
             <div className="flex space-x-2">
@@ -80,8 +85,16 @@ export const SurveyCard = ({
       <DropdownMenuContent className="w-[240px]">
         <DropdownMenuLabel>{schema.title}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Edit survey</DropdownMenuItem>
-        <DropdownMenuItem>Preview survey</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={`/editor/${survey.id}/designer`}>Edit survey</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={`/editor/${survey.id}/preview`}>Preview survey</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={`/editor/${survey.id}/responses`}>View responses</Link>
+        </DropdownMenuItem>
+
         <DropdownMenuSeparator />
         <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Delete survey</DropdownMenuItem>
