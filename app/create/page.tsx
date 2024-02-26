@@ -1,4 +1,5 @@
 import {Suspense} from 'react';
+import {DuplicateSurveyForm} from '@/components/duplicate-form';
 import {CreateForm} from '@/features/create/components/create-form';
 import {PreviousSurveys} from '@/features/create/components/previous-surveys';
 
@@ -17,7 +18,9 @@ const CreatePage = () => {
         </div>
         <h2 className="mb-4 text-base font-medium">Copy a previous survey</h2>
         <Suspense fallback={<PreviousSurveys.Skeleton />}>
-          <PreviousSurveys />
+          <DuplicateSurveyForm>
+            <PreviousSurveys />
+          </DuplicateSurveyForm>
         </Suspense>
       </div>
     </div>

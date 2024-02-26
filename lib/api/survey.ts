@@ -22,9 +22,21 @@ async function createSurvey(
   return data;
 }
 
-async function duplicateSurvey(surveyId: string): Promise<SurveyResponse> {
+async function duplicateSurvey({
+  surveyId,
+  title,
+  description,
+}: {
+  surveyId: string;
+  title: string;
+  description?: string;
+}): Promise<SurveyResponse> {
   const {data} = await axios.post(
     `${ENDPOINT}?survey_to_duplicate=${surveyId}`,
+    {
+      title,
+      description,
+    },
   );
 
   return data;
