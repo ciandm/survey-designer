@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
 import {useForm} from 'react-hook-form';
-import {ErrorMessage} from '@hookform/error-message';
 import {zodResolver} from '@hookform/resolvers/zod';
+import {Loader2} from 'lucide-react';
+import {useRouter} from 'next/navigation';
+import {toast} from 'sonner';
 import {z} from 'zod';
 import {Button} from '@/components/ui/button';
 import {
@@ -16,6 +17,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
+import {useCreateSurvey} from '@/features/survey-designer/hooks/use-create-survey';
 
 const createFormSchema = z.object({
   title: z.string().min(1, 'You must provide a title.'),
@@ -25,17 +27,7 @@ const createFormSchema = z.object({
 type CreateFormSchema = z.infer<typeof createFormSchema>;
 
 export const CreateForm = () => {
-  const form = useForm<CreateFormSchema>({
-    defaultValues: {
-      title: '',
-      description: '',
-    },
-    resolver: zodResolver(createFormSchema),
-  });
-
-  const onSubmit = form.handleSubmit((data) => {
-    console.log(data);
-  });
+  const {form, onSubmit, isPending} = useCreateForm();
 
   return (
     <Form {...form}>
@@ -74,10 +66,45 @@ export const CreateForm = () => {
             )}
           />
         </div>
-        <Button type="submit" className="ml-auto mt-8 flex">
-          Create Survey
+        <Button
+          type="submit"
+          className="ml-auto mt-8 flex"
+          disabled={isPending}
+        >
+          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isPending ? 'Creating...' : 'Create survey'}
         </Button>
       </form>
     </Form>
   );
+};
+
+const useCreateForm = () => {
+  const router = useRouter();
+  const {mutateAsync: handleCreateSurvey, ...rest} = useCreateSurvey();
+  const form = useForm<CreateFormSchema>({
+    defaultValues: {
+      title: '',
+      description: '',
+    },
+    resolver: zodResolver(createFormSchema),
+  });
+
+  const onSubmit = form.handleSubmit(async (data) => {
+    try {
+      const {survey} = await handleCreateSurvey(data);
+      toast.success('Survey created successfully', {
+        position: 'bottom-center',
+      });
+      router.push(`/editor/${survey.id}/designer`);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  return {
+    form,
+    onSubmit,
+    ...rest,
+  };
 };

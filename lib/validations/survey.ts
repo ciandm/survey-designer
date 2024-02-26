@@ -48,7 +48,8 @@ export const surveySchema = z.object({
 });
 
 export const createSurveyInput = z.object({
-  title: z.string(),
+  title: z.string().min(1),
+  description: z.string().optional(),
 });
 
 export type SurveySchema = z.infer<typeof surveySchema>;
