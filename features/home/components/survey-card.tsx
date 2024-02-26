@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {Separator} from '@/components/ui/separator';
-import {siteUrls} from '@/lib/hrefs';
+import {getSiteUrl} from '@/lib/hrefs';
 import {cn} from '@/lib/utils';
 import {SurveyResponse, SurveySchema} from '@/lib/validations/survey';
 
@@ -68,7 +68,7 @@ export const SurveyCard = ({
             </div>
             <div className="flex space-x-2">
               <Button variant="outline" className="hidden sm:flex" asChild>
-                <Link href={siteUrls.designerPage({surveyId: survey.id})}>
+                <Link href={getSiteUrl.designerPage({surveyId: survey.id})}>
                   Edit
                 </Link>
               </Button>
@@ -100,17 +100,17 @@ export const SurveyCard = ({
         <DropdownMenuLabel>{schema.title}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href={siteUrls.designerPage({surveyId: survey.id})}>
+          <Link href={getSiteUrl.designerPage({surveyId: survey.id})}>
             Edit survey
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={siteUrls.previewPage({surveyId: survey.id})}>
+          <Link href={getSiteUrl.previewPage({surveyId: survey.id})}>
             Preview survey
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href={siteUrls.responsesPage({surveyId: survey.id})}>
+          <Link href={getSiteUrl.responsesPage({surveyId: survey.id})}>
             View responses
           </Link>
         </DropdownMenuItem>

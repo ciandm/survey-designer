@@ -1,4 +1,4 @@
-import React from 'react';
+import {Skeleton} from '@/components/ui/skeleton';
 import {db} from '@/lib/db/survey';
 import {PreviousSurveyContainer} from './previous-survey-container';
 
@@ -6,7 +6,7 @@ export const PreviousSurveys = async () => {
   const surveys = await db.getSurveysWithResponses();
 
   return (
-    <div className="flex flex-col rounded-lg border bg-card">
+    <ul className="flex flex-col rounded-lg border bg-card">
       {surveys.map((survey) => (
         <PreviousSurveyContainer key={survey.id} survey={survey}>
           <div className="flex-1">
@@ -31,6 +31,16 @@ export const PreviousSurveys = async () => {
           </div>
         </PreviousSurveyContainer>
       ))}
-    </div>
+    </ul>
+  );
+};
+
+PreviousSurveys.Skeleton = function PreviousSurveysSkeleton() {
+  return (
+    <ul className="flex flex-col rounded-lg border">
+      <Skeleton className="h-20 rounded-none bg-card" />
+      <Skeleton className="h-20 rounded-none border-t bg-card" />
+      <Skeleton className="h-20 rounded-none border-t bg-card" />
+    </ul>
   );
 };
