@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 import {Slot} from '@radix-ui/react-slot';
 import {useMutation} from '@tanstack/react-query';
 import {Loader2} from 'lucide-react';
-import {deleteSurvey} from '@/lib/api/survey';
+import {api} from '@/lib/api/survey';
 import {createContext} from '@/lib/context';
 import {
   AlertDialog,
@@ -99,7 +99,7 @@ const useDeleteSurveyDialog = () => {
     Error,
     void
   >({
-    mutationFn: async () => deleteSurvey(options?.surveyId ?? ''),
+    mutationFn: async () => api.deleteSurvey(options?.surveyId ?? ''),
   });
 
   const onOpenConfirmation = (options: DeleteSurveyOptions) => {

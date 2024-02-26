@@ -27,7 +27,7 @@ const createFormSchema = z.object({
 type CreateFormSchema = z.infer<typeof createFormSchema>;
 
 export const CreateForm = () => {
-  const {form, onSubmit, isPending} = useCreateForm();
+  const {form, onSubmit, isPending, isSuccess} = useCreateForm();
 
   return (
     <Form {...form}>
@@ -69,7 +69,7 @@ export const CreateForm = () => {
         <Button
           type="submit"
           className="ml-auto mt-8 flex"
-          disabled={isPending}
+          disabled={isPending || isSuccess}
         >
           {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isPending ? 'Creating...' : 'Create survey'}
@@ -95,6 +95,7 @@ const useCreateForm = () => {
       const {survey} = await handleCreateSurvey(data);
       toast.success('Survey created successfully', {
         position: 'bottom-center',
+        description: 'Redirecting...',
       });
       router.push(`/editor/${survey.id}/designer`);
     } catch (error) {
