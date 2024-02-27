@@ -11,7 +11,7 @@ export const NavLinks = () => {
   const {id} = useParams() as {id: string};
 
   return (
-    <nav className="hidden h-full w-full items-center space-x-2 md:flex">
+    <nav className="hidden h-full items-center space-x-2 pl-4 md:flex">
       {replaceLinkHrefs(DESIGNER_LINKS, id).map((link) => (
         <Link
           key={link.href}

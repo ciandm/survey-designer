@@ -7,7 +7,7 @@ import {SurveyActions} from './survey-actions';
 
 export const Header = () => {
   return (
-    <header className="flex h-16 flex-1 items-center justify-between border-b bg-white">
+    <header className="flex h-14 flex-1 items-center justify-between border-b bg-card">
       <NavLinks />
       <HamburgerMenu />
       <div className="ml-auto mr-4 flex space-x-2">

@@ -44,13 +44,13 @@ const Home = async () => {
   const surveys = await getHomeSurveys();
 
   return (
-    <div className="container p-4">
+    <div className="px-4 py-5 md:container md:py-8 lg:py-12">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold tracking-tight transition-colors first:mt-0">
-          Surveys
+          Your surveys
         </h1>
         <Button asChild>
-          <Link href="/create">Create Survey</Link>
+          <Link href="/create">Create survey</Link>
         </Button>
       </div>
       <Separator className="mb-6 mt-4" />

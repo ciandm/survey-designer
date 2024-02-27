@@ -17,7 +17,7 @@ export const HamburgerMenu = () => {
 
   return (
     <DropdownMenu.Root>
-      <nav className="flex h-16 flex-shrink-0 items-center">
+      <nav className="flex h-16 flex-shrink-0 items-center lg:hidden">
         <DropdownMenu.Trigger asChild className="block md:hidden">
           <Button size="sm" variant="ghost" onClick={() => setOpen(!open)}>
             <HamburgerMenuIcon />

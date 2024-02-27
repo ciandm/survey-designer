@@ -24,7 +24,7 @@ export default async function EditorLayout({
         <DesignerProvider survey={survey}>
           <PublishDialog>
             <div
-              className="flex h-screen max-h-screen flex-col"
+              className="flex h-[calc(100vh-64px)] max-h-screen flex-col"
               vaul-drawer-wrapper=""
             >
               <div className="flex flex-shrink-0">
