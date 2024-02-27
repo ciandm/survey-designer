@@ -13,6 +13,7 @@ export const PublishButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Button
         size="sm"
+        variant="secondary"
         ref={ref}
         {...props}
         onClick={() => onPublish(isPublished ? 'unpublish' : 'publish')}
