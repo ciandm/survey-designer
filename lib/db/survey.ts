@@ -43,14 +43,17 @@ async function getSurveysWithResponses() {
     .filter(validateSurveyIsNotNull);
 }
 
-async function getSurveyById(id: string) {
+async function getSurveyById(
+  id: string,
+  options: {filterPublished?: boolean} = {},
+) {
   const survey = await prisma.survey.findUnique({
     where: {
       id,
     },
   });
 
-  if (!survey) {
+  if (!survey || (options.filterPublished && !survey.is_published)) {
     return null;
   }
 

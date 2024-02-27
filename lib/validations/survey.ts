@@ -84,7 +84,7 @@ export const createResponseInput = z.object({
 
 export type SurveyResponse = z.infer<typeof surveyResponse>;
 export type UpdateSurveySchema = z.infer<typeof updateSchemaInput>;
-export type CreateSurveySchema = z.infer<typeof createSurveyInput>;
+export type CreateSurveyInput = z.infer<typeof createSurveyInput>;
 export type ElementSchema = z.infer<typeof elementSchema>;
 export type ChoicesSchema = z.infer<typeof choicesSchema>;
 export type ResponseSchema = z.infer<typeof responseSchema>;

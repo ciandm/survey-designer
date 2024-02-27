@@ -22,22 +22,44 @@ export async function POST(req: NextRequest, res: NextResponse) {
       return NextResponse.json({message: 'Survey not found'}, {status: 404});
     }
 
+    const body = await req.json();
+    const parsedData = createSurveyInput.safeParse(body);
+
+    if (!parsedData.success) {
+      return NextResponse.json(parsedData.error, {status: 400});
+    }
+
     const parsedSchema = surveySchema.safeParse(survey.schema);
 
     if (!parsedSchema.success) {
       return NextResponse.json(parsedSchema.error, {status: 400});
     }
 
-    const {
-      data: {elements, title},
-    } = parsedSchema;
+    const request = parsedData.data;
+    const schema = parsedSchema.data;
+
+    let title = request.title;
+    let description = request.description;
+
+    if (!title) {
+      title = schema.title
+        ? `${schema.title} (Copy)`
+        : 'Untitled Survey (Copy)';
+    }
+
+    if (!description) {
+      description = schema.description
+        ? `${schema.description} (Copy)`
+        : 'Untitled Survey (Copy)';
+    }
 
     const createdSurvey = await prisma.survey.create({
       data: {
         schema: {
           ...parsedSchema.data,
-          title: title ? `${title} (Copy)` : 'Untitled Survey (Copy)',
-          elements: elements.map((element) => ({
+          title,
+          description,
+          elements: parsedSchema.data.elements.map((element) => ({
             ...element,
             id: uuidv4(),
             ref: uuidv4(),
@@ -54,21 +76,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
     });
 
-    const schema = JSON.parse(JSON.stringify(createdSurvey.schema));
-
-    const updatedSurvey = await prisma.survey.update({
-      where: {
-        id: createdSurvey.id,
-      },
-      data: {
-        schema: {
-          ...schema,
-          id: createdSurvey.id,
-        },
-      },
-    });
-
-    return NextResponse.json({survey: updatedSurvey}, {status: 200});
+    return NextResponse.json({survey: createdSurvey}, {status: 200});
   }
 
   const body = await req.json();

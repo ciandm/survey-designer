@@ -2,11 +2,7 @@
 
 import React from 'react';
 import {Loader2} from 'lucide-react';
-import {useRouter} from 'next/navigation';
-import {toast} from 'sonner';
-import {useLoadingOverlayTrigger} from '@/components/loading-overlay';
-import {useDuplicateSurvey} from '@/features/survey-designer/hooks/use-duplicate-survey';
-import {getSiteUrl} from '@/lib/hrefs';
+import {useDuplicateSurveyFormTrigger} from '@/components/duplicate-form';
 import {SurveyResponse} from '@/lib/validations/survey';
 
 type PreviousSurveyContainerProps = {
@@ -25,24 +21,15 @@ export const PreviousSurveyContainer = ({
   children,
   survey,
 }: PreviousSurveyContainerProps) => {
-  const {handleHideOverlay, handleOpenOverlay} = useLoadingOverlayTrigger();
-  const {mutateAsync: handleDuplicateSurvey} = useDuplicateSurvey();
-  const router = useRouter();
+  const triggerDuplicateSurveyForm = useDuplicateSurveyFormTrigger();
 
   const onClick = async () => {
-    handleOpenOverlay({content: overlayContent}).then(async () => {
-      try {
-        const {survey: duplicatedSurvey} = await handleDuplicateSurvey({
-          surveyId: survey.id,
-        });
-        toast.success('Survey duplicated', {
-          position: 'bottom-center',
-        });
-        router.push(getSiteUrl.designerPage({surveyId: duplicatedSurvey.id}));
-        handleHideOverlay();
-      } catch (error) {
-        console.error(error);
-      }
+    triggerDuplicateSurveyForm({
+      initialData: {
+        title: `${survey.schema.title} (copy)`,
+        id: survey.id,
+        description: survey.schema.description,
+      },
     });
   };
 

@@ -14,7 +14,7 @@ type Props = {
 };
 
 const SurveyPage = async ({params}: Props) => {
-  const survey = await db.getSurveyById(params.id);
+  const survey = await db.getSurveyById(params.id, {filterPublished: true});
 
   if (!survey) {
     return notFound();
