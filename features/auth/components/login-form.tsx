@@ -21,7 +21,7 @@ import {
 import {Input} from '@/components/ui/input';
 import {axios} from '@/lib/api/axios';
 import {getSiteUrl} from '@/lib/hrefs';
-import {loginSchema} from '../validation/login';
+import {loginSchema} from '@/lib/validations/auth';
 
 type LoginFormState = z.infer<typeof loginSchema>;
 

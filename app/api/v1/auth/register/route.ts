@@ -2,13 +2,19 @@ import {generateId} from 'lucia';
 import {cookies} from 'next/headers';
 import {NextRequest, NextResponse} from 'next/server';
 import {Argon2id} from 'oslo/password';
-import {loginSchema} from '@/features/auth/validation/login';
-import {lucia} from '@/lib/auth';
+import {getUser, lucia} from '@/lib/auth';
+import {loginSchema} from '@/lib/validations/auth';
 import prisma from '@/prisma/client';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const parsed = loginSchema.safeParse(body);
+
+  const {user} = await getUser();
+
+  if (user) {
+    return NextResponse.json('Already registered', {status: 400});
+  }
 
   if (!parsed.success) {
     return NextResponse.json(parsed.error, {status: 400});

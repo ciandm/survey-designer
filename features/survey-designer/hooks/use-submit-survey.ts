@@ -1,5 +1,5 @@
 import {useMutation} from '@tanstack/react-query';
-import {api} from '@/lib/api/survey';
+import {surveyApi} from '@/lib/api/survey';
 import {ResponseSchema} from '@/lib/validations/survey';
 
 export const useSubmitSurvey = () => {
@@ -9,6 +9,6 @@ export const useSubmitSurvey = () => {
     {surveyId: string; responses: ResponseSchema[]}
   >({
     mutationFn: async ({responses, surveyId}) =>
-      api.createSurveyResponse(surveyId, responses),
+      surveyApi.createSurveyResponse(surveyId, responses),
   });
 };
