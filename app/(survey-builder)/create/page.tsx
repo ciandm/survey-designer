@@ -1,9 +1,18 @@
 import {Suspense} from 'react';
+import {redirect} from 'next/navigation';
 import {DuplicateSurveyForm} from '@/components/duplicate-form';
 import {CreateForm} from '@/features/create/components/create-form';
 import {PreviousSurveys} from '@/features/create/components/previous-surveys';
+import {getUser} from '@/lib/auth';
+import {getSiteUrl} from '@/lib/hrefs';
 
-const CreatePage = () => {
+const CreatePage = async () => {
+  const {session} = await getUser();
+
+  if (!session) {
+    return redirect(getSiteUrl.loginPage());
+  }
+
   return (
     <div className="min-h-screen bg-muted p-4 md:px-0 md:py-12">
       <div className="w-full md:container md:max-w-2xl">

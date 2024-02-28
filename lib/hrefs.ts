@@ -8,4 +8,6 @@ export const getSiteUrl = {
     `/editor/${surveyId}/response`,
   createPage: () => '/create',
   surveyPage: ({surveyId}: {surveyId: string}) => `/survey/${surveyId}`,
+  loginPage: () => '/login',
+  signUpPage: () => '/signup',
 };

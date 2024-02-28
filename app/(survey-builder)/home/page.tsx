@@ -1,47 +1,24 @@
 import Link from 'next/link';
+import {redirect} from 'next/navigation';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
 import {SurveyCard} from '@/features/home/components/survey-card';
-import {
-  SurveyResponse,
-  SurveySchema,
-  surveySchema,
-} from '@/lib/validations/survey';
+import {getUser} from '@/lib/auth';
+import {SurveyResponse, surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
 type SurveysWithResponseCount = SurveyResponse['survey'] & {
   responseCount: number;
 };
 
-async function getHomeSurveys(): Promise<SurveysWithResponseCount[]> {
-  const surveys = await prisma.survey.findMany({
-    include: {
-      SurveyResult: true,
-    },
-  });
-
-  return surveys
-    .map((survey) => {
-      const parsedSchema = surveySchema.safeParse(survey.schema);
-      if (!parsedSchema.success) {
-        return null;
-      }
-
-      return {
-        ...survey,
-        responseCount: survey.SurveyResult.length,
-        schema: parsedSchema.data,
-      };
-    })
-    .filter(validateIsNotNull);
-}
-
-function validateIsNotNull<T>(value: T | null): value is T {
-  return value !== null;
-}
-
 const Home = async () => {
-  const surveys = await getHomeSurveys();
+  const {session, user} = await getUser();
+
+  if (!session) {
+    return redirect('/login');
+  }
+
+  const surveys = await getHomeSurveys({userId: user.id});
 
   return (
     <div className="px-4 py-5 md:container md:py-8 lg:py-12">
@@ -73,3 +50,37 @@ const Home = async () => {
 export default Home;
 
 export const dynamic = 'force-dynamic';
+
+async function getHomeSurveys({
+  userId,
+}: {
+  userId: string;
+}): Promise<SurveysWithResponseCount[]> {
+  const surveys = await prisma.survey.findMany({
+    include: {
+      SurveyResult: true,
+    },
+    where: {
+      userId,
+    },
+  });
+
+  return surveys
+    .map((survey) => {
+      const parsedSchema = surveySchema.safeParse(survey.schema);
+      if (!parsedSchema.success) {
+        return null;
+      }
+
+      return {
+        ...survey,
+        responseCount: survey.SurveyResult.length,
+        schema: parsedSchema.data,
+      };
+    })
+    .filter(validateIsNotNull);
+}
+
+function validateIsNotNull<T>(value: T | null): value is T {
+  return value !== null;
+}
