@@ -89,7 +89,7 @@ async function deleteSurveyResult(
   await axios.delete(`${ENDPOINT}/${surveyId}/results/${responseId}`);
 }
 
-export const api = {
+export const surveyApi = {
   createSurvey,
   createSurveyResponse,
   deleteSurvey,
