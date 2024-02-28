@@ -9,5 +9,5 @@ export const getSiteUrl = {
   createPage: () => '/create',
   surveyPage: ({surveyId}: {surveyId: string}) => `/survey/${surveyId}`,
   loginPage: () => '/login',
-  signUpPage: () => '/signup',
+  signUpPage: () => '/register',
 };
