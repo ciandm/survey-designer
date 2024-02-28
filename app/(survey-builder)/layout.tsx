@@ -1,5 +1,5 @@
 import {TopBar} from '@/components/top-bar';
-import {SignOutButton} from '@/features/auth/components/sign-out-button';
+import {LogOut} from '@/features/auth/components/log-out';
 
 export default function SurveyBuilderLayout({
   children,
@@ -7,7 +7,7 @@ export default function SurveyBuilderLayout({
   return (
     <>
       <TopBar>
-        <SignOutButton />
+        <LogOut />
       </TopBar>
       {children}
     </>

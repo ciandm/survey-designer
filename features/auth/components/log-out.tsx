@@ -3,11 +3,12 @@
 import {useMutation} from '@tanstack/react-query';
 import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
+import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
 import {axios} from '@/lib/api/axios';
 import {getSiteUrl} from '@/lib/hrefs';
 
-export const SignOutButton = () => {
+export const LogOut = () => {
   const router = useRouter();
   const {mutateAsync: handleLogOut, isPending} = useMutation<void, Error, void>(
     {
@@ -18,8 +19,12 @@ export const SignOutButton = () => {
   );
 
   const onClick = async () => {
-    await handleLogOut();
-    router.push(getSiteUrl.loginPage());
+    try {
+      await handleLogOut();
+      router.push(getSiteUrl.loginPage());
+    } catch {
+      toast.error('Failed to log out. Please try again.');
+    }
   };
 
   return (
