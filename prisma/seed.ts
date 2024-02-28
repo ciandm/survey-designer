@@ -12,6 +12,7 @@ async function seedDatabase() {
       const title = surveyData.title;
       await prisma.survey.create({
         data: {
+          userId: '1',
           id: surveyData.id,
           schema: surveyData,
           is_published: true,

@@ -2,6 +2,7 @@
 
 import {v4 as uuidv4} from 'uuid';
 import {z} from 'zod';
+import {getUser} from '@/lib/auth';
 import {surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
@@ -49,6 +50,12 @@ export async function deleteSurvey(surveyId: string) {
 }
 
 export async function duplicateSurvey(surveyId: string) {
+  const {user} = await getUser();
+
+  if (!user) {
+    throw new Error('Unauthorized');
+  }
+
   const validatedField = schema.safeParse({surveyId});
 
   if (!validatedField.success) {
@@ -77,6 +84,7 @@ export async function duplicateSurvey(surveyId: string) {
 
   const duplicatedSurvey = await prisma.survey.create({
     data: {
+      userId: user.id,
       schema: {
         title: title ? `${title} (Copy)` : 'Untitled Survey (Copy)',
         elements: elements.map((element) => ({
