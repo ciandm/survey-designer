@@ -1,3 +1,4 @@
+import {generateId} from 'lucia';
 import {cookies} from 'next/headers';
 import {NextRequest, NextResponse} from 'next/server';
 import {Argon2id} from 'oslo/password';
@@ -15,26 +16,28 @@ export async function POST(req: NextRequest) {
 
   const {email: username, password} = parsed.data;
 
+  const hashedPassword = await new Argon2id().hash(password);
+  const userId = generateId(15);
+
   const existingUser = await prisma.user.findFirst({
     where: {
       username,
     },
   });
 
-  if (!existingUser) {
-    return NextResponse.json('Incorrect username or password', {status: 400});
+  if (existingUser) {
+    return NextResponse.json('User already exists', {status: 400});
   }
 
-  const validPassword = await new Argon2id().verify(
-    existingUser.hashed_password,
-    password,
-  );
+  await prisma.user.create({
+    data: {
+      id: userId,
+      username,
+      hashed_password: hashedPassword,
+    },
+  });
 
-  if (!validPassword) {
-    return NextResponse.json('Incorrect username or password', {status: 400});
-  }
-
-  const session = await lucia.createSession(existingUser.id, {});
+  const session = await lucia.createSession(userId, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
   cookies().set(
     sessionCookie.name,

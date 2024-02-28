@@ -6,13 +6,13 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {useMutation} from '@tanstack/react-query';
 import {AxiosError} from 'axios';
 import {Loader2, XCircleIcon} from 'lucide-react';
-import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {z} from 'zod';
 import {Button} from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,11 +23,11 @@ import {axios} from '@/lib/api/axios';
 import {getSiteUrl} from '@/lib/hrefs';
 import {loginSchema} from '../validation/login';
 
-type LoginFormState = z.infer<typeof loginSchema>;
+type RegisterFormState = z.infer<typeof loginSchema>;
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
   const router = useRouter();
-  const form = useForm<LoginFormState>({
+  const form = useForm<RegisterFormState>({
     defaultValues: {
       password: '',
       email: '',
@@ -37,20 +37,20 @@ export const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);
 
   const {
-    mutateAsync: handleLogIn,
+    mutateAsync: handleRegisterUser,
     isPending,
     isSuccess,
-  } = useMutation<void, Error, LoginFormState>({
+  } = useMutation<void, Error, RegisterFormState>({
     mutationFn: async (data) => {
-      const {data: repsonse} = await axios.post('/auth/log-in', data);
-      return repsonse;
+      const {data: response} = await axios.post('/auth/register', data);
+      return response;
     },
   });
 
   const onSubmit = form.handleSubmit(async (data) => {
     setError(null);
     try {
-      await handleLogIn(data);
+      await handleRegisterUser(data);
       router.push(getSiteUrl.homePage());
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -88,8 +88,8 @@ export const LoginForm = () => {
                 <FormLabel>Email address</FormLabel>
                 <FormControl>
                   <Input
-                    type="email"
                     placeholder="example@company.com"
+                    type="email"
                     {...field}
                   />
                 </FormControl>
@@ -106,23 +106,19 @@ export const LoginForm = () => {
                 <FormControl>
                   <Input placeholder="" type="password" {...field} />
                 </FormControl>
+                <FormDescription>
+                  Choose a strong password with at least 8 characters.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="flex items-center">
-            <div className="ml-auto text-sm leading-6">
-              <Button variant="link" className="p-0" asChild>
-                <Link href="#">Forgot password?</Link>
-              </Button>
-            </div>
-          </div>
           <Button
             disabled={isPending || isSuccess}
             type="submit"
             className="w-full"
           >
-            {isSuccess ? 'Logging in...' : 'Log in'}
+            {isSuccess ? 'Redirecting...' : 'Create account'}
             {isPending && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
           </Button>
         </form>

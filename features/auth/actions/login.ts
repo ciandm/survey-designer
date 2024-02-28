@@ -34,7 +34,7 @@ export async function onLoginAction(
     };
   }
 
-  const {username, password} = parsed.data;
+  const {email: username, password} = parsed.data;
 
   const existingUser = await prisma.user.findFirst({
     where: {
