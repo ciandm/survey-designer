@@ -1,5 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {v4 as uuidv4} from 'uuid';
+import {getUser} from '@/lib/auth';
 import {createSurveyInput, surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
 
@@ -10,6 +11,12 @@ export async function GET(req: NextRequest, res: NextResponse) {
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
+  const {user} = await getUser();
+
+  if (!user) {
+    return NextResponse.json({message: 'Unauthorized'}, {status: 401});
+  }
+
   const searchParams = req.nextUrl.searchParams;
   const surveyToDuplicate = searchParams.get('survey_to_duplicate');
 
@@ -55,6 +62,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     const createdSurvey = await prisma.survey.create({
       data: {
+        userId: user.id,
         schema: {
           ...parsedSchema.data,
           title,
@@ -88,6 +96,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   const survey = await prisma.survey.create({
     data: {
+      userId: user.id,
       schema: {
         title: parsedData.data.title,
         description: parsedData.data.description,
