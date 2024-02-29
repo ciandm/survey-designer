@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import {redirect} from 'next/navigation';
+import {SurveyCard} from '@/app/(survey-builder)/_components/survey-card';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
-import {SurveyCard} from '@/features/home/components/survey-card';
 import {getUser} from '@/lib/auth';
 import {SurveyResponse, surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';

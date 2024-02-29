@@ -1,8 +1,8 @@
 import {Suspense} from 'react';
 import {redirect} from 'next/navigation';
+import {CreateForm} from '@/app/(survey-builder)/_components/create-form';
+import {PreviousSurveys} from '@/app/(survey-builder)/_components/previous-surveys';
 import {DuplicateSurveyForm} from '@/components/duplicate-form';
-import {CreateForm} from '@/features/create/components/create-form';
-import {PreviousSurveys} from '@/features/create/components/previous-surveys';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/lib/hrefs';
 
