@@ -1,7 +1,7 @@
 import {Metadata, ResolvingMetadata} from 'next';
 import {notFound} from 'next/navigation';
+import {SurveyForm} from '@/app/(survey)/_components/survey-form';
 import {Card} from '@/components/ui/card';
-import {SurveyForm} from '@/features/survey-tool/components/survey-form';
 import {sortChoices} from '@/features/survey-tool/utils/question';
 import {db} from '@/lib/db/survey';
 import {SurveySchema, surveySchema} from '@/lib/validations/survey';
