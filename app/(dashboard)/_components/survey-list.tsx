@@ -58,11 +58,11 @@ export const SurveyList = ({surveys}: Props) => {
   };
 
   return (
-    <ul className="flex flex-col divide-y divide-border rounded-md border">
+    <ul className="flex flex-col divide-y divide-border overflow-hidden rounded-md border">
       {surveys.map((survey) => {
         return (
           <DropdownMenu key={survey.id}>
-            <div className="flex items-center justify-between p-4">
+            <div className="flex items-center justify-between bg-card p-4">
               <div className="space-y-1">
                 <div className="flex gap-2">
                   <div

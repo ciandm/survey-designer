@@ -22,19 +22,19 @@ export const usePublishDialog = () => {
     },
   );
 
-  const onPublish = async (action: PublishAction) => {
+  const handleTriggerPublishDialog = async (action: PublishAction) => {
     setAction(action);
     setIsOpen(true);
     handlePublishSurvey({action, surveyId});
   };
 
-  const onRetry = async () => {
+  const handleRetry = async () => {
     if (action) {
       handlePublishSurvey({action, surveyId});
     }
   };
 
-  const onOpenChange = () => {
+  const handleOnOpenChange = () => {
     setIsOpen((prev) => !prev);
     setAction(null);
   };
@@ -42,9 +42,9 @@ export const usePublishDialog = () => {
   return {
     action,
     isOpen,
-    onPublish,
-    onOpenChange,
-    onRetry,
+    handleTriggerPublishDialog,
+    handleOnOpenChange,
+    handleRetry,
     ...rest,
   };
 };

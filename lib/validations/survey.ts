@@ -59,15 +59,14 @@ export const publishSurveyInput = z.object({
   action: z.enum(['publish', 'unpublish']),
 });
 
+export const updateSchemaInput = z.object({
+  id: z.string().min(1),
+  schema: surveySchema,
+});
+
 export const deleteSurveyInput = publishSurveyInput.pick({surveyId: true});
 
 export type SurveySchema = z.infer<typeof surveySchema>;
-
-export const updateSurveyInput = z.object({});
-
-export const updateSchemaInput = z.object({
-  schema: surveySchema,
-});
 
 export const surveyResponse = z.object({
   survey: z.object({

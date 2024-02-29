@@ -1,19 +1,19 @@
+import Link from 'next/link';
 import {notFound, redirect} from 'next/navigation';
 import {SurveyProvider} from '@/components/survey-provider';
+import {UserAccountNav} from '@/dashboard/_components/user-account-nav';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/lib/hrefs';
+import {DesignerActions} from '@/survey-designer/_components/designer-actions';
+import {DesignerNavigation} from '@/survey-designer/_components/designer-navigation';
 import {DesignerProvider} from '@/survey-designer/_components/designer-provider';
 import {PublishDialog} from '@/survey-designer/_components/publish-dialog';
-import {Toolbar} from '@/survey-designer/_components/toolbar';
 import {getUserSurvey} from '@/survey-designer/_lib/get-user-survey';
 
-export default async function EditorLayout({
+export default async function SurveyBuilderLayout({
   children,
   params,
-}: {
-  children: React.ReactNode;
-  params: {id: string};
-}) {
+}: React.PropsWithChildren<{params: {id: string}}>) {
   const {user} = await getUser();
 
   if (!user) {
@@ -23,28 +23,39 @@ export default async function EditorLayout({
   const survey = await getUserSurvey(params.id);
 
   if (!survey) {
-    return notFound();
+    notFound();
   }
 
   return (
-    <>
-      <SurveyProvider schema={survey.schema} id={survey.id}>
-        <DesignerProvider survey={survey}>
-          <PublishDialog>
-            <div
-              className="flex h-[calc(100vh-64px)] max-h-screen flex-col"
-              vaul-drawer-wrapper=""
-            >
-              <div className="flex flex-shrink-0">
-                <Toolbar />
-              </div>
-              <main className="relative h-full flex-1 overflow-hidden bg-muted">
-                {children}
-              </main>
+    <SurveyProvider schema={survey.schema} id={survey.id}>
+      <DesignerProvider survey={survey}>
+        <PublishDialog>
+          <div className="flex h-screen flex-col" vaul-drawer-wrapper="">
+            <div className="flex flex-shrink-0">
+              <header className="flex h-14 flex-1 items-center justify-between border-b bg-card px-4">
+                <div className="flex space-x-2 text-sm font-medium text-muted-foreground">
+                  <Link
+                    href={getSiteUrl.homePage()}
+                    className="hover:text-primary"
+                  >
+                    Home
+                  </Link>
+                  <span>/</span>
+                  <span className="text-foreground">Survey editor</span>
+                </div>
+                <DesignerNavigation />
+                <div className="flex items-center space-x-4">
+                  <DesignerActions />
+                  <UserAccountNav user={user} />
+                </div>
+              </header>
             </div>
-          </PublishDialog>
-        </DesignerProvider>
-      </SurveyProvider>
-    </>
+            <main className="h-full flex-1 overflow-hidden bg-muted">
+              {children}
+            </main>
+          </div>
+        </PublishDialog>
+      </DesignerProvider>
+    </SurveyProvider>
   );
 }

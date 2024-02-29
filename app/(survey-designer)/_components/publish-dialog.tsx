@@ -17,15 +17,21 @@ import {usePublishDialog} from '@/survey-designer/_hooks/use-publish-dialog';
 import {CopySurveyUrl} from './copy-survey-url';
 
 export const PublishDialog = ({children}: {children: React.ReactNode}) => {
-  const {onPublish, onOpenChange, status, action, isOpen, onRetry} =
-    usePublishDialog();
+  const {
+    handleTriggerPublishDialog,
+    handleOnOpenChange,
+    status,
+    action,
+    isOpen,
+    handleRetry,
+  } = usePublishDialog();
 
   return (
-    <PublishDialogProvider value={onPublish}>
+    <PublishDialogProvider value={{handleTriggerPublishDialog}}>
       {children}
       <Dialog
         open={isOpen}
-        onOpenChange={status === 'executing' ? undefined : onOpenChange}
+        onOpenChange={status === 'executing' ? undefined : handleOnOpenChange}
       >
         <DialogContent hideCloseButton={status === 'executing'}>
           {status === 'executing' && (
@@ -79,7 +85,7 @@ export const PublishDialog = ({children}: {children: React.ReactNode}) => {
                 </div>
               </DialogHeader>
               <DialogFooter>
-                <Button onClick={onRetry} size="sm" variant="secondary">
+                <Button onClick={handleRetry} size="sm" variant="secondary">
                   Retry
                 </Button>
               </DialogFooter>
@@ -91,7 +97,9 @@ export const PublishDialog = ({children}: {children: React.ReactNode}) => {
   );
 };
 
-type Context = (action: 'publish' | 'unpublish') => void;
+type Context = {
+  handleTriggerPublishDialog: (action: 'publish' | 'unpublish') => void;
+};
 
 const [PublishDialogProvider, usePublishTrigger] = createContext<Context>();
 

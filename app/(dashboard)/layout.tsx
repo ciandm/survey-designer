@@ -5,11 +5,7 @@ import {UserAccountNav} from '@/dashboard/_components/user-account-nav';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/lib/hrefs';
 
-const DashboardLayout = async ({
-  children,
-}: {
-  children: React.PropsWithChildren;
-}) => {
+const DashboardLayout = async ({children}: {children: React.ReactNode}) => {
   const {user} = await getUser();
 
   if (!user) {
@@ -17,8 +13,8 @@ const DashboardLayout = async ({
   }
 
   return (
-    <>
-      <header className="sticky top-0 flex items-center border-b">
+    <div className="flex min-h-screen flex-col">
+      <header className="flex items-center border-b">
         <div className="container flex w-full items-center justify-between">
           <div className="flex items-center space-x-4 p-2">
             <Link
@@ -34,7 +30,7 @@ const DashboardLayout = async ({
         </div>
       </header>
       {children}
-    </>
+    </div>
   );
 };
 
