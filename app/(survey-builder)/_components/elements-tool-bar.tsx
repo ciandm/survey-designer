@@ -2,7 +2,7 @@
 
 import {Button} from '@/components/ui/button';
 import {ELEMENT_OPTIONS} from '@/lib/constants/element';
-import {useElementCrud} from '../../../features/survey-designer/hooks/use-element-crud';
+import {useElementCrud} from '../_hooks/use-element-crud';
 
 export const ElementsToolbar = () => {
   const {handleCreateElement} = useElementCrud();

@@ -5,7 +5,7 @@ import {
   useDesignerActions,
   useSurveyId,
   useSurveySchema,
-} from '../store/survey-designer-store';
+} from '../../../features/survey-designer/store/survey-designer-store';
 
 export const USE_UPDATE_SURVEY_SCHEMA_MUTATION =
   'USE_UPDATE_SURVEY_SCHEMA_MUTATION';

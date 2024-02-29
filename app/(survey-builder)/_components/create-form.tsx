@@ -6,6 +6,7 @@ import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {toast} from 'sonner';
 import {z} from 'zod';
+import {useCreateSurvey} from '@/app/(survey-builder)/_hooks/use-create-survey';
 import {Button} from '@/components/ui/button';
 import {
   Form,
@@ -18,7 +19,6 @@ import {
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
-import {useCreateSurvey} from '@/features/survey-designer/hooks/use-create-survey';
 import {getSiteUrl} from '@/lib/hrefs';
 
 const createFormSchema = z.object({
