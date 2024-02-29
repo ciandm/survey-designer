@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import {Loader2} from 'lucide-react';
-import {useDuplicateSurveyFormTrigger} from '@/components/duplicate-form';
+import {useDuplicateSurveyFormTrigger} from '@/components/duplicate-survey-dialog';
 import {SurveyResponse} from '@/lib/validations/survey';
 
 type PreviousSurveyContainerProps = {
@@ -14,12 +13,12 @@ export const PreviousSurveyContainer = ({
   children,
   survey,
 }: PreviousSurveyContainerProps) => {
-  const triggerDuplicateSurveyForm = useDuplicateSurveyFormTrigger();
+  const {handleTriggerDuplicateSurveyDialog} = useDuplicateSurveyFormTrigger();
 
-  const onClick = async () => {
-    triggerDuplicateSurveyForm({
+  const handleClick = async () => {
+    handleTriggerDuplicateSurveyDialog({
       initialData: {
-        title: `${survey.schema.title} (copy)`,
+        title: survey.schema.title,
         id: survey.id,
         description: survey.schema.description,
       },
@@ -28,7 +27,7 @@ export const PreviousSurveyContainer = ({
 
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       className="flex cursor-pointer flex-col justify-between gap-0.5 border-t px-5 py-6 text-left transition-colors first:border-t-0 hover:bg-muted sm:flex-row sm:gap-2"
     >
       {children}

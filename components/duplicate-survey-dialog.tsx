@@ -5,11 +5,12 @@ import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
+import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
 import {z} from 'zod';
 import {createContext} from '@/lib/context';
 import {getSiteUrl} from '@/lib/hrefs';
-import {useDuplicateSurvey} from '@/survey-dashboard/_hooks/use-duplicate-survey';
+import {createSurveyAction} from '@/survey-dashboard/_actions/create-survey';
 import {Button} from './ui/button';
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from './ui/dialog';
 import {
@@ -35,39 +36,23 @@ type DuplicateSurveyFormProps = {
   children: React.ReactNode;
 };
 
-export const DuplicateSurveyForm = ({children}: DuplicateSurveyFormProps) => {
-  const form = useForm<DuplicateSurveyFormState>({
-    resolver: zodResolver(schema),
-  });
-  const [isOpen, setIsOpen] = useState(false);
-  const {mutateAsync: handleDuplicateSurvey, isPending} = useDuplicateSurvey();
-  const router = useRouter();
-
-  const onOpen = (options: {initialData: DuplicateSurveyFormState}) => {
-    setIsOpen(true);
-    form.reset(options.initialData);
-  };
-
-  const onSubmit = form.handleSubmit(async (data) => {
-    try {
-      const {survey: duplicatedSurvey} = await handleDuplicateSurvey({
-        surveyId: data.id,
-        title: data.title,
-        description: data.description,
-      });
-      setIsOpen(false);
-      toast.success('Survey duplicated', {
-        position: 'bottom-center',
-      });
-      router.push(getSiteUrl.designerPage({surveyId: duplicatedSurvey.id}));
-    } catch (error) {
-      console.error(error);
-    }
-  });
+export const DuplicateSurveyDialog = ({children}: DuplicateSurveyFormProps) => {
+  const {
+    form,
+    isOpen,
+    status,
+    onSubmit,
+    handleTriggerDuplicateSurveyDialog,
+    setIsOpen,
+  } = useDuplicateSurveyForm();
 
   return (
     <>
-      <DuplicateSurveyProvider value={onOpen}>
+      <DuplicateSurveyProvider
+        value={{
+          handleTriggerDuplicateSurveyDialog,
+        }}
+      >
         {children}
       </DuplicateSurveyProvider>
       <Dialog open={isOpen} onOpenChange={() => setIsOpen(false)}>
@@ -107,15 +92,15 @@ export const DuplicateSurveyForm = ({children}: DuplicateSurveyFormProps) => {
               </div>
               <div className="ml-auto mt-8 flex gap-2">
                 <Button
-                  disabled={isPending}
+                  disabled={status === 'executing'}
                   type="button"
                   onClick={() => setIsOpen(false)}
                   variant="outline"
                 >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isPending}>
-                  {isPending && (
+                <Button type="submit" disabled={status === 'executing'}>
+                  {status === 'executing' && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   Make a copy
@@ -129,9 +114,57 @@ export const DuplicateSurveyForm = ({children}: DuplicateSurveyFormProps) => {
   );
 };
 
-type Context = (options: {initialData: DuplicateSurveyFormState}) => void;
+type Context = {
+  handleTriggerDuplicateSurveyDialog: (options: {
+    initialData: DuplicateSurveyFormState;
+  }) => void;
+};
 
 const [DuplicateSurveyProvider, useDuplicateSurveyFormTrigger] =
   createContext<Context>();
 
 export {useDuplicateSurveyFormTrigger};
+
+const useDuplicateSurveyForm = () => {
+  const form = useForm<DuplicateSurveyFormState>({
+    resolver: zodResolver(schema),
+  });
+  const [isOpen, setIsOpen] = useState(false);
+  const {execute: handleDuplicateSurvey, status} = useAction(
+    createSurveyAction,
+    {
+      onSuccess: ({survey}) => {
+        setIsOpen(false);
+        toast.success('Survey duplicated', {
+          position: 'bottom-center',
+        });
+        router.push(getSiteUrl.designerPage({surveyId: survey.id}));
+      },
+    },
+  );
+  const router = useRouter();
+
+  const handleTriggerDuplicateSurveyDialog = (options: {
+    initialData: DuplicateSurveyFormState;
+  }) => {
+    setIsOpen(true);
+    form.reset(options.initialData);
+  };
+
+  const onSubmit = form.handleSubmit((data) => {
+    handleDuplicateSurvey({
+      duplicatedFrom: data.id,
+      title: data.title,
+      description: data.description,
+    });
+  });
+
+  return {
+    form,
+    isOpen,
+    status,
+    onSubmit,
+    handleTriggerDuplicateSurveyDialog,
+    setIsOpen,
+  };
+};

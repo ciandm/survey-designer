@@ -1,6 +1,6 @@
 import {Suspense} from 'react';
 import {redirect} from 'next/navigation';
-import {DuplicateSurveyForm} from '@/components/duplicate-form';
+import {DuplicateSurveyDialog} from '@/components/duplicate-survey-dialog';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/lib/hrefs';
 import {CreateForm} from '@/survey-dashboard/_components/create-form';
@@ -27,9 +27,9 @@ const CreatePage = async () => {
         </div>
         <h2 className="mb-4 text-base font-medium">Copy a previous survey</h2>
         <Suspense fallback={<PreviousSurveys.Skeleton />}>
-          <DuplicateSurveyForm>
+          <DuplicateSurveyDialog>
             <PreviousSurveys />
-          </DuplicateSurveyForm>
+          </DuplicateSurveyDialog>
         </Suspense>
       </div>
     </div>

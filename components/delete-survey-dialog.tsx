@@ -1,8 +1,7 @@
 'use client';
 
 import React, {useState} from 'react';
-import {XCircleIcon, XMarkIcon} from '@heroicons/react/20/solid';
-import {Slot} from '@radix-ui/react-slot';
+import {XCircleIcon} from '@heroicons/react/20/solid';
 import {Loader2} from 'lucide-react';
 import {useAction} from 'next-safe-action/hooks';
 import {createContext} from '@/lib/context';
@@ -16,7 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from './ui/alert-dialog';
-import {Button, ButtonProps} from './ui/button';
+import {Button} from './ui/button';
 
 type DeleteSurveyProps = {
   children: React.ReactNode;
@@ -26,18 +25,18 @@ export const DeleteSurveyDialog = ({children}: DeleteSurveyProps) => {
   const {
     isOpen,
     handleDeleteSurvey,
-    handleOpenConfirmation,
-    onClose,
+    handleCloseDialog,
+    handleTriggerDeleteSurveyConfirm,
     status,
     options,
   } = useDeleteSurveyDialog();
 
   return (
     <>
-      <DeleteSurveyDialogProvider value={handleOpenConfirmation}>
+      <DeleteSurveyDialogProvider value={{handleTriggerDeleteSurveyConfirm}}>
         {children}
       </DeleteSurveyDialogProvider>
-      <AlertDialog open={isOpen} onOpenChange={onClose}>
+      <AlertDialog open={isOpen} onOpenChange={handleCloseDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             {status === 'hasErrored' && (
@@ -78,33 +77,17 @@ export const DeleteSurveyDialog = ({children}: DeleteSurveyProps) => {
   );
 };
 
-export const DeleteSurveyTrigger = React.forwardRef<
-  HTMLButtonElement,
-  ButtonProps & {surveyId: string; onDeleted?: () => void}
->(({children, asChild, surveyId, onDeleted, ...rest}, ref) => {
-  const onConfirmDelete = useDeleteSurveyConfirm();
-  const Comp = asChild ? Slot : Button;
-
-  return (
-    <Comp
-      onClick={() => onConfirmDelete({surveyId}).then(onDeleted)}
-      {...rest}
-      ref={ref}
-    >
-      {children}
-    </Comp>
-  );
-});
-
 type DeleteSurveyOptions = {
   surveyId: string;
   catchError?: boolean;
 };
 
-DeleteSurveyTrigger.displayName = 'DeleteSurveyDialogTrigger';
-
-const [DeleteSurveyDialogProvider, useDeleteSurveyConfirm] =
-  createContext<(options: DeleteSurveyOptions) => Promise<void>>();
+const [DeleteSurveyDialogProvider, useDeleteSurveyDialogTrigger] =
+  createContext<{
+    handleTriggerDeleteSurveyConfirm: (
+      options: DeleteSurveyOptions,
+    ) => Promise<void>;
+  }>();
 
 const useDeleteSurveyDialog = () => {
   const [options, setOptions] = useState<DeleteSurveyOptions | null>(null);
@@ -122,14 +105,14 @@ const useDeleteSurveyDialog = () => {
     },
   });
 
-  const handleOpenConfirmation = (options: DeleteSurveyOptions) => {
+  const handleTriggerDeleteSurveyConfirm = (options: DeleteSurveyOptions) => {
     setOptions(options);
     return new Promise<void>((resolve, reject) => {
       awaitingPromiseRef.current = {resolve, reject};
     });
   };
 
-  const handleClose = () => {
+  const handleCloseDialog = () => {
     if (options?.catchError && awaitingPromiseRef.current) {
       awaitingPromiseRef.current.reject();
     }
@@ -141,11 +124,11 @@ const useDeleteSurveyDialog = () => {
   return {
     isOpen,
     handleDeleteSurvey,
-    handleOpenConfirmation,
-    onClose: handleClose,
+    handleTriggerDeleteSurveyConfirm,
+    handleCloseDialog,
     options,
     ...rest,
   };
 };
 
-export {useDeleteSurveyConfirm};
+export {useDeleteSurveyDialogTrigger};

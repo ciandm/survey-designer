@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
 import {SessionProvider} from '@/auth/_components/session-provider';
 import {DeleteSurveyDialog} from '@/components/delete-survey-dialog';
+import {DuplicateSurveyDialog} from '@/components/duplicate-survey-dialog';
 import {LoadingOverlay} from '@/components/loading-overlay';
 import {Toaster} from '@/components/ui/sonner';
 import {getUser} from '@/lib/auth';
@@ -31,7 +32,9 @@ export default async function RootLayout({
     <SessionProvider value={session}>
       <QueryClientProvider>
         <LoadingOverlay>
-          <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
+          <DuplicateSurveyDialog>
+            <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
+          </DuplicateSurveyDialog>
         </LoadingOverlay>
       </QueryClientProvider>
       <Toaster />
