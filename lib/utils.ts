@@ -83,3 +83,7 @@ export function getNextElementToSelect(
 
   return (prevQuestion || nextQuestion).ref;
 }
+
+export function validateIsNotNull<T>(value: T | null): value is T {
+  return value !== null;
+}

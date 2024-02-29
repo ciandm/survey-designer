@@ -6,19 +6,20 @@ import {getUser} from '@/lib/auth';
 import {db} from '@/lib/db';
 import {SurveyResponse, surveySchema} from '@/lib/validations/survey';
 import {SurveyCard} from '@/survey-dashboard/_components/survey-card';
+import {getUserSurveys} from '../_lib/get-user-surveys';
 
 type SurveysWithResponseCount = SurveyResponse['survey'] & {
   responseCount: number;
 };
 
 const Home = async () => {
-  const {session, user} = await getUser();
+  const {session} = await getUser();
 
   if (!session) {
     return redirect('/login');
   }
 
-  const surveys = await getHomeSurveys({userId: user.id});
+  const surveys = await getUserSurveys();
 
   return (
     <div className="px-4 py-5 md:container md:py-8 lg:py-12">
@@ -35,7 +36,7 @@ const Home = async () => {
         {surveys.map((survey) => {
           return (
             <SurveyCard
-              responsesCount={survey.responseCount}
+              responsesCount={survey.SurveyResult.length}
               schema={survey.schema}
               survey={survey}
               key={survey.id}

@@ -1,6 +1,6 @@
 import {SurveyPreviewer} from '@/survey-dashboard/_components/survey-previewer';
 
-const PreviewPage = async ({params}: {params: {id: string}}) => {
+const PreviewPage = async () => {
   return (
     <div className="h-full overflow-y-auto">
       <div className="flex-1 flex-shrink-0 sm:py-6">

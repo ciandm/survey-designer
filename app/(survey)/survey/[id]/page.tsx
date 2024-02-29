@@ -2,9 +2,9 @@ import {Metadata, ResolvingMetadata} from 'next';
 import {notFound} from 'next/navigation';
 import {Card} from '@/components/ui/card';
 import {db} from '@/lib/db';
-import {db} from '@/lib/db/survey';
-import {SurveySchema, surveySchema} from '@/lib/validations/survey';
+import {surveySchema} from '@/lib/validations/survey';
 import {SurveyForm} from '@/survey/_components/survey-form';
+import {getSurvey} from '@/survey/_lib/get-survey';
 import {sortChoices} from '@/survey/_utils/question';
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
 };
 
 const SurveyPage = async ({params}: Props) => {
-  const survey = await db.getSurveyById(params.id, {filterPublished: true});
+  const survey = await getSurvey(params.id);
 
   if (!survey) {
     return notFound();
@@ -38,34 +38,6 @@ const SurveyPage = async ({params}: Props) => {
 };
 
 export default SurveyPage;
-
-export const dynamic = 'force-dynamic';
-
-async function getSchema(id: string): Promise<SurveySchema | null> {
-  try {
-    const survey = await db.survey.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    if (!survey || !survey.is_published) {
-      return null;
-    }
-
-    const parsedSurvey = surveySchema.safeParse(survey.schema);
-
-    if (!parsedSurvey.success) {
-      console.error('Invalid survey schema', parsedSurvey.error);
-      return null;
-    }
-
-    return parsedSurvey.data;
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-}
 
 export async function generateMetadata(
   {params}: Props,
