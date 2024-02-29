@@ -1,16 +1,16 @@
 import {PrismaClient} from '@prisma/client';
 import fakeSurveys from './data.json';
 
-const prisma = new PrismaClient();
+const db = new PrismaClient();
 
 async function seedDatabase() {
   try {
-    await prisma.surveyResult.deleteMany();
-    await prisma.survey.deleteMany();
+    await db.surveyResult.deleteMany();
+    await db.survey.deleteMany();
 
     for (const surveyData of fakeSurveys) {
       const title = surveyData.title;
-      await prisma.survey.create({
+      await db.survey.create({
         data: {
           userId: '1',
           id: surveyData.id,
@@ -26,7 +26,7 @@ async function seedDatabase() {
   } catch (error) {
     console.error(`Error seeding the database: ${error}`);
   } finally {
-    await prisma.$disconnect();
+    await db.$disconnect();
   }
 }
 

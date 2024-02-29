@@ -1,7 +1,7 @@
 import {Metadata, ResolvingMetadata} from 'next';
 import {notFound} from 'next/navigation';
 import {Card} from '@/components/ui/card';
-import {prisma} from '@/lib/client';
+import {db} from '@/lib/db';
 import {db} from '@/lib/db/survey';
 import {SurveySchema, surveySchema} from '@/lib/validations/survey';
 import {SurveyForm} from '@/survey/_components/survey-form';
@@ -43,7 +43,7 @@ export const dynamic = 'force-dynamic';
 
 async function getSchema(id: string): Promise<SurveySchema | null> {
   try {
-    const survey = await prisma.survey.findUnique({
+    const survey = await db.survey.findUnique({
       where: {
         id,
       },
@@ -73,7 +73,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const id = params.id;
 
-  const survey = await prisma.survey.findUnique({
+  const survey = await db.survey.findUnique({
     where: {
       id,
     },

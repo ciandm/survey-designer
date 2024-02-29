@@ -1,10 +1,10 @@
 import {Metadata} from 'next';
-import {prisma} from '@/lib/client';
+import {db} from '@/lib/db';
 import {DeleteResponsesButton} from '@/survey-dashboard/_components/delete-responses-button';
 import {Response} from '@/survey-dashboard/_components/response';
 
 async function getSurveyResults(surveyId: string) {
-  return await prisma.surveyResult.findMany({
+  return await db.surveyResult.findMany({
     where: {
       surveyId,
     },

@@ -1,11 +1,11 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {v4 as uuidv4} from 'uuid';
 import {getUser} from '@/lib/auth';
-import {prisma} from '@/lib/client';
+import {db} from '@/lib/db';
 import {createSurveyInput, surveySchema} from '@/lib/validations/survey';
 
 export async function GET(req: NextRequest, res: NextResponse) {
-  const surveys = await prisma.survey.findMany({});
+  const surveys = await db.survey.findMany({});
 
   return new Response(JSON.stringify(surveys));
 }
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const surveyToDuplicate = searchParams.get('survey_to_duplicate');
 
   if (surveyToDuplicate) {
-    const survey = await prisma.survey.findUnique({
+    const survey = await db.survey.findUnique({
       where: {id: surveyToDuplicate},
     });
 
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         : 'Untitled Survey (Copy)';
     }
 
-    const createdSurvey = await prisma.survey.create({
+    const createdSurvey = await db.survey.create({
       data: {
         userId: user.id,
         schema: {
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     return NextResponse.json(parsedData.error, {status: 400});
   }
 
-  const survey = await prisma.survey.create({
+  const survey = await db.survey.create({
     data: {
       userId: user.id,
       schema: {

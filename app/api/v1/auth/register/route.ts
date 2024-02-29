@@ -3,7 +3,7 @@ import {cookies} from 'next/headers';
 import {NextRequest, NextResponse} from 'next/server';
 import {Argon2id} from 'oslo/password';
 import {getUser, lucia} from '@/lib/auth';
-import {prisma} from '@/lib/client';
+import {db} from '@/lib/db';
 import {loginSchema} from '@/lib/validations/auth';
 
 export async function POST(req: NextRequest) {
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
   const hashedPassword = await new Argon2id().hash(password);
   const userId = generateId(15);
 
-  const existingUser = await prisma.user.findFirst({
+  const existingUser = await db.user.findFirst({
     where: {
       username,
     },
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json('User already exists', {status: 400});
   }
 
-  await prisma.user.create({
+  await db.user.create({
     data: {
       id: userId,
       username,

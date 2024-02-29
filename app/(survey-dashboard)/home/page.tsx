@@ -3,7 +3,7 @@ import {redirect} from 'next/navigation';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
 import {getUser} from '@/lib/auth';
-import {prisma} from '@/lib/client';
+import {db} from '@/lib/db';
 import {SurveyResponse, surveySchema} from '@/lib/validations/survey';
 import {SurveyCard} from '@/survey-dashboard/_components/survey-card';
 
@@ -56,7 +56,7 @@ async function getHomeSurveys({
 }: {
   userId: string;
 }): Promise<SurveysWithResponseCount[]> {
-  const surveys = await prisma.survey.findMany({
+  const surveys = await db.survey.findMany({
     include: {
       SurveyResult: true,
     },
