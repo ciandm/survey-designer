@@ -19,7 +19,7 @@ import {
 import {
   useDesignerActions,
   useSurveyElements,
-} from '../../../features/survey-designer/store/survey-designer-store';
+} from '../_store/survey-designer-store';
 
 type ElementsDndContextProps = {
   children: React.ReactNode;
