@@ -1,4 +1,4 @@
-import {Survey} from '@prisma/client';
+import {Prisma, Survey} from '@prisma/client';
 import * as z from 'zod';
 import {ELEMENT_TYPE} from '../constants/element';
 
@@ -101,3 +101,7 @@ export type ElementSchema = z.infer<typeof elementSchema>;
 export type ChoicesSchema = z.infer<typeof choicesSchema>;
 export type ResponseSchema = z.infer<typeof responseSchema>;
 export type SortOrder = z.infer<typeof SORT_ORDER>;
+
+export type WithParsedSchema<T> = T extends {schema: any}
+  ? {schema: SurveySchema} & Omit<T, 'schema'>
+  : never;

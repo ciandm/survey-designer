@@ -23,6 +23,7 @@
       "@/components/*": ["components/*"],
       "@/lib/*": ["lib/*"],
       "@/prisma/*": ["prisma/*"],
+      "@/config/*": ["config/*"],
       "@/auth/*": ["app/(auth)/*"],
       "@/survey/*": ["app/(survey)/*"],
       "@/survey-dashboard/*": ["app/(survey-dashboard)/*"]
