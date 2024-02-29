@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import {redirect} from 'next/navigation';
+import {AuthFormWrapper} from '@/app/(auth)/_components/auth-form-wrapper';
+import {LoginForm} from '@/app/(auth)/_components/login-form';
 import {Button} from '@/components/ui/button';
-import {AuthFormWrapper} from '@/features/auth/components/auth-form-wrapper';
-import {LoginForm} from '@/features/auth/components/login-form';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/lib/hrefs';
 
