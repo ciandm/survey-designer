@@ -1,9 +1,11 @@
-import {notFound} from 'next/navigation';
+import {notFound, redirect} from 'next/navigation';
 import {SurveyProvider} from '@/components/survey-provider';
-import {db} from '@/lib/db/survey';
+import {getUser} from '@/lib/auth';
+import {getSiteUrl} from '@/lib/hrefs';
 import {DesignerProvider} from '@/survey-dashboard/_components/designer-provider';
 import {Header} from '@/survey-dashboard/_components/header';
 import {PublishDialog} from '@/survey-dashboard/_components/publish-dialog';
+import {getUserSurvey} from '@/survey-dashboard/_lib/get-user-survey';
 
 export default async function EditorLayout({
   children,
@@ -12,7 +14,13 @@ export default async function EditorLayout({
   children: React.ReactNode;
   params: {id: string};
 }) {
-  const survey = await db.getSurveyById(params.id);
+  const {user} = await getUser();
+
+  if (!user) {
+    redirect(getSiteUrl.loginPage());
+  }
+
+  const survey = await getUserSurvey(params.id);
 
   if (!survey) {
     return notFound();

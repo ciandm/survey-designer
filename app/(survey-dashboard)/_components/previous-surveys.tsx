@@ -1,10 +1,9 @@
-import React from 'react';
 import {Skeleton} from '@/components/ui/skeleton';
-import {db} from '@/lib/db/survey';
+import {getUserSurveys} from '../_lib/get-user-surveys';
 import {PreviousSurveyContainer} from './previous-survey-container';
 
 export const PreviousSurveys = async () => {
-  const surveys = await db.getSurveysWithResponses();
+  const surveys = await getUserSurveys();
 
   return (
     <ul className="flex flex-col rounded-lg border bg-card">

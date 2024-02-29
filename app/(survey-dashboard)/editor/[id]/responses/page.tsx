@@ -1,21 +1,10 @@
 import {Metadata} from 'next';
-import {prisma} from '@/prisma/client';
 import {DeleteResponsesButton} from '@/survey-dashboard/_components/delete-responses-button';
 import {Response} from '@/survey-dashboard/_components/response';
-
-async function getSurveyResults(surveyId: string) {
-  return await prisma.surveyResult.findMany({
-    where: {
-      surveyId,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
-}
+import {getResponses} from '@/survey-dashboard/_lib/get-responses';
 
 const ResponsesPage = async ({params}: {params: {id: string}}) => {
-  const surveyResults = await getSurveyResults(params.id);
+  const surveyResults = await getResponses(params.id);
 
   if (surveyResults.length === 0) {
     return <div>No responses found</div>;

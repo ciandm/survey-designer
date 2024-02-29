@@ -3,8 +3,8 @@
 import {v4 as uuidv4} from 'uuid';
 import {z} from 'zod';
 import {getUser} from '@/lib/auth';
+import {db} from '@/lib/db';
 import {surveySchema} from '@/lib/validations/survey';
-import {prisma} from '@/prisma/client';
 
 const schema = z.object({
   surveyId: z.string(),
@@ -22,7 +22,7 @@ export async function publishSurvey(
 
   const {surveyId: id} = validatedField.data;
 
-  const survey = await prisma.survey.update({
+  const survey = await db.survey.update({
     where: {id},
     data: {is_published: action === 'publish' ? true : false},
   });
@@ -40,7 +40,7 @@ export async function deleteSurvey(surveyId: string) {
 
   const {surveyId: id} = validatedField.data;
 
-  await prisma.survey.delete({
+  await db.survey.delete({
     where: {id},
   });
 
@@ -64,7 +64,7 @@ export async function duplicateSurvey(surveyId: string) {
 
   const {surveyId: id} = validatedField.data;
 
-  const survey = await prisma.survey.findUnique({
+  const survey = await db.survey.findUnique({
     where: {id},
   });
 
@@ -82,7 +82,7 @@ export async function duplicateSurvey(surveyId: string) {
     data: {elements, title},
   } = parsedSchema;
 
-  const duplicatedSurvey = await prisma.survey.create({
+  const duplicatedSurvey = await db.survey.create({
     data: {
       userId: user.id,
       schema: {

@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {z} from 'zod';
-import {prisma} from '@/prisma/client';
+import {db} from '@/lib/db';
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -14,7 +14,7 @@ export async function DELETE(
 ) {
   const {params} = routeContextSchema.parse(context);
 
-  const survey = await prisma.survey.update({
+  const survey = await db.survey.update({
     data: {
       is_published: false,
     },
@@ -32,7 +32,7 @@ export async function PATCH(
 ) {
   const {params} = routeContextSchema.parse(context);
 
-  const survey = await prisma.survey.update({
+  const survey = await db.survey.update({
     data: {
       is_published: true,
     },

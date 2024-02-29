@@ -1,10 +1,10 @@
 'server-only';
 
-import {prisma} from '@/prisma/client';
+import {db} from '@/lib/db';
 import {surveySchema} from '../validations/survey';
 
 async function getSurveys() {
-  const surveys = await prisma.survey.findMany();
+  const surveys = await db.survey.findMany();
 
   return surveys
     .map((survey) => {
@@ -22,7 +22,7 @@ async function getSurveys() {
 }
 
 async function getSurveysWithResponses() {
-  const surveys = await prisma.survey.findMany({
+  const surveys = await db.survey.findMany({
     include: {
       SurveyResult: true,
     },
@@ -47,7 +47,7 @@ async function getSurveyById(
   id: string,
   options: {filterPublished?: boolean} = {},
 ) {
-  const survey = await prisma.survey.findUnique({
+  const survey = await db.survey.findUnique({
     where: {
       id,
     },
@@ -71,9 +71,3 @@ async function getSurveyById(
 function validateSurveyIsNotNull<T>(value: T | null): value is T {
   return value !== null;
 }
-
-export const db = {
-  getSurveys,
-  getSurveyById,
-  getSurveysWithResponses,
-};

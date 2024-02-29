@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {z} from 'zod';
+import {db} from '@/lib/db';
 import {createResponseInput} from '@/lib/validations/survey';
-import {prisma} from '@/prisma/client';
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -15,7 +15,7 @@ export async function DELETE(
 ) {
   const {params} = routeContextSchema.parse(context);
 
-  await prisma.surveyResult.deleteMany({
+  await db.surveyResult.deleteMany({
     where: {
       surveyId: params.id,
     },
@@ -37,7 +37,7 @@ export async function POST(
   }
 
   try {
-    await prisma.surveyResult.create({
+    await db.surveyResult.create({
       data: {
         surveyId: params.id,
         responses: parsed.data.responses,

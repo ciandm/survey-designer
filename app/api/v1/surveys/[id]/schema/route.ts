@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {z} from 'zod';
+import {db} from '@/lib/db';
 import {updateSchemaInput} from '@/lib/validations/survey';
-import {prisma} from '@/prisma/client';
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -22,7 +22,7 @@ export async function PUT(
     return NextResponse.json(parsed.error, {status: 400});
   }
 
-  const survey = await prisma.survey.update({
+  const survey = await db.survey.update({
     where: {
       id: params.id,
     },
