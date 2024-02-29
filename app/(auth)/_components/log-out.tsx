@@ -1,36 +1,38 @@
 'use client';
 
-import {useMutation} from '@tanstack/react-query';
 import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
+import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
-import {axios} from '@/lib/api/axios';
 import {getSiteUrl} from '@/lib/hrefs';
+import {logOutAction} from '../_actions/log-out-action';
 
 export const LogOut = () => {
   const router = useRouter();
-  const {mutateAsync: handleLogOut, isPending} = useMutation<void, Error, void>(
-    {
-      mutationFn: async () => {
-        await axios.delete('/auth/log-out');
-      },
-    },
-  );
-
-  const onClick = async () => {
-    try {
-      await handleLogOut();
+  const {execute: handleLogOut, status} = useAction(logOutAction, {
+    onSuccess: () => {
       router.push(getSiteUrl.loginPage());
-    } catch {
-      toast.error('Failed to log out. Please try again.');
-    }
+    },
+    onError: () => {
+      toast.error('Something went wrong. Please try again.');
+    },
+  });
+
+  const onClick = () => {
+    handleLogOut({});
   };
 
   return (
-    <Button variant="secondary" onClick={onClick} disabled={isPending}>
+    <Button
+      variant="secondary"
+      onClick={onClick}
+      disabled={status === 'executing'}
+    >
       Sign out
-      {isPending && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+      {status === 'executing' && (
+        <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+      )}
     </Button>
   );
 };

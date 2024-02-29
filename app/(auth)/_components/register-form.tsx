@@ -3,10 +3,9 @@
 import {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useMutation} from '@tanstack/react-query';
-import {AxiosError} from 'axios';
-import {Loader2, XCircleIcon} from 'lucide-react';
+import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
+import {useAction} from 'next-safe-action/hooks';
 import {z} from 'zod';
 import {Button} from '@/components/ui/button';
 import {
@@ -19,11 +18,12 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
-import {axios} from '@/lib/api/axios';
 import {getSiteUrl} from '@/lib/hrefs';
-import {loginSchema} from '@/lib/validations/auth';
+import {registerSchema} from '@/lib/validations/auth';
+import {registerAction} from '../_actions/register-action';
+import {ErrorAlert} from './error-alert';
 
-type RegisterFormState = z.infer<typeof loginSchema>;
+type RegisterFormState = z.infer<typeof registerSchema>;
 
 export const RegisterForm = () => {
   const router = useRouter();
@@ -32,54 +32,39 @@ export const RegisterForm = () => {
       password: '',
       email: '',
     },
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(registerSchema),
   });
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[] | null>(null);
 
-  const {
-    mutateAsync: handleRegisterUser,
-    isPending,
-    isSuccess,
-  } = useMutation<void, Error, RegisterFormState>({
-    mutationFn: async (data) => {
-      const {data: response} = await axios.post('/auth/register', data);
-      return response;
+  const {execute: handleRegisterUser, status} = useAction(registerAction, {
+    onSuccess: (data) => {
+      if (data.success) {
+        router.push(getSiteUrl.homePage());
+      }
+    },
+    onError: (error) => {
+      if (error.serverError) {
+        setErrors([error.serverError]);
+      } else if (error.validationErrors) {
+        Object.values(error.validationErrors).forEach((e) => {
+          setErrors((prev) => [...(prev || []), ...e]);
+        });
+      } else {
+        setErrors(['Something went wrong. Please try again.']);
+      }
     },
   });
 
   const onSubmit = form.handleSubmit(async (data) => {
-    setError(null);
-    try {
-      await handleRegisterUser(data);
-      router.push(getSiteUrl.homePage());
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setError(error.response?.data || 'Something went wrong');
-      } else {
-        setError('Something went wrong');
-      }
-    }
+    setErrors(null);
+    handleRegisterUser(data);
   });
 
   return (
     <>
       <Form {...form}>
         <form onSubmit={onSubmit} className="space-y-6">
-          {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <XCircleIcon
-                    className="h-5 w-5 text-red-400"
-                    aria-hidden="true"
-                  />
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">{error}</h3>
-                </div>
-              </div>
-            </div>
-          )}
+          {errors && <ErrorAlert errors={errors} />}
           <FormField
             control={form.control}
             name="email"
@@ -114,12 +99,14 @@ export const RegisterForm = () => {
             )}
           />
           <Button
-            disabled={isPending || isSuccess}
+            disabled={status === 'executing' || status === 'hasSucceeded'}
             type="submit"
             className="w-full"
           >
-            {isSuccess ? 'Redirecting...' : 'Create account'}
-            {isPending && <Loader2 className="ml-2 h-4 w-4 animate-spin" />}
+            {status === 'hasSucceeded' ? 'Redirecting...' : 'Create account'}
+            {status === 'executing' && (
+              <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+            )}
           </Button>
         </form>
       </Form>
