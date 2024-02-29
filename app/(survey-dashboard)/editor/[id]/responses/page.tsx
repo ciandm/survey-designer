@@ -1,5 +1,5 @@
 import {Metadata} from 'next';
-import {prisma} from '@/prisma/client';
+import {prisma} from '@/lib/client';
 import {DeleteResponsesButton} from '@/survey-dashboard/_components/delete-responses-button';
 import {Response} from '@/survey-dashboard/_components/response';
 

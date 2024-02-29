@@ -1,6 +1,6 @@
 'server-only';
 
-import {prisma} from '@/prisma/client';
+import {prisma} from '@/lib/client';
 import {surveySchema} from '../validations/survey';
 
 async function getSurveys() {

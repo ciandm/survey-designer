@@ -1,8 +1,8 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {v4 as uuidv4} from 'uuid';
 import {getUser} from '@/lib/auth';
+import {prisma} from '@/lib/client';
 import {createSurveyInput, surveySchema} from '@/lib/validations/survey';
-import {prisma} from '@/prisma/client';
 
 export async function GET(req: NextRequest, res: NextResponse) {
   const surveys = await prisma.survey.findMany({});

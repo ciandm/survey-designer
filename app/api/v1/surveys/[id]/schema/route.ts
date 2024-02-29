@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {z} from 'zod';
+import {prisma} from '@/lib/client';
 import {updateSchemaInput} from '@/lib/validations/survey';
-import {prisma} from '@/prisma/client';
 
 const routeContextSchema = z.object({
   params: z.object({

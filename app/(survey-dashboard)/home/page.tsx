@@ -3,8 +3,8 @@ import {redirect} from 'next/navigation';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
 import {getUser} from '@/lib/auth';
+import {prisma} from '@/lib/client';
 import {SurveyResponse, surveySchema} from '@/lib/validations/survey';
-import {prisma} from '@/prisma/client';
 import {SurveyCard} from '@/survey-dashboard/_components/survey-card';
 
 type SurveysWithResponseCount = SurveyResponse['survey'] & {

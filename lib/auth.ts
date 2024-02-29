@@ -2,7 +2,7 @@ import {cache} from 'react';
 import {PrismaAdapter} from '@lucia-auth/adapter-prisma';
 import {Lucia} from 'lucia';
 import {cookies} from 'next/headers';
-import {prisma} from '@/prisma/client';
+import {prisma} from '@/lib/client';
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
 

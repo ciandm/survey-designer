@@ -1,6 +1,6 @@
 import {NextRequest} from 'next/server';
 import {z} from 'zod';
-import {prisma} from '@/prisma/client';
+import {prisma} from '@/lib/client';
 
 const routeContextSchema = z.object({
   params: z.object({

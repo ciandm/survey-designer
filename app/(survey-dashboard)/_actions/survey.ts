@@ -3,8 +3,8 @@
 import {v4 as uuidv4} from 'uuid';
 import {z} from 'zod';
 import {getUser} from '@/lib/auth';
+import {prisma} from '@/lib/client';
 import {surveySchema} from '@/lib/validations/survey';
-import {prisma} from '@/prisma/client';
 
 const schema = z.object({
   surveyId: z.string(),
