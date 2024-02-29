@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import {useParams, usePathname} from 'next/navigation';
-import {replaceLinkHrefs} from '@/app/(survey)/_utils/links';
 import {DESIGNER_LINKS} from '@/lib/constants/links';
 import {cn} from '@/lib/utils';
+import {replaceLinkHrefs} from '@/survey/_utils/links';
 
 export const NavLinks = () => {
   const pathname = usePathname();

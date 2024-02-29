@@ -3,11 +3,11 @@
 import {useParams} from 'next/navigation';
 import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
-import {useUpdateSurveySchema} from '../_hooks/use-update-survey-schema';
+import {useUpdateSurveySchema} from '@/survey-dashboard/_hooks/use-update-survey-schema';
 import {
   useIsSurveyChanged,
   useSurveySchema,
-} from '../_store/survey-designer-store';
+} from '@/survey-dashboard/_store/survey-designer-store';
 
 export const SaveChanges = () => {
   const {id} = useParams();

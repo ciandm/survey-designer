@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {createContext} from '@/lib/context';
-import {usePublishDialog} from '../_hooks/use-publish-dialog';
+import {usePublishDialog} from '@/survey-dashboard/_hooks/use-publish-dialog';
 import {CopySurveyUrl} from './copy-survey-url';
 
 export const PublishDialog = ({children}: {children: React.ReactNode}) => {

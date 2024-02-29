@@ -22,13 +22,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {useActiveElement} from '../_hooks/use-active-element';
+import {useActiveElement} from '@/survey-dashboard/_hooks/use-active-element';
 import {
   useDesignerActions,
   useSurveyElements,
   useSurveySchema,
   useSurveyScreens,
-} from '../_store/survey-designer-store';
+} from '@/survey-dashboard/_store/survey-designer-store';
 import {
   Choices,
   ChoicesAddChoice,

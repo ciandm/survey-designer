@@ -4,7 +4,7 @@ import {NextRequest, NextResponse} from 'next/server';
 import {Argon2id} from 'oslo/password';
 import {getUser, lucia} from '@/lib/auth';
 import {loginSchema} from '@/lib/validations/auth';
-import prisma from '@/prisma/client';
+import {prisma} from '@/prisma/client';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();

@@ -2,7 +2,10 @@ import {useState} from 'react';
 import {useMutation} from '@tanstack/react-query';
 import {surveyApi} from '@/lib/api/survey';
 import {SurveyResponse} from '@/lib/validations/survey';
-import {useDesignerActions, useSurveyId} from '../_store/survey-designer-store';
+import {
+  useDesignerActions,
+  useSurveyId,
+} from '@/survey-dashboard/_store/survey-designer-store';
 
 type PublishAction = 'publish' | 'unpublish';
 

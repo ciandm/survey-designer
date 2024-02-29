@@ -1,10 +1,10 @@
 import {Suspense} from 'react';
 import {redirect} from 'next/navigation';
-import {CreateForm} from '@/app/(survey-dashboard)/_components/create-form';
-import {PreviousSurveys} from '@/app/(survey-dashboard)/_components/previous-surveys';
 import {DuplicateSurveyForm} from '@/components/duplicate-form';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/lib/hrefs';
+import {CreateForm} from '@/survey-dashboard/_components/create-form';
+import {PreviousSurveys} from '@/survey-dashboard/_components/previous-surveys';
 
 const CreatePage = async () => {
   const {session} = await getUser();

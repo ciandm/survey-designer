@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Button} from '@/components/ui/button';
-import {useDeleteResponses} from '../_hooks/use-delete-responses';
+import {useDeleteResponses} from '@/survey-dashboard/_hooks/use-delete-responses';
 
 export const DeleteResponsesButton = ({surveyId}: {surveyId: string}) => {
   const {mutate: handleDeleteResponses} = useDeleteResponses();

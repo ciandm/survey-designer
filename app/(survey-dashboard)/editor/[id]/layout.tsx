@@ -1,9 +1,9 @@
 import {notFound} from 'next/navigation';
-import {DesignerProvider} from '@/app/(survey-dashboard)/_components/designer-provider';
-import {Header} from '@/app/(survey-dashboard)/_components/header';
-import {PublishDialog} from '@/app/(survey-dashboard)/_components/publish-dialog';
 import {SurveyProvider} from '@/components/survey-provider';
 import {db} from '@/lib/db/survey';
+import {DesignerProvider} from '@/survey-dashboard/_components/designer-provider';
+import {Header} from '@/survey-dashboard/_components/header';
+import {PublishDialog} from '@/survey-dashboard/_components/publish-dialog';
 
 export default async function EditorLayout({
   children,

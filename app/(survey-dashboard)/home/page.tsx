@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import {redirect} from 'next/navigation';
-import {SurveyCard} from '@/app/(survey-dashboard)/_components/survey-card';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
 import {getUser} from '@/lib/auth';
 import {SurveyResponse, surveySchema} from '@/lib/validations/survey';
-import prisma from '@/prisma/client';
+import {prisma} from '@/prisma/client';
+import {SurveyCard} from '@/survey-dashboard/_components/survey-card';
 
 type SurveysWithResponseCount = SurveyResponse['survey'] & {
   responseCount: number;

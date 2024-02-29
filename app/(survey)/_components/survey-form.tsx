@@ -7,7 +7,6 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {CheckCircleIcon, Loader2} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import {useSubmitSurvey} from '@/app/(survey-dashboard)/_hooks/use-submit-survey';
 import {Button} from '@/components/ui/button';
 import {
   Form,
@@ -20,7 +19,8 @@ import {Skeleton} from '@/components/ui/skeleton';
 import {ElementType} from '@/lib/constants/element';
 import {cn} from '@/lib/utils';
 import {ElementSchema, SurveySchema} from '@/lib/validations/survey';
-import {createSurveyValidationSchema} from '../_utils/survey';
+import {createSurveyValidationSchema} from '@/survey/_utils/survey';
+import {useSubmitSurvey} from '@/survey-dashboard/_hooks/use-submit-survey';
 import {LongTextField, ShortTextField} from './type-field';
 
 export interface QuestionFormState {

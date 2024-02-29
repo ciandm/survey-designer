@@ -1,6 +1,6 @@
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
-import {SessionProvider} from '@/app/(auth)/_components/session-provider';
+import {SessionProvider} from '@/auth/_components/session-provider';
 import {DeleteSurveyDialog} from '@/components/delete-survey';
 import {LoadingOverlay} from '@/components/loading-overlay';
 import {Toaster} from '@/components/ui/sonner';

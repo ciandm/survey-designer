@@ -5,10 +5,10 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import {HamburgerMenuIcon} from '@radix-ui/react-icons';
 import Link from 'next/link';
 import {useParams, usePathname} from 'next/navigation';
-import {replaceLinkHrefs} from '@/app/(survey)/_utils/links';
 import {Button} from '@/components/ui/button';
 import {DESIGNER_LINKS} from '@/lib/constants/links';
 import {cn} from '@/lib/utils';
+import {replaceLinkHrefs} from '@/survey/_utils/links';
 
 export const HamburgerMenu = () => {
   const {id} = useParams() as {id: string};

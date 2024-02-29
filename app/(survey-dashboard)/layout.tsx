@@ -1,4 +1,4 @@
-import {LogOut} from '@/app/(auth)/_components/log-out';
+import {LogOut} from '@/auth/_components/log-out';
 import {TopBar} from '@/components/top-bar';
 
 export default function SurveyBuilderLayout({

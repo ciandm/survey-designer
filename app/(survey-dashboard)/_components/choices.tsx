@@ -35,7 +35,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {ChoicesSchema} from '@/lib/validations/survey';
-import {useDesignerActions} from '../_store/survey-designer-store';
+import {useDesignerActions} from '@/survey-dashboard/_store/survey-designer-store';
 
 type ChoicesProps = {
   children: React.ReactNode;

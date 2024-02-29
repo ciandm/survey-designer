@@ -1,11 +1,11 @@
 import {Metadata, ResolvingMetadata} from 'next';
 import {notFound} from 'next/navigation';
-import {SurveyForm} from '@/app/(survey)/_components/survey-form';
-import {sortChoices} from '@/app/(survey)/_utils/question';
 import {Card} from '@/components/ui/card';
 import {db} from '@/lib/db/survey';
 import {SurveySchema, surveySchema} from '@/lib/validations/survey';
-import prisma from '@/prisma/client';
+import {prisma} from '@/prisma/client';
+import {SurveyForm} from '@/survey/_components/survey-form';
+import {sortChoices} from '@/survey/_utils/question';
 
 type Props = {
   params: {
