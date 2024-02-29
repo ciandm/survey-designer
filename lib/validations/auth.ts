@@ -10,9 +10,15 @@ export const loginSchema = z.object({
     .email({
       message: 'Invalid email address',
     }),
-  password: z.string().trim().min(8, {
-    message: 'Password must be at least 8 characters long',
+  password: z.string().trim().min(1, {
+    message: 'Password is required',
   }),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
+
+export const registerSchema = loginSchema.omit({password: true}).extend({
+  password: z.string().trim().min(8, {
+    message: 'Password must be at least 8 characters long',
+  }),
+});
