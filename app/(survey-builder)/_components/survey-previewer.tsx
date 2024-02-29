@@ -1,7 +1,7 @@
 'use client';
 
+import {sortChoices} from '@/app/(survey)/_utils/question';
 import {Card} from '@/components/ui/card';
-import {sortChoices} from '@/features/survey-tool/utils/question';
 import {SurveyForm} from '../../(survey)/_components/survey-form';
 import {useSurveyId, useSurveySchema} from '../_store/survey-designer-store';
 

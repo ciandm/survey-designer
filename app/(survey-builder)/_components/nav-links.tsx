@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {useParams, usePathname} from 'next/navigation';
-import {replaceLinkHrefs} from '@/features/survey-tool/utils/links';
+import {replaceLinkHrefs} from '@/app/(survey)/_utils/links';
 import {DESIGNER_LINKS} from '@/lib/constants/links';
 import {cn} from '@/lib/utils';
 

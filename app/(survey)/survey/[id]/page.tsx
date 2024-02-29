@@ -1,8 +1,8 @@
 import {Metadata, ResolvingMetadata} from 'next';
 import {notFound} from 'next/navigation';
 import {SurveyForm} from '@/app/(survey)/_components/survey-form';
+import {sortChoices} from '@/app/(survey)/_utils/question';
 import {Card} from '@/components/ui/card';
-import {sortChoices} from '@/features/survey-tool/utils/question';
 import {db} from '@/lib/db/survey';
 import {SurveySchema, surveySchema} from '@/lib/validations/survey';
 import prisma from '@/prisma/client';
