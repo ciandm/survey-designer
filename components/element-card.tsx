@@ -1,9 +1,9 @@
 import React, {DetailedHTMLProps, HTMLAttributes} from 'react';
 import {usePathname} from 'next/navigation';
-import {ContentEditable} from '@/features/survey-designer/components/content-editable';
-import {useDesignerActions} from '@/features/survey-designer/store/survey-designer-store';
 import {cn} from '@/lib/utils';
 import {ElementSchema} from '@/lib/validations/survey';
+import {ContentEditable} from '@/survey-dashboard/_components/content-editable';
+import {useDesignerActions} from '@/survey-dashboard/_store/survey-designer-store';
 
 type ElementCardProps = DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
