@@ -36,12 +36,13 @@ export const SurveyActions = () => {
   };
 
   const onDuplicateSurveySelect = () => {
+    const initialData = {
+      id: surveyId,
+      title: schema.title,
+      description: schema.description,
+    };
     handleTriggerDuplicateSurveyDialog({
-      initialData: {
-        id: surveyId,
-        title: schema.title,
-        description: schema.description,
-      },
+      initialData,
     });
   };
 

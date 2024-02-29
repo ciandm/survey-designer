@@ -129,6 +129,7 @@ const useDuplicateSurveyForm = () => {
   const form = useForm<DuplicateSurveyFormState>({
     resolver: zodResolver(schema),
   });
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const {execute: handleDuplicateSurvey, status} = useAction(
     createSurveyAction,
@@ -142,7 +143,6 @@ const useDuplicateSurveyForm = () => {
       },
     },
   );
-  const router = useRouter();
 
   const handleTriggerDuplicateSurveyDialog = (options: {
     initialData: DuplicateSurveyFormState;

@@ -1,7 +1,9 @@
 'use server';
 
+import {revalidatePath, revalidateTag} from 'next/cache';
 import {getUser} from '@/lib/auth';
 import {db} from '@/lib/db';
+import {getSiteUrl} from '@/lib/hrefs';
 import {action, ActionError} from '@/lib/safe-action';
 import {createSurveyInput, surveySchema} from '@/lib/validations/survey';
 import {generateDuplicateSurvey, generateNewSurvey} from '../_utils/survey';
@@ -47,6 +49,8 @@ export const createSurveyAction = action(
         ),
       });
 
+      revalidatePath(getSiteUrl.homePage());
+
       return {
         survey: duplicatedSurvey,
         success: true,
@@ -60,6 +64,8 @@ export const createSurveyAction = action(
         userId: user.id,
       }),
     });
+
+    revalidatePath(getSiteUrl.homePage());
 
     return {
       survey,

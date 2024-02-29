@@ -16,12 +16,13 @@ export const PreviousSurveyContainer = ({
   const {handleTriggerDuplicateSurveyDialog} = useDuplicateSurveyFormTrigger();
 
   const handleClick = async () => {
+    const initialData = {
+      title: `${survey.schema.title} (copy)`,
+      description: survey.schema.description,
+      id: survey.id,
+    };
     handleTriggerDuplicateSurveyDialog({
-      initialData: {
-        title: survey.schema.title,
-        id: survey.id,
-        description: survey.schema.description,
-      },
+      initialData,
     });
   };
 
