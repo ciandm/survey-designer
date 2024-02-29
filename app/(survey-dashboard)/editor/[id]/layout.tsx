@@ -1,7 +1,7 @@
 import {notFound} from 'next/navigation';
-import {DesignerProvider} from '@/app/(survey-builder)/_components/designer-provider';
-import {Header} from '@/app/(survey-builder)/_components/header';
-import {PublishDialog} from '@/app/(survey-builder)/_components/publish-dialog';
+import {DesignerProvider} from '@/app/(survey-dashboard)/_components/designer-provider';
+import {Header} from '@/app/(survey-dashboard)/_components/header';
+import {PublishDialog} from '@/app/(survey-dashboard)/_components/publish-dialog';
 import {SurveyProvider} from '@/components/survey-provider';
 import {db} from '@/lib/db/survey';
 

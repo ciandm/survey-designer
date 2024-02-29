@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {redirect} from 'next/navigation';
-import {SurveyCard} from '@/app/(survey-builder)/_components/survey-card';
+import {SurveyCard} from '@/app/(survey-dashboard)/_components/survey-card';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
 import {getUser} from '@/lib/auth';

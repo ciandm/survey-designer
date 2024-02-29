@@ -7,7 +7,7 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {CheckCircleIcon, Loader2} from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import {useSubmitSurvey} from '@/app/(survey-builder)/_hooks/use-submit-survey';
+import {useSubmitSurvey} from '@/app/(survey-dashboard)/_hooks/use-submit-survey';
 import {Button} from '@/components/ui/button';
 import {
   Form,

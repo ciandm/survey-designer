@@ -1,4 +1,4 @@
-import {SurveyPreviewer} from '@/app/(survey-builder)/_components/survey-previewer';
+import {SurveyPreviewer} from '@/app/(survey-dashboard)/_components/survey-previewer';
 
 const PreviewPage = async ({params}: {params: {id: string}}) => {
   return (

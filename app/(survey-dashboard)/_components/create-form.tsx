@@ -6,7 +6,7 @@ import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {toast} from 'sonner';
 import {z} from 'zod';
-import {useCreateSurvey} from '@/app/(survey-builder)/_hooks/use-create-survey';
+import {useCreateSurvey} from '@/app/(survey-dashboard)/_hooks/use-create-survey';
 import {Button} from '@/components/ui/button';
 import {
   Form,

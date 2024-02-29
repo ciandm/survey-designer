@@ -7,7 +7,7 @@ import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {toast} from 'sonner';
 import {z} from 'zod';
-import {useDuplicateSurvey} from '@/app/(survey-builder)/_hooks/use-duplicate-survey';
+import {useDuplicateSurvey} from '@/app/(survey-dashboard)/_hooks/use-duplicate-survey';
 import {createContext} from '@/lib/context';
 import {getSiteUrl} from '@/lib/hrefs';
 import {Button} from './ui/button';
