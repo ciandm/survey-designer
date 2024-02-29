@@ -20,7 +20,7 @@ import {ElementType} from '@/lib/constants/element';
 import {cn} from '@/lib/utils';
 import {ElementSchema, SurveySchema} from '@/lib/validations/survey';
 import {createSurveyValidationSchema} from '@/survey/_utils/survey';
-import {useSubmitSurvey} from '@/survey-dashboard/_hooks/use-submit-survey';
+import {useSubmitSurvey} from '@/survey-designer/_hooks/use-submit-survey';
 import {LongTextField, ShortTextField} from './type-field';
 
 export interface QuestionFormState {

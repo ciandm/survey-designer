@@ -10,7 +10,7 @@ import {toast} from 'sonner';
 import {z} from 'zod';
 import {createContext} from '@/lib/context';
 import {getSiteUrl} from '@/lib/hrefs';
-import {createSurveyAction} from '@/survey-dashboard/_actions/create-survey';
+import {createSurveyAction} from '@/survey-designer/_actions/create-survey';
 import {Button} from './ui/button';
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from './ui/dialog';
 import {
