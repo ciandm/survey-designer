@@ -5,7 +5,7 @@ import {SurveyResponse} from '@/lib/validations/survey';
 import {
   createSurveyDesignerStore,
   SurveyDesignerStoreProvider,
-} from '../../../features/survey-designer/store/survey-designer-store';
+} from '../_store/survey-designer-store';
 
 type DesignerProviderProps = {
   survey: SurveyResponse['survey'];

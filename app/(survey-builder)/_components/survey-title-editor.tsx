@@ -3,7 +3,7 @@
 import {
   useDesignerActions,
   useSurveySchema,
-} from '../../../features/survey-designer/store/survey-designer-store';
+} from '../_store/survey-designer-store';
 import {ContentEditable} from './content-editable';
 
 export const SurveyTitleEditor = () => {

@@ -1,6 +1,6 @@
 import {ElementSchema} from '@/lib/validations/survey';
-import {useActiveElementRef} from '../../../features/survey-designer/store/active-element-ref';
-import {useSurveyElements} from '../../../features/survey-designer/store/survey-designer-store';
+import {useActiveElementRef} from '../_store/active-element-ref';
+import {useSurveyElements} from '../_store/survey-designer-store';
 
 type UseActiveElementResult = {
   activeElement: ElementSchema | null;
