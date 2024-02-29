@@ -21,7 +21,7 @@ import {
   useSurveySchema,
 } from '@/survey-dashboard/_store/survey-designer-store';
 
-export const SurveyActions = () => {
+export const ToolbarDropdown = () => {
   const schema = useSurveySchema();
   const surveyId = useSurveyId();
   const {handleTriggerDuplicateSurveyDialog} = useDuplicateSurveyFormTrigger();
