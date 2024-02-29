@@ -3,7 +3,7 @@
 import {DotsHorizontalIcon} from '@radix-ui/react-icons';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
-import {useDeleteSurveyConfirm} from '@/components/delete-survey';
+import {useDeleteSurveyConfirm} from '@/components/delete-survey-dialog';
 import {Button} from '@/components/ui/button';
 import {Card, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {

@@ -1,3 +1,4 @@
+import {Survey} from '@prisma/client';
 import * as z from 'zod';
 import {ELEMENT_TYPE} from '../constants/element';
 
@@ -50,7 +51,15 @@ export const surveySchema = z.object({
 export const createSurveyInput = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
+  duplicatedFrom: z.string().optional(),
 });
+
+export const publishSurveyInput = z.object({
+  surveyId: z.string().min(1),
+  action: z.enum(['publish', 'unpublish']),
+});
+
+export const deleteSurveyInput = publishSurveyInput.pick({surveyId: true});
 
 export type SurveySchema = z.infer<typeof surveySchema>;
 
@@ -82,6 +91,9 @@ export const createResponseInput = z.object({
   responses: z.array(responseSchema),
 });
 
+export type SurveyWithParsedSchema = Omit<Survey, 'schema'> & {
+  schema: SurveySchema;
+};
 export type SurveyResponse = z.infer<typeof surveyResponse>;
 export type UpdateSurveySchema = z.infer<typeof updateSchemaInput>;
 export type CreateSurveyInput = z.infer<typeof createSurveyInput>;

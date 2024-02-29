@@ -10,13 +10,6 @@ type PreviousSurveyContainerProps = {
   survey: SurveyResponse['survey'];
 };
 
-const overlayContent = (
-  <div className="flex h-full flex-col items-center justify-center gap-4">
-    <Loader2 className="h-12 w-12 animate-spin text-primary" />
-    <p className="text-base font-medium">Duplicating survey...</p>
-  </div>
-);
-
 export const PreviousSurveyContainer = ({
   children,
   survey,

@@ -259,7 +259,7 @@ const useChoicesContext = () => {
 };
 
 function isAddChoiceDisabled(choices: ChoicesSchema = []): boolean {
-  return choices.some((choice) => choice.value === '');
+  return choices.filter((choice) => choice.value === '').length > 1;
 }
 
 function isRemoveAllDisabled(choices: ChoicesSchema = []): boolean {

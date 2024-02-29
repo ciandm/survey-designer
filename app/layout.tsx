@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
 import {SessionProvider} from '@/auth/_components/session-provider';
-import {DeleteSurveyDialog} from '@/components/delete-survey';
+import {DeleteSurveyDialog} from '@/components/delete-survey-dialog';
 import {LoadingOverlay} from '@/components/loading-overlay';
 import {Toaster} from '@/components/ui/sonner';
 import {getUser} from '@/lib/auth';

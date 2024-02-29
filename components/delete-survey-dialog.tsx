@@ -1,11 +1,12 @@
 'use client';
 
 import React, {useState} from 'react';
+import {XCircleIcon, XMarkIcon} from '@heroicons/react/20/solid';
 import {Slot} from '@radix-ui/react-slot';
-import {useMutation} from '@tanstack/react-query';
 import {Loader2} from 'lucide-react';
-import {surveyApi} from '@/lib/api/survey';
+import {useAction} from 'next-safe-action/hooks';
 import {createContext} from '@/lib/context';
+import {deleteSurveyAction} from '@/survey-dashboard/_actions/delete-survey';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -22,17 +23,32 @@ type DeleteSurveyProps = {
 };
 
 export const DeleteSurveyDialog = ({children}: DeleteSurveyProps) => {
-  const {isOpen, onDeleteSurvey, onOpenConfirmation, onClose, status} =
-    useDeleteSurveyDialog();
+  const {
+    isOpen,
+    handleDeleteSurvey,
+    handleOpenConfirmation,
+    onClose,
+    status,
+    options,
+  } = useDeleteSurveyDialog();
 
   return (
     <>
-      <DeleteSurveyDialogProvider value={onOpenConfirmation}>
+      <DeleteSurveyDialogProvider value={handleOpenConfirmation}>
         {children}
       </DeleteSurveyDialogProvider>
       <AlertDialog open={isOpen} onOpenChange={onClose}>
         <AlertDialogContent>
           <AlertDialogHeader>
+            {status === 'hasErrored' && (
+              <div className="mb-2 flex gap-2 rounded-md bg-red-50 p-4 text-red-400">
+                <XCircleIcon className="h-5 w-5" aria-hidden="true" />
+                <p className="text-sm">
+                  An error occurred while trying to delete the survey. Please
+                  try again.
+                </p>
+              </div>
+            )}
             <AlertDialogTitle>Are you sure absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
@@ -40,16 +56,18 @@ export const DeleteSurveyDialog = ({children}: DeleteSurveyProps) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={status === 'pending'}>
+            <AlertDialogCancel disabled={status === 'executing'}>
               Cancel
             </AlertDialogCancel>
             <Button
-              disabled={status === 'pending'}
+              disabled={status === 'executing'}
               variant="destructive"
-              onClick={onDeleteSurvey}
+              onClick={() =>
+                handleDeleteSurvey({surveyId: options?.surveyId ?? ''})
+              }
             >
               Delete
-              {status === 'pending' && (
+              {status === 'executing' && (
                 <Loader2 className="ml-2 h-4 w-4 animate-spin" />
               )}
             </Button>
@@ -94,34 +112,27 @@ const useDeleteSurveyDialog = () => {
     resolve: () => void;
     reject: () => void;
   }>();
-  const {mutateAsync: handleDeleteSurvey, status} = useMutation<
-    void,
-    Error,
-    void
-  >({
-    mutationFn: async () => surveyApi.deleteSurvey(options?.surveyId ?? ''),
+
+  const {execute: handleDeleteSurvey, ...rest} = useAction(deleteSurveyAction, {
+    onSuccess: () => {
+      if (awaitingPromiseRef.current) {
+        awaitingPromiseRef.current.resolve();
+      }
+      setOptions(null);
+    },
   });
 
-  const onOpenConfirmation = (options: DeleteSurveyOptions) => {
+  const handleOpenConfirmation = (options: DeleteSurveyOptions) => {
     setOptions(options);
     return new Promise<void>((resolve, reject) => {
       awaitingPromiseRef.current = {resolve, reject};
     });
   };
 
-  const onClose = () => {
+  const handleClose = () => {
     if (options?.catchError && awaitingPromiseRef.current) {
       awaitingPromiseRef.current.reject();
     }
-    setOptions(null);
-  };
-
-  const onDeleteSurvey = async () => {
-    await handleDeleteSurvey();
-    if (awaitingPromiseRef.current) {
-      awaitingPromiseRef.current.resolve();
-    }
-
     setOptions(null);
   };
 
@@ -129,10 +140,11 @@ const useDeleteSurveyDialog = () => {
 
   return {
     isOpen,
-    onDeleteSurvey,
-    onOpenConfirmation,
-    onClose,
-    status,
+    handleDeleteSurvey,
+    handleOpenConfirmation,
+    onClose: handleClose,
+    options,
+    ...rest,
   };
 };
 

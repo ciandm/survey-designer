@@ -3,7 +3,7 @@
 import {useTransition} from 'react';
 import {DotsHorizontalIcon} from '@radix-ui/react-icons';
 import {useRouter} from 'next/navigation';
-import {useDeleteSurveyConfirm} from '@/components/delete-survey';
+import {useDeleteSurveyConfirm} from '@/components/delete-survey-dialog';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -25,7 +25,7 @@ export const SurveyActions = () => {
 
   const onDeleteSurveySelect = async () => {
     onConfirmDelete({surveyId}).then(() => {
-      router.push('/');
+      router.push(getSiteUrl.homePage());
       router.refresh();
     });
   };

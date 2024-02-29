@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
-import {useDeleteSurveyConfirm} from '@/components/delete-survey';
+import {useDeleteSurveyConfirm} from '@/components/delete-survey-dialog';
 import {Button} from '@/components/ui/button';
 import {getSiteUrl} from '@/lib/hrefs';
 

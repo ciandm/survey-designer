@@ -25,10 +25,10 @@ export const PublishDialog = ({children}: {children: React.ReactNode}) => {
       {children}
       <Dialog
         open={isOpen}
-        onOpenChange={status === 'pending' ? undefined : onOpenChange}
+        onOpenChange={status === 'executing' ? undefined : onOpenChange}
       >
-        <DialogContent hideCloseButton={status === 'pending'}>
-          {status === 'pending' && (
+        <DialogContent hideCloseButton={status === 'executing'}>
+          {status === 'executing' && (
             <DialogHeader className="flex-row items-center gap-2">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <div className="space-y-0.5">
@@ -42,7 +42,7 @@ export const PublishDialog = ({children}: {children: React.ReactNode}) => {
               </div>
             </DialogHeader>
           )}
-          {status === 'success' && (
+          {status === 'hasSucceeded' && (
             <>
               <DialogHeader className="flex-row items-center gap-2">
                 <CheckIcon className="h-5 w-5 text-green-500" />
@@ -62,7 +62,7 @@ export const PublishDialog = ({children}: {children: React.ReactNode}) => {
               {action === 'publish' && <CopySurveyUrl />}
             </>
           )}
-          {status === 'error' && (
+          {status === 'hasErrored' && (
             <>
               <DialogHeader className="flex-row items-center gap-2">
                 <InfoIcon className="mt-2 h-5 w-5 self-start text-red-500" />
