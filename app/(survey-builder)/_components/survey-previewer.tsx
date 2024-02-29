@@ -2,8 +2,11 @@
 
 import {Card} from '@/components/ui/card';
 import {sortChoices} from '@/features/survey-tool/utils/question';
-import {SurveyForm} from '../../survey-tool/components/survey-form';
-import {useSurveyId, useSurveySchema} from '../store/survey-designer-store';
+import {
+  useSurveyId,
+  useSurveySchema,
+} from '../../../features/survey-designer/store/survey-designer-store';
+import {SurveyForm} from '../../../features/survey-tool/components/survey-form';
 
 export const SurveyPreviewer = () => {
   const id = useSurveyId();

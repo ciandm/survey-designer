@@ -1,8 +1,8 @@
 import {notFound} from 'next/navigation';
+import {DesignerProvider} from '@/app/(survey-builder)/_components/designer-provider';
+import {Header} from '@/app/(survey-builder)/_components/header';
+import {PublishDialog} from '@/app/(survey-builder)/_components/publish-dialog';
 import {SurveyProvider} from '@/components/survey-provider';
-import {DesignerProvider} from '@/features/survey-designer/components/designer-provider';
-import {Header} from '@/features/survey-designer/components/header';
-import {PublishDialog} from '@/features/survey-designer/components/publish-dialog';
 import {db} from '@/lib/db/survey';
 
 export default async function EditorLayout({

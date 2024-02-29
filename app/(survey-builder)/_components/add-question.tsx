@@ -14,7 +14,7 @@ import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Separator} from '@/components/ui/separator';
 import {ELEMENT_OPTIONS, ElementType} from '@/lib/constants/element';
 import {cn} from '@/lib/utils';
-import {useElementCrud} from '../hooks/use-element-crud';
+import {useElementCrud} from '../../../features/survey-designer/hooks/use-element-crud';
 
 type AddQuestionProps = {
   className?: string;

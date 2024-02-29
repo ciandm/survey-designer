@@ -12,7 +12,7 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
-import {useSurveyPublished} from '../store/survey-designer-store';
+import {useSurveyPublished} from '../../../features/survey-designer/store/survey-designer-store';
 import {CopySurveyUrl} from './copy-survey-url';
 
 export const ShareSurvey = () => {

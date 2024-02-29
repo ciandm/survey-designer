@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/table';
 import {useToast} from '@/components/ui/use-toast';
 import {ChoicesSchema, responsesSchema} from '@/lib/validations/survey';
-import {useDeleteSurveyResult} from '../hooks/use-delete-response';
+import {useDeleteSurveyResult} from '../../../features/survey-designer/hooks/use-delete-response';
 
 export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
   const {schema, id} = useSurveyProvider();

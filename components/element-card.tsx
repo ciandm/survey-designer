@@ -1,6 +1,6 @@
 import React, {DetailedHTMLProps, HTMLAttributes} from 'react';
 import {usePathname} from 'next/navigation';
-import {ContentEditable} from '@/features/survey-designer/components/content-editable';
+import {ContentEditable} from '@/app/(survey-builder)/_components/content-editable';
 import {useDesignerActions} from '@/features/survey-designer/store/survey-designer-store';
 import {cn} from '@/lib/utils';
 import {ElementSchema} from '@/lib/validations/survey';

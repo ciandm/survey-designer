@@ -1,7 +1,7 @@
 'use client';
 
 import {Button} from '@/components/ui/button';
-import {useDeleteSurveyResult} from '../hooks/use-delete-response';
+import {useDeleteSurveyResult} from '../../../features/survey-designer/hooks/use-delete-response';
 
 type Props = {
   surveyId: string;

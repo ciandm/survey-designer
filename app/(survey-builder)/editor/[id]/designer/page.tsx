@@ -1,9 +1,9 @@
 import {Metadata} from 'next';
-import {ConfigPanel} from '@/features/survey-designer/components/config-panel';
-import {ElementsDndContext} from '@/features/survey-designer/components/elements-dnd-context';
-import {ElementsList} from '@/features/survey-designer/components/elements-list';
-import {ElementsToolbar} from '@/features/survey-designer/components/elements-tool-bar';
-import {SurveyTitleEditor} from '@/features/survey-designer/components/survey-title-editor';
+import {ConfigPanel} from '@/app/(survey-builder)/_components/config-panel';
+import {ElementsDndContext} from '@/app/(survey-builder)/_components/elements-dnd-context';
+import {ElementsList} from '@/app/(survey-builder)/_components/elements-list';
+import {ElementsToolbar} from '@/app/(survey-builder)/_components/elements-tool-bar';
+import {SurveyTitleEditor} from '@/app/(survey-builder)/_components/survey-title-editor';
 
 const DesignerPage = async () => {
   return (

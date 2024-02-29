@@ -1,6 +1,6 @@
 import {Metadata} from 'next';
-import {DeleteResponsesButton} from '@/features/survey-designer/components/delete-responses-button';
-import {Response} from '@/features/survey-designer/components/response';
+import {DeleteResponsesButton} from '@/app/(survey-builder)/_components/delete-responses-button';
+import {Response} from '@/app/(survey-builder)/_components/response';
 import prisma from '@/prisma/client';
 
 async function getSurveyResults(surveyId: string) {

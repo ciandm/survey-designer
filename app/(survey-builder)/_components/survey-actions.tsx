@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {toast} from '@/components/ui/use-toast';
 import {getSiteUrl} from '@/lib/hrefs';
-import {duplicateSurvey} from '../actions/survey';
-import {useSurveyId} from '../store/survey-designer-store';
+import {duplicateSurvey} from '../../../features/survey-designer/actions/survey';
+import {useSurveyId} from '../../../features/survey-designer/store/survey-designer-store';
 
 export const SurveyActions = () => {
   const surveyId = useSurveyId();

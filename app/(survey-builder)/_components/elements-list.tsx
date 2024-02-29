@@ -9,13 +9,13 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
-import {useActiveElement} from '../hooks/use-active-element';
-import {useElementCrud} from '../hooks/use-element-crud';
-import {setActiveElementRef} from '../store/active-element-ref';
+import {useActiveElement} from '../../../features/survey-designer/hooks/use-active-element';
+import {useElementCrud} from '../../../features/survey-designer/hooks/use-element-crud';
+import {setActiveElementRef} from '../../../features/survey-designer/store/active-element-ref';
 import {
   useDesignerActions,
   useSurveyElements,
-} from '../store/survey-designer-store';
+} from '../../../features/survey-designer/store/survey-designer-store';
 import {AddQuestion} from './add-question';
 import {Choices, ChoicesAddChoice, ChoicesField, ChoicesList} from './choices';
 import {ElementsEmptyState} from './elements-empty-state';
