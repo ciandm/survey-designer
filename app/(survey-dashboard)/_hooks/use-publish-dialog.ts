@@ -1,11 +1,10 @@
 import {useState} from 'react';
-import {useMutation} from '@tanstack/react-query';
-import {surveyApi} from '@/lib/api/survey';
-import {SurveyResponse} from '@/lib/validations/survey';
+import {useAction} from 'next-safe-action/hooks';
 import {
   useDesignerActions,
   useSurveyId,
 } from '@/survey-dashboard/_store/survey-designer-store';
+import {publishSurveyAction} from '../_actions/publish-survey';
 
 type PublishAction = 'publish' | 'unpublish';
 
@@ -14,48 +13,30 @@ export const usePublishDialog = () => {
   const [action, setAction] = useState<PublishAction | null>(null);
   const surveyId = useSurveyId();
   const {setPublished} = useDesignerActions();
-
-  const {
-    mutateAsync: handlePublishSurvey,
-    reset: resetMutation,
-    ...rest
-  } = useMutation<SurveyResponse, Error, {action: PublishAction}>({
-    mutationFn: async ({action}) => {
-      const fn =
-        action === 'publish'
-          ? surveyApi.publishSurvey
-          : surveyApi.unpublishSurvey;
-      return await fn(surveyId);
+  const {execute: handlePublishSurvey, ...rest} = useAction(
+    publishSurveyAction,
+    {
+      onSuccess: ({survey}) => {
+        setPublished(survey.is_published);
+      },
     },
-  });
+  );
 
   const onPublish = async (action: PublishAction) => {
     setAction(action);
     setIsOpen(true);
-    try {
-      const {survey} = await handlePublishSurvey({action});
-      setPublished(survey.is_published);
-    } catch (e) {
-      // UI-TODO: Show error message
-      console.error(e);
-    }
+    handlePublishSurvey({action, surveyId});
   };
 
   const onRetry = async () => {
     if (action) {
-      try {
-        await handlePublishSurvey({action});
-      } catch (e) {
-        // UI-TODO: Show error message
-        console.error(e);
-      }
+      handlePublishSurvey({action, surveyId});
     }
   };
 
   const onOpenChange = () => {
     setIsOpen((prev) => !prev);
     setAction(null);
-    resetMutation();
   };
 
   return {

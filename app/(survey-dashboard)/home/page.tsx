@@ -3,14 +3,8 @@ import {redirect} from 'next/navigation';
 import {Button} from '@/components/ui/button';
 import {Separator} from '@/components/ui/separator';
 import {getUser} from '@/lib/auth';
-import {db} from '@/lib/db';
-import {SurveyResponse, surveySchema} from '@/lib/validations/survey';
 import {SurveyCard} from '@/survey-dashboard/_components/survey-card';
 import {getUserSurveys} from '../_lib/get-user-surveys';
-
-type SurveysWithResponseCount = SurveyResponse['survey'] & {
-  responseCount: number;
-};
 
 const Home = async () => {
   const {session} = await getUser();
@@ -51,37 +45,3 @@ const Home = async () => {
 export default Home;
 
 export const dynamic = 'force-dynamic';
-
-async function getHomeSurveys({
-  userId,
-}: {
-  userId: string;
-}): Promise<SurveysWithResponseCount[]> {
-  const surveys = await db.survey.findMany({
-    include: {
-      SurveyResult: true,
-    },
-    where: {
-      userId,
-    },
-  });
-
-  return surveys
-    .map((survey) => {
-      const parsedSchema = surveySchema.safeParse(survey.schema);
-      if (!parsedSchema.success) {
-        return null;
-      }
-
-      return {
-        ...survey,
-        responseCount: survey.SurveyResult.length,
-        schema: parsedSchema.data,
-      };
-    })
-    .filter(validateIsNotNull);
-}
-
-function validateIsNotNull<T>(value: T | null): value is T {
-  return value !== null;
-}

@@ -27,8 +27,8 @@ export const TopBar = ({children}: React.PropsWithChildren) => {
               <Link href="/create">Create survey</Link>
             </Button>
           )}
+          {children}
         </div>
-        {children}
       </div>
     </header>
   );

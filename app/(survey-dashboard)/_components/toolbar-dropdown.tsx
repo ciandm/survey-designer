@@ -3,7 +3,8 @@
 import {useTransition} from 'react';
 import {DotsHorizontalIcon} from '@radix-ui/react-icons';
 import {useRouter} from 'next/navigation';
-import {useDeleteSurveyConfirm} from '@/components/delete-survey';
+import {useDeleteSurveyDialogTrigger} from '@/components/delete-survey-dialog';
+import {useDuplicateSurveyFormTrigger} from '@/components/duplicate-survey-dialog';
 import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -15,18 +16,33 @@ import {
 import {toast} from '@/components/ui/use-toast';
 import {getSiteUrl} from '@/lib/hrefs';
 import {duplicateSurvey} from '@/survey-dashboard/_actions/survey';
-import {useSurveyId} from '@/survey-dashboard/_store/survey-designer-store';
+import {
+  useSurveyId,
+  useSurveySchema,
+} from '@/survey-dashboard/_store/survey-designer-store';
 
-export const SurveyActions = () => {
+export const ToolbarDropdown = () => {
+  const schema = useSurveySchema();
   const surveyId = useSurveyId();
-  const {handleDuplicateSurvey, isDuplicatePending} = useDuplicateSurvey();
-  const onConfirmDelete = useDeleteSurveyConfirm();
+  const {handleTriggerDuplicateSurveyDialog} = useDuplicateSurveyFormTrigger();
+  const {handleTriggerDeleteSurveyConfirm} = useDeleteSurveyDialogTrigger();
   const router = useRouter();
 
   const onDeleteSurveySelect = async () => {
-    onConfirmDelete({surveyId}).then(() => {
-      router.push('/');
+    handleTriggerDeleteSurveyConfirm({surveyId}).then(() => {
+      router.push(getSiteUrl.homePage());
       router.refresh();
+    });
+  };
+
+  const onDuplicateSurveySelect = () => {
+    const initialData = {
+      id: surveyId,
+      title: schema.title,
+      description: schema.description,
+    };
+    handleTriggerDuplicateSurveyDialog({
+      initialData,
     });
   };
 
@@ -39,10 +55,7 @@ export const SurveyActions = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[200px]">
-        <DropdownMenuItem
-          onSelect={() => handleDuplicateSurvey(surveyId)}
-          disabled={isDuplicatePending}
-        >
+        <DropdownMenuItem onSelect={onDuplicateSurveySelect}>
           Duplicate survey
         </DropdownMenuItem>
         <DropdownMenuSeparator />

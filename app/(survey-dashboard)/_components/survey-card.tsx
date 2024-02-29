@@ -3,7 +3,8 @@
 import {DotsHorizontalIcon} from '@radix-ui/react-icons';
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
-import {useDeleteSurveyConfirm} from '@/components/delete-survey';
+import {useDeleteSurveyDialogTrigger} from '@/components/delete-survey-dialog';
+import {useDuplicateSurveyFormTrigger} from '@/components/duplicate-survey-dialog';
 import {Button} from '@/components/ui/button';
 import {Card, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
 import {
@@ -30,13 +31,23 @@ export const SurveyCard = ({
   survey,
   responsesCount,
 }: SurveyCardProps) => {
-  const onConfirmDelete = useDeleteSurveyConfirm();
+  const {handleTriggerDuplicateSurveyDialog} = useDuplicateSurveyFormTrigger();
+  const {handleTriggerDeleteSurveyConfirm} = useDeleteSurveyDialogTrigger();
   const router = useRouter();
 
-  const onDelete = () => {
-    onConfirmDelete({surveyId: survey.id}).then(() => {
+  const handleDeleteSurvey = () => {
+    handleTriggerDeleteSurveyConfirm({surveyId: survey.id}).then(() => {
       router.refresh();
     });
+  };
+
+  const handleDuplicateSurvey = () => {
+    const initialData = {
+      title: `${schema.title} (copy)`,
+      description: schema.description,
+      id: survey.id,
+    };
+    handleTriggerDuplicateSurveyDialog({initialData});
   };
 
   return (
@@ -116,8 +127,12 @@ export const SurveyCard = ({
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem onSelect={onDelete}>Delete survey</DropdownMenuItem>
+        <DropdownMenuItem onSelect={handleDuplicateSurvey}>
+          Make a copy
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={handleDeleteSurvey}>
+          Delete survey
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

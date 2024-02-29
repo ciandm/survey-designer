@@ -3,8 +3,8 @@ import {SurveyProvider} from '@/components/survey-provider';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/lib/hrefs';
 import {DesignerProvider} from '@/survey-dashboard/_components/designer-provider';
-import {Header} from '@/survey-dashboard/_components/header';
 import {PublishDialog} from '@/survey-dashboard/_components/publish-dialog';
+import {Toolbar} from '@/survey-dashboard/_components/toolbar';
 import {getUserSurvey} from '@/survey-dashboard/_lib/get-user-survey';
 
 export default async function EditorLayout({
@@ -36,7 +36,7 @@ export default async function EditorLayout({
               vaul-drawer-wrapper=""
             >
               <div className="flex flex-shrink-0">
-                <Header />
+                <Toolbar />
               </div>
               <main className="relative h-full flex-1 overflow-hidden bg-muted">
                 {children}

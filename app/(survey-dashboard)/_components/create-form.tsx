@@ -4,6 +4,7 @@ import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
+import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
 import {z} from 'zod';
 import {Button} from '@/components/ui/button';
@@ -19,7 +20,7 @@ import {
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {getSiteUrl} from '@/lib/hrefs';
-import {useCreateSurvey} from '@/survey-dashboard/_hooks/use-create-survey';
+import {createSurveyAction} from '../_actions/create-survey';
 
 const createFormSchema = z.object({
   title: z.string().min(1, 'You must provide a title'),
@@ -29,7 +30,7 @@ const createFormSchema = z.object({
 type CreateFormSchema = z.infer<typeof createFormSchema>;
 
 export const CreateForm = () => {
-  const {form, onSubmit, isPending, isSuccess} = useCreateForm();
+  const {form, onSubmit, status} = useCreateForm();
 
   return (
     <Form {...form}>
@@ -71,10 +72,12 @@ export const CreateForm = () => {
         <Button
           type="submit"
           className="ml-auto mt-8 flex"
-          disabled={isPending || isSuccess}
+          disabled={status === 'executing' || status === 'hasSucceeded'}
         >
-          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {isPending ? 'Creating...' : 'Create survey'}
+          {status === 'executing' && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          )}
+          {status === 'executing' ? 'Creating...' : 'Create survey'}
         </Button>
       </form>
     </Form>
@@ -83,7 +86,21 @@ export const CreateForm = () => {
 
 const useCreateForm = () => {
   const router = useRouter();
-  const {mutateAsync: handleCreateSurvey, ...rest} = useCreateSurvey();
+  const {execute: handleCreateSurvey, status} = useAction(createSurveyAction, {
+    onSuccess: ({survey}) => {
+      toast.success('Survey created successfully', {
+        position: 'bottom-center',
+        description: 'Redirecting...',
+      });
+      router.push(getSiteUrl.designerPage({surveyId: survey.id}));
+    },
+    onError: () => {
+      toast.error('Failed to create survey', {
+        position: 'bottom-center',
+        description: 'Please try again',
+      });
+    },
+  });
   const form = useForm<CreateFormSchema>({
     defaultValues: {
       title: '',
@@ -92,22 +109,13 @@ const useCreateForm = () => {
     resolver: zodResolver(createFormSchema),
   });
 
-  const onSubmit = form.handleSubmit(async (data) => {
-    try {
-      const {survey} = await handleCreateSurvey(data);
-      toast.success('Survey created successfully', {
-        position: 'bottom-center',
-        description: 'Redirecting...',
-      });
-      router.push(getSiteUrl.designerPage({surveyId: survey.id}));
-    } catch (error) {
-      console.log(error);
-    }
+  const onSubmit = form.handleSubmit((data) => {
+    handleCreateSurvey(data);
   });
 
   return {
     form,
     onSubmit,
-    ...rest,
+    status,
   };
 };

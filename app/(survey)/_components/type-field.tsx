@@ -44,12 +44,6 @@ export const MultipleChoiceField = ({
 }: MultipleChoiceFieldProps) => {
   const {control} = useFormContext<QuestionFormState>();
   const choices = element.properties.choices ?? [];
-  const hasValidChoices =
-    choices.length > 0 && choices.every((choice) => !!choice.value);
-
-  if (!hasValidChoices) {
-    return null;
-  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -76,7 +70,7 @@ export const MultipleChoiceField = ({
                 />
               </FormControl>
               <FormLabel className="flex items-center gap-x-3 text-sm font-medium">
-                {choice.value}
+                {choice.value || 'Blank choice'}
               </FormLabel>
             </FormItem>
           )}
@@ -91,12 +85,6 @@ export const SingleChoiceField = ({
   field,
 }: Omit<MultipleChoiceFieldProps, 'index'>) => {
   const choices = element.properties.choices ?? [];
-  const hasValidChoices =
-    choices.length > 0 && choices.every((choice) => !!choice.value);
-
-  if (!hasValidChoices) {
-    return null;
-  }
 
   return (
     <FormItem className="flex flex-col gap-2">
@@ -113,7 +101,9 @@ export const SingleChoiceField = ({
               <FormControl>
                 <RadioGroupItem value={choice.value} />
               </FormControl>
-              <FormLabel className="font-normal">{choice.value}</FormLabel>
+              <FormLabel className="font-normal">
+                {choice.value || 'Blank choice'}
+              </FormLabel>
             </FormItem>
           ))}
         </RadioGroup>

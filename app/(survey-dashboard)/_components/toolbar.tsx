@@ -3,9 +3,9 @@ import {NavLinks} from './nav-links';
 import {PublishButton} from './publish-button';
 import {SaveChanges} from './save-changes';
 import {ShareSurvey} from './share-survey';
-import {SurveyActions} from './survey-actions';
+import {ToolbarDropdown} from './toolbar-dropdown';
 
-export const Header = () => {
+export const Toolbar = () => {
   return (
     <header className="flex h-14 flex-1 items-center justify-between border-b bg-card">
       <NavLinks />
@@ -14,7 +14,7 @@ export const Header = () => {
         <SaveChanges />
         <ShareSurvey />
         <PublishButton />
-        <SurveyActions />
+        <ToolbarDropdown />
       </div>
     </header>
   );

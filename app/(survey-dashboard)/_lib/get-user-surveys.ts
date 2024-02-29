@@ -23,6 +23,7 @@ export async function getUserSurveys() {
     .map((survey) => {
       const parsedSchema = surveySchema.safeParse(survey.schema);
       if (!parsedSchema.success) {
+        console.log(parsedSchema.error.format());
         return null;
       }
 
