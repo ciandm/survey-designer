@@ -10,7 +10,7 @@ import {PublishDialog} from '@/survey-designer/_components/publish-dialog';
 import {SurveyActions} from '@/survey-designer/_components/survey-actions';
 import {getUserSurvey} from '@/survey-designer/_lib/get-user-survey';
 
-export default async function SurveyBuilderLayout({
+export default async function SurveyDesignerLayout({
   children,
   params,
 }: React.PropsWithChildren<{params: {id: string}}>) {
@@ -30,29 +30,25 @@ export default async function SurveyBuilderLayout({
     <SurveyProvider schema={survey.schema} id={survey.id}>
       <DesignerProvider survey={survey}>
         <PublishDialog>
-          <div className="flex h-screen flex-col" vaul-drawer-wrapper="">
-            <div className="flex flex-shrink-0">
-              <header className="flex h-14 flex-1 items-center justify-between border-b bg-card px-4">
-                <div className="flex space-x-2 text-sm font-medium text-muted-foreground">
-                  <Link
-                    href={getSiteUrl.homePage()}
-                    className="hover:text-primary"
-                  >
-                    Home
-                  </Link>
-                  <span>/</span>
-                  <span className="text-foreground">Survey editor</span>
-                </div>
-                <DesignerNavigation />
-                <div className="flex items-center space-x-4">
-                  <SurveyActions />
-                  <UserAccountNav user={user} />
-                </div>
-              </header>
-            </div>
-            <main className="h-full flex-1 overflow-hidden bg-muted">
-              {children}
-            </main>
+          <div className="min-h-screen flex-col" vaul-drawer-wrapper="">
+            <header className="sticky top-0 z-10 flex h-14 flex-1 items-center justify-between border-b bg-card px-4">
+              <div className="flex space-x-2 text-sm font-medium text-muted-foreground">
+                <Link
+                  href={getSiteUrl.homePage()}
+                  className="hover:text-primary"
+                >
+                  Home
+                </Link>
+                <span>/</span>
+                <span className="text-foreground">Survey editor</span>
+              </div>
+              <DesignerNavigation />
+              <div className="flex items-center space-x-4">
+                <SurveyActions />
+                <UserAccountNav user={user} />
+              </div>
+            </header>
+            {children}
           </div>
         </PublishDialog>
       </DesignerProvider>

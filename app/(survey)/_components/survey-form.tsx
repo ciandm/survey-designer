@@ -118,8 +118,8 @@ export const SurveyForm = ({
 
   return (
     <Form {...methods}>
-      <form onSubmit={onSubmit}>
-        <div className="sm:space-py-4 sm:mt-4">
+      <form onSubmit={onSubmit} className="flex-1">
+        <div className="sm:mt-4">
           {fields.map((_, index) => {
             const element = elements[index];
 
@@ -130,7 +130,7 @@ export const SurveyForm = ({
                 name={`fields.${index}.value`}
                 render={(controllerProps) => (
                   <FormItem>
-                    <div className="space-y-4 px-4 py-5 sm:px-6 sm:py-4">
+                    <div className="space-y-4 py-5 sm:py-8">
                       <div className="flex flex-col gap-1">
                         <FormLabel
                           className={cn(
@@ -142,7 +142,7 @@ export const SurveyForm = ({
                           )}
                         >
                           {index + 1}.{' '}
-                          {!!element.text ? element.text : 'Untitled element'}
+                          {!!element.text ? element.text : 'Untitled question'}
                         </FormLabel>
                         {!!element.description && (
                           <FormDescription>
@@ -172,12 +172,8 @@ export const SurveyForm = ({
             );
           })}
         </div>
-        <footer className="flex border-t bg-card p-6 sm:border-0 sm:bg-transparent">
-          <Button
-            disabled={isSubmitPending}
-            type="submit"
-            className="ml-auto w-40"
-          >
+        <footer>
+          <Button disabled={isSubmitPending} type="submit">
             {isSubmitPending && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}

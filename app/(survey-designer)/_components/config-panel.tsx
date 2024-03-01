@@ -68,25 +68,19 @@ const ConfigPanelInner = () => {
   if (!activeElement) {
     if (elements.length === 0) {
       return (
-        <aside className="hidden max-w-sm flex-1 flex-col self-auto overflow-y-auto border-l bg-white p-4 lg:flex">
-          <div className="flex justify-center p-4">
-            <p className="text-center text-muted-foreground">
-              Create a question to get started
-            </p>
-          </div>
-        </aside>
+        <div className="flex justify-center p-4">
+          <p className="text-center text-muted-foreground">
+            Create a question to get started
+          </p>
+        </div>
       );
     }
 
-    return (
-      <aside className="hidden max-w-sm flex-1 flex-col self-auto overflow-y-auto border-l bg-white p-4 lg:flex">
-        <SurveyGeneralSettings />
-      </aside>
-    );
+    return <SurveyGeneralSettings />;
   }
 
   return (
-    <aside className="hidden max-w-sm flex-1 flex-col self-auto overflow-y-auto border-l bg-white p-4 lg:flex">
+    <>
       <div className="flex flex-col space-y-6">
         <div>
           <h2 className="text-base font-semibold leading-7">Question</h2>
@@ -295,7 +289,7 @@ const ConfigPanelInner = () => {
           </div>
         </>
       )}
-    </aside>
+    </>
   );
 };
 

@@ -3,6 +3,7 @@
 import {PlusIcon} from '@radix-ui/react-icons';
 import {CopyIcon, GripHorizontal, Trash2Icon} from 'lucide-react';
 import {Sortable} from '@/components/sortable';
+import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Separator} from '@/components/ui/separator';
@@ -73,9 +74,17 @@ export const ElementsList = () => {
             >
               <div className="flex flex-col gap-6 px-6 pb-2 pt-4">
                 <div className="flex flex-col gap-2">
-                  <label className="pointer-events-none mt-2 text-sm font-medium text-muted-foreground">
-                    Question {index + 1}
-                  </label>
+                  <div className="pointer-events-none mb-2 mt-2 flex gap-2 text-sm font-medium text-muted-foreground">
+                    <span>Question {index + 1}</span>
+                    <span>•</span>
+                    <Badge
+                      variant={
+                        element.validations.required ? 'default' : 'secondary'
+                      }
+                    >
+                      {element.validations.required ? 'Required' : 'Optional'}
+                    </Badge>
+                  </div>
                   <div className="flex flex-1 flex-col gap-2 rounded-md border border-input">
                     <div className="overflow-hidden rounded-lg focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                       <label htmlFor="title" className="sr-only">
@@ -85,12 +94,18 @@ export const ElementsList = () => {
                         type="text"
                         name="title"
                         id="title"
-                        className="block w-full border-0 bg-transparent px-2.5 pt-1 text-lg font-medium outline-none placeholder:text-gray-400 focus:ring-0"
+                        className="block w-full border-0 bg-transparent px-2.5 pt-1 text-lg font-medium outline-none placeholder:text-gray-400 focus:ring-0 "
                         placeholder="Untitled question"
                         defaultValue={element.text}
                         key={`${element.text}-${element.id}-title`}
                         onBlur={(e) => {
                           updateElement({id: element.id, text: e.target.value});
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            e.currentTarget.blur();
+                          }
                         }}
                       />
                       <label htmlFor="description" className="sr-only">
@@ -110,11 +125,19 @@ export const ElementsList = () => {
                             description: e.target.value,
                           });
                         }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            e.currentTarget.blur();
+                          }
+                        }}
                       />
                     </div>
                   </div>
                 </div>
+
                 <Separator />
+
                 <div className="mt-2 w-full pb-4">
                   {(element.type === 'multiple_choice' ||
                     element.type === 'single_choice') && (
@@ -157,6 +180,7 @@ export const ElementsList = () => {
                   )}
                 </div>
               </div>
+
               <footer className="border-t px-5 py-2.5">
                 <div className="grid grid-cols-[200px_1fr] justify-items-end">
                   <QuestionTypeSelect
