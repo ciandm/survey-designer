@@ -8,6 +8,10 @@ import {action, ActionError} from '@/lib/safe-action';
 import {loginSchema} from '@/lib/validations/auth';
 
 export const loginAction = action(loginSchema, async ({email, password}) => {
+  if (process.env.NODE_ENV !== 'development') {
+    throw new ActionError('Login is currently disabled');
+  }
+
   const {user} = await getUser();
 
   if (user) {
