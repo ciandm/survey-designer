@@ -32,7 +32,6 @@ import {
 import {
   Choices,
   ChoicesAddChoice,
-  ChoicesField,
   ChoicesList,
   ChoicesRemoveAll,
 } from './choices';
@@ -69,25 +68,19 @@ const ConfigPanelInner = () => {
   if (!activeElement) {
     if (elements.length === 0) {
       return (
-        <aside className="hidden max-w-sm flex-1 flex-col self-auto overflow-y-auto border-l bg-white p-4 lg:flex">
-          <div className="flex justify-center p-4">
-            <p className="text-center text-muted-foreground">
-              Create a question to get started
-            </p>
-          </div>
-        </aside>
+        <div className="flex justify-center p-4">
+          <p className="text-center text-muted-foreground">
+            Create a question to get started
+          </p>
+        </div>
       );
     }
 
-    return (
-      <aside className="hidden max-w-sm flex-1 flex-col self-auto overflow-y-auto border-l bg-white p-4 lg:flex">
-        <SurveyGeneralSettings />
-      </aside>
-    );
+    return <SurveyGeneralSettings />;
   }
 
   return (
-    <aside className="hidden max-w-sm flex-1 flex-col self-auto overflow-y-auto border-l bg-white p-4 lg:flex">
+    <>
       <div className="flex flex-col space-y-6">
         <div>
           <h2 className="text-base font-semibold leading-7">Question</h2>
@@ -113,8 +106,9 @@ const ConfigPanelInner = () => {
           <Textarea
             name="title"
             id="title"
-            value={activeElement.text}
-            onChange={(e) =>
+            defaultValue={activeElement.text}
+            key={`${activeElement.text}-${activeElement.id}-title`}
+            onBlur={(e) =>
               updateElement({
                 id: activeElement.id,
                 text: e.target.value,
@@ -127,8 +121,9 @@ const ConfigPanelInner = () => {
           <Textarea
             name="description"
             id="description"
-            value={activeElement.description}
-            onChange={(e) =>
+            defaultValue={activeElement.description}
+            key={`${activeElement.description}-${activeElement.id}-description`}
+            onBlur={(e) =>
               updateElement({
                 id: activeElement.id,
                 description: e.target.value,
@@ -142,8 +137,9 @@ const ConfigPanelInner = () => {
             <Textarea
               name="placeholder"
               id="placeholder"
-              value={activeElement.properties.placeholder}
-              onChange={(e) =>
+              defaultValue={activeElement.properties.placeholder}
+              key={`${activeElement.properties.placeholder}-${activeElement.id}-placeholder`}
+              onBlur={(e) =>
                 updateElement({
                   id: activeElement.id,
                   properties: {
@@ -198,8 +194,9 @@ const ConfigPanelInner = () => {
               <Textarea
                 name="required"
                 id="required-error-message"
-                value={activeElement.properties.required_message}
-                onChange={(e) =>
+                defaultValue={activeElement.properties.required_message}
+                key={`${activeElement.properties.required_message}-${activeElement.id}-required-message`}
+                onBlur={(e) =>
                   updateElement({
                     id: activeElement.id,
                     properties: {
@@ -245,15 +242,7 @@ const ConfigPanelInner = () => {
                     </Tooltip>
                   </TooltipProvider>
                 </div>
-                <ChoicesList>
-                  {choices.map((choice, index) => (
-                    <ChoicesField
-                      index={index}
-                      choice={choice}
-                      key={choice.id}
-                    />
-                  ))}
-                </ChoicesList>
+                <ChoicesList />
               </Choices>
             </div>
             <div className="space-y-1.5">
@@ -300,7 +289,7 @@ const ConfigPanelInner = () => {
           </div>
         </>
       )}
-    </aside>
+    </>
   );
 };
 

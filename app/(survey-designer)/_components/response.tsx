@@ -82,7 +82,7 @@ export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
                 >
                   <span className="truncate">
                     {index + 1}.{' '}
-                    {!!element.text ? element.text : 'Untitled element'}
+                    {!!element.text ? element.text : 'Untitled question'}
                   </span>
                   <Badge variant="outline" className="mt-2">
                     {element.type}

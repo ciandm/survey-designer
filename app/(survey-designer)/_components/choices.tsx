@@ -65,12 +65,9 @@ export const Choices = ({children, choices = [], elementId}: ChoicesProps) => {
   );
 };
 
-type ChoicesListProps = {
-  children: React.ReactNode;
-};
-
-export const ChoicesList = ({children}: ChoicesListProps) => {
+export const ChoicesList = () => {
   const {moveChoices} = useDesignerActions();
+  const id = useId();
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -103,7 +100,15 @@ export const ChoicesList = ({children}: ChoicesListProps) => {
         items={choices.map((choice) => choice.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="space-y-1.5">{children}</div>
+        <div className="flex flex-1 flex-col space-y-1.5">
+          {choices.map((choice, index) => (
+            <ChoicesField
+              index={index}
+              choice={choice}
+              key={`${id}-${choice.id}`}
+            />
+          ))}
+        </div>
       </SortableContext>
     </DndContext>
   );
@@ -114,8 +119,7 @@ type ChoiceFieldProps = {
   index: number;
 };
 
-export const ChoicesField = ({choice, index}: ChoiceFieldProps) => {
-  const id = useId();
+const ChoicesField = ({choice, index}: ChoiceFieldProps) => {
   const {
     focus: {focusInputs},
     handlers: {handleRemoveChoice, handleInputKeyDown},
@@ -126,14 +130,13 @@ export const ChoicesField = ({choice, index}: ChoiceFieldProps) => {
 
   return (
     <Sortable
-      className="grid grid-cols-[40px_1fr_40px] gap-2"
-      key={`${id}-${choice.id}`}
+      className="flex flex-1 gap-2"
       id={choice.id}
       isDisabled={choices.length === 1}
       renderSortHandle={({attributes, listeners, isSorting}) => (
         <Button
           size="icon"
-          variant="ghost"
+          variant="outline"
           disabled={choices.length === 1}
           style={{
             cursor: isSorting ? 'grabbing' : 'grab',
@@ -145,41 +148,40 @@ export const ChoicesField = ({choice, index}: ChoiceFieldProps) => {
         </Button>
       )}
     >
-      <>
-        <Input
-          type="text"
-          defaultValue={choice.value}
-          key={choice.value}
-          ref={(el) => (el ? (focusInputs.current[index] = el) : null)}
-          onBlur={(e) =>
-            updateQuestionChoice({
-              elementId,
-              newChoice: {
-                id: choice.id,
-                value: e.target.value,
-              },
-            })
-          }
-          onKeyDown={handleInputKeyDown}
-        />
-        <TooltipProvider delayDuration={100}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={() => handleRemoveChoice(choice.id)}
-                disabled={choices?.length === 1}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" className="max-w-xs">
-              <p className="text-xs leading-snug">Delete</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </>
+      <Input
+        className="h-10 flex-1"
+        defaultValue={choice.value}
+        key={`${choice.id}-${index}-${choice.value}`}
+        ref={(el) => (el ? (focusInputs.current[index] = el) : null)}
+        onBlur={(e) =>
+          updateQuestionChoice({
+            elementId,
+            newChoice: {
+              id: choice.id,
+              value: e.target.value,
+            },
+          })
+        }
+        onKeyDown={handleInputKeyDown}
+        placeholder="Type a choice"
+      />
+      <TooltipProvider delayDuration={100}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              size="icon"
+              variant="outline"
+              onClick={() => handleRemoveChoice(choice.id)}
+              disabled={choices?.length === 1}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="max-w-xs">
+            <p className="text-xs leading-snug">Delete</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </Sortable>
   );
 };

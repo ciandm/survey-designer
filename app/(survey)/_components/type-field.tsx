@@ -14,20 +14,18 @@ import {QuestionFormState} from './survey-form';
 
 type FieldProps = {
   field: ControllerRenderProps<QuestionFormState, `fields.${number}.value`>;
+  element: ElementSchema;
 };
 
-export const ShortTextField = ({field}: FieldProps) => {
+export const TextField = ({field, element}: FieldProps) => {
+  const Component = element.type === 'short_text' ? Input : Textarea;
   return (
     <FormControl>
-      <Input {...field} onChange={(e) => field.onChange([e.target.value])} />
-    </FormControl>
-  );
-};
-
-export const LongTextField = ({field}: FieldProps) => {
-  return (
-    <FormControl>
-      <Textarea {...field} onChange={(e) => field.onChange([e.target.value])} />
+      <Component
+        {...field}
+        placeholder={element.properties.placeholder ?? 'Your answer here...'}
+        onChange={(e) => field.onChange([e.target.value])}
+      />
     </FormControl>
   );
 };
