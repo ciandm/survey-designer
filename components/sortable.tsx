@@ -36,9 +36,9 @@ export const Sortable = ({
   return (
     <>
       <div ref={setNodeRef} style={style} className={className}>
+        {children}
         {renderSortHandle &&
           renderSortHandle({attributes, listeners, isSorting})}
-        {children}
       </div>
     </>
   );

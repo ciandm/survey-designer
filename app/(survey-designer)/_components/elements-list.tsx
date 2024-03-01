@@ -1,12 +1,11 @@
 'use client';
 
-import {useRef} from 'react';
 import {PlusIcon} from '@radix-ui/react-icons';
 import {CopyIcon, GripHorizontal, Trash2Icon} from 'lucide-react';
-import {ElementCard} from '@/components/element-card';
 import {Sortable} from '@/components/sortable';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
+import {Separator} from '@/components/ui/separator';
 import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
 import {useActiveElement} from '@/survey-designer/_hooks/use-active-element';
@@ -17,7 +16,7 @@ import {
   useSurveyElements,
 } from '@/survey-designer/_store/survey-designer-store';
 import {AddQuestion} from './add-question';
-import {Choices, ChoicesAddChoice, ChoicesField, ChoicesList} from './choices';
+import {Choices, ChoicesAddChoice, ChoicesList} from './choices';
 import {ElementsEmptyState} from './elements-empty-state';
 import {QuestionTypeSelect} from './question-type-select';
 
@@ -25,9 +24,7 @@ export const ElementsList = () => {
   const elements = useSurveyElements();
   const {handleRemoveElement, handleDuplicateElement} = useElementCrud();
   const {activeElement} = useActiveElement();
-  const {changeElementType} = useDesignerActions();
-
-  const itemsRef = useRef<HTMLDivElement[]>([]);
+  const {changeElementType, updateElement} = useDesignerActions();
 
   if (elements.length === 0) {
     return <ElementsEmptyState />;
@@ -61,18 +58,64 @@ export const ElementsList = () => {
               </Button>
             )}
           >
-            <ElementCard.Root
-              id={element.id}
-              onClick={() => setActiveElementRef(element.ref)}
-              ref={(el) => (itemsRef.current[index] = el as HTMLDivElement)}
-              className={cn('cursor-pointer transition-all hover:ring-2', {
-                'ring-2': isActive,
-                'hover:ring-primary/50': !isActive,
-              })}
+            <div
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveElementRef(element.ref);
+              }}
+              className={cn(
+                'group flex-1 cursor-pointer overflow-hidden rounded-lg border border-slate-300 bg-card ring-ring ring-offset-2 transition-colors',
+                {
+                  'ring-2': isActive,
+                  'hover:ring-2 hover:ring-primary/50': !isActive,
+                },
+              )}
             >
-              <ElementCard.Content number={index + 1}>
-                <ElementCard.Title element={element} id={element.id} />
-                <div className="mt-4 max-w-sm">
+              <div className="flex flex-col gap-6 px-6 pb-2 pt-4">
+                <div className="flex flex-col gap-2">
+                  <label className="pointer-events-none mt-2 text-sm font-medium text-muted-foreground">
+                    Question {index + 1}
+                  </label>
+                  <div className="flex flex-1 flex-col gap-2 rounded-md border border-input">
+                    <div className="overflow-hidden rounded-lg focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                      <label htmlFor="title" className="sr-only">
+                        Question title
+                      </label>
+                      <input
+                        type="text"
+                        name="title"
+                        id="title"
+                        className="block w-full border-0 bg-transparent px-2.5 pt-1 text-lg font-medium outline-none placeholder:text-gray-400 focus:ring-0"
+                        placeholder="Untitled question"
+                        defaultValue={element.text}
+                        key={`${element.text}-${element.id}-title`}
+                        onBlur={(e) => {
+                          updateElement({id: element.id, text: e.target.value});
+                        }}
+                      />
+                      <label htmlFor="description" className="sr-only">
+                        Description
+                      </label>
+                      <textarea
+                        rows={2}
+                        name="description"
+                        id="description"
+                        className="block w-full resize-none border-0 bg-transparent px-2.5 py-0 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                        placeholder="Description (optional)"
+                        defaultValue={element.description}
+                        key={`${element.description}-${element.id}-description`}
+                        onBlur={(e) => {
+                          updateElement({
+                            id: element.id,
+                            description: e.target.value,
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <Separator />
+                <div className="mt-2 w-full pb-4">
                   {(element.type === 'multiple_choice' ||
                     element.type === 'single_choice') && (
                     <>
@@ -80,19 +123,11 @@ export const ElementsList = () => {
                         elementId={element.id}
                         choices={element.properties.choices}
                       >
-                        <ChoicesList>
-                          {element.properties.choices?.map((choice, index) => (
-                            <ChoicesField
-                              index={index}
-                              choice={choice}
-                              key={choice.id}
-                            />
-                          ))}
-                        </ChoicesList>
+                        <ChoicesList />
                         <ChoicesAddChoice
                           variant="outline"
                           size="sm"
-                          className="m-2 ml-12"
+                          className="mt-2"
                         >
                           <PlusIcon className="mr-2 h-4 w-4" />
                           Add choice
@@ -103,18 +138,26 @@ export const ElementsList = () => {
                   {element.type === 'short_text' && (
                     <Input
                       readOnly
-                      placeholder={element.properties.placeholder}
+                      placeholder={
+                        !!element.properties.placeholder
+                          ? element.properties.placeholder
+                          : 'Your answer here'
+                      }
                     />
                   )}
                   {element.type === 'long_text' && (
                     <Textarea
                       readOnly
-                      placeholder={element.properties.placeholder}
+                      placeholder={
+                        !!element.properties.placeholder
+                          ? element.properties.placeholder
+                          : 'Your answer here'
+                      }
                     />
                   )}
                 </div>
-              </ElementCard.Content>
-              <footer className="bg-accent px-5 py-2.5">
+              </div>
+              <footer className="border-t px-5 py-2.5">
                 <div className="grid grid-cols-[200px_1fr] justify-items-end">
                   <QuestionTypeSelect
                     className="h-9 border-0 bg-transparent text-sm font-medium text-muted-foreground"
@@ -157,7 +200,7 @@ export const ElementsList = () => {
                   </div>
                 </div>
               </footer>
-            </ElementCard.Root>
+            </div>
           </Sortable>
         );
       })}

@@ -2,7 +2,6 @@ import React, {DetailedHTMLProps, HTMLAttributes} from 'react';
 import {usePathname} from 'next/navigation';
 import {cn} from '@/lib/utils';
 import {ElementSchema} from '@/lib/validations/survey';
-import {ContentEditable} from '@/survey-designer/_components/content-editable';
 import {useDesignerActions} from '@/survey-designer/_store/survey-designer-store';
 
 type ElementCardProps = DetailedHTMLProps<
@@ -42,10 +41,10 @@ const ElementCardContent = ({
   className,
 }: ElementCardContentProps) => {
   return (
-    <div className={cn('px-8 py-6', className)}>
+    <div className={cn('s', className)}>
       <div className="relative flex flex-col">
-        <span className="absolute -left-8 w-8 self-start py-1 pr-1 text-right text-xs font-medium text-muted-foreground">
-          {number}.
+        <span className="mb-2 text-sm uppercase tracking-wide">
+          Question {number}.
         </span>
         {children}
       </div>
@@ -66,36 +65,29 @@ const ElementCardTitle = ({id, element}: ElementCardTitle) => {
   if (isEditable) {
     return (
       <div className="flex flex-col gap-2">
-        <ContentEditable
-          tagName="h4"
-          placeholder="Untitled element"
-          onBlur={(e) => {
-            updateElement({
-              id,
-              text: e.target.textContent?.trim() ?? undefined,
-            });
-          }}
-          className={cn(
-            'self-start text-base font-medium leading-6 focus:after:content-none',
-            {
-              [`after:content-['_*']`]:
-                element.validations.required && element.text,
-            },
-          )}
-          value={element.text ?? ''}
-        />
-        <ContentEditable
-          tagName="p"
-          placeholder="Description (optional)"
-          onBlur={(e) => {
-            updateElement({
-              id,
-              description: e.target.textContent?.trim() ?? undefined,
-            });
-          }}
-          className="self-start text-sm text-muted-foreground"
-          value={element.description ?? ''}
-        />
+        <div className="overflow-hidden rounded-lg focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+          <label htmlFor="title" className="sr-only">
+            Question title
+          </label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            className="block w-full border-0 px-2.5 pt-1 text-lg font-medium outline-none placeholder:text-gray-400 focus:ring-0"
+            placeholder="Untitled question"
+          />
+          <label htmlFor="description" className="sr-only">
+            Description
+          </label>
+          <textarea
+            rows={2}
+            name="description"
+            id="description"
+            className="block w-full resize-none border-0 px-2.5 py-0 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+            placeholder="Description (optional)"
+            defaultValue={''}
+          />
+        </div>
       </div>
     );
   }

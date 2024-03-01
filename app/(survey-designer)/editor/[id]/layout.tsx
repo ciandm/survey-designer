@@ -4,10 +4,10 @@ import {SurveyProvider} from '@/components/survey-provider';
 import {UserAccountNav} from '@/dashboard/_components/user-account-nav';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/lib/hrefs';
-import {DesignerActions} from '@/survey-designer/_components/designer-actions';
 import {DesignerNavigation} from '@/survey-designer/_components/designer-navigation';
 import {DesignerProvider} from '@/survey-designer/_components/designer-provider';
 import {PublishDialog} from '@/survey-designer/_components/publish-dialog';
+import {SurveyActions} from '@/survey-designer/_components/survey-actions';
 import {getUserSurvey} from '@/survey-designer/_lib/get-user-survey';
 
 export default async function SurveyBuilderLayout({
@@ -45,7 +45,7 @@ export default async function SurveyBuilderLayout({
                 </div>
                 <DesignerNavigation />
                 <div className="flex items-center space-x-4">
-                  <DesignerActions />
+                  <SurveyActions />
                   <UserAccountNav user={user} />
                 </div>
               </header>

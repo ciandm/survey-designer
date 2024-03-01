@@ -35,11 +35,11 @@ import {
 import {CopySurveyUrl} from './copy-survey-url';
 import {usePublishTrigger} from './publish-dialog';
 
-export const DesignerActions = () => {
+export const SurveyActions = () => {
   const isPublished = useSurveyPublished();
   const isChangesMade = useIsSurveyChanged();
   const {saveChanges, deleteSurvey, duplicateSurvey, publishSurvey} =
-    useDesignerActions();
+    useActions();
 
   const publishPopoverDescription = isPublished
     ? 'Copy the link below to share your survey.'
@@ -138,7 +138,7 @@ export const DesignerActions = () => {
   );
 };
 
-const useDesignerActions = () => {
+const useActions = () => {
   const schema = useSurveySchema();
   const id = useSurveyId();
   const {handleTriggerDuplicateSurveyDialog} = useDuplicateSurveyFormTrigger();

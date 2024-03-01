@@ -13,14 +13,14 @@ export const SurveyPreviewer = () => {
   const schema = sortChoices(useSurveySchema());
 
   return (
-    <div className="container max-w-2xl">
-      <header className="mb-2 flex flex-col space-y-1 bg-card p-3 sm:bg-transparent sm:p-5">
+    <>
+      <header className="mb-2 flex flex-col space-y-1 bg-muted p-3 sm:mb-6 sm:bg-transparent sm:p-0">
         <h1 className="text-lg font-semibold">{schema.title}</h1>
         <p className="text-sm text-muted-foreground">{schema.description}</p>
       </header>
       <Card>
         <SurveyForm shouldSubmitResults={false} schema={schema} surveyId={id} />
       </Card>
-    </div>
+    </>
   );
 };

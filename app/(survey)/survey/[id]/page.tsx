@@ -23,9 +23,9 @@ const SurveyPage = async ({params}: Props) => {
   const schema = sortChoices(survey.schema);
 
   return (
-    <div className="bg-muted sm:py-8">
-      <div className="container max-w-2xl">
-        <header className="mb-2 flex flex-col space-y-1 bg-card p-3 sm:bg-transparent sm:p-5">
+    <div className="min-h-screen bg-muted sm:py-8">
+      <div className="max-w-2xl sm:container">
+        <header className="mb-2 flex flex-col space-y-1 bg-card p-3 sm:bg-transparent sm:p-0">
           <h1 className="text-lg font-semibold">{schema.title}</h1>
           <p className="text-sm text-muted-foreground">{schema.description}</p>
         </header>
