@@ -3,7 +3,7 @@
 import {getUser} from '@/lib/auth';
 import {createContext} from '@/lib/context';
 
-type ContextType = Awaited<ReturnType<typeof getUser>>;
+type ContextType = Pick<Awaited<ReturnType<typeof getUser>>, 'user'>;
 
 const [Provider, useSession] = createContext<ContextType>();
 

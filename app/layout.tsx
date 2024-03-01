@@ -26,10 +26,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getUser();
+  const {user} = await getUser();
 
   let content = (
-    <SessionProvider value={session}>
+    <SessionProvider value={{user}}>
       <QueryClientProvider>
         <LoadingOverlay>
           <DuplicateSurveyDialog>
