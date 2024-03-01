@@ -6,30 +6,46 @@ import {HamburgerMenuIcon} from '@radix-ui/react-icons';
 import Link from 'next/link';
 import {useParams, usePathname} from 'next/navigation';
 import {Button} from '@/components/ui/button';
+import {TabConfig} from '@/config/designer';
 import {DESIGNER_LINKS} from '@/lib/constants/links';
 import {cn} from '@/lib/utils';
 import {replaceLinkHrefs} from '@/survey/_utils/links';
+import {useCreatorTabManager} from './creator-tab-manager';
 
-export const DesignerNavigation = () => {
+export const DesignerNavigation = ({
+  tabs,
+  className,
+}: {
+  tabs: TabConfig[];
+  className?: string;
+}) => {
   const pathname = usePathname();
   const {id} = useParams() as {id: string};
   const [open, setOpen] = useState(false);
+  const {activeTab, setActiveTab} = useCreatorTabManager();
 
   return (
-    <nav className="hidden h-full items-center space-x-2 pl-4 md:flex">
-      {replaceLinkHrefs(DESIGNER_LINKS, id).map((link) => (
-        <Link
-          key={link.href}
-          href={link.href}
+    <nav
+      className={cn(
+        'hidden h-full items-center space-x-2 pl-4 md:flex',
+        className,
+      )}
+    >
+      {tabs.map(({tab, label}) => (
+        <Button
+          key={tab}
+          onClick={() => setActiveTab(tab)}
+          variant="ghost"
           className={cn(
-            'flex h-full items-center border-b-2 border-transparent px-4 text-sm font-medium text-muted-foreground transition-colors hover:border-muted-foreground',
+            'flex h-full items-center rounded-none border-b-2 border-transparent px-4 text-sm font-medium text-muted-foreground transition-colors',
             {
-              'border-primary text-foreground': pathname === link.href,
+              'border-primary text-foreground': activeTab === tab,
+              'hover:border-primary/50': activeTab !== tab,
             },
           )}
         >
-          {link.label}
-        </Link>
+          {label}
+        </Button>
       ))}
 
       <DropdownMenu.Root>

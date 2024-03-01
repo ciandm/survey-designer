@@ -49,7 +49,7 @@ export const createSurveyAction = action(
         ),
       });
 
-      revalidatePath(getSiteUrl.homePage());
+      revalidatePath(getSiteUrl.dashboardPage());
 
       return {
         survey: duplicatedSurvey,
@@ -65,7 +65,7 @@ export const createSurveyAction = action(
       }),
     });
 
-    revalidatePath(getSiteUrl.homePage());
+    revalidatePath(getSiteUrl.dashboardPage());
 
     return {
       survey,

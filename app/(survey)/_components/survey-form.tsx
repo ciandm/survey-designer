@@ -121,6 +121,7 @@ export const SurveyForm = ({
       <form onSubmit={onSubmit} className="w-full space-y-12">
         {fields.map((_, index) => {
           const element = elements[index];
+          console.log(element);
 
           return (
             <FormField
@@ -134,8 +135,8 @@ export const SurveyForm = ({
                       className={cn(
                         'break-normal text-base font-medium leading-6',
                         {
-                          [`after:content-['*']`]:
-                            element.validations.required && element.text,
+                          [`after:content-['_*']`]:
+                            element.validations.required,
                         },
                       )}
                     >

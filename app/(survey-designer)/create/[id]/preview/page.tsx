@@ -1,8 +1,8 @@
 import {Metadata} from 'next';
-import {SurveyPreviewer} from '@/survey-designer/_components/survey-previewer';
+import {Previewer} from '@/survey-designer/_components/previewer';
 
 const PreviewPage = async () => {
-  return <SurveyPreviewer />;
+  return <Previewer />;
 };
 
 export default PreviewPage;

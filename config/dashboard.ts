@@ -4,7 +4,7 @@ export const dashboardConfig = {
   mainNav: [
     {
       title: 'Home',
-      href: getSiteUrl.homePage(),
+      href: getSiteUrl.dashboardPage(),
     },
   ],
 };

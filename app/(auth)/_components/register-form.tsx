@@ -39,7 +39,7 @@ export const RegisterForm = () => {
   const {execute: handleRegisterUser, status} = useAction(registerAction, {
     onSuccess: (data) => {
       if (data.success) {
-        router.push(getSiteUrl.homePage());
+        router.push(getSiteUrl.dashboardPage());
       }
     },
     onError: (error) => {

@@ -10,7 +10,7 @@ export const HeroActions = ({user}: {user: User | null}) => {
     <div className="mt-10 flex items-center justify-center gap-x-6">
       {user ? (
         <Button asChild>
-          <Link href={getSiteUrl.homePage()}>Your dashboard</Link>
+          <Link href={getSiteUrl.dashboardPage()}>Your dashboard</Link>
         </Button>
       ) : (
         <>

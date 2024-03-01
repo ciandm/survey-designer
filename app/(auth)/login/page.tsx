@@ -10,7 +10,7 @@ export default async function Page() {
   const {user} = await getUser();
 
   if (user) {
-    return redirect(getSiteUrl.homePage());
+    return redirect(getSiteUrl.dashboardPage());
   }
 
   return (
