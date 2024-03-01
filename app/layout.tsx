@@ -29,26 +29,21 @@ export default async function RootLayout({
   const {user} = await getUser();
 
   return (
-    <SessionProvider value={{user}}>
-      <QueryClientProvider>
-        <LoadingOverlay>
-          <DuplicateSurveyDialog>
-            <DeleteSurveyDialog>
-              <html lang="en">
-                <body
-                  className={cn(
-                    'bg-background font-sans antialiased',
-                    inter.variable,
-                  )}
-                >
-                  {children}
-                </body>
-              </html>
-            </DeleteSurveyDialog>
-          </DuplicateSurveyDialog>
-        </LoadingOverlay>
-      </QueryClientProvider>
-      <Toaster />
-    </SessionProvider>
+    <html lang="en">
+      <body
+        className={cn('bg-background font-sans antialiased', inter.variable)}
+      >
+        <SessionProvider value={{user}}>
+          <QueryClientProvider>
+            <LoadingOverlay>
+              <DuplicateSurveyDialog>
+                <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
+              </DuplicateSurveyDialog>
+            </LoadingOverlay>
+          </QueryClientProvider>
+          <Toaster />
+        </SessionProvider>
+      </body>
+    </html>
   );
 }
