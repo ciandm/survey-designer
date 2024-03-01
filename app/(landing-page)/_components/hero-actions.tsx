@@ -14,7 +14,7 @@ export const HeroActions = ({user}: {user: User | null}) => {
         </Button>
       ) : (
         <>
-          {process.env.NODE_ENV !== 'development' ? (
+          {process.env.NODE_ENV === 'development' ? (
             <>
               <Button asChild>
                 <Link href={getSiteUrl.signUpPage()}>Get started</Link>
@@ -32,9 +32,15 @@ export const HeroActions = ({user}: {user: User | null}) => {
               </Button>
             </>
           ) : (
-            <Button asChild>
-              <Link href={getSiteUrl.demoPage()}>View demo</Link>
-            </Button>
+            <div className="flex flex-col items-center gap-4">
+              <Button asChild>
+                <Link href={getSiteUrl.demoPage()}>View demo</Link>
+              </Button>
+              <p className="max-w-sm text-sm text-muted-foreground">
+                You can view the demo without signing up and whilst the app is
+                in development.
+              </p>
+            </div>
           )}
         </>
       )}
