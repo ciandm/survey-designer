@@ -10,8 +10,6 @@ export const TitleEditor = () => {
   const schema = useSurveySchema();
   const {updateTitle, updateDescription} = useDesignerActions();
 
-  if (schema.elements.length === 0) return null;
-
   return (
     <div className="flex flex-col items-start space-y-2 py-4 pr-12">
       <div

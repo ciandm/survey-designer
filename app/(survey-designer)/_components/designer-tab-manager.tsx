@@ -4,29 +4,29 @@ import React, {useState} from 'react';
 import {DesignerTab} from '@/config/designer';
 import {createContext} from '@/lib/context';
 
-type CreatorTabManagerProps = {
+type DesignerTabManagerProps = {
   tabs: DesignerTab[];
   children: React.ReactNode;
 };
 
-export const CreatorTabManager = ({children}: CreatorTabManagerProps) => {
+export const DesignerTabManager = ({children}: DesignerTabManagerProps) => {
   const [activeTab, setActiveTab] = useState<DesignerTab>('designer');
 
   return (
-    <CreateTabManagerProvider value={{activeTab, setActiveTab}}>
+    <DesignerTabManagerProvider value={{activeTab, setActiveTab}}>
       {children}
-    </CreateTabManagerProvider>
+    </DesignerTabManagerProvider>
   );
 };
 
-export const CreatorTabItem = ({
+export const DesignerTabItem = ({
   tab,
   children,
 }: {
   tab: DesignerTab;
   children: React.ReactNode;
 }) => {
-  const {activeTab} = useCreatorTabManager();
+  const {activeTab} = useDesignerTabManager();
 
   if (activeTab !== tab) {
     return null;
@@ -40,7 +40,7 @@ type Context = {
   setActiveTab: (tab: DesignerTab) => void;
 };
 
-const [CreateTabManagerProvider, useCreatorTabManager] =
+const [DesignerTabManagerProvider, useDesignerTabManager] =
   createContext<Context>();
 
-export {useCreatorTabManager};
+export {useDesignerTabManager};

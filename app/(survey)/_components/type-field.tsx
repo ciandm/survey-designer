@@ -68,7 +68,7 @@ export const MultipleChoiceField = ({
                 />
               </FormControl>
               <FormLabel className="flex items-center gap-x-3 text-sm font-medium">
-                {choice.value || 'Blank choice'}
+                {choice.value || '...'}
               </FormLabel>
             </FormItem>
           )}
@@ -100,7 +100,7 @@ export const SingleChoiceField = ({
                 <RadioGroupItem value={choice.value} />
               </FormControl>
               <FormLabel className="font-normal">
-                {choice.value || 'Blank choice'}
+                {choice.value || '...'}
               </FormLabel>
             </FormItem>
           ))}

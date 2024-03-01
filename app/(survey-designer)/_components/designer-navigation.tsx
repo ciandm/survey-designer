@@ -3,84 +3,85 @@
 import {useState} from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import {HamburgerMenuIcon} from '@radix-ui/react-icons';
-import Link from 'next/link';
-import {useParams, usePathname} from 'next/navigation';
 import {Button} from '@/components/ui/button';
 import {TabConfig} from '@/config/designer';
-import {DESIGNER_LINKS} from '@/lib/constants/links';
 import {cn} from '@/lib/utils';
-import {replaceLinkHrefs} from '@/survey/_utils/links';
-import {useCreatorTabManager} from './creator-tab-manager';
+import {useDesignerTabManager} from './designer-tab-manager';
+
+type DesignerNavigationProps = {
+  tabs: TabConfig[];
+  className?: string;
+};
 
 export const DesignerNavigation = ({
   tabs,
   className,
-}: {
-  tabs: TabConfig[];
-  className?: string;
-}) => {
-  const pathname = usePathname();
-  const {id} = useParams() as {id: string};
+}: DesignerNavigationProps) => {
   const [open, setOpen] = useState(false);
-  const {activeTab, setActiveTab} = useCreatorTabManager();
+  const {activeTab, setActiveTab} = useDesignerTabManager();
 
   return (
-    <nav
-      className={cn(
-        'hidden h-full items-center space-x-2 pl-4 md:flex',
-        className,
-      )}
-    >
-      {tabs.map(({tab, label}) => (
-        <Button
-          key={tab}
-          onClick={() => setActiveTab(tab)}
-          variant="ghost"
-          className={cn(
-            'flex h-full items-center rounded-none border-b-2 border-transparent px-4 text-sm font-medium text-muted-foreground transition-colors',
-            {
-              'border-primary text-foreground': activeTab === tab,
-              'hover:border-primary/50': activeTab !== tab,
-            },
-          )}
-        >
-          {label}
-        </Button>
-      ))}
+    <nav className={cn('flex h-full items-center space-x-2 pl-4', className)}>
+      <div className="hidden h-full md:flex">
+        {tabs.map(({tab, label}) => (
+          <Button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            variant="ghost"
+            className={cn(
+              'flex h-full items-center rounded-none border-b-2 border-transparent px-4 text-sm font-medium text-muted-foreground transition-colors',
+              {
+                'border-primary text-foreground': activeTab === tab,
+                'hover:border-primary/50': activeTab !== tab,
+              },
+            )}
+          >
+            {label}
+          </Button>
+        ))}
+      </div>
 
-      <DropdownMenu.Root>
-        <nav className="flex h-16 flex-shrink-0 items-center lg:hidden">
+      <DropdownMenu.Root open={open}>
+        <div className="flex h-16 flex-shrink-0 items-center lg:hidden">
           <DropdownMenu.Trigger asChild className="block md:hidden">
-            <Button size="sm" variant="ghost" onClick={() => setOpen(!open)}>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setOpen((prev) => !prev)}
+            >
               <HamburgerMenuIcon />
             </Button>
           </DropdownMenu.Trigger>
 
           <DropdownMenu.Portal>
-            <DropdownMenu.Content className="mt-4 w-screen bg-card">
-              <div className="space-y-1 pb-2">
-                {replaceLinkHrefs(DESIGNER_LINKS, id).map((link) => {
-                  const isActive = pathname === link.href;
+            <DropdownMenu.Content className="w-screen bg-card">
+              <div className="mt-3 flex flex-col space-y-1 pb-2">
+                {tabs.map(({label, tab}) => {
+                  const isActive = activeTab === tab;
 
                   return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
+                    <Button
+                      variant="ghost"
+                      key={tab}
+                      onClick={() => {
+                        setActiveTab(tab);
+                        setOpen(false);
+                      }}
                       className={cn(
-                        'flex items-center border-l-4 border-transparent p-2 font-medium text-muted-foreground transition-colors hover:border-muted-foreground',
+                        'flex flex-1 rounded-none border-l-4 border-transparent p-2 font-medium text-muted-foreground transition-colors hover:border-muted-foreground',
                         {
                           'border-primary bg-muted text-foreground': isActive,
                         },
                       )}
                     >
-                      {link.label}
-                    </Link>
+                      {label}
+                    </Button>
                   );
                 })}
               </div>
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
-        </nav>
+        </div>
       </DropdownMenu.Root>
     </nav>
   );

@@ -7,7 +7,7 @@ type SurveyShellProps = {
 
 export const SurveyShell = ({children}: SurveyShellProps) => {
   return (
-    <div className="flex flex-col items-stretch md:flex-1 md:flex-row">
+    <div className="flex flex-1 flex-col items-stretch md:flex-row">
       {children}
     </div>
   );
@@ -31,7 +31,7 @@ export const SurveyShellAside = ({
         className,
       )}
     >
-      <h1 className="mb-2 text-xl font-bold leading-3 tracking-tight sm:text-3xl">
+      <h1 className="mb-2 text-xl font-bold leading-4 tracking-tight sm:text-3xl">
         {title}
       </h1>
       <p className="text-sm text-muted-foreground sm:text-base">
@@ -43,7 +43,7 @@ export const SurveyShellAside = ({
 
 export const SurveyShellMain = ({children}: {children: React.ReactNode}) => {
   return (
-    <section className="flex w-full flex-1 bg-muted p-4 sm:items-center sm:justify-center md:mx-auto md:p-12 lg:p-24 xl:p-32">
+    <section className="flex w-full flex-1 bg-muted p-4 md:mx-auto md:items-center md:justify-center md:p-12 lg:p-24 xl:p-32">
       <div className="mx-auto w-full md:max-w-2xl">{children}</div>
     </section>
   );

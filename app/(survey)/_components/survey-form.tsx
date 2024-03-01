@@ -121,7 +121,6 @@ export const SurveyForm = ({
       <form onSubmit={onSubmit} className="w-full space-y-12">
         {fields.map((_, index) => {
           const element = elements[index];
-          console.log(element);
 
           return (
             <FormField

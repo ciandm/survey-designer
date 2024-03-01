@@ -25,7 +25,6 @@ import {
 import {useActiveElement} from '@/survey-designer/_hooks/use-active-element';
 import {
   useDesignerActions,
-  useSurveyElements,
   useSurveySchema,
   useSurveyScreens,
 } from '@/survey-designer/_store/survey-designer-store';
@@ -54,7 +53,6 @@ export const ConfigPanel = () => {
 
 const ConfigPanelInner = () => {
   const {activeElement} = useActiveElement();
-  const elements = useSurveyElements();
   const {changeElementType, updateElement} = useDesignerActions();
 
   const choices = activeElement?.properties.choices ?? [];
@@ -65,19 +63,7 @@ const ConfigPanelInner = () => {
   const hasPlaceholderConfig =
     activeElement?.type === 'short_text' || activeElement?.type === 'long_text';
 
-  if (!activeElement) {
-    if (elements.length === 0) {
-      return (
-        <div className="flex justify-center p-4">
-          <p className="text-center text-muted-foreground">
-            Create a question to get started
-          </p>
-        </div>
-      );
-    }
-
-    return <SurveyGeneralSettings />;
-  }
+  if (!activeElement) return <SurveyGeneralSettings />;
 
   return (
     <>

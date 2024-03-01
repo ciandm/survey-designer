@@ -1,19 +1,20 @@
 import {tabConfig} from '@/config/designer';
-import {CreatorTabItem} from '@/survey-designer/_components/creator-tab-manager';
 import {Designer} from '@/survey-designer/_components/designer';
+import {DesignerTabItem} from '@/survey-designer/_components/designer-tab-manager';
 import {Previewer} from '@/survey-designer/_components/previewer';
+import {Responses} from '@/survey-designer/_components/responses';
 
 const tabs = tabConfig.map((item) => item.tab);
 
-const SurveyCreatorPage = () => {
+const SurveyCreatorPage = ({params}: {params: {id: string}}) => {
   return (
     <>
       {tabs.map((tab) => (
-        <CreatorTabItem key={tab} tab={tab}>
+        <DesignerTabItem key={tab} tab={tab}>
           {tab === 'designer' && <Designer />}
           {tab === 'preview' && <Previewer />}
-          {tab === 'responses' && <h1>Responses</h1>}
-        </CreatorTabItem>
+          {tab === 'responses' && <Responses id={params.id} />}
+        </DesignerTabItem>
       ))}
     </>
   );
