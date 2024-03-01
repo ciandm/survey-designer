@@ -1,4 +1,4 @@
-'use server'; // don't forget to add this!
+'use server';
 
 import {generateId} from 'lucia';
 import {cookies} from 'next/headers';
@@ -11,6 +11,10 @@ import {registerSchema} from '@/lib/validations/auth';
 export const registerAction = action(
   registerSchema,
   async ({email, password}) => {
+    if (process.env.NODE_ENV === 'development') {
+      throw new ActionError('Registration is currently disabled');
+    }
+
     const {user} = await getUser();
 
     if (user) {

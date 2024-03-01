@@ -15,7 +15,7 @@ const DemoLayout = ({children}: React.PropsWithChildren) => {
         <div className="flex min-h-screen flex-col" vaul-drawer-wrapper="">
           <DesignerToolbar
             tabs={demoTabConfig}
-            homeHref={getSiteUrl.dashboardPage()}
+            homeHref={getSiteUrl.homePage()}
             hasActions={false}
             title="Survey editor (demo)"
           />

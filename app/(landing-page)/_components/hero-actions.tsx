@@ -14,20 +14,28 @@ export const HeroActions = ({user}: {user: User | null}) => {
         </Button>
       ) : (
         <>
-          <Button asChild>
-            <Link href={getSiteUrl.signUpPage()}>Get started</Link>
-          </Button>
-          <Button asChild variant="ghost">
-            <Link
-              href={getSiteUrl.loginPage()}
-              className="text-sm font-semibold leading-6 text-gray-900"
-            >
-              Log in{' '}
-              <span aria-hidden="true" className="ml-2">
-                →
-              </span>
-            </Link>
-          </Button>
+          {process.env.NODE_ENV !== 'development' ? (
+            <>
+              <Button asChild>
+                <Link href={getSiteUrl.signUpPage()}>Get started</Link>
+              </Button>
+              <Button asChild variant="ghost">
+                <Link
+                  href={getSiteUrl.loginPage()}
+                  className="text-sm font-semibold leading-6 text-gray-900"
+                >
+                  Log in{' '}
+                  <span aria-hidden="true" className="ml-2">
+                    →
+                  </span>
+                </Link>
+              </Button>
+            </>
+          ) : (
+            <Button asChild>
+              <Link href={getSiteUrl.demoPage()}>View demo</Link>
+            </Button>
+          )}
         </>
       )}
     </div>

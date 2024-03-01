@@ -15,6 +15,7 @@ export const WipAlert = () => {
         closeButton: true,
         duration: TOAST_DURATION,
         position: 'bottom-left',
+        id: 'wip-alert',
       });
     }, TOAST_DELAY);
 

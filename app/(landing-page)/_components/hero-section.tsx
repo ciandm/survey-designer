@@ -5,8 +5,9 @@ export const HeroSection = async () => {
   const {user} = await getUser();
 
   return (
-    <section className="bg-white">
-      <div className="mx-auto max-w-2xl py-16 sm:py-32 lg:py-44">
+    <section className="relative flex min-h-[50rem] w-full  items-center justify-center bg-white bg-dot-black/[0.2] dark:bg-black dark:bg-dot-white/[0.2]">
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_50%,black)] dark:bg-black" />
+      <div className="mx-auto max-w-2xl px-4 py-16 sm:py-32 lg:px-0 lg:py-44">
         <div className="hidden sm:mb-8 sm:flex sm:justify-center">
           <div className="relative rounded-full border-0 bg-muted px-3 py-1 text-sm leading-6 text-muted-foreground">
             Work in progress
