@@ -179,7 +179,7 @@ const useActions = () => {
 
   const handleClickDeleteSurvey = async () => {
     handleTriggerDeleteSurveyConfirm({surveyId: id}).then(() => {
-      router.push(getSiteUrl.homePage());
+      router.push(getSiteUrl.dashboardPage());
       router.refresh();
     });
   };

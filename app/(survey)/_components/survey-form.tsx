@@ -134,8 +134,8 @@ export const SurveyForm = ({
                       className={cn(
                         'break-normal text-base font-medium leading-6',
                         {
-                          [`after:content-['*']`]:
-                            element.validations.required && element.text,
+                          [`after:content-['_*']`]:
+                            element.validations.required,
                         },
                       )}
                     >

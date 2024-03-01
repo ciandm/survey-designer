@@ -18,7 +18,7 @@ const DashboardLayout = async ({children}: {children: React.ReactNode}) => {
         <div className="container flex w-full items-center justify-between">
           <div className="flex items-center space-x-4 p-2">
             <Link
-              href={getSiteUrl.homePage()}
+              href={getSiteUrl.dashboardPage()}
               className="text-base font-semibold tracking-tight"
             >
               Dashboard

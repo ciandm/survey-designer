@@ -7,12 +7,15 @@ import {
   SurveyDesignerStoreProvider,
 } from '@/survey-designer/_store/survey-designer-store';
 
-type DesignerProviderProps = {
-  survey: SurveyResponse['survey'];
+type DesignerStoreInitialiserProps = {
+  survey?: SurveyResponse['survey'];
   children: React.ReactNode;
 };
 
-export const DesignerProvider = ({survey, children}: DesignerProviderProps) => {
+export const DesignerStoreInitialiser = ({
+  survey,
+  children,
+}: DesignerStoreInitialiserProps) => {
   const store = useRef(createSurveyDesignerStore({...survey})).current;
 
   return (

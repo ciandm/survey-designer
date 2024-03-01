@@ -17,7 +17,7 @@ export const ElementsToolbar = () => {
           onClick={() => handleCreateElement({type: option.value})}
         >
           <option.icon />
-          {option.label}
+          <span className="truncate">{option.label}</span>
         </Button>
       ))}
     </div>

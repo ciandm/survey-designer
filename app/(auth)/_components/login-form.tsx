@@ -38,7 +38,7 @@ export const LoginForm = () => {
   const {execute: handleLogIn, status} = useAction(loginAction, {
     onSuccess: (data) => {
       if (data.success) {
-        router.push(getSiteUrl.homePage());
+        router.push(getSiteUrl.dashboardPage());
       }
     },
     onError: (error) => {

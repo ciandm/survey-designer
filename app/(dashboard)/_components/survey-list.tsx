@@ -110,25 +110,6 @@ export const SurveyList = ({surveys}: Props) => {
                 </DropdownMenuTrigger>
               </div>
             </div>
-            {/* <CardFooter className="justify-between px-6 py-4">
-                <div className="flex w-full flex-col gap-4">
-                  <div className="flex justify-between">
-                    <p className="text-sm text-muted-foreground">Responses</p>
-                    <p className="text-sm text-muted-foreground">
-                      {survey.SurveyResult.length}
-                    </p>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between">
-                    <p className="text-sm text-muted-foreground">
-                      Last updated
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {new Date(survey.updatedAt).toLocaleDateString('en-GB')}
-                    </p>
-                  </div>
-                </div>
-              </CardFooter> */}
             <DropdownMenuContent className="w-[240px]">
               <DropdownMenuLabel>{survey.schema.title}</DropdownMenuLabel>
               <DropdownMenuSeparator />
