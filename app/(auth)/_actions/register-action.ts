@@ -11,7 +11,7 @@ import {registerSchema} from '@/lib/validations/auth';
 export const registerAction = action(
   registerSchema,
   async ({email, password}) => {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV !== 'development') {
       throw new ActionError('Registration is currently disabled');
     }
 
