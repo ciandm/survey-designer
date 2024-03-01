@@ -21,7 +21,7 @@ const DesignerPage = async () => {
           </ElementsDndContext>
         </div>
       </section>
-      <aside className="sticky bottom-0 top-14 hidden h-[calc(100vh-56px)] w-full max-w-sm shrink-0 flex-col overflow-auto border-l p-4 sm:flex xl:block">
+      <aside className="sticky bottom-0 top-14 hidden h-[calc(100vh-56px)] w-full max-w-sm shrink-0 flex-col overflow-auto border-l p-4 lg:block">
         <ConfigPanel />
       </aside>
     </div>
@@ -31,6 +31,6 @@ const DesignerPage = async () => {
 export default DesignerPage;
 
 export const metadata: Metadata = {
-  title: 'Survey Editor',
-  description: 'Survey Editor',
+  title: 'Survey designer',
+  description: 'Survey designer',
 };

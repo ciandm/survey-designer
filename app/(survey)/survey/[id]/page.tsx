@@ -1,6 +1,10 @@
 import {Metadata, ResolvingMetadata} from 'next';
 import {notFound} from 'next/navigation';
-import {Card} from '@/components/ui/card';
+import {
+  SurveyShell,
+  SurveyShellAside,
+  SurveyShellMain,
+} from '@/components/survey-shell';
 import {db} from '@/lib/db';
 import {surveySchema} from '@/lib/validations/survey';
 import {SurveyForm} from '@/survey/_components/survey-form';
@@ -23,17 +27,16 @@ const SurveyPage = async ({params}: Props) => {
   const schema = sortChoices(survey.schema);
 
   return (
-    <div className="min-h-screen bg-muted sm:py-8">
-      <div className="max-w-2xl sm:container">
-        <header className="mb-2 flex flex-col space-y-1 bg-card p-3 sm:bg-transparent sm:p-0">
-          <h1 className="text-lg font-semibold">{schema.title}</h1>
-          <p className="text-sm text-muted-foreground">{schema.description}</p>
-        </header>
-        <Card>
-          <SurveyForm surveyId={params.id} schema={schema} />
-        </Card>
-      </div>
-    </div>
+    <SurveyShell>
+      <SurveyShellAside
+        title={schema.title}
+        description={schema.description}
+        className="md:top-0 md:h-screen"
+      />
+      <SurveyShellMain>
+        <SurveyForm schema={schema} surveyId={survey.id} />
+      </SurveyShellMain>
+    </SurveyShell>
   );
 };
 

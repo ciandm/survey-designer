@@ -1,11 +1,13 @@
 'use client';
 import {useState} from 'react';
 import {DotsHorizontalIcon} from '@radix-ui/react-icons';
+import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
 import {useDeleteSurveyDialogTrigger} from '@/components/delete-survey-dialog';
 import {useDuplicateSurveyFormTrigger} from '@/components/duplicate-survey-dialog';
+import {useLoadingOverlayTrigger} from '@/components/loading-overlay';
 import {Button} from '@/components/ui/button';
 import {
   Drawer,
@@ -146,9 +148,11 @@ const useActions = () => {
   const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
   const {handleTriggerPublishDialog} = usePublishTrigger();
   const router = useRouter();
+  const {handleHideOverlay, handleOpenOverlay} = useLoadingOverlayTrigger();
 
   const {execute: handleSaveSchema, status} = useAction(updateSchemaAction, {
     onSuccess: () => {
+      handleHideOverlay();
       toast('Survey saved', {
         description: 'Your survey has been saved successfully.',
         action: {
@@ -162,6 +166,14 @@ const useActions = () => {
   });
 
   const handleClickSave = () => {
+    handleOpenOverlay({
+      content: (
+        <div className="flex h-full flex-col items-center justify-center gap-2">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Saving survey...</p>
+        </div>
+      ),
+    });
     handleSaveSchema({id, schema});
   };
 

@@ -21,7 +21,7 @@ import {cn} from '@/lib/utils';
 import {ElementSchema, SurveySchema} from '@/lib/validations/survey';
 import {createSurveyValidationSchema} from '@/survey/_utils/survey';
 import {useSubmitSurvey} from '@/survey-designer/_hooks/use-submit-survey';
-import {LongTextField, ShortTextField} from './type-field';
+import {TextField} from './type-field';
 
 export interface QuestionFormState {
   fields: {questionId: string; value: string[]; type: ElementType}[];
@@ -86,7 +86,7 @@ export const SurveyForm = ({
 
   if (step === 'thank_you') {
     return (
-      <section className="flex h-screen bg-muted">
+      <section className="flex bg-muted">
         <div className="container my-auto flex max-w-lg flex-col items-center gap-6">
           <CheckCircleIcon className="h-16 w-16 text-green-500" />
           <div className="space-y-3 text-center">
@@ -118,60 +118,54 @@ export const SurveyForm = ({
 
   return (
     <Form {...methods}>
-      <form onSubmit={onSubmit} className="flex-1">
-        <div className="sm:mt-4">
-          {fields.map((_, index) => {
-            const element = elements[index];
+      <form onSubmit={onSubmit} className="w-full space-y-12">
+        {fields.map((_, index) => {
+          const element = elements[index];
 
-            return (
-              <FormField
-                key={element.id}
-                control={control}
-                name={`fields.${index}.value`}
-                render={(controllerProps) => (
-                  <FormItem>
-                    <div className="space-y-4 py-5 sm:py-8">
-                      <div className="flex flex-col gap-1">
-                        <FormLabel
-                          className={cn(
-                            'break-normal text-base font-medium leading-6',
-                            {
-                              [`after:content-['*']`]:
-                                element.validations.required && element.text,
-                            },
-                          )}
-                        >
-                          {index + 1}.{' '}
-                          {!!element.text ? element.text : 'Untitled question'}
-                        </FormLabel>
-                        {!!element.description && (
-                          <FormDescription>
-                            {element.description}
-                          </FormDescription>
-                        )}
-                      </div>
-                      <div className="mt-4">
-                        {renderTypeField({
-                          element,
-                          controllerProps,
-                          index,
-                        })}
-                      </div>
-                      <ErrorMessage
-                        name={`fields.${index}.value`}
-                        render={({message}) => (
-                          <p className="text-sm font-medium leading-5 text-red-500">
-                            {message}
-                          </p>
-                        )}
-                      />
-                    </div>
-                  </FormItem>
-                )}
-              />
-            );
-          })}
-        </div>
+          return (
+            <FormField
+              key={element.id}
+              control={control}
+              name={`fields.${index}.value`}
+              render={(controllerProps) => (
+                <FormItem>
+                  <div className="flex flex-col gap-1">
+                    <FormLabel
+                      className={cn(
+                        'break-normal text-base font-medium leading-6',
+                        {
+                          [`after:content-['*']`]:
+                            element.validations.required && element.text,
+                        },
+                      )}
+                    >
+                      {index + 1}.{' '}
+                      {!!element.text ? element.text : 'Untitled question'}
+                    </FormLabel>
+                    {!!element.description && (
+                      <FormDescription>{element.description}</FormDescription>
+                    )}
+                  </div>
+                  <div className="mt-4">
+                    {renderTypeField({
+                      element,
+                      controllerProps,
+                      index,
+                    })}
+                  </div>
+                  <ErrorMessage
+                    name={`fields.${index}.value`}
+                    render={({message}) => (
+                      <p className="text-sm font-medium leading-5 text-red-500">
+                        {message}
+                      </p>
+                    )}
+                  />
+                </FormItem>
+              )}
+            />
+          );
+        })}
         <footer>
           <Button disabled={isSubmitPending} type="submit">
             {isSubmitPending && (
@@ -235,9 +229,8 @@ function renderTypeField({
 }: RenderTypeFieldArgs) {
   switch (element.type) {
     case 'short_text':
-      return <ShortTextField field={field} />;
     case 'long_text':
-      return <LongTextField field={field} />;
+      return <TextField field={field} element={element} />;
     case 'multiple_choice':
       return (
         <MultipleChoiceField field={field} element={element} index={index} />
