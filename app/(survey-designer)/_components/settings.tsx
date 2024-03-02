@@ -28,6 +28,7 @@ import {
   useSurveyModel,
   useSurveyScreens,
 } from '@/survey-designer/_store/survey-designer-store';
+import {ElementSchemaType} from '@/types/element';
 import {
   Choices,
   ChoicesAddChoice,
@@ -43,25 +44,28 @@ const SORT_ORDER_OPTIONS = [
   {label: 'Random', value: 'random'},
 ] as const;
 
-export const ConfigPanel = () => {
+export const Settings = () => {
   const {activeElement} = useActiveElement();
 
+  if (!activeElement) return <GeneralSettings />;
+
   return (
-    <ConfigPanelInner key={`${activeElement?.id}-${activeElement?.type}`} />
+    <ElementSettings
+      element={activeElement}
+      key={`${activeElement?.id}-${activeElement?.type}`}
+    />
   );
 };
 
-const ConfigPanelInner = () => {
-  const {activeElement} = useActiveElement();
+const ElementSettings = ({element}: {element: ElementSchemaType}) => {
   const {changeElementType, updateElement} = useDesignerActions();
 
-  const choices = activeElement?.properties.choices ?? [];
+  const choices = element?.properties.choices ?? [];
 
   const hasChoicesConfig =
-    activeElement?.type === 'multiple_choice' ||
-    activeElement?.type === 'single_choice';
+    element?.type === 'multiple_choice' || element?.type === 'single_choice';
   const hasPlaceholderConfig =
-    activeElement?.type === 'short_text' || activeElement?.type === 'long_text';
+    element?.type === 'short_text' || element?.type === 'long_text';
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -72,7 +76,7 @@ const ConfigPanelInner = () => {
     }
   };
 
-  if (!activeElement) return <SurveyGeneralSettings />;
+  if (!element) return <GeneralSettings />;
 
   return (
     <>
@@ -86,10 +90,10 @@ const ConfigPanelInner = () => {
         <div className="flex flex-col space-y-1.5">
           <Label htmlFor="element-type">Type</Label>
           <QuestionTypeSelect
-            element={activeElement}
+            element={element}
             onChange={(type) =>
               changeElementType({
-                id: activeElement.id,
+                id: element.id,
                 type,
               })
             }
@@ -101,11 +105,11 @@ const ConfigPanelInner = () => {
           <Textarea
             name="config-panel-title"
             id="config-panel-title"
-            defaultValue={activeElement.text}
-            key={`${activeElement.text}-${activeElement.id}-config-panel-title`}
+            defaultValue={element.text}
+            key={`${element.text}-${element.id}-config-panel-title`}
             onBlur={(e) =>
               updateElement({
-                id: activeElement.id,
+                id: element.id,
                 text: e.target.value,
               })
             }
@@ -119,11 +123,11 @@ const ConfigPanelInner = () => {
           <Textarea
             name="config-panel-description"
             id="config-panel-description"
-            defaultValue={activeElement.description}
-            key={`${activeElement.description}-${activeElement.id}-config-panel-description`}
+            defaultValue={element.description}
+            key={`${element.description}-${element.id}-config-panel-description`}
             onBlur={(e) =>
               updateElement({
-                id: activeElement.id,
+                id: element.id,
                 description: e.target.value,
               })
             }
@@ -138,11 +142,11 @@ const ConfigPanelInner = () => {
             <Textarea
               name="config-panel-placeholder"
               id="config-panel-placeholder"
-              defaultValue={activeElement.properties.placeholder}
-              key={`${activeElement.properties.placeholder}-${activeElement.id}-config-panel-placeholder`}
+              defaultValue={element.properties.placeholder}
+              key={`${element.properties.placeholder}-${element.id}-config-panel-placeholder`}
               onBlur={(e) =>
                 updateElement({
-                  id: activeElement.id,
+                  id: element.id,
                   properties: {
                     placeholder: e.target.value,
                   },
@@ -158,20 +162,20 @@ const ConfigPanelInner = () => {
               className="mr-2"
               onCheckedChange={(checked) => {
                 updateElement({
-                  id: activeElement.id,
+                  id: element.id,
                   validations: {
                     required: !!checked,
                   },
                 });
               }}
               id="config-panel-required"
-              checked={activeElement.validations.required}
+              checked={element.validations.required}
             />
             <Label htmlFor="config-panel-required">
               Make this question required
             </Label>
           </div>
-          {activeElement.validations.required && (
+          {element.validations.required && (
             <>
               <div className="mt-3 flex items-center justify-between">
                 <Label htmlFor="required-error-message">
@@ -198,11 +202,11 @@ const ConfigPanelInner = () => {
               <Textarea
                 name="required"
                 id="required-error-message"
-                defaultValue={activeElement.properties.required_message}
-                key={`${activeElement.properties.required_message}-${activeElement.id}-required-message`}
+                defaultValue={element.properties.required_message}
+                key={`${element.properties.required_message}-${element.id}-required-message`}
                 onBlur={(e) =>
                   updateElement({
-                    id: activeElement.id,
+                    id: element.id,
                     properties: {
                       required_message: e.target.value,
                     },
@@ -218,7 +222,7 @@ const ConfigPanelInner = () => {
           <Separator className="my-6" />
           <div className="space-y-6">
             <div>
-              <Choices elementId={activeElement.id} choices={choices}>
+              <Choices elementId={element.id} choices={choices}>
                 <div className="mb-2 grid grid-cols-[1fr_40px_40px] items-center justify-between gap-2">
                   <p className="text-sm font-medium">Choices</p>
                   <TooltipProvider delayDuration={100}>
@@ -254,10 +258,10 @@ const ConfigPanelInner = () => {
                 Sort choices
               </Label>
               <Select
-                value={activeElement.properties.sort_order ?? 'none'}
+                value={element.properties.sort_order ?? 'none'}
                 onValueChange={(value) => {
                   updateElement({
-                    id: activeElement.id,
+                    id: element.id,
                     properties: {
                       sort_order: value === 'none' ? undefined : (value as any),
                     },
@@ -297,7 +301,7 @@ const ConfigPanelInner = () => {
   );
 };
 
-const SurveyGeneralSettings = () => {
+const GeneralSettings = () => {
   const model = useSurveyModel();
   const {thank_you, welcome} = useSurveyScreens();
   const {updateTitle, updateDescription, updateScreen} = useDesignerActions();
