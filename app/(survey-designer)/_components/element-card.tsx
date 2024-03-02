@@ -13,15 +13,21 @@ import {useElementCrud} from '../_hooks/use-element-crud';
 import {setActiveElementRef} from '../_store/active-element-ref';
 import {useDesignerActions} from '../_store/survey-designer-store';
 import {Choices, ChoicesAddChoice, ChoicesList} from './choices';
+import {ElementListProps} from './element-list';
 import {QuestionTypeSelect} from './question-type-select';
 
-type ElementCardProps = {
+type ElementCardProps = Pick<ElementListProps, 'onSettingsClick'> & {
   isActive: boolean;
   element: ElementSchemaType;
   index: number;
 };
 
-export const ElementCard = ({isActive, element, index}: ElementCardProps) => {
+export const ElementCard = ({
+  isActive,
+  element,
+  index,
+  onSettingsClick,
+}: ElementCardProps) => {
   const {handleRemoveElement, handleDuplicateElement} = useElementCrud();
   const {changeElementType, updateElement} = useDesignerActions();
 
@@ -181,9 +187,7 @@ export const ElementCard = ({isActive, element, index}: ElementCardProps) => {
                 variant="ghost"
                 className="flex lg:hidden"
                 size="icon"
-                onClick={(e) => {
-                  window.alert('TODO: Open settings modal');
-                }}
+                onClick={() => onSettingsClick((prev) => !prev)}
               >
                 <Settings className="h-4 w-4" />
               </Button>

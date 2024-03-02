@@ -11,7 +11,7 @@ export const TitleEditor = () => {
   const {updateTitle, updateDescription} = useDesignerActions();
 
   return (
-    <div className="flex flex-col items-start space-y-2 py-4 pr-12">
+    <div className="flex flex-col items-start space-y-2 py-4 lg:pr-14">
       <div
         className="w-full overflow-hidden rounded-lg focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
         onClick={() => setActiveElementRef(null)}
