@@ -3,11 +3,11 @@
 import {getUser} from '@/lib/auth';
 import {db} from '@/lib/db';
 import {action, ActionError} from '@/lib/safe-action';
-import {updateSchemaInput} from '@/lib/validations/survey';
+import {updateModelInput} from '@/lib/validations/survey';
 
-export const updateSchemaAction = action(
-  updateSchemaInput,
-  async ({id, schema}) => {
+export const updateModelAction = action(
+  updateModelInput,
+  async ({id, model}) => {
     const {user} = await getUser();
 
     if (!user) {
@@ -19,9 +19,9 @@ export const updateSchemaAction = action(
         id,
       },
       data: {
-        schema: {
-          ...schema,
-          version: schema.version + 1,
+        model: {
+          ...model,
+          version: model.version + 1,
         },
       },
     });

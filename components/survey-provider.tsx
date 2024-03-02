@@ -1,24 +1,20 @@
 'use client';
 
 import React, {createContext, useContext} from 'react';
-import {SurveySchema} from '@/lib/validations/survey';
+import {SurveyWithParsedModelType} from '@/types/survey';
 
 export const SurveyContext = createContext<{
-  schema: SurveySchema;
-  id: string;
+  survey: SurveyWithParsedModelType;
 } | null>(null);
 
 type Props = {
-  schema: SurveySchema;
+  survey: SurveyWithParsedModelType;
   children: React.ReactNode;
-  id: string;
 };
 
-export const SurveyProvider = ({children, schema, id}: Props) => {
+export const SurveyProvider = ({children, survey}: Props) => {
   return (
-    <SurveyContext.Provider value={{schema, id}}>
-      {children}
-    </SurveyContext.Provider>
+    <SurveyContext.Provider value={{survey}}>{children}</SurveyContext.Provider>
   );
 };
 

@@ -2,11 +2,11 @@
 
 import React from 'react';
 import {useDuplicateSurveyFormTrigger} from '@/components/duplicate-survey-dialog';
-import {SurveyResponse} from '@/lib/validations/survey';
+import {SurveyWithParsedModelType} from '@/types/survey';
 
 type PreviousSurveyContainerProps = {
   children: React.ReactNode;
-  survey: SurveyResponse['survey'];
+  survey: SurveyWithParsedModelType;
 };
 
 export const PreviousSurveyContainer = ({
@@ -17,8 +17,8 @@ export const PreviousSurveyContainer = ({
 
   const handleClick = async () => {
     const initialData = {
-      title: `${survey.schema.title} (copy)`,
-      description: survey.schema.description,
+      title: `${survey.model.title} (copy)`,
+      description: survey.model.description,
       id: survey.id,
     };
     handleTriggerDuplicateSurveyDialog({

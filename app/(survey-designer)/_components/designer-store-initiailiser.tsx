@@ -1,14 +1,14 @@
 'use client';
 
 import {useRef} from 'react';
-import {SurveyResponse} from '@/lib/validations/survey';
 import {
   createSurveyDesignerStore,
   SurveyDesignerStoreProvider,
 } from '@/survey-designer/_store/survey-designer-store';
+import {SurveyWithParsedModelType} from '@/types/survey';
 
 type DesignerStoreInitialiserProps = {
-  survey?: SurveyResponse['survey'];
+  survey?: Partial<SurveyWithParsedModelType>;
   children: React.ReactNode;
 };
 

@@ -1,8 +1,8 @@
 import {type ClassValue, clsx} from 'clsx';
 import {twMerge} from 'tailwind-merge';
 import {v4 as uuidv4} from 'uuid';
+import {ElementSchemaType} from '@/types/element';
 import {ElementType} from './constants/element';
-import {ElementSchema} from './validations/survey';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,8 +23,8 @@ export function formatQuestionType(type: ElementType): string {
 
 export function buildNewElementHelper(
   type: ElementType,
-  field: Partial<ElementSchema>,
-): ElementSchema {
+  field: Partial<ElementSchemaType>,
+): ElementSchemaType {
   switch (type) {
     case 'long_text':
     case 'short_text':
@@ -71,7 +71,7 @@ export function buildNewElementHelper(
 }
 
 export function getNextElementToSelect(
-  elements: ElementSchema[],
+  elements: ElementSchemaType[],
   elementId: string,
 ) {
   const questionIndex = elements.findIndex(

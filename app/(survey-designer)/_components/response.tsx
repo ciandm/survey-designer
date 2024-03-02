@@ -15,11 +15,14 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {useToast} from '@/components/ui/use-toast';
-import {ChoicesSchema, responsesSchema} from '@/lib/validations/survey';
+import {responsesSchema} from '@/lib/validations/survey';
 import {useDeleteSurveyResult} from '@/survey-designer/_hooks/use-delete-response';
+import {ChoicesSchemaType} from '@/types/element';
 
 export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
-  const {schema, id} = useSurveyProvider();
+  const {
+    survey: {model, id},
+  } = useSurveyProvider();
   const {mutate, isPending} = useDeleteSurveyResult();
   const router = useRouter();
   const {toast} = useToast();
@@ -69,7 +72,7 @@ export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {schema.elements.map((element, index) => {
+          {model.elements.map((element, index) => {
             const response = data.find(
               (response) => response.questionId === element.id,
             );
@@ -123,7 +126,7 @@ export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
 
 function getResponseValueByResponseId(
   responseId: string,
-  choices: ChoicesSchema = [],
+  choices: ChoicesSchemaType = [],
 ) {
   const response = choices.find((choice) => choice.id === responseId);
   if (!response) return null;

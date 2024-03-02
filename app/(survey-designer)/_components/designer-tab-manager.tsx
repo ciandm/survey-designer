@@ -1,8 +1,8 @@
 'use client';
 
 import React, {useState} from 'react';
-import {DesignerTab} from '@/config/designer';
 import {createContext} from '@/lib/context';
+import {DesignerTab} from '@/types/tab';
 
 type DesignerTabManagerProps = {
   tabs: DesignerTab[];
@@ -17,6 +17,16 @@ export const DesignerTabManager = ({children}: DesignerTabManagerProps) => {
       {children}
     </DesignerTabManagerProvider>
   );
+};
+
+type DesignerTabConnectorProps = {
+  children: ({activeTab}: {activeTab: DesignerTab}) => React.ReactNode;
+};
+
+export const DesignerTabConnector = ({children}: DesignerTabConnectorProps) => {
+  const {activeTab} = useDesignerTabManager();
+
+  return <>{children({activeTab})}</>;
 };
 
 export const DesignerTabItem = ({

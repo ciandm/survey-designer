@@ -6,7 +6,7 @@ import {
   SurveyShellMain,
 } from '@/components/survey-shell';
 import {db} from '@/lib/db';
-import {surveySchema} from '@/lib/validations/survey';
+import {modelSchema} from '@/lib/validations/survey';
 import {SurveyForm} from '@/survey/_components/survey-form';
 import {getSurvey} from '@/survey/_lib/get-survey';
 import {sortChoices} from '@/survey/_utils/question';
@@ -24,17 +24,17 @@ const SurveyPage = async ({params}: Props) => {
     return notFound();
   }
 
-  const schema = sortChoices(survey.schema);
+  const model = sortChoices(survey.model);
 
   return (
     <SurveyShell>
       <SurveyShellAside
-        title={schema.title}
-        description={schema.description}
+        title={model.title}
+        description={model.description}
         className="md:top-0 md:h-screen"
       />
       <SurveyShellMain>
-        <SurveyForm schema={schema} surveyId={survey.id} />
+        <SurveyForm model={model} surveyId={survey.id} />
       </SurveyShellMain>
     </SurveyShell>
   );
@@ -60,15 +60,15 @@ export async function generateMetadata(
     };
   }
 
-  const schema = surveySchema.safeParse(survey.schema);
+  const model = modelSchema.safeParse(survey.model);
 
-  if (!schema.success) {
+  if (!model.success) {
     return {
-      title: 'Invalid survey schema',
+      title: 'Invalid survey model',
     };
   }
 
   return {
-    title: schema.data.title,
+    title: model.data.title,
   };
 }

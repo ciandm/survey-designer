@@ -24,13 +24,13 @@ import {
 import {Input} from './ui/input';
 import {Textarea} from './ui/textarea';
 
-const schema = z.object({
+const model = z.object({
   id: z.string(),
   title: z.string().min(1, {message: 'You must provide a title'}),
   description: z.string().optional(),
 });
 
-type DuplicateSurveyFormState = z.infer<typeof schema>;
+type DuplicateSurveyFormState = z.infer<typeof model>;
 
 type DuplicateSurveyFormProps = {
   children: React.ReactNode;
@@ -127,7 +127,7 @@ export {useDuplicateSurveyFormTrigger};
 
 const useDuplicateSurveyForm = () => {
   const form = useForm<DuplicateSurveyFormState>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(model),
   });
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);

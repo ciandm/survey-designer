@@ -4,29 +4,26 @@ import {createStore, StoreApi, useStore} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
 import {createContext} from '@/lib/context';
 import {buildNewElementHelper} from '@/lib/utils';
-import {
-  ElementSchema,
-  SurveyResponse,
-  SurveySchema,
-} from '@/lib/validations/survey';
+import {ElementSchemaType} from '@/types/element';
+import {ParsedModelType, SurveyWithParsedModelType} from '@/types/survey';
 
 type SurveyDesignerStoreProps = {
   id: string;
-  schema: SurveySchema;
-  savedSchema: SurveySchema;
+  model: ParsedModelType;
+  savedSchema: ParsedModelType;
   isPublished: boolean;
 };
 
 type ElementStoreActions = {
-  insertElement: (element: ElementSchema, index?: number) => void;
-  deleteElement: (element: Pick<ElementSchema, 'id'>) => void;
-  duplicateElement: (element: Pick<ElementSchema, 'id' | 'ref'>) => void;
-  changeElementType: (element: Pick<ElementSchema, 'id' | 'type'>) => void;
-  updateElement: (element: Partial<ElementSchema> & {id: string}) => void;
+  insertElement: (element: ElementSchemaType, index?: number) => void;
+  deleteElement: (element: Pick<ElementSchemaType, 'id'>) => void;
+  duplicateElement: (element: Pick<ElementSchemaType, 'id' | 'ref'>) => void;
+  changeElementType: (element: Pick<ElementSchemaType, 'id' | 'type'>) => void;
+  updateElement: (element: Partial<ElementSchemaType> & {id: string}) => void;
   setElements: (
     elements:
-      | ElementSchema[]
-      | ((fn: SurveySchema['elements']) => SurveySchema['elements']),
+      | ElementSchemaType[]
+      | ((fn: ParsedModelType['elements']) => ParsedModelType['elements']),
   ) => void;
 };
 
@@ -40,7 +37,7 @@ type QuestionChoiceStoreActions = {
   }) => void;
   moveChoices: (params: {
     elementId: string;
-    newChoices: NonNullable<ElementSchema['properties']['choices']>;
+    newChoices: NonNullable<ElementSchemaType['properties']['choices']>;
   }) => void;
   deleteQuestionChoice: (params: {elementId: string; choiceId: string}) => void;
   deleteChoices: (params: {elementId: string}) => void;
@@ -54,8 +51,8 @@ type QuestionChoiceStoreActions = {
 type SurveySchemaStoreActions = {
   updateTitle: (title: string) => void;
   updateDescription: (description: string) => void;
-  setSchema: (schema: SurveySchema) => void;
-  setSavedSchema: (schema: SurveySchema) => void;
+  setSchema: (model: ParsedModelType) => void;
+  setSavedSchema: (model: ParsedModelType) => void;
   setPublished: (isPublished: boolean) => void;
 };
 
@@ -73,9 +70,9 @@ export type SurveyDesignerStoreState = SurveyDesignerStoreProps & {
 };
 
 export const createSurveyDesignerStore = (
-  initProps?: Partial<SurveyResponse['survey']>,
+  initProps: Partial<SurveyWithParsedModelType> = {},
 ) => {
-  const schema = merge(
+  const model = merge(
     {
       title: '',
       elements: [],
@@ -89,14 +86,14 @@ export const createSurveyDesignerStore = (
         },
       },
     },
-    initProps?.schema,
+    initProps?.model,
   );
 
   const initialState: SurveyDesignerStoreProps = {
     id: initProps?.id ?? uuidv4(),
     isPublished: initProps?.is_published ?? false,
-    schema,
-    savedSchema: schema,
+    model,
+    savedSchema: model,
   };
 
   return createStore<SurveyDesignerStoreState>()(
@@ -105,12 +102,12 @@ export const createSurveyDesignerStore = (
       actions: {
         updateTitle: (title) => {
           set((state) => {
-            state.schema.title = title;
+            state.model.title = title;
           });
         },
         updateDescription: (description) => {
           set((state) => {
-            state.schema.description = description;
+            state.model.description = description;
           });
         },
         insertElement: ({type, ref}, insertAtIndex) => {
@@ -121,26 +118,26 @@ export const createSurveyDesignerStore = (
 
           set((state) => {
             if (insertAtIndex !== undefined) {
-              state.schema.elements.splice(insertAtIndex, 0, newField);
+              state.model.elements.splice(insertAtIndex, 0, newField);
               return;
             }
 
-            state.schema.elements.push(newField);
+            state.model.elements.push(newField);
           });
         },
         deleteElement: ({id}) => {
           set((state) => {
-            const elements = state.schema.elements || [];
+            const elements = state.model.elements || [];
 
             const indexOfFieldToDelete = elements.findIndex((q) => q.id === id);
             if (indexOfFieldToDelete === -1) return;
 
-            state.schema.elements.splice(indexOfFieldToDelete, 1);
+            state.model.elements.splice(indexOfFieldToDelete, 1);
           });
         },
         duplicateElement: ({id, ref}) => {
           set((state) => {
-            const element = state.schema.elements.find((q) => q.id === id);
+            const element = state.model.elements.find((q) => q.id === id);
             if (!element) return state;
 
             const newElement = buildNewElementHelper(element.type, {
@@ -150,10 +147,10 @@ export const createSurveyDesignerStore = (
               text: element.text ? `${element.text} (copy)` : '',
             });
 
-            const indexOfFieldToDuplicate = state.schema.elements.findIndex(
+            const indexOfFieldToDuplicate = state.model.elements.findIndex(
               (q) => q.id === id,
             );
-            state.schema.elements.splice(
+            state.model.elements.splice(
               indexOfFieldToDuplicate + 1,
               0,
               newElement,
@@ -162,16 +159,16 @@ export const createSurveyDesignerStore = (
         },
         updateElement: (field) => {
           set((state) => {
-            const fieldToUpdate = state.schema.elements.find(
+            const fieldToUpdate = state.model.elements.find(
               (q) => q.id === field.id,
             );
             if (!fieldToUpdate) return;
 
-            const fieldIndex = state.schema.elements.findIndex(
+            const fieldIndex = state.model.elements.findIndex(
               (q) => q.id === field.id,
             );
 
-            const newField: ElementSchema = {
+            const newField: ElementSchemaType = {
               ...fieldToUpdate,
               ...field,
               properties: omitBy(
@@ -190,14 +187,13 @@ export const createSurveyDesignerStore = (
               ),
             };
 
-            state.schema.elements.splice(fieldIndex, 1, newField);
+            state.model.elements.splice(fieldIndex, 1, newField);
           });
         },
         insertQuestionChoice: ({elementId}) => {
           set((state) => {
-            const Choices = state.schema.elements.find(
-              (q) => q.id === elementId,
-            )?.properties.choices;
+            const Choices = state.model.elements.find((q) => q.id === elementId)
+              ?.properties.choices;
 
             if (!Choices) return;
 
@@ -209,16 +205,16 @@ export const createSurveyDesignerStore = (
         },
         updateQuestionChoice: ({elementId: elementId, newChoice}) => {
           set((state) => {
-            const fieldToUpdate = state.schema.elements.find(
+            const fieldToUpdate = state.model.elements.find(
               (q) => q.id === elementId,
             );
             if (!fieldToUpdate) return;
 
-            const fieldIndex = state.schema.elements.findIndex(
+            const fieldIndex = state.model.elements.findIndex(
               (q) => q.id === elementId,
             );
 
-            const newField: ElementSchema = {
+            const newField: ElementSchemaType = {
               ...fieldToUpdate,
               properties: {
                 ...fieldToUpdate.properties,
@@ -228,12 +224,12 @@ export const createSurveyDesignerStore = (
               },
             };
 
-            state.schema.elements.splice(fieldIndex, 1, newField);
+            state.model.elements.splice(fieldIndex, 1, newField);
           });
         },
         moveChoices: ({elementId: elementId, newChoices}) => {
           set((state) => {
-            const element = state.schema.elements.find(
+            const element = state.model.elements.find(
               (q) => q.id === elementId,
             );
 
@@ -244,9 +240,8 @@ export const createSurveyDesignerStore = (
         },
         deleteQuestionChoice: ({elementId: elementId, choiceId}) => {
           set((state) => {
-            const Choices = state.schema.elements.find(
-              (q) => q.id === elementId,
-            )?.properties.choices;
+            const Choices = state.model.elements.find((q) => q.id === elementId)
+              ?.properties.choices;
 
             if (!Choices || Choices.length === 1) return;
 
@@ -261,7 +256,7 @@ export const createSurveyDesignerStore = (
         },
         deleteChoices: ({elementId: elementId}) => {
           set((state) => {
-            const element = state.schema.elements.find(
+            const element = state.model.elements.find(
               (q) => q.id === elementId,
             );
             if (!element) return;
@@ -276,9 +271,8 @@ export const createSurveyDesignerStore = (
         },
         duplicateQuestionChoice: ({elementId: elementId, choiceId}) => {
           set((state) => {
-            const Choices = state.schema.elements.find(
-              (q) => q.id === elementId,
-            )?.properties.choices;
+            const Choices = state.model.elements.find((q) => q.id === elementId)
+              ?.properties.choices;
 
             if (!Choices) return;
 
@@ -300,33 +294,33 @@ export const createSurveyDesignerStore = (
         },
         changeElementType: ({id, type}) => {
           set((state) => {
-            const fieldIndex = state.schema.elements.findIndex(
+            const fieldIndex = state.model.elements.findIndex(
               (q) => q.id === id,
             );
-            const field = state.schema.elements[fieldIndex];
+            const field = state.model.elements[fieldIndex];
             const newField = buildNewElementHelper(type, field);
 
-            state.schema.elements.splice(fieldIndex, 1, newField);
+            state.model.elements.splice(fieldIndex, 1, newField);
           });
         },
         setElements: (questions) => {
           set((state) => {
             if (typeof questions === 'function') {
-              state.schema.elements = questions(state.schema.elements);
+              state.model.elements = questions(state.model.elements);
               return;
             }
 
-            state.schema.elements = questions;
+            state.model.elements = questions;
           });
         },
-        setSchema: (schema) => {
+        setSchema: (model) => {
           set((state) => {
-            state.schema = schema;
+            state.model = model;
           });
         },
-        setSavedSchema: (schema) => {
+        setSavedSchema: (model) => {
           set((state) => {
-            state.savedSchema = schema;
+            state.savedSchema = model;
           });
         },
         setPublished: (isPublished) => {
@@ -336,7 +330,7 @@ export const createSurveyDesignerStore = (
         },
         updateScreen: (screen, message) => {
           set((state) => {
-            state.schema.screens[screen].message = message;
+            state.model.screens[screen].message = message;
           });
         },
       },
@@ -344,14 +338,14 @@ export const createSurveyDesignerStore = (
   );
 };
 
-export const useSurveySchema = () => {
+export const useSurveyModel = () => {
   const store = useDesignerContext();
-  return useStore(store, (state) => state.schema);
+  return useStore(store, (state) => state.model);
 };
 
 export const useSurveyElements = () => {
   const store = useDesignerContext();
-  return useStore(store, (state) => state.schema.elements);
+  return useStore(store, (state) => state.model.elements);
 };
 
 export const useSurveyPublished = () => {
@@ -361,7 +355,7 @@ export const useSurveyPublished = () => {
 
 export const useSurveyScreens = () => {
   const store = useDesignerContext();
-  return useStore(store, (state) => state.schema.screens);
+  return useStore(store, (state) => state.model.screens);
 };
 
 export const useSurveyId = () => {
@@ -371,12 +365,12 @@ export const useSurveyId = () => {
 
 export const useIsSurveyChanged = () => {
   const store = useDesignerContext();
-  const {schema, savedSchema} = useStore(store, (state) => ({
-    schema: state.schema,
+  const {model, savedSchema} = useStore(store, (state) => ({
+    model: state.model,
     savedSchema: state.savedSchema,
   }));
 
-  return !isEqual(schema, savedSchema);
+  return !isEqual(model, savedSchema);
 };
 
 export const useDesignerActions = () => {

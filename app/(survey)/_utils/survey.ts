@@ -1,8 +1,8 @@
 import {z} from 'zod';
 import {ELEMENT_TYPE} from '@/lib/constants/element';
-import {ElementSchema} from '@/lib/validations/survey';
+import {ElementSchemaType} from '@/types/element';
 
-export const createSurveyValidationSchema = (elements: ElementSchema[]) => {
+export const createSurveyValidationSchema = (elements: ElementSchemaType[]) => {
   return z
     .object({
       fields: z.array(

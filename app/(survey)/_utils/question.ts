@@ -1,21 +1,16 @@
 import {ID_PREFIXES} from '@/lib/constants/element';
-import {
-  ChoicesSchema,
-  ElementSchema,
-  SORT_ORDER,
-  SortOrder,
-  SurveySchema,
-} from '@/lib/validations/survey';
+import {ChoicesSchemaType, ElementSchemaType} from '@/types/element';
+import {ParsedModelType} from '@/types/survey';
 
 export const getElementIndex = (
-  elements: ElementSchema[],
+  elements: ElementSchemaType[],
   elementId?: string,
 ) => {
   return elements.findIndex((q) => q.id === elementId);
 };
 
 export const getNextElement = (
-  elements: ElementSchema[],
+  elements: ElementSchemaType[],
   elementId?: string,
 ) => {
   const index = getElementIndex(elements, elementId);
@@ -23,7 +18,7 @@ export const getNextElement = (
 };
 
 export const getPreviousElement = (
-  elements: ElementSchema[],
+  elements: ElementSchemaType[],
   elementId?: string,
 ) => {
   const index = getElementIndex(elements, elementId);
@@ -31,19 +26,22 @@ export const getPreviousElement = (
 };
 
 export const getElementById = (
-  elements: ElementSchema[],
+  elements: ElementSchemaType[],
   elementId?: string,
 ) => {
   return elements.find((q) => q.id === elementId);
 };
 
-export const getCanGoBack = (elements: ElementSchema[], elementId?: string) => {
+export const getCanGoBack = (
+  elements: ElementSchemaType[],
+  elementId?: string,
+) => {
   const index = getElementIndex(elements, elementId);
   return index > 0;
 };
 
 export const getCanGoForward = (
-  elements: ElementSchema[],
+  elements: ElementSchemaType[],
   elementId?: string,
 ) => {
   const index = getElementIndex(elements, elementId);
@@ -51,7 +49,7 @@ export const getCanGoForward = (
 };
 
 export const getIsLastElement = (
-  elements: ElementSchema[],
+  elements: ElementSchemaType[],
   elementId?: string,
 ) => {
   const index = getElementIndex(elements, elementId);
@@ -59,7 +57,7 @@ export const getIsLastElement = (
 };
 
 export const getElementStates = (
-  elements: ElementSchema[],
+  elements: ElementSchemaType[],
   elementId: string,
 ) => {
   const canGoBack = getCanGoBack(elements, elementId);
@@ -79,13 +77,13 @@ export const getElementStates = (
   };
 };
 
-function hasChoices(element: ElementSchema) {
+function hasChoices(element: ElementSchemaType) {
   return element.type === 'multiple_choice' || element.type === 'single_choice';
 }
 
-export function sortChoices(survey: SurveySchema): SurveySchema {
-  const {elements} = survey;
-  const copiedSurvey = {...survey};
+export function sortChoices(model: ParsedModelType): ParsedModelType {
+  const {elements} = model;
+  const copiedSchema = {...model};
 
   const newElements = elements.map((el) => {
     const element = {...el, properties: {...el.properties}};
@@ -107,11 +105,11 @@ export function sortChoices(survey: SurveySchema): SurveySchema {
     return element;
   });
 
-  copiedSurvey.elements = newElements;
-  return copiedSurvey;
+  copiedSchema.elements = newElements;
+  return copiedSchema;
 }
 
-function randomiseChoices(choices: ChoicesSchema = []) {
+function randomiseChoices(choices: ChoicesSchemaType = []) {
   const copiedChoices = [...choices];
 
   return copiedChoices.sort((choice) => {

@@ -5,7 +5,7 @@ import {getUser} from '@/lib/auth';
 import {db} from '@/lib/db';
 import {getSiteUrl} from '@/lib/hrefs';
 import {action, ActionError} from '@/lib/safe-action';
-import {createSurveyInput, surveySchema} from '@/lib/validations/survey';
+import {createSurveyInput, modelSchema} from '@/lib/validations/survey';
 import {generateDuplicateSurvey, generateNewSurvey} from '../_utils/survey';
 
 export const createSurveyAction = action(
@@ -31,17 +31,17 @@ export const createSurveyAction = action(
         throw new ActionError('Survey not found');
       }
 
-      const parsedSchema = surveySchema.safeParse(survey.schema);
+      const model = modelSchema.safeParse(survey.model);
 
-      if (!parsedSchema.success) {
-        throw new ActionError('Survey schema is invalid');
+      if (!model.success) {
+        throw new ActionError('Survey model is invalid');
       }
 
-      const schema = parsedSchema.data;
+      const {data} = model;
 
       const duplicatedSurvey = await db.survey.create({
         data: generateDuplicateSurvey(
-          {...survey, schema},
+          {...survey, model: data},
           {
             title,
             description,

@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {getSiteUrl} from '@/lib/hrefs';
 import {cn} from '@/lib/utils';
-import {WithParsedSchema} from '@/lib/validations/survey';
+import {WithParsedModel} from '@/types/survey';
 
 type SurveyWithResult = Prisma.SurveyGetPayload<{
   include: {
@@ -26,7 +26,7 @@ type SurveyWithResult = Prisma.SurveyGetPayload<{
 }>;
 
 type Props = {
-  surveys: WithParsedSchema<SurveyWithResult>[];
+  surveys: WithParsedModel<SurveyWithResult>[];
 };
 
 export const SurveyList = ({surveys}: Props) => {
@@ -86,11 +86,11 @@ export const SurveyList = ({surveys}: Props) => {
                       <Link
                         href={getSiteUrl.designerPage({surveyId: survey.id})}
                       >
-                        {survey.schema.title}
+                        {survey.model.title}
                       </Link>
                     </Button>
                     <div className="flex gap-2 text-sm text-muted-foreground">
-                      <span>{survey.schema.elements.length} questions</span>
+                      <span>{survey.model.elements.length} questions</span>
                       <span>•</span>
                       <span>{survey.SurveyResult.length} responses</span>
                     </div>
@@ -111,7 +111,7 @@ export const SurveyList = ({surveys}: Props) => {
               </div>
             </div>
             <DropdownMenuContent className="w-[240px]">
-              <DropdownMenuLabel>{survey.schema.title}</DropdownMenuLabel>
+              <DropdownMenuLabel>{survey.model.title}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href={getSiteUrl.designerPage({surveyId: survey.id})}>
@@ -133,8 +133,8 @@ export const SurveyList = ({surveys}: Props) => {
               <DropdownMenuItem
                 onSelect={() =>
                   handleDuplicateSurvey({
-                    description: survey.schema.description,
-                    title: survey.schema.title,
+                    description: survey.model.description,
+                    title: survey.model.title,
                     id: survey.id,
                   })
                 }

@@ -34,12 +34,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {ChoicesSchema} from '@/lib/validations/survey';
 import {useDesignerActions} from '@/survey-designer/_store/survey-designer-store';
+import {ChoicesSchemaType} from '@/types/element';
 
 type ChoicesProps = {
   children: React.ReactNode;
-  choices?: ChoicesSchema;
+  choices?: ChoicesSchemaType;
   elementId: string;
 };
 
@@ -115,7 +115,7 @@ export const ChoicesList = () => {
 };
 
 type ChoiceFieldProps = {
-  choice: ChoicesSchema[number];
+  choice: ChoicesSchemaType[number];
   index: number;
 };
 
@@ -244,7 +244,7 @@ type Context = {
     handleInputKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     handleRemoveAll: () => void;
   };
-  choices: ChoicesSchema;
+  choices: ChoicesSchemaType;
   elementId: string;
 };
 
@@ -260,16 +260,16 @@ const useChoicesContext = () => {
   return context;
 };
 
-function isAddChoiceDisabled(choices: ChoicesSchema = []): boolean {
+function isAddChoiceDisabled(choices: ChoicesSchemaType = []): boolean {
   return choices.filter((choice) => choice.value === '').length > 1;
 }
 
-function isRemoveAllDisabled(choices: ChoicesSchema = []): boolean {
+function isRemoveAllDisabled(choices: ChoicesSchemaType = []): boolean {
   return choices.length === 1;
 }
 
 type UseChoicesProps = {
-  choices: ChoicesSchema;
+  choices: ChoicesSchemaType;
   elementId: string;
 };
 

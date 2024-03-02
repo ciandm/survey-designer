@@ -27,7 +27,8 @@
       "@/auth/*": ["app/(auth)/*"],
       "@/survey/*": ["app/(survey)/*"],
       "@/survey-designer/*": ["app/(survey-designer)/*"],
-      "@/dashboard/*": ["app/(dashboard)/*"]
+      "@/dashboard/*": ["app/(dashboard)/*"],
+      "@/types/*": ["types/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

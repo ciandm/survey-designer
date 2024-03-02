@@ -9,21 +9,21 @@ import {SurveyForm} from '@/survey/_components/survey-form';
 import {sortChoices} from '@/survey/_utils/question';
 import {
   useSurveyId,
-  useSurveySchema,
+  useSurveyModel,
 } from '@/survey-designer/_store/survey-designer-store';
 
 export const Previewer = () => {
   const id = useSurveyId();
-  const schema = sortChoices(useSurveySchema());
+  const model = sortChoices(useSurveyModel());
 
-  const hasNoQuestions = schema.elements.length === 0;
+  const hasNoQuestions = model.elements.length === 0;
 
-  const title = !!schema.title ? schema.title : 'Untitled Survey';
+  const title = !!model.title ? model.title : 'Untitled Survey';
 
   if (hasNoQuestions) {
     return (
       <SurveyShell>
-        <SurveyShellAside title={title} description={schema.description} />
+        <SurveyShellAside title={title} description={model.description} />
         <SurveyShellMain>
           <div className="space-y-4 text-center">
             <h1 className="text-5xl">😭</h1>
@@ -39,9 +39,9 @@ export const Previewer = () => {
 
   return (
     <SurveyShell>
-      <SurveyShellAside title={title} description={schema.description} />
+      <SurveyShellAside title={title} description={model.description} />
       <SurveyShellMain>
-        <SurveyForm shouldSubmitResults={false} schema={schema} surveyId={id} />
+        <SurveyForm shouldSubmitResults={false} model={model} surveyId={id} />
       </SurveyShellMain>
     </SurveyShell>
   );

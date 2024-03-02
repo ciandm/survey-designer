@@ -1,5 +1,5 @@
 import {db} from '@/lib/db';
-import {surveySchema} from '@/lib/validations/survey';
+import {modelSchema} from '@/lib/validations/survey';
 
 export async function getSurvey(id: string) {
   const survey = await db.survey.findUnique({
@@ -15,14 +15,14 @@ export async function getSurvey(id: string) {
     return null;
   }
 
-  const parsedSchema = surveySchema.safeParse(survey.schema);
+  const model = modelSchema.safeParse(survey.model);
 
-  if (!parsedSchema.success) {
+  if (!model.success) {
     return null;
   }
 
   return {
     ...survey,
-    schema: parsedSchema.data,
+    model: model.data,
   };
 }

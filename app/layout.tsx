@@ -1,11 +1,9 @@
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
-import {SessionProvider} from '@/auth/_components/session-provider';
 import {DeleteSurveyDialog} from '@/components/delete-survey-dialog';
 import {DuplicateSurveyDialog} from '@/components/duplicate-survey-dialog';
 import {LoadingOverlay} from '@/components/loading-overlay';
 import {Toaster} from '@/components/ui/sonner';
-import {getUser} from '@/lib/auth';
 import {QueryClientProvider} from '@/lib/query-client/provider';
 import {cn} from '@/lib/utils';
 import './globals.css';
@@ -26,23 +24,19 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const {user} = await getUser();
-
   return (
     <html lang="en">
       <body
         className={cn('bg-background font-sans antialiased', inter.variable)}
       >
-        <SessionProvider value={{user}}>
-          <QueryClientProvider>
-            <LoadingOverlay>
-              <DuplicateSurveyDialog>
-                <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
-              </DuplicateSurveyDialog>
-            </LoadingOverlay>
-          </QueryClientProvider>
-          <Toaster />
-        </SessionProvider>
+        <QueryClientProvider>
+          <LoadingOverlay>
+            <DuplicateSurveyDialog>
+              <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
+            </DuplicateSurveyDialog>
+          </LoadingOverlay>
+        </QueryClientProvider>
+        <Toaster />
       </body>
     </html>
   );

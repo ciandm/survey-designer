@@ -2,7 +2,7 @@ import {NextRequest, NextResponse} from 'next/server';
 import {v4 as uuidv4} from 'uuid';
 import {getUser} from '@/lib/auth';
 import {db} from '@/lib/db';
-import {createSurveyInput, surveySchema} from '@/lib/validations/survey';
+import {createSurveyInput, modelSchema} from '@/lib/validations/survey';
 
 export async function GET(req: NextRequest, res: NextResponse) {
   const surveys = await db.survey.findMany({});
@@ -36,38 +36,36 @@ export async function POST(req: NextRequest, res: NextResponse) {
       return NextResponse.json(parsedData.error, {status: 400});
     }
 
-    const parsedSchema = surveySchema.safeParse(survey.schema);
+    const model = modelSchema.safeParse(survey.model);
 
-    if (!parsedSchema.success) {
-      return NextResponse.json(parsedSchema.error, {status: 400});
+    if (!model.success) {
+      return NextResponse.json(model.error, {status: 400});
     }
 
     const request = parsedData.data;
-    const schema = parsedSchema.data;
+    const data = model.data;
 
     let title = request.title;
     let description = request.description;
 
     if (!title) {
-      title = schema.title
-        ? `${schema.title} (Copy)`
-        : 'Untitled Survey (Copy)';
+      title = data.title ? `${data.title} (Copy)` : 'Untitled Survey (Copy)';
     }
 
     if (!description) {
-      description = schema.description
-        ? `${schema.description} (Copy)`
+      description = data.description
+        ? `${data.description} (Copy)`
         : 'Untitled Survey (Copy)';
     }
 
     const createdSurvey = await db.survey.create({
       data: {
         userId: user.id,
-        schema: {
-          ...parsedSchema.data,
+        model: {
+          ...model.data,
           title,
           description,
-          elements: parsedSchema.data.elements.map((element) => ({
+          elements: model.data.elements.map((element) => ({
             ...element,
             id: uuidv4(),
             ref: uuidv4(),
@@ -97,7 +95,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const survey = await db.survey.create({
     data: {
       userId: user.id,
-      schema: {
+      model: {
         title: parsedData.data.title,
         description: parsedData.data.description,
         elements: [],

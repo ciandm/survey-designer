@@ -1,7 +1,7 @@
 import {getUser} from '@/lib/auth';
 import {db} from '@/lib/db';
 import {validateIsNotNull} from '@/lib/utils';
-import {surveySchema} from '@/lib/validations/survey';
+import {modelSchema} from '@/lib/validations/survey';
 
 export async function getUserSurveys() {
   const {user} = await getUser();
@@ -21,15 +21,15 @@ export async function getUserSurveys() {
 
   return surveys
     .map((survey) => {
-      const parsedSchema = surveySchema.safeParse(survey.schema);
-      if (!parsedSchema.success) {
-        console.log(parsedSchema.error.format());
+      const model = modelSchema.safeParse(survey.model);
+      if (!model.success) {
+        console.log(model.error.format());
         return null;
       }
 
       return {
         ...survey,
-        schema: parsedSchema.data,
+        model: model.data,
       };
     })
     .filter(validateIsNotNull);

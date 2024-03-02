@@ -6,7 +6,7 @@ import {getSiteUrl} from '@/lib/hrefs';
 import {DesignerStoreInitialiser} from '@/survey-designer/_components/designer-store-initiailiser';
 import {DesignerTabManager} from '@/survey-designer/_components/designer-tab-manager';
 
-const tabs = demoTabConfig.map((item) => item.tab);
+const tabs = demoTabConfig.map(({tab}) => tab);
 
 const DemoLayout = ({children}: React.PropsWithChildren) => {
   return (
