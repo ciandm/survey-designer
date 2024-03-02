@@ -63,6 +63,15 @@ const ConfigPanelInner = () => {
   const hasPlaceholderConfig =
     activeElement?.type === 'short_text' || activeElement?.type === 'long_text';
 
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.currentTarget.blur();
+    }
+  };
+
   if (!activeElement) return <SurveyGeneralSettings />;
 
   return (
@@ -88,43 +97,49 @@ const ConfigPanelInner = () => {
           />
         </div>
         <div className="flex flex-col space-y-1.5">
-          <Label htmlFor="title">Title</Label>
+          <Label htmlFor="config-panel-title">Title</Label>
           <Textarea
-            name="title"
-            id="title"
+            name="config-panel-title"
+            id="config-panel-title"
             defaultValue={activeElement.text}
-            key={`${activeElement.text}-${activeElement.id}-title`}
+            key={`${activeElement.text}-${activeElement.id}-config-panel-title`}
             onBlur={(e) =>
               updateElement({
                 id: activeElement.id,
                 text: e.target.value,
               })
             }
+            onKeyDown={handleKeyDown}
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="description">Description (optional)</Label>
+          <Label htmlFor="config-panel-description">
+            Description (optional)
+          </Label>
           <Textarea
-            name="description"
-            id="description"
+            name="config-panel-description"
+            id="config-panel-description"
             defaultValue={activeElement.description}
-            key={`${activeElement.description}-${activeElement.id}-description`}
+            key={`${activeElement.description}-${activeElement.id}-config-panel-description`}
             onBlur={(e) =>
               updateElement({
                 id: activeElement.id,
                 description: e.target.value,
               })
             }
+            onKeyDown={handleKeyDown}
           />
         </div>
         {hasPlaceholderConfig && (
           <div className="space-y-1.5">
-            <Label htmlFor="placeholder">Placeholder (optional)</Label>
+            <Label htmlFor="config-panel-placeholder">
+              Placeholder (optional)
+            </Label>
             <Textarea
-              name="placeholder"
-              id="placeholder"
+              name="config-panel-placeholder"
+              id="config-panel-placeholder"
               defaultValue={activeElement.properties.placeholder}
-              key={`${activeElement.properties.placeholder}-${activeElement.id}-placeholder`}
+              key={`${activeElement.properties.placeholder}-${activeElement.id}-config-panel-placeholder`}
               onBlur={(e) =>
                 updateElement({
                   id: activeElement.id,
@@ -133,6 +148,7 @@ const ConfigPanelInner = () => {
                   },
                 })
               }
+              onKeyDown={handleKeyDown}
             />
           </div>
         )}
@@ -148,10 +164,12 @@ const ConfigPanelInner = () => {
                   },
                 });
               }}
-              id="required"
+              id="config-panel-required"
               checked={activeElement.validations.required}
             />
-            <Label htmlFor="required">Make this question required</Label>
+            <Label htmlFor="config-panel-required">
+              Make this question required
+            </Label>
           </div>
           {activeElement.validations.required && (
             <>
@@ -284,6 +302,15 @@ const SurveyGeneralSettings = () => {
   const {thank_you, welcome} = useSurveyScreens();
   const {updateTitle, updateDescription, updateScreen} = useDesignerActions();
 
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.currentTarget.blur();
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -293,33 +320,25 @@ const SurveyGeneralSettings = () => {
         </p>
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="survey-title">Title</Label>
+        <Label htmlFor="config-panel-survey-title">Title</Label>
         <Textarea
-          id="survey-title"
+          id="config-panel-survey-title"
           key={model.title}
           defaultValue={model.title}
           onBlur={(e) => updateTitle(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              e.currentTarget.blur();
-            }
-          }}
+          onKeyDown={handleKeyDown}
         />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="survey-description">Description</Label>
+        <Label htmlFor="config-panel-survey-description">
+          Description (optional)
+        </Label>
         <Textarea
-          id="survey-description"
+          id="config-panel-survey-description"
           key={model.description}
           defaultValue={model.description}
           onBlur={(e) => updateDescription(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              e.currentTarget.blur();
-            }
-          }}
+          onKeyDown={handleKeyDown}
         />
       </div>
       <Separator />
@@ -331,20 +350,22 @@ const SurveyGeneralSettings = () => {
       </div>
       <div className="space-y-6">
         <div className="space-y-1.5">
-          <Label htmlFor="welcome-message">Welcome message</Label>
+          <Label htmlFor="config-panel-welcome-message">Welcome message</Label>
           <Textarea
-            id="welcome-message"
+            id="config-panel-welcome-message"
             defaultValue={welcome.message ?? ''}
             key={welcome.message}
             onBlur={(e) => updateScreen('welcome', e.target.value)}
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="completed-message">Thank you message</Label>
+          <Label htmlFor="config-panel-thank-you-message">
+            Thank you message
+          </Label>
           <Textarea
             key={thank_you.message}
             defaultValue={thank_you.message ?? ''}
-            id="completed-message"
+            id="config-panel-thank-you-message"
             onBlur={(e) => updateScreen('thank_you', e.target.value)}
           />
         </div>
