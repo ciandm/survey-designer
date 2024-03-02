@@ -1,7 +1,7 @@
 import {NextRequest, NextResponse} from 'next/server';
 import {z} from 'zod';
 import {db} from '@/lib/db';
-import {updateSchemaInput} from '@/lib/validations/survey';
+import {updateModelInput} from '@/lib/validations/survey';
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -16,7 +16,7 @@ export async function PUT(
   const {params} = routeContextSchema.parse(context);
 
   const body = await req.json();
-  const parsed = updateSchemaInput.safeParse(body);
+  const parsed = updateModelInput.safeParse(body);
 
   if (!parsed.success) {
     return NextResponse.json(parsed.error, {status: 400});
@@ -27,9 +27,9 @@ export async function PUT(
       id: params.id,
     },
     data: {
-      schema: {
-        ...parsed.data.schema,
-        version: parsed.data.schema.version + 1,
+      model: {
+        ...parsed.data.model,
+        version: parsed.data.model.version + 1,
       },
     },
   });

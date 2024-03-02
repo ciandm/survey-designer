@@ -1,10 +1,10 @@
 import React from 'react';
 import {User} from 'lucia';
 import Link from 'next/link';
-import {TabConfig} from '@/config/designer';
 import {UserAccountNav} from '@/dashboard/_components/user-account-nav';
 import {DesignerNavigation} from '@/survey-designer/_components/designer-navigation';
 import {SurveyActions} from '@/survey-designer/_components/survey-actions';
+import {TabConfig} from '@/types/tab';
 
 type DesignerToolbarProps = {
   tabs: TabConfig[];

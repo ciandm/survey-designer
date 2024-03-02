@@ -5,7 +5,7 @@ import {PreviousSurveys} from '@/dashboard/_components/previous-surveys';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/lib/hrefs';
 
-const CreatePage = async () => {
+const CreateSurveyPage = async () => {
   const {session} = await getUser();
 
   if (!session) {
@@ -33,4 +33,4 @@ const CreatePage = async () => {
   );
 };
 
-export default CreatePage;
+export default CreateSurveyPage;

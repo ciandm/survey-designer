@@ -1,22 +1,24 @@
 import {
-  CreateSurveyInput,
-  ResponseSchema,
-  SurveyResponse,
-  UpdateSurveySchema,
-} from '../validations/survey';
+  CreateSurveyInputType,
+  ResponseType,
+  SurveyWithParsedModelType,
+  UpdateSurveySchemaInputType,
+} from '@/types/survey';
 import {axios} from './axios';
 
 const ENDPOINT = '/surveys';
 
-async function getSurveyById(surveyId: string): Promise<SurveyResponse> {
+async function getSurveyById(
+  surveyId: string,
+): Promise<SurveyWithParsedModelType> {
   const {data} = await axios.get(`${ENDPOINT}/${surveyId}`);
 
   return data;
 }
 
 async function createSurvey(
-  params: CreateSurveyInput,
-): Promise<SurveyResponse> {
+  params: CreateSurveyInputType,
+): Promise<SurveyWithParsedModelType> {
   const {data} = await axios.post(ENDPOINT, params);
 
   return data;
@@ -24,13 +26,13 @@ async function createSurvey(
 
 export type DuplicateSurveyParams = {
   surveyId: string;
-} & CreateSurveyInput;
+} & CreateSurveyInputType;
 
 async function duplicateSurvey({
   surveyId,
   title,
   description,
-}: DuplicateSurveyParams): Promise<SurveyResponse> {
+}: DuplicateSurveyParams): Promise<SurveyWithParsedModelType> {
   const {data} = await axios.post(
     `${ENDPOINT}?survey_to_duplicate=${surveyId}`,
     {
@@ -46,13 +48,17 @@ async function deleteSurvey(surveyId: string): Promise<void> {
   await axios.delete(`${ENDPOINT}/${surveyId}`);
 }
 
-async function publishSurvey(surveyId: string): Promise<SurveyResponse> {
+async function publishSurvey(
+  surveyId: string,
+): Promise<SurveyWithParsedModelType> {
   const {data} = await axios.patch(`${ENDPOINT}/${surveyId}/publish`);
 
   return data;
 }
 
-async function unpublishSurvey(surveyId: string): Promise<SurveyResponse> {
+async function unpublishSurvey(
+  surveyId: string,
+): Promise<SurveyWithParsedModelType> {
   const {data} = await axios.delete(`${ENDPOINT}/${surveyId}/publish`);
 
   return data;
@@ -60,16 +66,16 @@ async function unpublishSurvey(surveyId: string): Promise<SurveyResponse> {
 
 async function updateSurveyInput(
   surveyId: string,
-  schema: UpdateSurveySchema,
-): Promise<SurveyResponse> {
-  const {data} = await axios.put(`${ENDPOINT}/${surveyId}/schema`, schema);
+  model: UpdateSurveySchemaInputType,
+): Promise<SurveyWithParsedModelType> {
+  const {data} = await axios.put(`${ENDPOINT}/${surveyId}/model`, model);
 
   return data;
 }
 
 async function createSurveyResponse(
   surveyId: string,
-  responses: ResponseSchema[],
+  responses: ResponseType[],
 ): Promise<null> {
   const {data} = await axios.post(`${ENDPOINT}/${surveyId}/results`, {
     responses,

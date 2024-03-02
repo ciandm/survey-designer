@@ -4,8 +4,8 @@ import {useState} from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import {HamburgerMenuIcon} from '@radix-ui/react-icons';
 import {Button} from '@/components/ui/button';
-import {TabConfig} from '@/config/designer';
 import {cn} from '@/lib/utils';
+import {TabConfig} from '@/types/tab';
 import {useDesignerTabManager} from './designer-tab-manager';
 
 type DesignerNavigationProps = {

@@ -28,7 +28,7 @@ export default async function SurveyDesignerLayout({
   }
 
   return (
-    <SurveyProvider schema={survey.schema} id={survey.id}>
+    <SurveyProvider survey={survey}>
       <DesignerStoreInitialiser survey={survey}>
         <DesignerTabManager tabs={tabs}>
           <PublishDialog>

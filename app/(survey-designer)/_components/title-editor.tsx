@@ -2,12 +2,12 @@
 
 import {
   useDesignerActions,
-  useSurveySchema,
+  useSurveyModel,
 } from '@/survey-designer/_store/survey-designer-store';
 import {setActiveElementRef} from '../_store/active-element-ref';
 
 export const TitleEditor = () => {
-  const schema = useSurveySchema();
+  const model = useSurveyModel();
   const {updateTitle, updateDescription} = useDesignerActions();
 
   return (
@@ -20,13 +20,13 @@ export const TitleEditor = () => {
           Survey title
         </label>
         <input
-          key={`${schema.title}-survey-title`}
+          key={`${model.title}-survey-title`}
           type="text"
           name="survey-title"
           id="survey-title"
           className="block w-full border-0 bg-transparent px-2.5 pt-1 text-xl font-semibold outline-none placeholder:text-gray-400 focus:ring-0"
           placeholder="Untitled survey"
-          defaultValue={schema.title}
+          defaultValue={model.title}
           onBlur={(e) => updateTitle(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -39,12 +39,12 @@ export const TitleEditor = () => {
           Description
         </label>
         <textarea
-          key={`${schema.description}-survey-description`}
+          key={`${model.description}-survey-description`}
           name="description"
           id="description"
           className="block w-full resize-none border-0 bg-transparent px-2.5 py-0 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
           placeholder="Description (optional)"
-          defaultValue={schema.description}
+          defaultValue={model.description}
           onBlur={(e) => updateDescription(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {

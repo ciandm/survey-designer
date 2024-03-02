@@ -1,22 +1,17 @@
-export type DesignerTab = 'designer' | 'preview' | 'responses';
-
-export type TabConfig = {
-  label: string;
-  tab: DesignerTab;
-};
+import {TabConfig} from '@/types/tab';
 
 export const tabConfig: TabConfig[] = [
   {
     label: 'Designer',
-    tab: 'designer' as const,
+    tab: 'designer',
   },
   {
     label: 'Preview',
-    tab: 'preview' as const,
+    tab: 'preview',
   },
   {
     label: 'Responses',
-    tab: 'responses' as const,
+    tab: 'responses',
   },
 ];
 

@@ -18,9 +18,10 @@ import {
 import {Skeleton} from '@/components/ui/skeleton';
 import {ElementType} from '@/lib/constants/element';
 import {cn} from '@/lib/utils';
-import {ElementSchema, SurveySchema} from '@/lib/validations/survey';
 import {createSurveyValidationSchema} from '@/survey/_utils/survey';
 import {useSubmitSurvey} from '@/survey-designer/_hooks/use-submit-survey';
+import {ElementSchemaType} from '@/types/element';
+import {ParsedModelType} from '@/types/survey';
 import {TextField} from './type-field';
 
 export interface QuestionFormState {
@@ -31,7 +32,7 @@ export interface QuestionFormState {
 type Step = 'welcome' | 'questions' | 'thank_you';
 
 type SurveyProps = {
-  schema: SurveySchema;
+  model: ParsedModelType;
   initialStep?: Exclude<Step, 'thank_you'>;
   shouldSubmitResults?: boolean;
   surveyId: string;
@@ -39,11 +40,11 @@ type SurveyProps = {
 
 export const SurveyForm = ({
   surveyId,
-  schema,
+  model,
   initialStep = 'questions',
   shouldSubmitResults = true,
 }: SurveyProps) => {
-  const {elements = []} = schema;
+  const {elements = []} = model;
   const [step, setStep] = useState<Step>(initialStep);
   const {isPending: isSubmitPending, mutateAsync: handleSubmitSurvey} =
     useSubmitSurvey();
@@ -94,7 +95,7 @@ export const SurveyForm = ({
               Thank you!
             </p>
             <p className="text-lg leading-8 text-gray-600">
-              {schema.screens.thank_you.message ||
+              {model.screens.thank_you.message ||
                 'Your response has been submitted.'}
             </p>
           </div>
@@ -180,7 +181,7 @@ export const SurveyForm = ({
 };
 
 type RenderTypeFieldArgs = {
-  element: ElementSchema;
+  element: ElementSchemaType;
   index: number;
   controllerProps: UseControllerReturn<
     QuestionFormState,

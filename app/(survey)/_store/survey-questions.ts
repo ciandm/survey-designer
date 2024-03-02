@@ -1,10 +1,10 @@
 import {createContext, useContext} from 'react';
 import {createStore, useStore} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
-import {ElementSchema} from '@/lib/validations/survey';
+import {ElementSchemaType} from '@/types/element';
 
 interface SurveyQuestionsProps {
-  elements: ElementSchema[];
+  elements: ElementSchemaType[];
   currentQuestionId: string;
 }
 

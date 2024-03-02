@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This is your Prisma model file,
+// learn more about it in the docs: https://pris.ly/d/prisma-model
 
 generator client {
   provider = "prisma-client-js"
@@ -30,7 +30,7 @@ model Session {
 
 model Survey {
   id           String         @id @default(cuid())
-  schema       Json           @default("{}")
+  model        Json           @default("{}")
   is_published Boolean        @default(false)
   SurveyResult SurveyResult[]
   createdAt    DateTime       @default(now())

@@ -1,4 +1,4 @@
-'use server'; // don't forget to add this!
+'use server';
 
 import {cookies} from 'next/headers';
 import {Argon2id} from 'oslo/password';

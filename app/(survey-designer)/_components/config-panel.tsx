@@ -25,7 +25,7 @@ import {
 import {useActiveElement} from '@/survey-designer/_hooks/use-active-element';
 import {
   useDesignerActions,
-  useSurveySchema,
+  useSurveyModel,
   useSurveyScreens,
 } from '@/survey-designer/_store/survey-designer-store';
 import {
@@ -280,7 +280,7 @@ const ConfigPanelInner = () => {
 };
 
 const SurveyGeneralSettings = () => {
-  const schema = useSurveySchema();
+  const model = useSurveyModel();
   const {thank_you, welcome} = useSurveyScreens();
   const {updateTitle, updateDescription, updateScreen} = useDesignerActions();
 
@@ -296,8 +296,8 @@ const SurveyGeneralSettings = () => {
         <Label htmlFor="survey-title">Title</Label>
         <Textarea
           id="survey-title"
-          key={schema.title}
-          defaultValue={schema.title}
+          key={model.title}
+          defaultValue={model.title}
           onBlur={(e) => updateTitle(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -311,8 +311,8 @@ const SurveyGeneralSettings = () => {
         <Label htmlFor="survey-description">Description</Label>
         <Textarea
           id="survey-description"
-          key={schema.description}
-          defaultValue={schema.description}
+          key={model.description}
+          defaultValue={model.description}
           onBlur={(e) => updateDescription(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {

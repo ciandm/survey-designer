@@ -1,21 +1,21 @@
 'server-only';
 
 import {db} from '@/lib/db';
-import {surveySchema} from '../validations/survey';
+import {modelSchema} from '../validations/survey';
 
 async function getSurveys() {
   const surveys = await db.survey.findMany();
 
   return surveys
     .map((survey) => {
-      const parsedSchema = surveySchema.safeParse(survey.schema);
-      if (!parsedSchema.success) {
+      const model = modelSchema.safeParse(survey.model);
+      if (!model.success) {
         return null;
       }
 
       return {
         ...survey,
-        schema: parsedSchema.data,
+        model: model.data,
       };
     })
     .filter(validateSurveyIsNotNull);
@@ -30,14 +30,14 @@ async function getSurveysWithResponses() {
 
   return surveys
     .map((survey) => {
-      const parsedSchema = surveySchema.safeParse(survey.schema);
-      if (!parsedSchema.success) {
+      const model = modelSchema.safeParse(survey.model);
+      if (!model.success) {
         return null;
       }
 
       return {
         ...survey,
-        schema: parsedSchema.data,
+        model: model.data,
       };
     })
     .filter(validateSurveyIsNotNull);
@@ -57,14 +57,14 @@ async function getSurveyById(
     return null;
   }
 
-  const parsedSchema = surveySchema.safeParse(survey.schema);
-  if (!parsedSchema.success) {
+  const model = modelSchema.safeParse(survey.model);
+  if (!model.success) {
     return null;
   }
 
   return {
     ...survey,
-    schema: parsedSchema.data,
+    model: model.data,
   };
 }
 

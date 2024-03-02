@@ -27,12 +27,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {getSiteUrl} from '@/lib/hrefs';
-import {updateSchemaAction} from '../_actions/update-schema';
+import {updateModelAction} from '../_actions/update-model';
 import {
   useIsSurveyChanged,
   useSurveyId,
+  useSurveyModel,
   useSurveyPublished,
-  useSurveySchema,
 } from '../_store/survey-designer-store';
 import {CopySurveyUrl} from './copy-survey-url';
 import {usePublishTrigger} from './publish-dialog';
@@ -141,7 +141,7 @@ export const SurveyActions = () => {
 };
 
 const useActions = () => {
-  const schema = useSurveySchema();
+  const model = useSurveyModel();
   const id = useSurveyId();
   const {handleTriggerDuplicateSurveyDialog} = useDuplicateSurveyFormTrigger();
   const {handleTriggerDeleteSurveyConfirm} = useDeleteSurveyDialogTrigger();
@@ -150,7 +150,7 @@ const useActions = () => {
   const router = useRouter();
   const {handleHideOverlay, handleOpenOverlay} = useLoadingOverlayTrigger();
 
-  const {execute: handleSaveSchema, status} = useAction(updateSchemaAction, {
+  const {execute: handleSaveSchema, status} = useAction(updateModelAction, {
     onSuccess: () => {
       handleHideOverlay();
       toast('Survey saved', {
@@ -174,7 +174,7 @@ const useActions = () => {
         </div>
       ),
     });
-    handleSaveSchema({id, schema});
+    handleSaveSchema({id, model});
   };
 
   const handleClickDeleteSurvey = async () => {
@@ -187,8 +187,8 @@ const useActions = () => {
   const handleClickDuplicateSurvey = () => {
     const initialData = {
       id,
-      title: schema.title,
-      description: schema.description,
+      title: model.title,
+      description: model.description,
     };
     handleTriggerDuplicateSurveyDialog({
       initialData,

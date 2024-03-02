@@ -1,11 +1,8 @@
 import {v4 as uuidv4} from 'uuid';
-import {
-  CreateSurveyInput,
-  ElementSchema,
-  SurveyWithParsedSchema,
-} from '@/lib/validations/survey';
+import {ElementSchemaType} from '@/types/element';
+import {CreateSurveyInputType, SurveyWithParsedModelType} from '@/types/survey';
 
-function duplicateElements(elements: ElementSchema[]) {
+function duplicateElements(elements: ElementSchemaType[]) {
   return elements.map((element) => ({
     ...element,
     id: uuidv4(),
@@ -22,40 +19,40 @@ function duplicateElements(elements: ElementSchema[]) {
 }
 
 export function generateDuplicateSurvey(
-  survey: SurveyWithParsedSchema,
-  input: Omit<CreateSurveyInput, 'duplicatedFrom'>,
-): Omit<SurveyWithParsedSchema, 'createdAt' | 'updatedAt' | 'id'> {
-  const {schema} = survey;
+  survey: SurveyWithParsedModelType,
+  input: Omit<CreateSurveyInputType, 'duplicatedFrom'>,
+): Omit<SurveyWithParsedModelType, 'createdAt' | 'updatedAt' | 'id'> {
+  const {model} = survey;
   let newTitle = input.title;
   let newDescription = input.description;
 
   if (!newTitle) {
-    newTitle = survey.schema.title
-      ? `${survey.schema.title} (Copy)`
+    newTitle = survey.model.title
+      ? `${survey.model.title} (Copy)`
       : 'Untitled Survey (Copy)';
   }
 
   if (!newDescription) {
-    newDescription = schema.description
-      ? `${schema.description} (Copy)`
+    newDescription = model.description
+      ? `${model.description} (Copy)`
       : 'Untitled Survey (Copy)';
   }
 
   return {
     is_published: false,
     userId: survey.userId,
-    schema: {
-      ...survey.schema,
+    model: {
+      ...survey.model,
       title: newTitle,
       description: newDescription,
-      elements: duplicateElements(survey.schema.elements),
+      elements: duplicateElements(survey.model.elements),
     },
   };
 }
 
 export function generateNewSurvey(
-  input: Omit<CreateSurveyInput, 'duplicatedFrom'> & {userId: string},
-): Omit<SurveyWithParsedSchema, 'createdAt' | 'updatedAt' | 'id'> {
+  input: Omit<CreateSurveyInputType, 'duplicatedFrom'> & {userId: string},
+): Omit<SurveyWithParsedModelType, 'createdAt' | 'updatedAt' | 'id'> {
   let newTitle = input.title;
   let newDescription = input.description;
 
@@ -70,7 +67,7 @@ export function generateNewSurvey(
   return {
     userId: input.userId,
     is_published: false,
-    schema: {
+    model: {
       title: newTitle,
       description: newDescription,
       elements: [],

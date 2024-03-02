@@ -1,6 +1,6 @@
 import {getUser} from '@/lib/auth';
 import {db} from '@/lib/db';
-import {surveySchema} from '@/lib/validations/survey';
+import {modelSchema} from '@/lib/validations/survey';
 
 export const getUserSurvey = async (id: string) => {
   const {user} = await getUser();
@@ -25,14 +25,14 @@ export const getUserSurvey = async (id: string) => {
     return null;
   }
 
-  const parsedSchema = surveySchema.safeParse(survey.schema);
+  const model = modelSchema.safeParse(survey.model);
 
-  if (!parsedSchema.success) {
+  if (!model.success) {
     return null;
   }
 
   return {
     ...survey,
-    schema: parsedSchema.data,
+    model: model.data,
   };
 };

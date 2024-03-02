@@ -14,7 +14,7 @@ async function seedDatabase() {
         data: {
           userId: '1',
           id: surveyData.id,
-          schema: surveyData,
+          model: surveyData,
           is_published: true,
           createdAt: new Date(),
           updatedAt: new Date(),
