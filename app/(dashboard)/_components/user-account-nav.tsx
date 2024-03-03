@@ -40,8 +40,8 @@ export function UserAccountNav({user}: UserAccountNavProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar>
-          <AvatarFallback>
+        <Avatar className="h-9 w-9 bg-transparent">
+          <AvatarFallback className="bg-transparent text-white hover:bg-blue-800/20">
             <span className="sr-only">{user.username}</span>
             <UserCircleIcon className="h-6 w-6" />
           </AvatarFallback>

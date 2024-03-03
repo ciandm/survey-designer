@@ -15,6 +15,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import {QuestionMarkCircleIcon, XCircleIcon} from '@heroicons/react/20/solid';
 import {QuestionMarkCircledIcon} from '@radix-ui/react-icons';
 import {GripHorizontal} from 'lucide-react';
 import {Sortable} from '@/components/sortable';
@@ -90,8 +91,8 @@ export const ElementList = ({onSettingsClick}: ElementListProps) => {
 
 const ElementsEmptyState = () => {
   return (
-    <div className="mx-auto flex flex-col items-center py-12">
-      <QuestionMarkCircledIcon className="mx-auto mb-2 h-10 w-10" />
+    <div className="mx-auto flex w-full flex-col items-center rounded-md border-2 border-dashed border-input bg-card p-16">
+      <XCircleIcon className="mx-auto mb-2 h-10 w-10" />
       <h3 className="mt-2 font-semibold text-foreground">No questions yet</h3>
       <p className="mt-1 text-sm text-muted-foreground">
         Get started by adding a new question
