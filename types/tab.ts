@@ -1,4 +1,4 @@
-export type DesignerTab = 'designer' | 'preview' | 'responses';
+export type DesignerTab = 'designer' | 'previewer' | 'responses';
 
 export type TabConfig = {
   label: string;

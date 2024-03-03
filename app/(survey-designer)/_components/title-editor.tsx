@@ -24,7 +24,7 @@ export const TitleEditor = () => {
           type="text"
           name="survey-title"
           id="survey-title"
-          className="block w-full border-0 bg-transparent px-2.5 pt-1 text-xl font-semibold outline-none placeholder:text-gray-400 focus:ring-0"
+          className="block w-full border-0 bg-transparent px-2.5 pt-1 text-xl font-semibold outline-none placeholder:text-gray-400 focus:ring-0 md:text-2xl md:leading-3"
           placeholder="Untitled survey"
           defaultValue={model.title}
           onBlur={(e) => updateTitle(e.target.value)}
@@ -42,7 +42,7 @@ export const TitleEditor = () => {
           key={`${model.description}-survey-description`}
           name="description"
           id="description"
-          className="block w-full resize-none border-0 bg-transparent px-2.5 py-0 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+          className="block w-full resize-none border-0 bg-transparent px-2.5 py-0 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-0 md:text-sm md:leading-6"
           placeholder="Description (optional)"
           defaultValue={model.description}
           onBlur={(e) => updateDescription(e.target.value)}

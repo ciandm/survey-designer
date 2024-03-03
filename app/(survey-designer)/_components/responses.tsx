@@ -1,9 +1,15 @@
 import React from 'react';
+import {SurveyWithParsedModelType} from '@/types/survey';
 import {getResponses} from '../_lib/get-responses';
 import {DeleteResponsesButton} from './delete-responses-button';
 import {Response} from './response';
 
-export const Responses = async ({id}: {id: string}) => {
+type ResponsesProps = {
+  id: string;
+  survey: SurveyWithParsedModelType;
+};
+
+export const Responses = async ({id, survey}: ResponsesProps) => {
   const surveyResults = await getResponses(id);
 
   if (surveyResults.length === 0) {
@@ -16,7 +22,7 @@ export const Responses = async ({id}: {id: string}) => {
         <DeleteResponsesButton surveyId={id} />
         <div className="mt-4 flex w-full flex-col gap-4">
           {surveyResults.map((surveyResult) => (
-            <Response key={id} surveyResult={surveyResult} />
+            <Response key={id} surveyResult={surveyResult} survey={survey} />
           ))}
         </div>
       </div>

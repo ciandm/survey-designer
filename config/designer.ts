@@ -7,7 +7,7 @@ export const tabConfig: TabConfig[] = [
   },
   {
     label: 'Preview',
-    tab: 'preview',
+    tab: 'previewer',
   },
   {
     label: 'Responses',
@@ -22,6 +22,6 @@ export const demoTabConfig: TabConfig[] = [
   },
   {
     label: 'Preview',
-    tab: 'preview',
+    tab: 'previewer',
   },
 ];

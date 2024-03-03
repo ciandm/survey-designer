@@ -37,11 +37,12 @@ export const ElementCard = ({
         e.preventDefault();
         setActiveElementRef(element.ref);
       }}
+      tabIndex={0}
       className={cn(
-        'group flex-1 cursor-pointer overflow-hidden rounded-lg border border-slate-300 bg-card ring-ring ring-offset-2 transition-colors',
+        'group flex-1 cursor-pointer overflow-hidden border-t-8 bg-card shadow-sm ring-ring ring-offset-2 transition-colors',
         {
-          'ring-2': isActive,
-          'hover:ring-2 hover:ring-primary/50': !isActive,
+          'border-t-primary': isActive,
+          'hover:border-t-primary/30': !isActive,
         },
       )}
     >
@@ -102,7 +103,7 @@ export const ElementCard = ({
                 rows={2}
                 name="description"
                 id="description"
-                className="mt-1 block w-full resize-none border-0 bg-transparent px-2.5 py-0 text-sm outline-none placeholder:text-gray-400 focus:ring-0 sm:leading-6"
+                className="block w-full resize-none border-0 bg-transparent px-2.5 py-0 pt-1 text-sm outline-none placeholder:text-gray-400 focus:ring-0 sm:leading-6"
                 placeholder="Description (optional)"
                 defaultValue={element.description}
                 key={`${element.description}-${element.id}-description`}

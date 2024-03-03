@@ -1,4 +1,5 @@
 'use client';
+
 import {useState} from 'react';
 import {DotsHorizontalIcon} from '@radix-ui/react-icons';
 import {Loader2} from 'lucide-react';
@@ -27,6 +28,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {getSiteUrl} from '@/lib/hrefs';
+import {cn} from '@/lib/utils';
 import {updateModelAction} from '../_actions/update-model';
 import {
   useIsSurveyChanged,
@@ -37,78 +39,72 @@ import {
 import {CopySurveyUrl} from './copy-survey-url';
 import {usePublishTrigger} from './publish-dialog';
 
-export const SurveyActions = () => {
-  const isPublished = useSurveyPublished();
-  const isChangesMade = useIsSurveyChanged();
-  const {saveChanges, deleteSurvey, duplicateSurvey, publishSurvey} =
-    useActions();
+const actionClassName =
+  'bg-transparent text-white hover:bg-blue-800/20 hover:text-white';
 
-  const publishPopoverDescription = isPublished
+export const SurveyActions = () => {
+  const isChangesMade = useIsSurveyChanged();
+  const isPublished = useSurveyPublished();
+  const {
+    handleClickDeleteSurvey,
+    handleClickDuplicateSurvey,
+    handleClickSave,
+    handleClickShareSurvey,
+    handleTriggerPublishDialog,
+    handleShareSurveyDrawerOpenChange,
+    isShareDrawerOpen,
+    saveSchemaStatus,
+  } = useActions();
+
+  const shareSurveyDescription = isPublished
     ? 'Copy the link below to share your survey.'
-    : 'You must publish your survey before sharing it.';
+    : 'You must publish your survey before you can share it.';
+
+  const shareSurveyContent = (
+    <>
+      <div className={cn('space-y-1', isPublished && 'mb-4')}>
+        <h3 className="text-base font-medium">Share your survey</h3>
+        <p className="text-sm text-muted-foreground">
+          {shareSurveyDescription}
+        </p>
+      </div>
+      {isPublished && <CopySurveyUrl />}
+    </>
+  );
 
   return (
     <div className="flex space-x-1">
       <Button
         size="sm"
-        variant="secondary"
-        onClick={saveChanges.handleClickSave}
-        disabled={saveChanges.status === 'executing' || !isChangesMade}
+        variant="ghost"
+        className={cn('hidden  sm:flex', actionClassName)}
+        onClick={handleClickSave}
+        disabled={saveSchemaStatus === 'executing' || !isChangesMade}
       >
-        Save
+        Save changes
       </Button>
 
       <Popover modal>
         <PopoverTrigger asChild>
-          <Button size="sm" variant="secondary" className="hidden sm:flex">
-            Share
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="right-0 w-[480px]">
-          <div className="mb-4 space-y-1">
-            <h3 className="text-base font-medium">Share survey</h3>
-            <p className="text-sm text-muted-foreground">
-              {publishPopoverDescription}
-            </p>
-          </div>
-          {isPublished && <CopySurveyUrl />}
-        </PopoverContent>
-      </Popover>
-      <Drawer
-        open={publishSurvey.isOpen}
-        onOpenChange={publishSurvey.setIsOpen}
-        shouldScaleBackground
-      >
-        <DrawerTrigger asChild>
           <Button
             size="sm"
             variant="secondary"
-            className="flex sm:hidden"
-            onClick={() => publishSurvey.setIsOpen(true)}
+            className={cn('hidden  sm:flex', actionClassName)}
           >
             Share
           </Button>
-        </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader className="text-left">
-            <DrawerTitle>Share</DrawerTitle>
-            <DrawerDescription>{publishPopoverDescription}</DrawerDescription>
-          </DrawerHeader>
-          {isPublished && (
-            <DrawerFooter className="pt-0">
-              <CopySurveyUrl />
-            </DrawerFooter>
-          )}
-        </DrawerContent>
-      </Drawer>
+        </PopoverTrigger>
+        <PopoverContent className={isPublished ? 'right-0 w-[480px]' : ''}>
+          {shareSurveyContent}
+        </PopoverContent>
+      </Popover>
 
       <Button
         size="sm"
-        variant="secondary"
+        variant="ghost"
+        className={cn('hidden  sm:flex', actionClassName)}
         onClick={() =>
-          publishSurvey.handleTriggerPublishDialog(
-            isPublished ? 'unpublish' : 'publish',
-          )
+          handleTriggerPublishDialog(isPublished ? 'unpublish' : 'publish')
         }
       >
         {isPublished ? 'Unpublish' : 'Publish'}
@@ -116,23 +112,62 @@ export const SurveyActions = () => {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="secondary" size="sm">
+          <Button variant="ghost" className={actionClassName} size="sm">
             <span className="sr-only">Actions</span>
             <DotsHorizontalIcon className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-[200px]">
           <DropdownMenuItem
-            onSelect={duplicateSurvey.handleClickDuplicateSurvey}
+            disabled={!isChangesMade}
+            className="sm:hidden"
+            onSelect={() => handleClickSave()}
           >
-            Duplicate survey
+            Save changes
+          </DropdownMenuItem>
+          <DropdownMenuSeparator className="sm:hidden" />
+          <Drawer
+            open={isShareDrawerOpen}
+            onOpenChange={handleShareSurveyDrawerOpenChange}
+            shouldScaleBackground
+          >
+            <DrawerTrigger asChild>
+              <DropdownMenuItem
+                className="sm:hidden"
+                onSelect={handleClickShareSurvey}
+              >
+                Share
+              </DropdownMenuItem>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader className="text-left">
+                <DrawerTitle>Share</DrawerTitle>
+                <DrawerDescription>{shareSurveyDescription}</DrawerDescription>
+              </DrawerHeader>
+              {isPublished && (
+                <DrawerFooter className="pt-0">
+                  <CopySurveyUrl />
+                </DrawerFooter>
+              )}
+            </DrawerContent>
+          </Drawer>
+          <DropdownMenuItem
+            className="sm:hidden"
+            onSelect={() =>
+              handleTriggerPublishDialog(isPublished ? 'unpublish' : 'publish')
+            }
+          >
+            Publish
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={handleClickDuplicateSurvey}>
+            Duplicate
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-red-600"
-            onSelect={deleteSurvey.handleClickDeleteSurvey}
+            onSelect={handleClickDeleteSurvey}
           >
-            Delete survey
+            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -143,27 +178,31 @@ export const SurveyActions = () => {
 const useActions = () => {
   const model = useSurveyModel();
   const id = useSurveyId();
+  const router = useRouter();
+  const isPublished = useSurveyPublished();
   const {handleTriggerDuplicateSurveyDialog} = useDuplicateSurveyFormTrigger();
   const {handleTriggerDeleteSurveyConfirm} = useDeleteSurveyDialogTrigger();
-  const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
+  const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
   const {handleTriggerPublishDialog} = usePublishTrigger();
-  const router = useRouter();
   const {handleHideOverlay, handleOpenOverlay} = useLoadingOverlayTrigger();
 
-  const {execute: handleSaveSchema, status} = useAction(updateModelAction, {
-    onSuccess: () => {
-      handleHideOverlay();
-      toast('Survey saved', {
-        description: 'Your survey has been saved successfully.',
-        action: {
-          label: 'View',
-          onClick: () => {
-            window.open(`/survey/${id}`);
+  const {execute: handleSaveSchema, status: saveSchemaStatus} = useAction(
+    updateModelAction,
+    {
+      onSuccess: () => {
+        handleHideOverlay();
+        toast('Survey saved', {
+          description: 'Your survey has been saved successfully.',
+          action: {
+            label: 'View',
+            onClick: () => {
+              window.open(`/survey/${id}`);
+            },
           },
-        },
-      });
+        });
+      },
     },
-  });
+  );
 
   const handleClickSave = () => {
     handleOpenOverlay({
@@ -195,21 +234,29 @@ const useActions = () => {
     });
   };
 
+  const handleClickPublishSurvey = (e: Event) => {
+    e.preventDefault();
+    handleTriggerPublishDialog(isPublished ? 'unpublish' : 'publish');
+  };
+
+  const handleClickShareSurvey = (e: Event) => {
+    e.preventDefault();
+    setIsShareDrawerOpen(true);
+  };
+
+  const handleShareSurveyDrawerOpenChange = (open: boolean) => {
+    setIsShareDrawerOpen(open);
+  };
+
   return {
-    saveChanges: {
-      handleClickSave,
-      status,
-    },
-    deleteSurvey: {
-      handleClickDeleteSurvey,
-    },
-    duplicateSurvey: {
-      handleClickDuplicateSurvey,
-    },
-    publishSurvey: {
-      handleTriggerPublishDialog,
-      isOpen: isPublishDialogOpen,
-      setIsOpen: setIsPublishDialogOpen,
-    },
+    saveSchemaStatus,
+    handleClickSave,
+    handleClickPublishSurvey,
+    handleClickDeleteSurvey,
+    handleClickDuplicateSurvey,
+    handleTriggerPublishDialog,
+    handleClickShareSurvey,
+    handleShareSurveyDrawerOpenChange,
+    isShareDrawerOpen,
   };
 };
