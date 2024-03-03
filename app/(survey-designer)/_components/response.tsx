@@ -3,7 +3,6 @@
 import {SurveyResult} from '@prisma/client';
 import {CheckCircle2, Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
-import {useSurveyProvider} from '@/components/survey-provider';
 import {Badge} from '@/components/ui/badge';
 import {Button} from '@/components/ui/button';
 import {
@@ -18,11 +17,15 @@ import {useToast} from '@/components/ui/use-toast';
 import {responsesSchema} from '@/lib/validations/survey';
 import {useDeleteSurveyResult} from '@/survey-designer/_hooks/use-delete-response';
 import {ChoicesSchemaType} from '@/types/element';
+import {SurveyWithParsedModelType} from '@/types/survey';
 
-export const Response = ({surveyResult}: {surveyResult: SurveyResult}) => {
-  const {
-    survey: {model, id},
-  } = useSurveyProvider();
+type ResponseProps = {
+  surveyResult: SurveyResult;
+  survey: SurveyWithParsedModelType;
+};
+
+export const Response = ({surveyResult, survey}: ResponseProps) => {
+  const {model, id} = survey;
   const {mutate, isPending} = useDeleteSurveyResult();
   const router = useRouter();
   const {toast} = useToast();

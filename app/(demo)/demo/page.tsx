@@ -11,7 +11,7 @@ const DemoPage = () => {
       {demoTabConfig.map(({tab}) => (
         <DesignerTabItem key={tab} tab={tab}>
           {tab === 'designer' && <Designer />}
-          {tab === 'preview' && <Previewer />}
+          {tab === 'previewer' && <Previewer />}
         </DesignerTabItem>
       ))}
     </>

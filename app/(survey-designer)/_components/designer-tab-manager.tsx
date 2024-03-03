@@ -19,16 +19,6 @@ export const DesignerTabManager = ({children}: DesignerTabManagerProps) => {
   );
 };
 
-type DesignerTabConnectorProps = {
-  children: ({activeTab}: {activeTab: DesignerTab}) => React.ReactNode;
-};
-
-export const DesignerTabConnector = ({children}: DesignerTabConnectorProps) => {
-  const {activeTab} = useDesignerTabManager();
-
-  return <>{children({activeTab})}</>;
-};
-
 export const DesignerTabItem = ({
   tab,
   children,
@@ -45,12 +35,12 @@ export const DesignerTabItem = ({
   return <>{children}</>;
 };
 
-type Context = {
+type DesignerTabManagerContext = {
   activeTab: DesignerTab;
   setActiveTab: (tab: DesignerTab) => void;
 };
 
 const [DesignerTabManagerProvider, useDesignerTabManager] =
-  createContext<Context>();
+  createContext<DesignerTabManagerContext>();
 
 export {useDesignerTabManager};
