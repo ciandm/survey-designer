@@ -12,7 +12,7 @@ export interface SurveyFormState {
   fields: {questionId: string; value: string[]; type: ElementType}[];
 }
 
-type UseSurveyFormProps = {
+type UseSurveyProps = {
   model: ParsedModelType;
   onSurveySubmit?: (props: {
     data: SurveyFormState;
@@ -20,7 +20,7 @@ type UseSurveyFormProps = {
   }) => void;
 };
 
-export const useSurveyForm = ({model, onSurveySubmit}: UseSurveyFormProps) => {
+export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
   const {elements} = model;
   const [currentElementId, setCurrentElementId] = useState<string | null>(null);
   const [screen, setScreen] = useState<Screen>('welcome_screen');
@@ -76,7 +76,7 @@ export const useSurveyForm = ({model, onSurveySubmit}: UseSurveyFormProps) => {
   };
 };
 
-export type UseSurveyFormReturn = ReturnType<typeof useSurveyForm>;
+export type UseSurveyFormReturn = ReturnType<typeof useSurvey>;
 
 export const useSurveyFormContext = () => useFormContext<SurveyFormState>();
 

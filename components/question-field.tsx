@@ -1,5 +1,5 @@
 import {ErrorMessage} from '@hookform/error-message';
-import {useSurveyFormContext} from 'hooks/use-survey-form';
+import {useSurveyFormContext} from '@/hooks/use-survey';
 import {cn} from '@/lib/utils';
 import {ElementSchemaType} from '@/types/element';
 import {FormDescription, FormField, FormItem, FormLabel} from './ui/form';

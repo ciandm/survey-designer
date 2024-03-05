@@ -10,8 +10,8 @@ const tabs = demoTabConfig.map(({tab}) => tab);
 
 const DemoLayout = ({children}: React.PropsWithChildren) => {
   return (
-    <DesignerTabManager tabs={tabs}>
-      <DesignerStoreInitialiser>
+    <DesignerStoreInitialiser>
+      <DesignerTabManager tabs={tabs}>
         <div className="flex min-h-screen flex-col" vaul-drawer-wrapper="">
           <DesignerToolbar
             tabs={demoTabConfig}
@@ -22,8 +22,8 @@ const DemoLayout = ({children}: React.PropsWithChildren) => {
           {children}
         </div>
         <WipAlert />
-      </DesignerStoreInitialiser>
-    </DesignerTabManager>
+      </DesignerTabManager>
+    </DesignerStoreInitialiser>
   );
 };
 

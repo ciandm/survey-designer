@@ -1,8 +1,8 @@
 'use client';
 
 import {UseFormReturn} from 'react-hook-form';
-import {SurveyFormState} from 'hooks/use-survey-form';
 import {Form} from '@/components/ui/form';
+import {SurveyFormState} from '@/hooks/use-survey';
 
 type SurveyScreenProps = {
   children: React.ReactNode;
