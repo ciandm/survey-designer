@@ -1,8 +1,9 @@
+import {cache} from 'react';
 import {getUser} from '@/lib/auth';
 import {db} from '@/lib/db';
 import {modelSchema} from '@/lib/validations/survey';
 
-export const getUserSurvey = async (id: string) => {
+export const getUserSurvey = cache(async (id: string) => {
   const {user} = await getUser();
 
   if (!user) {
@@ -35,4 +36,4 @@ export const getUserSurvey = async (id: string) => {
     ...survey,
     model: model.data,
   };
-};
+});

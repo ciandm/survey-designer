@@ -1,21 +1,9 @@
-import React from 'react';
 import {User} from 'lucia';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import {UserAccountNav} from '@/dashboard/_components/user-account-nav';
 import {DesignerNavigation} from '@/survey-designer/_components/designer-navigation';
+import {SurveyActions} from '@/survey-designer/_components/survey-actions';
 import {TabConfig} from '@/types/tab';
-
-const SurveyActions = dynamic(() =>
-  import('@/survey-designer/_components/survey-actions').then(
-    (mod) => mod.SurveyActions,
-  ),
-);
-
-const UserAccountNav = dynamic(() =>
-  import('@/dashboard/_components/user-account-nav').then(
-    (mod) => mod.UserAccountNav,
-  ),
-);
 
 type DesignerToolbarProps = {
   tabs: TabConfig[];
