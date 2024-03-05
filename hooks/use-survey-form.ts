@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {useFieldArray, useForm} from 'react-hook-form';
+import {useFieldArray, useForm, useFormContext} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {ElementType} from '@/lib/constants/element';
 import {createSurveyValidationSchema} from '@/survey/_utils/survey';
@@ -8,7 +8,7 @@ import {ParsedModelType} from '@/types/survey';
 
 type Screen = 'welcome_screen' | 'survey_screen' | 'thank_you_screen';
 
-interface SurveyFormState {
+export interface SurveyFormState {
   fields: {questionId: string; value: string[]; type: ElementType}[];
 }
 
@@ -22,13 +22,10 @@ type UseSurveyFormProps = {
 
 export const useSurveyForm = ({model, onSurveySubmit}: UseSurveyFormProps) => {
   const {elements} = model;
-  const [currentElementId, setCurrentElementId] = useState<string>();
+  const [currentElementId, setCurrentElementId] = useState<string | null>(null);
   const [screen, setScreen] = useState<Screen>('welcome_screen');
 
-  const {displayedElement, displayedElementIndex} = getDisplayedElement(
-    elements,
-    currentElementId,
-  );
+  const displayed = getDisplayedElement(elements, currentElementId);
 
   const lastElement = elements[elements.length - 1];
 
@@ -48,12 +45,17 @@ export const useSurveyForm = ({model, onSurveySubmit}: UseSurveyFormProps) => {
     setScreen('survey_screen');
   };
 
+  const handleRestartSurvey = () => {
+    setCurrentElementId(null);
+    setScreen('welcome_screen');
+  };
+
   const handleSubmit = form.handleSubmit((data) => {
     if (lastElement.id === currentElementId) {
       onSurveySubmit?.({data, setScreen});
       return;
     }
-    setCurrentElementId(elements[displayedElementIndex + 1]?.id);
+    setCurrentElementId(elements[displayed.index + 1]?.id);
   });
 
   const {fields} = useFieldArray({
@@ -65,23 +67,25 @@ export const useSurveyForm = ({model, onSurveySubmit}: UseSurveyFormProps) => {
     form,
     fields,
     screen,
-    displayedElement,
-    displayedElementIndex,
+    displayed,
     handlers: {
       handleStartSurvey,
+      handleRestartSurvey,
       handleSubmit,
     },
   };
 };
 
+export type UseSurveyFormReturn = ReturnType<typeof useSurveyForm>;
+
+export const useSurveyFormContext = () => useFormContext<SurveyFormState>();
+
 function getDisplayedElement(
   elements: ElementSchemaType[],
-  currentElementId?: string,
+  currentElementId: string | null,
 ) {
-  const displayedElement = elements.find((el) => el.id === currentElementId);
-  const displayedElementIndex = elements.findIndex(
-    (el) => el.id === currentElementId,
-  );
+  const element = elements.find((el) => el.id === currentElementId);
+  const index = elements.findIndex((el) => el.id === currentElementId);
 
-  return {displayedElement, displayedElementIndex};
+  return {element, index};
 }
