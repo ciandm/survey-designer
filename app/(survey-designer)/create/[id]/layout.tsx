@@ -1,11 +1,13 @@
 import {notFound, redirect} from 'next/navigation';
 import {DesignerToolbar} from '@/components/designer-toolbar';
 import {tabConfig} from '@/config/designer';
+import {UserAccountNav} from '@/dashboard/_components/user-account-nav';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/lib/hrefs';
 import {DesignerDialogs} from '@/survey-designer/_components/designer-dialogs';
 import {DesignerStoreInitialiser} from '@/survey-designer/_components/designer-store-initiailiser';
 import {DesignerTabManager} from '@/survey-designer/_components/designer-tab-manager';
+import {SurveyActions} from '@/survey-designer/_components/survey-actions';
 import {getUserSurvey} from '@/survey-designer/_lib/get-user-survey';
 
 const tabs = tabConfig.map((item) => item.tab);
@@ -42,7 +44,14 @@ export default async function SurveyDesignerLayout({
               tabs={tabConfig}
               homeHref={getSiteUrl.dashboardPage()}
               user={user}
-            />
+            >
+              <div className="ml-auto flex items-center space-x-4">
+                <SurveyActions />
+                {user && (
+                  <UserAccountNav user={{username: user?.username ?? ''}} />
+                )}
+              </div>
+            </DesignerToolbar>
             {children}
           </div>
         </DesignerTabManager>

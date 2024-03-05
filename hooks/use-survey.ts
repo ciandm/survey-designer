@@ -1,75 +1,109 @@
-import {useState} from 'react';
-import {useFieldArray, useForm, useFormContext} from 'react-hook-form';
+import {useForm, useFormContext} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {ElementType} from '@/lib/constants/element';
-import {createSurveyValidationSchema} from '@/survey/_utils/survey';
+import {createSingleStepValidationSchema} from '@/survey/_utils/survey';
 import {ElementSchemaType} from '@/types/element';
-import {ParsedModelType} from '@/types/survey';
-
-type Screen = 'welcome_screen' | 'survey_screen' | 'thank_you_screen';
+import {
+  ParsedModelType,
+  SurveyResponsesMap,
+  SurveyScreen,
+} from '@/types/survey';
+import {useSurveyReducer} from './use-survey-reducer';
 
 export interface SurveyFormState {
-  fields: {questionId: string; value: string[]; type: ElementType}[];
+  questionId: string;
+  value: string[];
+  type: ElementType;
 }
 
 type UseSurveyProps = {
   model: ParsedModelType;
   onSurveySubmit?: (props: {
     data: SurveyFormState;
-    setScreen: React.Dispatch<React.SetStateAction<Screen>>;
+    handleSetScreen: (screen: SurveyScreen) => void;
+    responses: SurveyResponsesMap;
   }) => void;
 };
 
 export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
   const {elements} = model;
-  const [currentElementId, setCurrentElementId] = useState<string | null>(null);
-  const [screen, setScreen] = useState<Screen>('welcome_screen');
+  const {state, dispatch} = useSurveyReducer();
 
-  const displayed = getDisplayedElement(elements, currentElementId);
-
+  const displayed = getDisplayedElement(elements, state.currentElementId);
   const lastElement = elements[elements.length - 1];
 
   const form = useForm<SurveyFormState>({
     defaultValues: {
-      fields: elements.map((element) => ({
-        questionId: element.id,
-        type: element.type,
-        value: [],
-      })),
+      questionId: displayed.element?.id,
+      type: displayed.element?.type,
+      value: [],
     },
-    resolver: zodResolver(createSurveyValidationSchema(elements)),
+    resolver: zodResolver(createSingleStepValidationSchema(elements)),
   });
 
-  const handleStartSurvey = () => {
-    setCurrentElementId(elements[0]?.id);
-    setScreen('survey_screen');
+  const handleInitialiseSurvey = () => {
+    form.reset({
+      questionId: elements[0]?.id,
+      type: elements[0]?.type,
+      value: [],
+    });
+    dispatch({
+      type: 'INITIALISE_SURVEY',
+      payload: {
+        initialElement: elements[0],
+      },
+    });
   };
 
   const handleRestartSurvey = () => {
-    setCurrentElementId(null);
-    setScreen('welcome_screen');
+    dispatch({
+      type: 'RESTART_SURVEY',
+    });
   };
 
-  const handleSubmit = form.handleSubmit((data) => {
-    if (lastElement.id === currentElementId) {
-      onSurveySubmit?.({data, setScreen});
-      return;
-    }
-    setCurrentElementId(elements[displayed.index + 1]?.id);
-  });
+  const handleSetScreen = (screen: SurveyScreen) => {
+    dispatch({
+      type: 'SET_SCREEN',
+      payload: {screen},
+    });
+  };
 
-  const {fields} = useFieldArray({
-    control: form.control,
-    name: 'fields',
-  });
+  const handleSubmit = form.handleSubmit(
+    (data) => {
+      if (lastElement.id === state.currentElementId) {
+        onSurveySubmit?.({
+          data,
+          handleSetScreen,
+          responses: state.responsesMap,
+        });
+        return;
+      }
+      const nextElement = elements[displayed.index + 1];
+
+      form.reset({
+        questionId: nextElement?.id,
+        type: nextElement?.type,
+        value: [],
+      });
+      dispatch({
+        type: 'NEXT_ELEMENT',
+        payload: {
+          nextElement,
+          data,
+        },
+      });
+    },
+    (errors) => {
+      console.log(errors);
+    },
+  );
 
   return {
     form,
-    fields,
-    screen,
+    screen: state.screen,
     displayed,
     handlers: {
-      handleStartSurvey,
+      handleStartSurvey: handleInitialiseSurvey,
       handleRestartSurvey,
       handleSubmit,
     },

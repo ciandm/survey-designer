@@ -15,7 +15,7 @@ export const QuestionField = ({index, element}: QuestionFieldProps) => {
   return (
     <FormField
       control={control}
-      name={`fields.${index}.value`}
+      name="value"
       render={({field}) => (
         <FormItem>
           <div className="flex flex-col gap-1">
@@ -34,7 +34,7 @@ export const QuestionField = ({index, element}: QuestionFieldProps) => {
             <TypeInputField field={field} element={element} />
           </div>
           <ErrorMessage
-            name={`fields.${index}.value`}
+            name="value"
             render={({message}) => (
               <p className="text-sm font-medium leading-5 text-red-500">
                 {message}

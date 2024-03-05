@@ -13,7 +13,7 @@ import {SurveyFormState} from '@/hooks/use-survey';
 import {ElementSchemaType} from '@/types/element';
 
 type FieldProps = {
-  field: ControllerRenderProps<SurveyFormState, `fields.${number}.value`>;
+  field: ControllerRenderProps<SurveyFormState, 'value'>;
   element: ElementSchemaType;
 };
 
@@ -46,7 +46,7 @@ const TextField = ({field, element}: FieldProps) => {
 
 type MultipleChoiceFieldProps = {
   element: ElementSchemaType;
-  field: ControllerRenderProps<SurveyFormState, `fields.${number}.value`>;
+  field: ControllerRenderProps<SurveyFormState, 'value'>;
   index: number;
 };
 
@@ -60,7 +60,7 @@ const MultipleChoiceField = ({element, index}: MultipleChoiceFieldProps) => {
         <FormField
           key={choice.id}
           control={control}
-          name={`fields.${index}.value`}
+          name="value"
           render={({field}) => (
             <FormItem className="flex items-center space-x-2 space-y-0">
               <FormControl>

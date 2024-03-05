@@ -21,8 +21,8 @@ export const Previewer = () => {
 
   const {form, handlers, displayed, screen} = useSurvey({
     model,
-    onSurveySubmit: ({setScreen}) => {
-      setScreen('thank_you_screen');
+    onSurveySubmit: ({handleSetScreen}) => {
+      handleSetScreen('thank_you_screen');
     },
   });
 

@@ -1,8 +1,6 @@
 import {User} from 'lucia';
 import Link from 'next/link';
-import {UserAccountNav} from '@/dashboard/_components/user-account-nav';
 import {DesignerNavigation} from '@/survey-designer/_components/designer-navigation';
-import {SurveyActions} from '@/survey-designer/_components/survey-actions';
 import {TabConfig} from '@/types/tab';
 
 type DesignerToolbarProps = {
@@ -11,14 +9,14 @@ type DesignerToolbarProps = {
   hasActions?: boolean;
   user?: User | null;
   title?: string;
+  children?: React.ReactNode;
 };
 
 export const DesignerToolbar = ({
   tabs,
   homeHref,
-  hasActions = true,
-  user = null,
   title = 'Survey editor',
+  children,
 }: DesignerToolbarProps) => {
   return (
     <header className="sticky top-0 z-10 flex flex-col border-b bg-blue-950 md:py-0">
@@ -30,14 +28,7 @@ export const DesignerToolbar = ({
           <span>/</span>
           <span className="truncate font-semibold">{title}</span>
         </div>
-        {hasActions ? (
-          <div className="ml-auto flex items-center space-x-4">
-            <SurveyActions />
-            {user && <UserAccountNav user={{username: user?.username ?? ''}} />}
-          </div>
-        ) : (
-          <div className="hidden w-80 md:block" />
-        )}
+        {children}
       </div>
       <DesignerNavigation tabs={tabs} />
     </header>

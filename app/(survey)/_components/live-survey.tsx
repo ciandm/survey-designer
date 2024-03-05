@@ -28,7 +28,7 @@ export const LiveSurvey = ({model}: LiveSurveyProps) => {
 
   return (
     <SurveyShell>
-      <SurveyShellAside model={model} />
+      <SurveyShellAside model={model} className="md:h-screen" />
       <SurveyShellMain>
         {screen === 'welcome_screen' && (
           <WelcomeScreen message={model.screens.welcome.message}>

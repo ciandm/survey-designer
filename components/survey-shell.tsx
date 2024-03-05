@@ -25,7 +25,7 @@ export const SurveyShellAside = ({className, model}: SurveyShellAsideProps) => {
   return (
     <aside
       className={cn(
-        'relative flex shrink-0 flex-col justify-center space-y-1 border-b bg-muted bg-white px-4 py-8 sm:border-r md:sticky md:bottom-0 md:top-[6.25rem] md:flex md:h-[calc(100vh-6.25rem)] md:w-44 md:max-w-[320px] md:flex-1 md:flex-col md:items-start md:border-b-0 md:p-8 lg:max-w-[380px]',
+        'relative flex shrink-0 flex-col justify-center space-y-1 border-b bg-muted bg-white px-4 py-8 sm:border-r md:sticky md:bottom-0 md:flex md:w-44 md:max-w-[320px] md:flex-1 md:flex-col md:items-start md:border-b-0 md:p-8 lg:max-w-[380px]',
         className,
       )}
     >
