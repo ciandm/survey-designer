@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import {QuestionField} from '@/components/question-field';
 import {SurveyScreen} from '@/components/survey-screen';
 import {
@@ -11,24 +12,23 @@ import {ThankYouScreen} from '@/components/thank-you-screen';
 import {Button} from '@/components/ui/button';
 import {WelcomeScreen} from '@/components/welcome-screen';
 import {useSurvey} from '@/hooks/use-survey';
-import {sortChoices} from '@/survey/_utils/question';
-import {useSurveyModel} from '@/survey-designer/_store/survey-designer-store';
-import {useDesignerTabManager} from './designer-tab-manager';
+import {ParsedModelType} from '@/types/survey';
 
-export const Previewer = () => {
-  const model = sortChoices(useSurveyModel());
-  const {setActiveTab} = useDesignerTabManager();
+type LiveSurveyProps = {
+  model: ParsedModelType;
+};
 
+export const LiveSurvey = ({model}: LiveSurveyProps) => {
   const {form, handlers, displayed, screen} = useSurvey({
     model,
-    onSurveySubmit: ({handleSetScreen}) => {
-      handleSetScreen('thank_you_screen');
+    onSurveySubmit: ({data}) => {
+      alert('TODO: submit survey data to server via action');
     },
   });
 
   return (
     <SurveyShell>
-      <SurveyShellAside model={model} />
+      <SurveyShellAside model={model} className="md:h-screen" />
       <SurveyShellMain>
         {screen === 'welcome_screen' && (
           <WelcomeScreen message={model.screens.welcome.message}>
@@ -49,18 +49,14 @@ export const Previewer = () => {
             <div className="space-y-4 text-center">
               <h1 className="text-5xl">😭</h1>
               <p className="text-muted-foreground">
-                There are no questions in this survey yet. Add questions to see
-                a preview.
+                There are no questions in this survey yet.
               </p>
-              <Button onClick={() => setActiveTab('designer')}>
-                Add questions
-              </Button>
             </div>
           ))}
         {screen === 'thank_you_screen' && (
           <ThankYouScreen message={model.screens.thank_you.message}>
-            <Button onClick={() => handlers.handleRestartSurvey()}>
-              Restart survey (preview mode only)
+            <Button asChild>
+              <Link href="/home">Home</Link>
             </Button>
           </ThankYouScreen>
         )}

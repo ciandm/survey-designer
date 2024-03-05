@@ -1,3 +1,4 @@
+import {Metadata} from 'next';
 import Link from 'next/link';
 import {redirect} from 'next/navigation';
 import {AuthFormWrapper} from '@/auth/_components/auth-form-wrapper';
@@ -28,3 +29,8 @@ export default async function Page() {
     </AuthFormWrapper>
   );
 }
+
+export const metadata: Metadata = {
+  title: 'Log in',
+  description: 'Log in to your account',
+};

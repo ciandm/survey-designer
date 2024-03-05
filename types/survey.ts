@@ -1,5 +1,6 @@
 import {Survey} from '@prisma/client';
 import {z} from 'zod';
+import {ElementType} from '@/lib/constants/element';
 import {
   createSurveyInput,
   modelSchema,
@@ -17,3 +18,15 @@ export type WithParsedModel<T> = T extends {model: any}
   : never;
 
 export type SurveyWithParsedModelType = WithParsedModel<Survey>;
+
+export type SurveyScreen =
+  | 'welcome_screen'
+  | 'survey_screen'
+  | 'thank_you_screen';
+
+export type SurveyResponsesMap = {
+  [questionId: string]: {
+    value: string[];
+    type: ElementType;
+  };
+};

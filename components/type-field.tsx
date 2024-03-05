@@ -9,15 +9,29 @@ import {
 import {Input} from '@/components/ui/input';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Textarea} from '@/components/ui/textarea';
+import {SurveyFormState} from '@/hooks/use-survey';
 import {ElementSchemaType} from '@/types/element';
-import {QuestionFormState} from './survey-form';
 
 type FieldProps = {
-  field: ControllerRenderProps<QuestionFormState, `fields.${number}.value`>;
+  field: ControllerRenderProps<SurveyFormState, 'value'>;
   element: ElementSchemaType;
 };
 
-export const TextField = ({field, element}: FieldProps) => {
+export const TypeInputField = ({field, element}: FieldProps) => {
+  switch (element.type) {
+    case 'short_text':
+    case 'long_text':
+      return <TextField field={field} element={element} />;
+    case 'multiple_choice':
+      return <MultipleChoiceField field={field} element={element} index={0} />;
+    case 'single_choice':
+      return <SingleChoiceField field={field} element={element} />;
+    default:
+      return null;
+  }
+};
+
+const TextField = ({field, element}: FieldProps) => {
   const Component = element.type === 'short_text' ? Input : Textarea;
   return (
     <FormControl>
@@ -32,15 +46,12 @@ export const TextField = ({field, element}: FieldProps) => {
 
 type MultipleChoiceFieldProps = {
   element: ElementSchemaType;
-  field: ControllerRenderProps<QuestionFormState, `fields.${number}.value`>;
+  field: ControllerRenderProps<SurveyFormState, 'value'>;
   index: number;
 };
 
-export const MultipleChoiceField = ({
-  element,
-  index,
-}: MultipleChoiceFieldProps) => {
-  const {control} = useFormContext<QuestionFormState>();
+const MultipleChoiceField = ({element, index}: MultipleChoiceFieldProps) => {
+  const {control} = useFormContext<SurveyFormState>();
   const choices = element.properties.choices ?? [];
 
   return (
@@ -49,7 +60,7 @@ export const MultipleChoiceField = ({
         <FormField
           key={choice.id}
           control={control}
-          name={`fields.${index}.value`}
+          name="value"
           render={({field}) => (
             <FormItem className="flex items-center space-x-2 space-y-0">
               <FormControl>
@@ -78,7 +89,7 @@ export const MultipleChoiceField = ({
   );
 };
 
-export const SingleChoiceField = ({
+const SingleChoiceField = ({
   element,
   field,
 }: Omit<MultipleChoiceFieldProps, 'index'>) => {
