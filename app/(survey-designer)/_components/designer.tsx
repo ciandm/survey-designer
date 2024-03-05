@@ -14,7 +14,7 @@ export const Designer = () => {
   return (
     <>
       <div className="flex w-full flex-1 items-stretch">
-        <aside className="sticky bottom-0 top-14 hidden h-[calc(100vh-56px)] w-44 shrink-0 bg-muted lg:block">
+        <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] w-44 shrink-0 bg-muted lg:block">
           <QuickAddList />
         </aside>
 
@@ -23,7 +23,7 @@ export const Designer = () => {
           <ElementList onSettingsClick={setIsSettingsOpen} />
         </main>
 
-        <aside className="sticky bottom-0 top-14 hidden h-[calc(100vh-56px)] w-full max-w-sm shrink-0 flex-col overflow-auto border-l p-4 lg:block">
+        <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] w-full max-w-sm shrink-0 flex-col overflow-auto border-l p-4 lg:block">
           <Settings />
         </aside>
       </div>
