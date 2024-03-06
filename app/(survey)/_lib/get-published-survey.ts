@@ -1,7 +1,7 @@
 import {db} from '@/lib/db';
 import {modelSchema} from '@/lib/validations/survey';
 
-export async function getSurvey(id: string) {
+export async function getPublishedSurvey(id: string) {
   const survey = await db.survey.findUnique({
     where: {
       id,

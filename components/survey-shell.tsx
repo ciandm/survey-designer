@@ -4,11 +4,17 @@ import {ParsedModelType} from '@/types/survey';
 
 type SurveyShellProps = {
   children: React.ReactNode;
+  className?: string;
 };
 
-export const SurveyShell = ({children}: SurveyShellProps) => {
+export const SurveyShell = ({children, className}: SurveyShellProps) => {
   return (
-    <div className="flex flex-1 flex-col items-stretch md:flex-row">
+    <div
+      className={cn(
+        'flex flex-1 flex-col items-stretch md:flex-row ',
+        className,
+      )}
+    >
       {children}
     </div>
   );

@@ -1,7 +1,7 @@
 import {useForm, useFormContext} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {ElementType} from '@/lib/constants/element';
-import {createSingleStepValidationSchema} from '@/survey/_utils/survey';
+import {createSingleStepValidationSchema} from '@/lib/validations/survey';
 import {ElementSchemaType} from '@/types/element';
 import {
   ParsedModelType,
@@ -22,15 +22,19 @@ type UseSurveyProps = {
     data: SurveyFormState;
     handleSetScreen: (screen: SurveyScreen) => void;
     responses: SurveyResponsesMap;
-  }) => void;
+  }) => Promise<void> | void;
 };
 
 export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
   const {elements} = model;
-  const {state, dispatch} = useSurveyReducer();
+  const {
+    state: {screen, currentElementId, responsesMap},
+    dispatch,
+  } = useSurveyReducer(model);
 
-  const displayed = getDisplayedElement(elements, state.currentElementId);
-  const lastElement = elements[elements.length - 1];
+  const displayed = getDisplayedElement(elements, currentElementId);
+  const isLastElement = displayed.index === elements.length - 1;
+  const isFirstElement = displayed.index === 0;
 
   const form = useForm<SurveyFormState>({
     defaultValues: {
@@ -69,14 +73,13 @@ export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
   };
 
   const handleSubmit = form.handleSubmit(
-    (data) => {
-      if (lastElement.id === state.currentElementId) {
-        onSurveySubmit?.({
+    async (data) => {
+      if (isLastElement) {
+        return onSurveySubmit?.({
           data,
           handleSetScreen,
-          responses: state.responsesMap,
+          responses: responsesMap,
         });
-        return;
       }
       const nextElement = elements[displayed.index + 1];
 
@@ -98,14 +101,33 @@ export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
     },
   );
 
+  const handleGoBack = () => {
+    const previousElement = elements[displayed.index - 1];
+    const prevResponse = responsesMap[previousElement?.id];
+    form.reset({
+      questionId: previousElement?.id,
+      type: prevResponse?.type,
+      value: prevResponse?.value || [],
+    });
+    dispatch({
+      type: 'PREVIOUS_ELEMENT',
+      payload: {
+        previousElement,
+      },
+    });
+  };
+
   return {
     form,
-    screen: state.screen,
+    screen,
     displayed,
+    isFirstElement,
+    isLastElement,
     handlers: {
       handleStartSurvey: handleInitialiseSurvey,
       handleRestartSurvey,
       handleSubmit,
+      handleGoBack,
     },
   };
 };

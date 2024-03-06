@@ -44,11 +44,48 @@ export const responseSchema = z.object({
 
 export const responsesSchema = z.array(responseSchema);
 
-export const createResponseInput = z.object({
+export const saveResponsesInput = z.object({
   responses: z.array(responseSchema),
+  surveyId: z.string(),
 });
 
-export const createSurveyValidationSchema = (elements: ElementSchemaType[]) => {
+export const createSingleStepValidationSchema = (
+  elements: ElementSchemaType[],
+) => {
+  return z
+    .object({
+      questionId: z.string(),
+      value: z.array(z.string()),
+      type: z.nativeEnum(ELEMENT_TYPE),
+    })
+    .superRefine(({questionId, type, value}, ctx) => {
+      const element = elements.find((el) => el.id === questionId);
+
+      if (!element) {
+        return ctx.addIssue({
+          message: 'Element not found',
+          path: ['questionId'],
+          code: z.ZodIssueCode.custom,
+        });
+      }
+
+      if (
+        element.validations.required &&
+        (!value.length || value[0].length === 0)
+      ) {
+        return ctx.addIssue({
+          message:
+            element.properties.required_message || 'This field is required',
+          path: ['value'],
+          code: z.ZodIssueCode.custom,
+        });
+      }
+
+      return ctx;
+    });
+};
+
+export const createMultiValidationSchema = (elements: ElementSchemaType[]) => {
   return z
     .object({
       fields: z.array(

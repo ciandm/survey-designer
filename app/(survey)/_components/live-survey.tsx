@@ -1,5 +1,11 @@
 'use client';
 
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckIcon,
+} from '@heroicons/react/20/solid';
+import {Loader2} from 'lucide-react';
 import Link from 'next/link';
 import {QuestionField} from '@/components/question-field';
 import {SurveyScreen} from '@/components/survey-screen';
@@ -12,19 +18,32 @@ import {ThankYouScreen} from '@/components/thank-you-screen';
 import {Button} from '@/components/ui/button';
 import {WelcomeScreen} from '@/components/welcome-screen';
 import {useSurvey} from '@/hooks/use-survey';
-import {ParsedModelType} from '@/types/survey';
+import {SurveyWithParsedModelType} from '@/types/survey';
+import {saveResponsesAction} from '../_actions/save-responses-action';
+import {transformResponsesMap} from '../_utils/response';
 
 type LiveSurveyProps = {
-  model: ParsedModelType;
+  survey: SurveyWithParsedModelType;
 };
 
-export const LiveSurvey = ({model}: LiveSurveyProps) => {
-  const {form, handlers, displayed, screen} = useSurvey({
-    model,
-    onSurveySubmit: ({data}) => {
-      alert('TODO: submit survey data to server via action');
-    },
-  });
+export const LiveSurvey = ({survey}: LiveSurveyProps) => {
+  const {id, model} = survey;
+  const {form, handlers, isFirstElement, isLastElement, displayed, screen} =
+    useSurvey({
+      model,
+      onSurveySubmit: async ({responses, handleSetScreen}) => {
+        const transformedResponses = transformResponsesMap(responses);
+        try {
+          await saveResponsesAction({
+            responses: transformedResponses,
+            surveyId: id,
+          });
+          handleSetScreen('thank_you_screen');
+        } catch (error) {
+          alert('Failed to save survey responses');
+        }
+      },
+    });
 
   return (
     <SurveyShell>
@@ -43,7 +62,28 @@ export const LiveSurvey = ({model}: LiveSurveyProps) => {
                 index={displayed.index}
                 key={displayed.element?.id}
               />
-              <Button type="submit">Next</Button>
+              <div className="flex items-center space-x-4">
+                <Button
+                  onClick={handlers.handleGoBack}
+                  variant="ghost"
+                  size="sm"
+                  disabled={isFirstElement}
+                >
+                  <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                  Back
+                </Button>
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  {isLastElement ? 'Submit' : 'Next question'}
+                  {isLastElement ? (
+                    <CheckIcon className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ArrowRightIcon className="ml-2 h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </SurveyScreen>
           ) : (
             <div className="space-y-4 text-center">

@@ -5,6 +5,7 @@ import {
   createSurveyInput,
   modelSchema,
   responseSchema,
+  saveResponsesInput,
   updateModelInput,
 } from '@/lib/validations/survey';
 
@@ -30,3 +31,5 @@ export type SurveyResponsesMap = {
     type: ElementType;
   };
 };
+
+export type SaveResponsesInput = z.infer<typeof saveResponsesInput>;
