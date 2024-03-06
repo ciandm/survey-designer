@@ -1,6 +1,10 @@
 import {useReducer} from 'react';
 import {ElementSchemaType} from '@/types/element';
-import {SurveyResponsesMap, SurveyScreen} from '@/types/survey';
+import {
+  ParsedModelType,
+  SurveyResponsesMap,
+  SurveyScreen,
+} from '@/types/survey';
 import {SurveyFormState} from './use-survey';
 
 type SurveyReducerState = {
@@ -30,6 +34,12 @@ type SurveyReducerAction =
       payload: {
         nextElement: ElementSchemaType;
         data: SurveyFormState;
+      };
+    }
+  | {
+      type: 'PREVIOUS_ELEMENT';
+      payload: {
+        previousElement: ElementSchemaType;
       };
     };
 
@@ -68,14 +78,19 @@ function reducer(
           },
         },
       };
+    case 'PREVIOUS_ELEMENT':
+      return {
+        ...state,
+        currentElementId: action.payload.previousElement.id,
+      };
     default:
       return state;
   }
 }
 
-export const useSurveyReducer = () => {
+export const useSurveyReducer = (model: ParsedModelType) => {
   const [state, dispatch] = useReducer(reducer, {
-    screen: 'welcome_screen',
+    screen: model.screens.welcome.message ? 'welcome_screen' : 'survey_screen',
     currentElementId: null,
     responsesMap: {},
   });

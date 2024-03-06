@@ -1,10 +1,9 @@
-import {Metadata, ResolvingMetadata} from 'next';
+import {Metadata} from 'next';
 import {notFound} from 'next/navigation';
 import {db} from '@/lib/db';
 import {modelSchema} from '@/lib/validations/survey';
 import {LiveSurvey} from '@/survey/_components/live-survey';
-import {getSurvey} from '@/survey/_lib/get-survey';
-import {sortChoices} from '@/survey/_utils/question';
+import {getPublishedSurvey} from '@/survey/_lib/get-published-survey';
 
 type Props = {
   params: {
@@ -13,23 +12,18 @@ type Props = {
 };
 
 const SurveyPage = async ({params}: Props) => {
-  const survey = await getSurvey(params.id);
+  const survey = await getPublishedSurvey(params.id);
 
   if (!survey) {
     return notFound();
   }
 
-  const model = sortChoices(survey.model);
-
-  return <LiveSurvey model={model} />;
+  return <LiveSurvey survey={survey} />;
 };
 
 export default SurveyPage;
 
-export async function generateMetadata(
-  {params}: Props,
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
+export async function generateMetadata({params}: Props): Promise<Metadata> {
   const id = params.id;
 
   const survey = await db.survey.findUnique({
