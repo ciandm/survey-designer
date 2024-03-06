@@ -1,8 +1,8 @@
 'use client';
 
 import {Button} from '@/components/ui/button';
-import {cn} from '@/lib/utils';
 import {TabConfig} from '@/types/tab';
+import {cn} from '@/utils/classnames';
 import {useDesignerTabManager} from './designer-tab-manager';
 
 type DesignerNavigationProps = {

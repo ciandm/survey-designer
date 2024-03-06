@@ -3,7 +3,7 @@ import Link from 'next/link';
 import {redirect} from 'next/navigation';
 import {UserAccountNav} from '@/dashboard/_components/user-account-nav';
 import {getUser} from '@/lib/auth';
-import {getSiteUrl} from '@/lib/hrefs';
+import {getSiteUrl} from '@/utils/hrefs';
 
 const DashboardLayout = async ({children}: {children: React.ReactNode}) => {
   const {user} = await getUser();

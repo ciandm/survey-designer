@@ -12,8 +12,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {createContext} from '@/lib/context';
 import {usePublishDialog} from '@/survey-designer/_hooks/use-publish-dialog';
+import {createContext} from '@/utils/context';
 import {CopySurveyUrl} from './copy-survey-url';
 
 export const PublishDialog = ({children}: {children: React.ReactNode}) => {

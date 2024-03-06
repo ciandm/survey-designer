@@ -2,10 +2,10 @@ import {useReducer} from 'react';
 import {ElementSchemaType} from '@/types/element';
 import {
   ParsedModelType,
+  SurveyFormState,
   SurveyResponsesMap,
   SurveyScreen,
 } from '@/types/survey';
-import {SurveyFormState} from './use-survey';
 
 type SurveyReducerState = {
   screen: SurveyScreen;

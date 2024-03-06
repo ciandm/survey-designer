@@ -19,8 +19,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
-import {getSiteUrl} from '@/lib/hrefs';
 import {loginSchema} from '@/lib/validations/auth';
+import {getSiteUrl} from '@/utils/hrefs';
 import {ErrorAlert} from './error-alert';
 
 type LoginFormState = z.infer<typeof loginSchema>;

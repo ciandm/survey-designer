@@ -29,7 +29,8 @@
       "@/survey-designer/*": ["app/(survey-designer)/*"],
       "@/dashboard/*": ["app/(dashboard)/*"],
       "@/types/*": ["types/*"],
-      "@/hooks/*": ["hooks/*"]
+      "@/hooks/*": ["hooks/*"],
+      "@/utils*": ["utils*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

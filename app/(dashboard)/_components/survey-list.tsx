@@ -15,9 +15,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {getSiteUrl} from '@/lib/hrefs';
-import {cn} from '@/lib/utils';
 import {WithParsedModel} from '@/types/survey';
+import {cn} from '@/utils/classnames';
+import {getSiteUrl} from '@/utils/hrefs';
 
 type SurveyWithResult = Prisma.SurveyGetPayload<{
   include: {

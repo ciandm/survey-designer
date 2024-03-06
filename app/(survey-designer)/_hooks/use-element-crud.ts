@@ -1,11 +1,12 @@
 import {v4 as uuidv4} from 'uuid';
-import {ELEMENT_TYPE, ElementType} from '@/lib/constants/element';
-import {getNextElementToSelect} from '@/lib/utils';
+import {ELEMENT_TYPE} from '@/lib/constants/element';
 import {setActiveElementRef} from '@/survey-designer/_store/active-element-ref';
 import {
   useDesignerActions,
   useSurveyElements,
 } from '@/survey-designer/_store/survey-designer-store';
+import {SurveyElementType} from '@/types/element';
+import {getNextElementToSelect} from '@/utils/survey';
 import {useActiveElement} from './use-active-element';
 
 export const useElementCrud = () => {
@@ -35,7 +36,7 @@ export const useElementCrud = () => {
     type = ELEMENT_TYPE.short_text,
     index,
   }: {
-    type?: ElementType;
+    type?: SurveyElementType;
     index?: number;
   } = {}) => {
     const ref = uuidv4();

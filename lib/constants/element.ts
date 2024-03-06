@@ -12,14 +12,6 @@ export const ELEMENT_TYPE = {
   single_choice: 'single_choice',
 } as const;
 
-export const SCREEN_TYPE = {
-  welcome: 'welcome',
-  thank_you: 'thank_you',
-};
-
-export type ElementType = keyof typeof ELEMENT_TYPE;
-export type ScreenType = keyof typeof SCREEN_TYPE;
-
 export const ID_PREFIXES = {
   ELEMENT: 'element-',
   ELEMENT_CHOICE: 'choice-',

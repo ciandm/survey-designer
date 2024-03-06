@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
-import {getSiteUrl} from '@/lib/hrefs';
+import {getSiteUrl} from '@/utils/hrefs';
 import {createSurveyAction} from '../../(survey-designer)/_actions/create-survey';
 
 const createFormSchema = z.object({

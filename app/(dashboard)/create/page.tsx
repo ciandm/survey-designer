@@ -3,7 +3,7 @@ import {redirect} from 'next/navigation';
 import {CreateForm} from '@/dashboard/_components/create-form';
 import {PreviousSurveys} from '@/dashboard/_components/previous-surveys';
 import {getUser} from '@/lib/auth';
-import {getSiteUrl} from '@/lib/hrefs';
+import {getSiteUrl} from '@/utils/hrefs';
 
 const CreateSurveyPage = async () => {
   const {session} = await getUser();

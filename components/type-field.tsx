@@ -9,8 +9,8 @@ import {
 import {Input} from '@/components/ui/input';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Textarea} from '@/components/ui/textarea';
-import {SurveyFormState} from '@/hooks/use-survey';
 import {ElementSchemaType} from '@/types/element';
+import {SurveyFormState} from '@/types/survey';
 
 type FieldProps = {
   field: ControllerRenderProps<SurveyFormState, 'value'>;

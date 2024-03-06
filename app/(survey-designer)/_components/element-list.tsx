@@ -15,17 +15,16 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {QuestionMarkCircleIcon, XCircleIcon} from '@heroicons/react/20/solid';
-import {QuestionMarkCircledIcon} from '@radix-ui/react-icons';
+import {XCircleIcon} from '@heroicons/react/20/solid';
 import {GripHorizontal} from 'lucide-react';
 import {Sortable} from '@/components/sortable';
 import {Button} from '@/components/ui/button';
-import {cn} from '@/lib/utils';
 import {useActiveElement} from '@/survey-designer/_hooks/use-active-element';
 import {
   useDesignerActions,
   useSurveyElements,
 } from '@/survey-designer/_store/survey-designer-store';
+import {cn} from '@/utils/classnames';
 import {AddQuestion} from './add-question';
 import {ElementCard} from './element-card';
 

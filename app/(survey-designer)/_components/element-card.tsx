@@ -8,8 +8,8 @@ import {Label} from '@/components/ui/label';
 import {Separator} from '@/components/ui/separator';
 import {Switch} from '@/components/ui/switch';
 import {Textarea} from '@/components/ui/textarea';
-import {cn} from '@/lib/utils';
 import {ElementSchemaType} from '@/types/element';
+import {cn} from '@/utils/classnames';
 import {useElementCrud} from '../_hooks/use-element-crud';
 import {setActiveElementRef} from '../_store/active-element-ref';
 import {
