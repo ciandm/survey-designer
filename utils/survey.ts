@@ -1,14 +1,7 @@
-import {type ClassValue, clsx} from 'clsx';
-import {twMerge} from 'tailwind-merge';
 import {v4 as uuidv4} from 'uuid';
-import {ElementSchemaType} from '@/types/element';
-import {ElementType} from './constants/element';
+import type {ElementSchemaType, SurveyElementType} from '@/types/element';
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-export function formatQuestionType(type: ElementType): string {
+export function formatQuestionType(type: SurveyElementType): string {
   switch (type) {
     case 'short_text':
       return 'Short Text';
@@ -22,7 +15,7 @@ export function formatQuestionType(type: ElementType): string {
 }
 
 export function buildNewElementHelper(
-  type: ElementType,
+  type: SurveyElementType,
   field: Partial<ElementSchemaType>,
 ): ElementSchemaType {
   switch (type) {

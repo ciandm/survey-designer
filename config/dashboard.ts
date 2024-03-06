@@ -1,4 +1,4 @@
-import {getSiteUrl} from '@/lib/hrefs';
+import {getSiteUrl} from '@/utils/hrefs';
 
 export const dashboardConfig = {
   mainNav: [

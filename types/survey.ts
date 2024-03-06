@@ -1,6 +1,5 @@
 import {Survey} from '@prisma/client';
 import {z} from 'zod';
-import {ElementType} from '@/lib/constants/element';
 import {
   createSurveyInput,
   modelSchema,
@@ -8,6 +7,7 @@ import {
   saveResponsesInput,
   updateModelInput,
 } from '@/lib/validations/survey';
+import type {SurveyElementType} from './element';
 
 export type UpdateSurveySchemaInputType = z.infer<typeof updateModelInput>;
 export type CreateSurveyInputType = z.infer<typeof createSurveyInput>;
@@ -28,8 +28,14 @@ export type SurveyScreen =
 export type SurveyResponsesMap = {
   [questionId: string]: {
     value: string[];
-    type: ElementType;
+    type: SurveyElementType;
   };
 };
 
 export type SaveResponsesInput = z.infer<typeof saveResponsesInput>;
+
+export type SurveyFormState = {
+  questionId: string;
+  value: string[];
+  type: SurveyElementType;
+};

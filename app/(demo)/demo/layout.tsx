@@ -2,9 +2,9 @@ import React from 'react';
 import {WipAlert} from 'app/(landing-page)/_components/wip-alert';
 import {DesignerToolbar} from '@/components/designer-toolbar';
 import {demoTabConfig} from '@/config/designer';
-import {getSiteUrl} from '@/lib/hrefs';
 import {DesignerStoreInitialiser} from '@/survey-designer/_components/designer-store-initiailiser';
 import {DesignerTabManager} from '@/survey-designer/_components/designer-tab-manager';
+import {getSiteUrl} from '@/utils/hrefs';
 
 const tabs = demoTabConfig.map(({tab}) => tab);
 

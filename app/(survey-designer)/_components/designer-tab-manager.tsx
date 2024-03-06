@@ -1,8 +1,8 @@
 'use client';
 
 import React, {useState} from 'react';
-import {createContext} from '@/lib/context';
 import {DesignerTab} from '@/types/tab';
+import {createContext} from '@/utils/context';
 
 type DesignerTabManagerProps = {
   tabs: DesignerTab[];

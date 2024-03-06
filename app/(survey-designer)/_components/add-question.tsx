@@ -12,9 +12,10 @@ import {
 } from '@/components/ui/command';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Separator} from '@/components/ui/separator';
-import {ELEMENT_OPTIONS, ElementType} from '@/lib/constants/element';
-import {cn} from '@/lib/utils';
+import {ELEMENT_OPTIONS} from '@/lib/constants/element';
 import {useElementCrud} from '@/survey-designer/_hooks/use-element-crud';
+import {SurveyElementType} from '@/types/element';
+import {cn} from '@/utils/classnames';
 
 type AddQuestionProps = {
   className?: string;
@@ -51,7 +52,9 @@ export const AddQuestion = ({className}: AddQuestionProps) => {
                   key={option.value}
                   value={option.value}
                   onSelect={(currentValue) => {
-                    handleCreateElement({type: currentValue as ElementType});
+                    handleCreateElement({
+                      type: currentValue as SurveyElementType,
+                    });
                     setPopoverOpen(false);
                   }}
                 >

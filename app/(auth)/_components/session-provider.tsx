@@ -1,7 +1,7 @@
 'use client';
 
 import {getUser} from '@/lib/auth';
-import {createContext} from '@/lib/context';
+import {createContext} from '@/utils/context';
 
 type ContextType = Pick<Awaited<ReturnType<typeof getUser>>, 'user'>;
 

@@ -18,8 +18,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
-import {getSiteUrl} from '@/lib/hrefs';
 import {registerSchema} from '@/lib/validations/auth';
+import {getSiteUrl} from '@/utils/hrefs';
 import {registerAction} from '../_actions/register-action';
 import {ErrorAlert} from './error-alert';
 

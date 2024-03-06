@@ -1,7 +1,7 @@
 import {getUser} from '@/lib/auth';
 import {db} from '@/lib/db';
-import {validateIsNotNull} from '@/lib/utils';
 import {modelSchema} from '@/lib/validations/survey';
+import {validateIsNotNull} from '@/utils/survey';
 
 export async function getUserSurveys() {
   const {user} = await getUser();

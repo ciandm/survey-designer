@@ -3,12 +3,12 @@ import {DesignerToolbar} from '@/components/designer-toolbar';
 import {tabConfig} from '@/config/designer';
 import {UserAccountNav} from '@/dashboard/_components/user-account-nav';
 import {getUser} from '@/lib/auth';
-import {getSiteUrl} from '@/lib/hrefs';
 import {DesignerDialogs} from '@/survey-designer/_components/designer-dialogs';
 import {DesignerStoreInitialiser} from '@/survey-designer/_components/designer-store-initiailiser';
 import {DesignerTabManager} from '@/survey-designer/_components/designer-tab-manager';
 import {SurveyActions} from '@/survey-designer/_components/survey-actions';
 import {getUserSurvey} from '@/survey-designer/_lib/get-user-survey';
+import {getSiteUrl} from '@/utils/hrefs';
 
 const tabs = tabConfig.map((item) => item.tab);
 

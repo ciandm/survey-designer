@@ -1,6 +1,6 @@
 import React from 'react';
-import {cn} from '@/lib/utils';
 import {ParsedModelType} from '@/types/survey';
+import {cn} from '@/utils/classnames';
 
 type SurveyShellProps = {
   children: React.ReactNode;

@@ -3,7 +3,7 @@
 import {User} from 'lucia';
 import Link from 'next/link';
 import {Button} from '@/components/ui/button';
-import {getSiteUrl} from '@/lib/hrefs';
+import {getSiteUrl} from '@/utils/hrefs';
 
 export const HeroActions = ({user}: {user: User | null}) => {
   return (

@@ -5,7 +5,7 @@ import {useRouter} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
 import {Button} from '@/components/ui/button';
-import {getSiteUrl} from '@/lib/hrefs';
+import {getSiteUrl} from '@/utils/hrefs';
 import {logOutAction} from '../_actions/log-out-action';
 
 export const LogOut = () => {

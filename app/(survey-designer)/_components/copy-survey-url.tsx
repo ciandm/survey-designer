@@ -5,7 +5,7 @@ import {CopyIcon} from 'lucide-react';
 import {useParams} from 'next/navigation';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
-import {cn} from '@/lib/utils';
+import {cn} from '@/utils/classnames';
 
 export const CopySurveyUrl = ({className}: {className?: string}) => {
   const {id} = useParams();

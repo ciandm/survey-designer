@@ -2,10 +2,10 @@ import {isEqual, merge, omitBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import {createStore, StoreApi, useStore} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
-import {createContext} from '@/lib/context';
-import {buildNewElementHelper} from '@/lib/utils';
 import {ElementSchemaType} from '@/types/element';
 import {ParsedModelType, SurveyWithParsedModelType} from '@/types/survey';
+import {createContext} from '@/utils/context';
+import {buildNewElementHelper} from '@/utils/survey';
 
 type SurveyDesignerStoreProps = {
   id: string;

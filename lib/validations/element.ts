@@ -8,13 +8,13 @@ export const choicesSchema = z.array(
   }),
 );
 
-export const SORT_ORDER = z.enum(['asc', 'desc', 'random']);
+export const sortOrderEnum = z.enum(['asc', 'desc', 'random']);
 
 const properties = z.object({
   choices: choicesSchema.optional(),
   placeholder: z.string().optional(),
   allow_other_option: z.boolean().optional(),
-  sort_order: SORT_ORDER.optional(),
+  sort_order: sortOrderEnum.optional(),
   required_message: z.string().default('This field is required').optional(),
 });
 

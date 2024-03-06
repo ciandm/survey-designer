@@ -3,9 +3,9 @@
 import {revalidatePath} from 'next/cache';
 import {getUser} from '@/lib/auth';
 import {db} from '@/lib/db';
-import {getSiteUrl} from '@/lib/hrefs';
 import {action, ActionError} from '@/lib/safe-action';
 import {createSurveyInput, modelSchema} from '@/lib/validations/survey';
+import {getSiteUrl} from '@/utils/hrefs';
 import {generateDuplicateSurvey, generateNewSurvey} from '../_utils/survey';
 
 export const createSurveyAction = action(

@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useState} from 'react';
-import {createContext} from '@/lib/context';
+import {createContext} from '@/utils/context';
 import {Dialog, DialogOverlay} from './ui/dialog';
 
 export const LoadingOverlay = ({children}: React.PropsWithChildren) => {

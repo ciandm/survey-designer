@@ -4,7 +4,7 @@ import {Button} from '@/components/ui/button';
 import {SurveyList} from '@/dashboard/_components/survey-list';
 import {getUserSurveys} from '@/dashboard/_lib/get-user-surveys';
 import {getUser} from '@/lib/auth';
-import {getSiteUrl} from '@/lib/hrefs';
+import {getSiteUrl} from '@/utils/hrefs';
 
 const Home = async () => {
   const {session} = await getUser();

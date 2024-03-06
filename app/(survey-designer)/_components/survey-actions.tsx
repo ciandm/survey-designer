@@ -27,8 +27,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
-import {getSiteUrl} from '@/lib/hrefs';
-import {cn} from '@/lib/utils';
+import {cn} from '@/utils/classnames';
+import {getSiteUrl} from '@/utils/hrefs';
 import {updateModelAction} from '../_actions/update-model';
 import {
   useIsSurveyChanged,

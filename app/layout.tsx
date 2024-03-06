@@ -5,7 +5,7 @@ import {DuplicateSurveyDialog} from '@/components/duplicate-survey-dialog';
 import {LoadingOverlay} from '@/components/loading-overlay';
 import {Toaster} from '@/components/ui/sonner';
 import {QueryClientProvider} from '@/lib/query-client/provider';
-import {cn} from '@/lib/utils';
+import {cn} from '@/utils/classnames';
 import './globals.css';
 
 const inter = Inter({

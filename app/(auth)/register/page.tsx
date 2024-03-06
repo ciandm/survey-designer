@@ -4,7 +4,7 @@ import {AuthFormWrapper} from '@/auth/_components/auth-form-wrapper';
 import {RegisterForm} from '@/auth/_components/register-form';
 import {Button} from '@/components/ui/button';
 import {getUser} from '@/lib/auth';
-import {getSiteUrl} from '@/lib/hrefs';
+import {getSiteUrl} from '@/utils/hrefs';
 
 export default async function RegistrationPage() {
   const {user} = await getUser();
