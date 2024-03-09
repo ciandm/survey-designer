@@ -1,7 +1,8 @@
+import {cache} from 'react';
 import {db} from '@/lib/db';
 import {modelSchema} from '@/lib/validations/survey';
 
-export async function getPublishedSurvey(id: string) {
+export const getPublishedSurvey = cache(async (id: string) => {
   const survey = await db.survey.findUnique({
     where: {
       id,
@@ -25,4 +26,4 @@ export async function getPublishedSurvey(id: string) {
     ...survey,
     model: model.data,
   };
-}
+});

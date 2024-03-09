@@ -1,5 +1,6 @@
 'use client';
 
+import {useRouter} from 'next/navigation';
 import {QuestionField} from '@/components/question-field';
 import {SurveyFormButtons} from '@/components/survey-form-buttons';
 import {SurveyScreen} from '@/components/survey-screen';
@@ -7,6 +8,7 @@ import {Button} from '@/components/ui/button';
 import {WelcomeScreen} from '@/components/welcome-screen';
 import {useSurvey} from '@/hooks/use-survey';
 import {SurveyWithParsedModelType} from '@/types/survey';
+import {getSiteUrl} from '@/utils/hrefs';
 import {saveResponsesAction} from '../_actions/save-responses-action';
 import {transformResponsesMap} from '../_utils/response';
 
@@ -16,16 +18,18 @@ type LiveSurveyProps = {
 
 export const LiveSurvey = ({survey}: LiveSurveyProps) => {
   const {id, model} = survey;
+  const router = useRouter();
   const {form, handlers, currentElement, screen} = useSurvey({
     model,
-    onSurveySubmit: async ({responses, handleSetScreen}) => {
+    onSurveySubmit: async ({responses}) => {
       const transformedResponses = transformResponsesMap(responses);
       try {
+        router.prefetch(getSiteUrl.completePage({surveyId: id}));
         await saveResponsesAction({
           responses: transformedResponses,
           surveyId: id,
         });
-        handleSetScreen('thank_you_screen');
+        router.push(getSiteUrl.completePage({surveyId: id}));
       } catch (error) {
         alert('Failed to save survey responses');
       }
