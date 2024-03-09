@@ -1,7 +1,6 @@
 import {useReducer} from 'react';
 import {ElementSchemaType} from '@/types/element';
 import {
-  ParsedModelType,
   SurveyFormState,
   SurveyResponsesMap,
   SurveyScreen,
@@ -15,13 +14,16 @@ type SurveyReducerState = {
 
 type SurveyReducerAction =
   | {
-      type: 'INITIALISE_SURVEY';
+      type: 'START_SURVEY';
       payload: {
         initialElement: ElementSchemaType | null;
       };
     }
   | {
       type: 'RESTART_SURVEY';
+      payload: {
+        initialElement: ElementSchemaType;
+      };
     }
   | {
       type: 'SET_SCREEN';
@@ -48,17 +50,18 @@ function reducer(
   action: SurveyReducerAction,
 ): SurveyReducerState {
   switch (action.type) {
-    case 'INITIALISE_SURVEY':
+    case 'START_SURVEY':
       const initialElement = action.payload.initialElement;
       return {
         ...state,
+        responsesMap: {},
         currentElementId: initialElement?.id ?? null,
         screen: 'survey_screen',
       };
     case 'RESTART_SURVEY':
       return {
         ...state,
-        currentElementId: null,
+        currentElementId: action.payload.initialElement.id,
         screen: 'welcome_screen',
         responsesMap: {},
       };
@@ -89,10 +92,18 @@ function reducer(
   }
 }
 
-export const useSurveyReducer = (model: ParsedModelType) => {
+type UseSurveyReducerProps = {
+  defaultScreen?: SurveyScreen;
+  defaultElementId?: string;
+};
+
+export const useSurveyReducer = ({
+  defaultElementId,
+  defaultScreen,
+}: UseSurveyReducerProps) => {
   const [state, dispatch] = useReducer(reducer, {
-    screen: 'welcome_screen',
-    currentElementId: null,
+    screen: defaultScreen ?? 'welcome_screen',
+    currentElementId: defaultElementId ?? null,
     responsesMap: {},
   });
 

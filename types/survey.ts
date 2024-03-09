@@ -39,3 +39,10 @@ export type SurveyFormState = {
   value: string[];
   type: SurveyElementType;
 };
+
+export type SurveyFormConfig = {
+  [elementId: string]: {
+    previous: string | null;
+    next: string | 'complete';
+  };
+};
