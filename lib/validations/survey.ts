@@ -81,6 +81,30 @@ export const createSingleStepValidationSchema = (
         });
       }
 
+      if (
+        element.type === 'multiple_choice' &&
+        element.validations.min_selections &&
+        value.length < element.validations.min_selections
+      ) {
+        return ctx.addIssue({
+          message: `Select at least ${element.validations.min_selections} options`,
+          path: ['value'],
+          code: z.ZodIssueCode.custom,
+        });
+      }
+
+      if (
+        element.type === 'multiple_choice' &&
+        element.validations.max_selections &&
+        value.length > element.validations.max_selections
+      ) {
+        return ctx.addIssue({
+          message: `Select at most ${element.validations.max_selections} options`,
+          path: ['value'],
+          code: z.ZodIssueCode.custom,
+        });
+      }
+
       return ctx;
     });
 };
