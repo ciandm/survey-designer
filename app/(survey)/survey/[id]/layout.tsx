@@ -25,7 +25,7 @@ const SurveyLayout = async ({children, params}: SurveyLayoutProps) => {
   const model = sortChoices(survey.model);
 
   return (
-    <SurveyShell>
+    <SurveyShell className="min-h-screen">
       <SurveyShellAside model={model} className="md:h-screen" />
       <SurveyShellMain>{children}</SurveyShellMain>
     </SurveyShell>

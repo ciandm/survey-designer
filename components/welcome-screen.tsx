@@ -7,7 +7,7 @@ type WelcomeScreenProps = {
 
 export const WelcomeScreen = ({message, children}: WelcomeScreenProps) => {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center space-y-4 text-center">
+    <div className="flex flex-1 flex-col items-center space-y-4 text-center">
       <h1 className="text-5xl">👋</h1>
       <p className="text-muted-foreground">
         {message || 'Welcome to the survey'}
