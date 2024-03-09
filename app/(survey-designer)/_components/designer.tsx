@@ -3,9 +3,9 @@
 import {useState} from 'react';
 import {Drawer, DrawerContent} from '@/components/ui/drawer';
 import {ScrollArea} from '@/components/ui/scroll-area';
+import {SurveySettings} from './survey-settings/survey-settings';
 import {ElementList} from './element-list';
 import {QuickAddList} from './quick-add-list';
-import {Settings} from './settings';
 import {TitleEditor} from './title-editor';
 
 export const Designer = () => {
@@ -24,7 +24,7 @@ export const Designer = () => {
         </main>
 
         <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] w-full max-w-sm shrink-0 flex-col overflow-auto border-l p-4 lg:block">
-          <Settings />
+          <SurveySettings />
         </aside>
       </div>
 
@@ -37,7 +37,7 @@ export const Designer = () => {
         <DrawerContent className="flex max-h-[90%] flex-col">
           <ScrollArea className="overflow-y-auto px-4 py-6">
             <div className="mx-auto max-w-lg">
-              <Settings />
+              <SurveySettings />
             </div>
           </ScrollArea>
         </DrawerContent>

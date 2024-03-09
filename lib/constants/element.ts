@@ -32,3 +32,10 @@ export const ELEMENT_OPTIONS = [
     icon: RadiobuttonIcon,
   },
 ];
+
+export const ELEMENT_CHOICE_SORT_ORDER_OPTIONS = [
+  {label: 'None', value: 'none'},
+  {label: 'Ascending', value: 'asc'},
+  {label: 'Descending', value: 'desc'},
+  {label: 'Random', value: 'random'},
+] as const;
