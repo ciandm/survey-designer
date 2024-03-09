@@ -17,7 +17,7 @@ export const SurveyScreen = ({
 }: SurveyScreenProps) => {
   return (
     <Form {...methods}>
-      <form onSubmit={onSubmit} className="w-full flex-1 space-y-12">
+      <form onSubmit={onSubmit} className="w-full flex-1">
         {children}
       </form>
     </Form>

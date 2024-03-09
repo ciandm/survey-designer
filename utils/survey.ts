@@ -1,5 +1,6 @@
 import {v4 as uuidv4} from 'uuid';
 import type {ElementSchemaType, SurveyElementType} from '@/types/element';
+import {ParsedModelType, SurveyFormConfig} from '@/types/survey';
 
 export function formatQuestionType(type: SurveyElementType): string {
   switch (type) {
@@ -80,3 +81,19 @@ export function getNextElementToSelect(
 export function validateIsNotNull<T>(value: T | null): value is T {
   return value !== null;
 }
+
+export const buildSurveyConfig = (model: ParsedModelType): SurveyFormConfig => {
+  const {elements = []} = model;
+  const config: SurveyFormConfig = {};
+  if (!elements.length) return config;
+
+  elements.forEach((el, index) => {
+    const nextElement = model.elements[index + 1];
+    const previousElement = model.elements[index - 1];
+    config[el.id] = {
+      next: nextElement?.id || 'complete',
+      previous: previousElement?.id || null,
+    };
+  });
+  return config;
+};
