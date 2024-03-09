@@ -48,7 +48,7 @@ export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
     dispatch({
       type: 'INITIALISE_SURVEY',
       payload: {
-        initialElement: elements[0],
+        initialElement: elements[0] ?? null,
       },
     });
   };
