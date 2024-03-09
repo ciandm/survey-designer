@@ -17,7 +17,7 @@ type SurveyReducerAction =
   | {
       type: 'INITIALISE_SURVEY';
       payload: {
-        initialElement: ElementSchemaType;
+        initialElement: ElementSchemaType | null;
       };
     }
   | {
@@ -49,9 +49,10 @@ function reducer(
 ): SurveyReducerState {
   switch (action.type) {
     case 'INITIALISE_SURVEY':
+      const initialElement = action.payload.initialElement;
       return {
         ...state,
-        currentElementId: action.payload.initialElement.id,
+        currentElementId: initialElement?.id ?? null,
         screen: 'survey_screen',
       };
     case 'RESTART_SURVEY':
@@ -90,7 +91,7 @@ function reducer(
 
 export const useSurveyReducer = (model: ParsedModelType) => {
   const [state, dispatch] = useReducer(reducer, {
-    screen: model.screens.welcome.message ? 'welcome_screen' : 'survey_screen',
+    screen: 'welcome_screen',
     currentElementId: null,
     responsesMap: {},
   });

@@ -15,13 +15,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {cn} from '@/utils/classnames';
 import {getSiteUrl} from '@/utils/hrefs';
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
   user: Pick<User, 'username'>;
+  isOnDarkBg?: boolean;
 }
 
-export function UserAccountNav({user}: UserAccountNavProps) {
+export function UserAccountNav({
+  user,
+  isOnDarkBg = false,
+}: UserAccountNavProps) {
   const router = useRouter();
   const {execute: handleLogOut, status} = useAction(logOutAction, {
     onSuccess: () => {
@@ -41,9 +46,15 @@ export function UserAccountNav({user}: UserAccountNavProps) {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar className="h-9 w-9 bg-transparent">
-          <AvatarFallback className="bg-transparent text-white hover:bg-blue-800/20">
+          <AvatarFallback
+            className={cn(
+              isOnDarkBg
+                ? 'bg-transparent text-white hover:bg-white/10'
+                : 'bg-white/10 text-foreground hover:bg-muted',
+            )}
+          >
             <span className="sr-only">{user.username}</span>
-            <UserCircleIcon className="h-6 w-6" />
+            <UserCircleIcon className={cn('h-6 w-6')} />
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

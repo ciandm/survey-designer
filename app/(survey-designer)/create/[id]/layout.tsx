@@ -48,7 +48,10 @@ export default async function SurveyDesignerLayout({
               <div className="ml-auto flex items-center space-x-4">
                 <SurveyActions />
                 {user && (
-                  <UserAccountNav user={{username: user?.username ?? ''}} />
+                  <UserAccountNav
+                    user={{username: user?.username ?? ''}}
+                    isOnDarkBg
+                  />
                 )}
               </div>
             </DesignerToolbar>
