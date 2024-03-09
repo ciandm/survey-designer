@@ -1,10 +1,16 @@
 import {PrismaClient} from '@prisma/client';
 import fakeSurveys from './data.json';
 
+const SEED_USER_ID = process.env.SEED_USER_ID;
+
 const db = new PrismaClient();
 
 async function seedDatabase() {
   try {
+    if (!SEED_USER_ID) {
+      throw new Error('SEED_USER_ID is not set');
+    }
+
     await db.surveyResult.deleteMany();
     await db.survey.deleteMany();
 
@@ -12,7 +18,7 @@ async function seedDatabase() {
       const title = surveyData.title;
       await db.survey.create({
         data: {
-          userId: '1',
+          userId: SEED_USER_ID,
           id: surveyData.id,
           model: surveyData,
           is_published: true,
