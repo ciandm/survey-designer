@@ -4,17 +4,18 @@ import {
   useDesignerActions,
   useSurveyModel,
 } from '@/survey-designer/_store/survey-designer-store';
-import {setActiveElementRef} from '../_store/active-element-ref';
+import {useActiveElementActions} from '../_store/active-element-id-store';
 
 export const TitleEditor = () => {
   const model = useSurveyModel();
   const {updateTitle, updateDescription} = useDesignerActions();
+  const {setActiveElementId} = useActiveElementActions();
 
   return (
     <div className="flex flex-col items-start space-y-2 py-4 lg:pr-14">
       <div
         className="w-full overflow-hidden rounded-lg focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
-        onClick={() => setActiveElementRef(null)}
+        onClick={() => setActiveElementId(null)}
       >
         <label htmlFor="survey-title" className="sr-only">
           Survey title

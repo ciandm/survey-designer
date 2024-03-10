@@ -15,9 +15,14 @@ type SurveyDesignerStoreProps = {
 };
 
 type ElementStoreActions = {
-  insertElement: (element: ElementSchemaType, index?: number) => void;
-  deleteElement: (element: Pick<ElementSchemaType, 'id'>) => void;
-  duplicateElement: (element: Pick<ElementSchemaType, 'id' | 'ref'>) => void;
+  insertElement: (
+    element: Partial<ElementSchemaType>,
+    index?: number,
+  ) => string;
+  deleteElement: (
+    element: Pick<ElementSchemaType, 'id'>,
+  ) => ElementSchemaType[];
+  duplicateElement: (element: Pick<ElementSchemaType, 'id'>) => string;
   changeElementType: (element: Pick<ElementSchemaType, 'id' | 'type'>) => void;
   updateElement: (element: Partial<ElementSchemaType> & {id: string}) => void;
   setElements: (
@@ -97,7 +102,7 @@ export const createSurveyDesignerStore = (
   };
 
   return createStore<SurveyDesignerStoreState>()(
-    immer((set) => ({
+    immer((set, get) => ({
       ...initialState,
       actions: {
         updateTitle: (title) => {
@@ -110,10 +115,9 @@ export const createSurveyDesignerStore = (
             state.model.description = description;
           });
         },
-        insertElement: ({type, ref}, insertAtIndex) => {
-          const newField = buildNewElementHelper(type, {
-            ref: ref ?? uuidv4(),
-            type,
+        insertElement: (field, insertAtIndex) => {
+          const newField = buildNewElementHelper(field.type ?? 'short_text', {
+            ...field,
           });
 
           set((state) => {
@@ -124,26 +128,28 @@ export const createSurveyDesignerStore = (
 
             state.model.elements.push(newField);
           });
+
+          return newField.id;
         },
         deleteElement: ({id}) => {
+          let elements = get().model.elements;
           set((state) => {
-            const elements = state.model.elements || [];
+            elements = elements.filter((q) => q.id !== id);
 
-            const indexOfFieldToDelete = elements.findIndex((q) => q.id === id);
-            if (indexOfFieldToDelete === -1) return;
-
-            state.model.elements.splice(indexOfFieldToDelete, 1);
+            state.model.elements = elements;
           });
+
+          return elements;
         },
-        duplicateElement: ({id, ref}) => {
+        duplicateElement: ({id}) => {
+          const newId = uuidv4();
           set((state) => {
             const element = state.model.elements.find((q) => q.id === id);
             if (!element) return state;
 
             const newElement = buildNewElementHelper(element.type, {
               ...element,
-              ref,
-              id: uuidv4(),
+              id: newId,
               text: element.text ? `${element.text} (copy)` : '',
             });
 
@@ -156,6 +162,7 @@ export const createSurveyDesignerStore = (
               newElement,
             );
           });
+          return newId;
         },
         updateElement: (field) => {
           set((state) => {
