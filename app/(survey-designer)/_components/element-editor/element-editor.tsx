@@ -18,7 +18,7 @@ export const ElementEditor = () => {
 
   return (
     <>
-      <div className="group flex flex-1 cursor-pointer flex-col overflow-hidden shadow-sm ring-ring ring-offset-2 transition-colors">
+      <div className="group flex flex-1 cursor-pointer flex-col shadow-sm ring-ring ring-offset-2 transition-colors">
         <div className="flex flex-1 flex-col gap-6 px-6 pb-2 pt-4">
           <QuestionEditor element={activeElement} index={activeElementIndex} />
         </div>

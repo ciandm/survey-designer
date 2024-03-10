@@ -1,6 +1,6 @@
 'use client';
 
-import {useMemo, useRef} from 'react';
+import {useMemo} from 'react';
 import {QuestionField} from '@/components/question-field';
 import {SurveyFormButtons} from '@/components/survey-form-buttons';
 import {SurveyScreen} from '@/components/survey-screen';
