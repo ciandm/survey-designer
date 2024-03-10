@@ -98,6 +98,7 @@ export const Footer = ({element, onSettingsClick, index}: FooterProps) => {
                 <CopyIcon className="h-4 w-4" />
               </Button>
               <Button
+                disabled={elements.length === 1}
                 variant="ghost"
                 size="icon"
                 onClick={(e) => {

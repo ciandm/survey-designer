@@ -16,6 +16,8 @@ export const useElementCrud = () => {
 
   const handleRemoveElement = (id: string) => {
     const elementsBeforeDelete = [...elements];
+    if (elementsBeforeDelete.length === 1) return;
+
     deleteElement({id});
     if (activeElement?.id === id) {
       setActiveElementId(getNextElementToSelect(elementsBeforeDelete, id));

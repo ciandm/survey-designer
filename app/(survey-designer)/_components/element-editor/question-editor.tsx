@@ -46,7 +46,7 @@ export const QuestionEditor = ({element, index}: QuestionEditorProps) => {
             </div>
           </div>
           <QuestionTypeSelect
-            className="hidden h-9 w-auto gap-2 text-sm font-medium text-muted-foreground hover:bg-muted sm:flex"
+            className="flex h-9 w-auto gap-2 text-sm font-medium text-muted-foreground hover:bg-muted lg:hidden"
             element={element}
             onChange={(type) =>
               changeElementType({
