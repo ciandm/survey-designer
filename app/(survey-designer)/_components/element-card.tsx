@@ -16,7 +16,7 @@ import {
   useDesignerActions,
   useSurveyElements,
 } from '../_store/survey-designer-store';
-import {Choices, ChoicesAddChoice, ChoicesList} from './choices';
+import {Choices, ChoicesAddChoice, ChoicesList} from './choices/choices';
 import {ElementListProps} from './element-list';
 import {QuestionTypeSelect} from './question-type-select';
 

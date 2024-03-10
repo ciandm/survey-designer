@@ -3,7 +3,7 @@ import {PlusIcon} from 'lucide-react';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {ElementSchemaType} from '@/types/element';
-import {Choices, ChoicesAddChoice, ChoicesList} from '../choices';
+import {Choices, ChoicesAddChoice, ChoicesList} from '../choices/choices';
 
 type QuestionTypeEditorProps = {
   element: ElementSchemaType;

@@ -7,7 +7,9 @@ import {Textarea} from '@/components/ui/textarea';
 import {useActiveElementActions} from '@/survey-designer/_store/active-element-id-store';
 import {useDesignerActions} from '@/survey-designer/_store/survey-designer-store';
 import {ElementSchemaType} from '@/types/element';
-import {Choices, ChoicesAddChoice, ChoicesList} from '../choices';
+import {AddChoiceButton} from '../choices/add-choice-button';
+import {Choices} from '../choices/choices';
+import {ChoicesList} from '../choices/choices-list';
 import {QuestionTypeSelect} from '../question-type-select';
 
 type QuestionEditorProps = {
@@ -102,10 +104,10 @@ export const QuestionEditor = ({element, index}: QuestionEditorProps) => {
         element.type === 'single_choice') && (
         <Choices elementId={element.id} choices={element.properties.choices}>
           <ChoicesList />
-          <ChoicesAddChoice variant="outline" size="sm" className="mt-2">
+          <AddChoiceButton variant="outline" size="sm" className="mt-2">
             <PlusIcon className="mr-2 h-4 w-4" />
             Add choice
-          </ChoicesAddChoice>
+          </AddChoiceButton>
         </Choices>
       )}
       {element.type === 'long_text' && (
