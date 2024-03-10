@@ -31,12 +31,6 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
   return (
     <>
       <div className="flex flex-col space-y-6">
-        <div>
-          <h2 className="text-base font-semibold leading-7">Question</h2>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            Make changes to the question
-          </p>
-        </div>
         <SettingsField>
           {({id}) => (
             <>

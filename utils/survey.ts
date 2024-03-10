@@ -75,7 +75,7 @@ export function getNextElementToSelect(
   const prevQuestion = elements[questionIndex - 1];
   const nextQuestion = elements[questionIndex + 1];
 
-  return (prevQuestion || nextQuestion).ref;
+  return (prevQuestion || nextQuestion).id;
 }
 
 export function validateIsNotNull<T>(value: T | null): value is T {
