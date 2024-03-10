@@ -11,7 +11,7 @@ import {Textarea} from '@/components/ui/textarea';
 import {ElementSchemaType} from '@/types/element';
 import {cn} from '@/utils/classnames';
 import {useElementCrud} from '../_hooks/use-element-crud';
-import {setActiveElementRef} from '../_store/active-element-ref';
+import {useActiveElementActions} from '../_store/active-element-id-store';
 import {
   useDesignerActions,
   useSurveyElements,
@@ -32,11 +32,12 @@ export const ElementCard = ({
   index,
   onSettingsClick,
 }: ElementCardProps) => {
+  const {setActiveElementId} = useActiveElementActions();
   return (
     <div
       onClick={(e) => {
         e.preventDefault();
-        setActiveElementRef(element.ref);
+        setActiveElementId(element.id);
       }}
       tabIndex={0}
       role="button"
@@ -69,6 +70,7 @@ type MainEditorProps = {
 
 const MainEditor = ({element, index}: MainEditorProps) => {
   const {changeElementType, updateElement} = useDesignerActions();
+  const {setActiveElementId} = useActiveElementActions();
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -102,7 +104,7 @@ const MainEditor = ({element, index}: MainEditorProps) => {
               type,
             })
           }
-          onOpenChange={(open) => open && setActiveElementRef(element.ref)}
+          onOpenChange={(open) => open && setActiveElementId(element.id)}
         />
       </div>
       <div className="flex flex-1 flex-col gap-2 rounded-md border border-input">
