@@ -15,11 +15,11 @@ import {
   useSurveyElements,
 } from '@/survey-designer/_store/survey-designer-store';
 import {ElementSchemaType} from '@/types/element';
-import {ElementEditorProps} from './element-editor';
 
-type FooterProps = Pick<ElementEditorProps, 'onSettingsClick'> & {
+type FooterProps = {
   element: ElementSchemaType;
   index: number;
+  onSettingsClick: () => void;
 };
 
 export const Footer = ({element, onSettingsClick, index}: FooterProps) => {
@@ -82,7 +82,7 @@ export const Footer = ({element, onSettingsClick, index}: FooterProps) => {
               variant="ghost"
               className="flex lg:hidden"
               size="icon"
-              onClick={() => onSettingsClick((prev) => !prev)}
+              onClick={onSettingsClick}
             >
               <Settings className="h-4 w-4" />
             </Button>

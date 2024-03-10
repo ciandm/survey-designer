@@ -1,3 +1,5 @@
+'use client';
+
 import {PlusIcon} from '@heroicons/react/20/solid';
 import {Button} from '@/components/ui/button';
 import {cn} from '@/utils/classnames';
