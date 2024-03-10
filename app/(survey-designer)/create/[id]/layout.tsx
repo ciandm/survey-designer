@@ -43,7 +43,6 @@ export default async function SurveyDesignerLayout({
             <DesignerToolbar
               tabs={tabConfig}
               homeHref={getSiteUrl.dashboardPage()}
-              user={user}
             >
               <div className="ml-auto flex items-center space-x-4">
                 <SurveyActions />

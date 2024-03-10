@@ -19,12 +19,10 @@ import {
 import {ELEMENT_CHOICE_SORT_ORDER_OPTIONS} from '@/lib/constants/element';
 import {ElementSchemaType} from '@/types/element';
 import {useDesignerActions} from '../../../_store/survey-designer-store';
-import {
-  Choices,
-  ChoicesAddChoice,
-  ChoicesList,
-  ChoicesRemoveAll,
-} from '../../choices';
+import {AddChoiceButton} from '../../choices/add-choice-button';
+import {Choices} from '../../choices/choices';
+import {ChoicesList} from '../../choices/choices-list';
+import {RemoveAllChoicesButton} from '../../choices/remove-all-choices-button';
 import {SettingsField} from './settings-field';
 
 export const ChoicesSettings = ({element}: {element: ElementSchemaType}) => {
@@ -81,9 +79,9 @@ export const ChoicesSettings = ({element}: {element: ElementSchemaType}) => {
             <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <ChoicesRemoveAll size="icon" variant="ghost">
+                  <RemoveAllChoicesButton size="icon" variant="ghost">
                     <EraserIcon className="h-5 w-5" />
-                  </ChoicesRemoveAll>
+                  </RemoveAllChoicesButton>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-xs">
                   <p className="text-xs leading-snug">Delete choices</p>
@@ -93,9 +91,9 @@ export const ChoicesSettings = ({element}: {element: ElementSchemaType}) => {
             <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <ChoicesAddChoice variant="ghost" size="icon">
+                  <AddChoiceButton variant="ghost" size="icon">
                     <PlusCircledIcon className="h-5 w-5" />
-                  </ChoicesAddChoice>
+                  </AddChoiceButton>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-xs">
                   <p className="text-xs leading-snug">Add choice</p>

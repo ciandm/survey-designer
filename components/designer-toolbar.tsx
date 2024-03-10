@@ -6,8 +6,6 @@ import {TabConfig} from '@/types/tab';
 type DesignerToolbarProps = {
   tabs: TabConfig[];
   homeHref: string;
-  hasActions?: boolean;
-  user?: User | null;
   title?: string;
   children?: React.ReactNode;
 };
