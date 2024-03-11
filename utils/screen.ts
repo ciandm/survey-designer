@@ -1,4 +1,4 @@
-import {ScreenType} from '@/types/element';
+import {ElementType, ScreenType} from '@/types/element';
 import {SurveyScreenKey} from '@/types/survey';
 
 export const getStoreKeyForScreenType = (type: ScreenType): SurveyScreenKey => {

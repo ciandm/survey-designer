@@ -6,7 +6,7 @@ import {db} from '@/lib/db';
 import {action, ActionError} from '@/lib/safe-action';
 import {createSurveyInput, modelSchema} from '@/lib/validations/survey';
 import {getSiteUrl} from '@/utils/hrefs';
-import {generateDuplicateSurvey, generateNewSurvey} from '../_utils/survey';
+import {generateDuplicateSurvey, generateNewSurvey} from '@/utils/survey';
 
 export const createSurveyAction = action(
   createSurveyInput,

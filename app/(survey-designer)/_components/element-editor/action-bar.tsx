@@ -16,11 +16,11 @@ import {
 import {ElementSchema} from '@/types/element';
 import {useDesignerHandlers} from '../designer/designer.context';
 
-type FooterProps = {
+type ActionBarProps = {
   element: ElementSchema;
 };
 
-export const Footer = ({element}: FooterProps) => {
+export const ActionBar = ({element}: ActionBarProps) => {
   const elements = useSurveyElements();
   const {handleRemoveElement, handleDuplicateElement, handleSettingsClick} =
     useDesignerHandlers();
@@ -41,7 +41,7 @@ export const Footer = ({element}: FooterProps) => {
   const isLastELement = elements.length === index + 1;
 
   return (
-    <footer className="sticky bottom-0 mt-auto border-t bg-white px-5 py-2.5">
+    <footer className="sticky bottom-8 mx-auto mt-auto w-full max-w-md rounded-lg border bg-white px-5 py-1.5 shadow-2xl">
       <div className="flex">
         <div className="flex flex-1 items-center justify-between">
           <div className="hidden items-center space-x-2 sm:flex">
@@ -60,7 +60,7 @@ export const Footer = ({element}: FooterProps) => {
             <Label htmlFor="required">Required</Label>
           </div>
           <div className="flex flex-1 gap-4 text-muted-foreground">
-            <div className="mr-auto flex gap-2 sm:ml-auto sm:mr-0 lg:hidden">
+            <div className="mr-auto flex gap-2 sm:ml-auto sm:mr-0">
               <Button
                 variant="ghost"
                 size="icon"
@@ -89,8 +89,8 @@ export const Footer = ({element}: FooterProps) => {
             </Button>
             <div className="space-x-2 border-l pl-4 lg:ml-auto lg:border-l-0 lg:pl-0">
               <Button
-                variant="ghost"
                 size="icon"
+                variant="ghost"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDuplicateElement(element.id);

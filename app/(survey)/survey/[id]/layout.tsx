@@ -5,7 +5,7 @@ import {
   SurveyShellAside,
   SurveyShellMain,
 } from '@/components/survey-shell';
-import {sortChoices} from '@/survey/_utils/question';
+import {sortChoices} from '@/utils/element';
 import {getPublishedSurvey} from '../../_lib/get-published-survey';
 
 type SurveyLayoutProps = {

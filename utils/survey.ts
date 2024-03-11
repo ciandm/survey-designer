@@ -1,24 +1,34 @@
 import {generateId} from 'lucia';
 import {v4 as uuidv4} from 'uuid';
-import {elementTypes} from '@/lib/validations/element';
+import {choiceElementTypes, elementTypes} from '@/lib/validations/element';
 import type {
   ElementSchema,
   ElementType,
   ScreenSchema,
   ScreenType,
+  SurveyElementTypes,
 } from '@/types/element';
-import {ParsedModelType, SurveyFormConfig} from '@/types/survey';
+import {
+  CreateSurveyInputType,
+  ParsedModelType,
+  SurveyFormConfig,
+  SurveyWithParsedModelType,
+} from '@/types/survey';
 
-export function formatQuestionType(type: ElementType): string {
+export function formatElementType(type: SurveyElementTypes): string {
   switch (type) {
     case 'short_text':
-      return 'Short Text';
+      return 'Short text';
     case 'long_text':
-      return 'Long Text';
+      return 'Long text';
     case 'multiple_choice':
-      return 'Multiple Choice';
+      return 'Multiple choice';
     case 'single_choice':
-      return 'Single Choice';
+      return 'Single choice';
+    case 'thank_you_screen':
+      return 'Thank you screen';
+    case 'welcome_screen':
+      return 'Welcome screen';
     default:
       return '';
   }
@@ -29,7 +39,7 @@ export function buildNewElementHelper(
   field: Partial<ElementSchema>,
 ): ElementSchema {
   const baseField = {
-    id: `el_${generateId(12)}`,
+    id: field?.id ?? `el_${generateId(12)}`,
     ref: field?.ref ?? uuidv4(),
     text: field?.text ?? '',
     description: field?.description ?? '',
@@ -49,7 +59,7 @@ export function buildNewElementHelper(
         ...baseField,
         properties: {
           ...baseField.properties,
-          placeholder: field.properties?.placeholder || '',
+          placeholder: field.properties?.placeholder || 'Your answer here',
         },
         validations: {
           ...baseField.validations,
@@ -151,3 +161,81 @@ export const getIsElementSchema = (
 export const getIsScreenSchema = (
   element: ElementSchema | ScreenSchema,
 ): element is ScreenSchema => getIsScreenType(element.type);
+
+function duplicateElements(elements: ElementSchema[]) {
+  return elements.map((element) => ({
+    ...element,
+    id: uuidv4(),
+    ref: uuidv4(),
+    properties: {
+      ...element.properties,
+      choices:
+        element.properties.choices?.map((choice) => ({
+          ...choice,
+          id: uuidv4(),
+        })) ?? [],
+    },
+  }));
+}
+
+export function generateDuplicateSurvey(
+  survey: SurveyWithParsedModelType,
+  input: Omit<CreateSurveyInputType, 'duplicatedFrom'>,
+): Omit<SurveyWithParsedModelType, 'createdAt' | 'updatedAt' | 'id'> {
+  const {model} = survey;
+  let newTitle = input.title;
+  let newDescription = input.description;
+
+  if (!newTitle) {
+    newTitle = survey.model.title
+      ? `${survey.model.title} (Copy)`
+      : 'Untitled Survey (Copy)';
+  }
+
+  if (!newDescription) {
+    newDescription = model.description
+      ? `${model.description} (Copy)`
+      : 'Untitled Survey (Copy)';
+  }
+
+  return {
+    is_published: false,
+    userId: survey.userId,
+    model: {
+      ...survey.model,
+      title: newTitle,
+      description: newDescription,
+      elements: duplicateElements(survey.model.elements),
+    },
+  };
+}
+
+export function generateNewSurvey(
+  input: Omit<CreateSurveyInputType, 'duplicatedFrom'> & {userId: string},
+): Omit<SurveyWithParsedModelType, 'createdAt' | 'updatedAt' | 'id'> {
+  let newTitle = input.title;
+  let newDescription = input.description;
+
+  if (!newTitle) {
+    newTitle = 'Untitled Survey';
+  }
+
+  if (!newDescription) {
+    newDescription = 'Untitled Survey';
+  }
+
+  return {
+    userId: input.userId,
+    is_published: false,
+    model: {
+      title: newTitle,
+      description: newDescription,
+      elements: [],
+      screens: {
+        welcome: [],
+        thank_you: [],
+      },
+      version: 1,
+    },
+  };
+}

@@ -1,6 +1,6 @@
 import {ElementSchema, ScreenSchema} from '@/types/element';
 import {getIsElementSchema, getIsScreenSchema} from '@/utils/survey';
-import {Footer} from './footer';
+import {ActionBar} from './action-bar';
 import {QuestionEditor} from './question-editor';
 import {ScreenEditor} from './screen-editor';
 
@@ -17,7 +17,7 @@ export const ElementEditor = ({element}: ElementEditorProps) => {
         {getIsScreenSchema(element) && <ScreenEditor element={element} />}
         {getIsElementSchema(element) && (
           <QuestionEditor element={element}>
-            <Footer element={element} />
+            <ActionBar element={element} />
           </QuestionEditor>
         )}
       </div>

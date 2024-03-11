@@ -2,14 +2,17 @@ import {z} from 'zod';
 
 export const sortOrderEnum = z.enum(['asc', 'desc', 'random']);
 
-export const elementTypes = z.enum([
-  'short_text',
-  'long_text',
-  'multiple_choice',
-  'single_choice',
+export const textElementTypes = z.enum(['short_text', 'long_text']);
+export const choiceElementTypes = z.enum(['multiple_choice', 'single_choice']);
+export const screenElementTypes = z.enum([
+  'welcome_screen',
+  'thank_you_screen',
 ]);
 
-export const screenTypes = z.enum(['welcome_screen', 'thank_you_screen']);
+export const elementTypes = z.enum([
+  ...textElementTypes.options,
+  ...choiceElementTypes.options,
+]);
 
 export const choicesSchema = z.array(
   z.object({
@@ -48,7 +51,7 @@ export const screenSchema = z.object({
   id: z.string(),
   text: z.string(),
   description: z.string().optional(),
-  type: screenTypes,
+  type: screenElementTypes,
   properties: z.object({
     button_label: z.string().optional(),
   }),

@@ -5,7 +5,7 @@ import {PlusIcon} from '@heroicons/react/20/solid';
 import {DialogTitle} from '@radix-ui/react-dialog';
 import {Button} from '@/components/ui/button';
 import {Dialog, DialogContent, DialogHeader} from '@/components/ui/dialog';
-import {elementTypes, screenTypes} from '@/lib/validations/element';
+import {ELEMENT_OPTIONS} from '@/lib/constants/element';
 import {
   ElementSchema,
   ElementType,
@@ -13,12 +13,13 @@ import {
   ScreenType,
 } from '@/types/element';
 import {cn} from '@/utils/classnames';
+import {getStoreKeyForScreenType} from '@/utils/screen';
 import {
   useSurveyElements,
   useSurveyScreens,
 } from '../_store/survey-designer-store';
-import {getStoreKeyForScreenType} from '../_utils/screen';
 import {useDesignerHandlers} from './designer/designer.context';
+import {ElementTypeIcon} from './element-type-icon';
 
 type Props = {
   element: ElementSchema | ScreenSchema | null;
@@ -64,7 +65,7 @@ export const SurveyContent = ({element}: Props) => {
                 onClick={() => handleSelectElement(welcome[0].id)}
               >
                 <span className="flex items-center gap-2 rounded-sm bg-primary/30 px-2.5 py-1 text-xs font-medium text-primary">
-                  W
+                  <ElementTypeIcon type="welcome_screen" />
                 </span>
                 <span className="truncate text-xs">Welcome screen</span>
               </ContentButton>
@@ -84,6 +85,7 @@ export const SurveyContent = ({element}: Props) => {
                   onClick={() => handleSelectElement(el.id)}
                 >
                   <span className="flex items-center gap-2 rounded-sm bg-primary/30 px-2.5 py-1 text-xs font-medium text-primary">
+                    <ElementTypeIcon type={el.type} />
                     {index + 1}
                   </span>
                   <span className="truncate text-xs">{text}</span>
@@ -113,32 +115,41 @@ export const SurveyContent = ({element}: Props) => {
           </DialogHeader>
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap gap-3">
-              {Object.values(elementTypes.options).map((type) => (
-                <Button
-                  key={type}
-                  onClick={() => handleCreateElementClick({type})}
-                  variant="ghost"
-                >
-                  {type}
-                </Button>
+              {ELEMENT_OPTIONS.map(({group, options}) => (
+                <div key={group} className="flex flex-col gap-2">
+                  <h4 className="text-sm font-semibold text-foreground">
+                    {group}
+                  </h4>
+                  {options.map((option) => {
+                    const isDisabled =
+                      group === 'Screens' &&
+                      ((option.value === 'welcome_screen' &&
+                        welcome.length > 0) ||
+                        (option.value === 'thank_you_screen' &&
+                          thank_you.length > 0));
+                    return (
+                      <Button
+                        key={option.value}
+                        disabled={isDisabled}
+                        onClick={() =>
+                          group !== 'Screens'
+                            ? handleCreateElementClick({
+                                type: option.value as ElementType,
+                              })
+                            : handleCreateScreenClick({
+                                type: option.value as ScreenType,
+                              })
+                        }
+                        variant="outline"
+                        className="gap-2"
+                      >
+                        <ElementTypeIcon type={option.value} />
+                        {option.label}
+                      </Button>
+                    );
+                  })}
+                </div>
               ))}
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {Object.values(screenTypes.options).map((type) => {
-                const isDisabled =
-                  (type === 'welcome_screen' && !!welcome[0]) ||
-                  (type === 'thank_you_screen' && !!thank_you[0]);
-                return (
-                  <Button
-                    key={type}
-                    disabled={isDisabled}
-                    onClick={() => handleCreateScreenClick({type})}
-                    variant="ghost"
-                  >
-                    {type}
-                  </Button>
-                );
-              })}
             </div>
           </div>
         </DialogContent>

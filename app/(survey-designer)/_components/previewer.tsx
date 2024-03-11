@@ -13,8 +13,8 @@ import {ThankYouScreen} from '@/components/thank-you-screen';
 import {Button} from '@/components/ui/button';
 import {WelcomeScreen} from '@/components/welcome-screen';
 import {useSurvey} from '@/hooks/use-survey';
-import {sortChoices} from '@/survey/_utils/question';
 import {useSurveyModel} from '@/survey-designer/_store/survey-designer-store';
+import {sortChoices} from '@/utils/element';
 import {useDesignerTabManager} from './designer-tab-manager';
 
 export const Previewer = () => {

@@ -1,7 +1,7 @@
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
-import {getStoreKeyForScreenType} from '@/survey-designer/_utils/screen';
 import {ElementType, ScreenSchema} from '@/types/element';
+import {getStoreKeyForScreenType} from '@/utils/screen';
 import {
   useSurveyElements,
   useSurveyStoreActions,

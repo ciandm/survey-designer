@@ -1,7 +1,7 @@
 import React from 'react';
 import {Separator} from '@/components/ui/separator';
 import {ElementType, SurveyElementTypes} from '@/types/element';
-import {QuestionTypeSelect} from '../../question-type-select';
+import {ElementTypeSelect} from '../../element-type-select';
 import {SettingsField} from './settings-field';
 
 type SettingsWrapperProps = {
@@ -22,7 +22,7 @@ export const SettingsWrapper = ({
           {({id}) => (
             <>
               <SettingsField.Label>Type</SettingsField.Label>
-              <QuestionTypeSelect
+              <ElementTypeSelect
                 type={elementType}
                 onChange={(type) => onChangeElementType(type)}
                 id={id}

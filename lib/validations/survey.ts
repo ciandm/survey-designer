@@ -1,6 +1,5 @@
 import * as z from 'zod';
 import {ElementSchema} from '@/types/element';
-import {ELEMENT_TYPE} from '../constants/element';
 import {elementSchema, elementTypes, screenSchema} from './element';
 
 export const modelSchema = z.object({
@@ -50,7 +49,7 @@ export const createSingleStepValidationSchema = (elements: ElementSchema[]) => {
     .object({
       questionId: z.string(),
       value: z.array(z.string()),
-      type: z.nativeEnum(ELEMENT_TYPE),
+      type: elementTypes,
     })
     .superRefine(({questionId, type, value}, ctx) => {
       const element = elements.find((el) => el.id === questionId);
@@ -110,7 +109,7 @@ export const createMultiValidationSchema = (elements: ElementSchema[]) => {
         z.object({
           questionId: z.string(),
           value: z.array(z.string()),
-          type: z.nativeEnum(ELEMENT_TYPE),
+          type: elementTypes,
         }),
       ),
     })

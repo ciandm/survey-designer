@@ -147,20 +147,23 @@ export const createSurveyDesignerStore = (
 
           return elements;
         },
-        duplicateElement: ({id}) => {
+        duplicateElement: ({id: duplicateId}) => {
           let newElement: ElementSchema | null = null;
 
           set((state) => {
-            const element = state.model.elements.find((q) => q.id === id);
+            const element = state.model.elements.find(
+              (q) => q.id === duplicateId,
+            );
             if (!element) return state;
 
+            const {id, ...rest} = element;
             newElement = buildNewElementHelper(element.type, {
-              ...element,
+              ...rest,
               text: element.text ? `${element.text} (copy)` : '',
             });
 
             const indexOfFieldToDuplicate = state.model.elements.findIndex(
-              (q) => q.id === id,
+              (q) => q.id === duplicateId,
             );
             state.model.elements.splice(
               indexOfFieldToDuplicate + 1,
