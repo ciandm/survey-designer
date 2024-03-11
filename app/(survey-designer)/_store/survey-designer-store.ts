@@ -15,7 +15,10 @@ type SurveyDesignerStoreProps = {
 };
 
 type ElementStoreActions = {
-  insertElement: (element: Partial<ElementSchema>, index?: number) => string;
+  insertElement: (
+    element: Partial<ElementSchema>,
+    index?: number,
+  ) => ElementSchema;
   deleteElement: (element: Pick<ElementSchema, 'id'>) => ElementSchema[];
   duplicateElement: (
     element: Pick<ElementSchema, 'id'>,
@@ -118,20 +121,20 @@ export const createSurveyDesignerStore = (
           });
         },
         insertElement: (field, insertAtIndex) => {
-          const newField = buildNewElementHelper(field.type ?? 'short_text', {
+          const newElement = buildNewElementHelper(field.type ?? 'short_text', {
             ...field,
           });
 
           set((state) => {
             if (insertAtIndex !== undefined) {
-              state.model.elements.splice(insertAtIndex, 0, newField);
+              state.model.elements.splice(insertAtIndex, 0, newElement);
               return;
             }
 
-            state.model.elements.push(newField);
+            state.model.elements.push(newElement);
           });
 
-          return newField.id;
+          return newElement;
         },
         deleteElement: ({id}) => {
           let elements = get().model.elements;
@@ -144,7 +147,6 @@ export const createSurveyDesignerStore = (
           return elements;
         },
         duplicateElement: ({id}) => {
-          const newId = uuidv4();
           let newElement: ElementSchema | null = null;
 
           set((state) => {
@@ -153,7 +155,6 @@ export const createSurveyDesignerStore = (
 
             newElement = buildNewElementHelper(element.type, {
               ...element,
-              id: newId,
               text: element.text ? `${element.text} (copy)` : '',
             });
 

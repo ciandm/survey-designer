@@ -1,48 +1,55 @@
-import {ElementSchema, ScreenSchema, SelectedElement} from '@/types/element';
+import {ElementSchema, ScreenSchema} from '@/types/element';
 import {ParsedModelType} from '@/types/survey';
-import {getIsScreenType} from '@/utils/survey';
 
-export const getInitialSelectedElement = (
-  welcomeScreen: ScreenSchema,
-  surveyElements: ElementSchema[],
-) => {
+export const getInitialSelectedId = (model: ParsedModelType) => {
+  const {elements, screens} = model;
+  const welcomeScreen = screens.welcome[0];
+
   if (welcomeScreen) {
-    return {
-      id: welcomeScreen.id,
-      type: welcomeScreen.type,
-    };
+    return welcomeScreen.id;
   }
-  const firstElement = surveyElements[0];
+  const firstElement = elements[0];
   if (firstElement) {
-    return {
-      id: firstElement.id,
-      type: firstElement.type,
-    };
+    return firstElement.id;
   }
   return null;
 };
 
 type GetCurrentElementArgs = {
-  selectedElement: SelectedElement | null;
-  elements: ElementSchema[];
-  screens: {
-    welcome: ScreenSchema[];
-    thank_you: ScreenSchema[];
-  };
+  id: string;
+  model: ParsedModelType;
 };
 
-export const getElementToEdit = ({
-  selectedElement,
-  elements,
-  screens,
-}: GetCurrentElementArgs) => {
-  if (getIsScreenType(selectedElement?.type)) {
-    const key =
-      selectedElement?.type === 'thank_you_screen' ? 'thank_you' : 'welcome';
-    return screens[key].find((el) => el.id === selectedElement?.id) || null;
+function findSurveyElementById(id: string, model: ParsedModelType) {
+  const {elements, screens} = model;
+  const prefix = id.slice(0, 2);
+  switch (prefix) {
+    case 'el':
+      return elements.find((element) => element.id === id) || null;
+    case 'sc':
+      return screens.welcome.find((screen) => screen.id === id) || null;
+    default:
+      return null;
+  }
+}
+
+export const getElementByIdWithFallback = ({
+  id,
+  model,
+}: GetCurrentElementArgs): ElementSchema | ScreenSchema | null => {
+  let element = null;
+
+  element = findSurveyElementById(id, model);
+
+  if (!element) {
+    const initialId = getInitialSelectedId(model);
+
+    if (initialId) {
+      element = findSurveyElementById(initialId, model);
+    }
   }
 
-  return elements.find((el) => el.id === selectedElement?.id) || null;
+  return element;
 };
 
 export function getNextElementToSelect(

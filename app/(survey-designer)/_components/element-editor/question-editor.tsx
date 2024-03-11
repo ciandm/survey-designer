@@ -64,9 +64,7 @@ export const QuestionEditor = ({element, children}: QuestionEditorProps) => {
                     type,
                   })
                 }
-                onOpenChange={(open) =>
-                  open && handleSelectElement(element.id, element.type)
-                }
+                onOpenChange={(open) => open && handleSelectElement(element.id)}
               />
             </div>
             <div className="flex flex-1 flex-col gap-2 rounded-md border border-input">

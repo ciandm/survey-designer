@@ -12,13 +12,12 @@ import {useDesignerHandlers} from './designer/designer.context';
 
 type Props = {
   element: ElementSchema | ScreenSchema | null;
-  handleSelectElement: (id: string, type: SurveyElementTypes) => void;
 };
 
-export const SurveyContent = ({handleSelectElement, element}: Props) => {
+export const SurveyContent = ({element}: Props) => {
   const elements = useSurveyElements();
   const {welcome} = useSurveyScreens();
-  const {handleCreateElement} = useDesignerHandlers();
+  const {handleCreateElement, handleSelectElement} = useDesignerHandlers();
 
   return (
     <div className="flex flex-col">
@@ -37,9 +36,7 @@ export const SurveyContent = ({handleSelectElement, element}: Props) => {
           <li className="w-full">
             <ContentButton
               isActive={element?.id === welcome[0].id}
-              onClick={() =>
-                handleSelectElement(welcome[0].id, 'welcome_screen')
-              }
+              onClick={() => handleSelectElement(welcome[0].id)}
             >
               <span className="flex items-center gap-2 rounded-sm bg-primary/30 px-2.5 py-1 text-xs font-medium text-primary">
                 W
@@ -59,7 +56,7 @@ export const SurveyContent = ({handleSelectElement, element}: Props) => {
             >
               <ContentButton
                 isActive={element?.id === el.id}
-                onClick={() => handleSelectElement(el.id, el.type)}
+                onClick={() => handleSelectElement(el.id)}
               >
                 <span className="flex items-center gap-2 rounded-sm bg-primary/30 px-2.5 py-1 text-xs font-medium text-primary">
                   {index + 1}

@@ -1,40 +1,35 @@
 import {useCallback, useMemo, useState} from 'react';
+import {useQueryState} from 'nuqs';
 import {
   useSurveyModel,
   useSurveyStoreActions,
 } from '@/survey-designer/_store/survey-designer-store';
+import {ElementType} from '@/types/element';
 import {
-  ElementType,
-  SelectedElement,
-  SurveyElementTypes,
-} from '@/types/element';
-import {
-  getElementToEdit,
-  getInitialSelectedElement,
+  getElementByIdWithFallback,
+  getInitialSelectedId,
   getNextElementToSelect,
 } from './use-designer.utils';
 
 export const useDesigner = () => {
   const model = useSurveyModel();
-  const {elements, screens} = model;
+  const {elements} = model;
   const storeActions = useSurveyStoreActions();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [selectedElement, setSelectedElement] =
-    useState<SelectedElement | null>(() =>
-      getInitialSelectedElement(screens.welcome[0], elements),
-    );
+  const [selectedId, setSelectedId] = useQueryState('id', {
+    defaultValue: getInitialSelectedId(model) ?? '',
+  });
 
-  const element = getElementToEdit({
-    selectedElement,
-    elements,
-    screens,
+  const element = getElementByIdWithFallback({
+    id: selectedId ?? '',
+    model,
   });
 
   const handleSelectElement = useCallback(
-    (id: string, type: SurveyElementTypes) => {
-      setSelectedElement({id, type});
+    (id: string) => {
+      setSelectedId(id);
     },
-    [],
+    [setSelectedId],
   );
 
   const handleSettingsClick = useCallback(() => {
@@ -47,24 +42,24 @@ export const useDesigner = () => {
       if (elementsBeforeDelete.length === 1) return;
 
       storeActions.deleteElement({id: removeId});
-      if (selectedElement?.id === removeId) {
-        const {id, type} = getNextElementToSelect(model, removeId);
+      if (selectedId === removeId) {
+        const {id} = getNextElementToSelect(model, removeId);
 
-        setSelectedElement({id, type});
+        setSelectedId(id);
       }
     },
-    [storeActions, model, selectedElement?.id, elements],
+    [storeActions, model, selectedId, elements, setSelectedId],
   );
 
   const handleDuplicateElement = useCallback(
     (duplicateId: string) => {
-      const {id, type} = storeActions.duplicateElement({id: duplicateId}) ?? {};
+      const {id} = storeActions.duplicateElement({id: duplicateId}) ?? {};
 
-      if (id && type) {
-        setSelectedElement({id, type});
+      if (id) {
+        setSelectedId(id);
       }
     },
-    [storeActions],
+    [storeActions, setSelectedId],
   );
 
   const handleCreateElement = useCallback(
@@ -75,15 +70,15 @@ export const useDesigner = () => {
       type?: ElementType;
       index?: number;
     } = {}) => {
-      const insertedElementId = storeActions.insertElement(
+      const {id} = storeActions.insertElement(
         {
           type,
         },
         index,
       );
-      setSelectedElement({id: insertedElementId, type});
+      setSelectedId(id);
     },
-    [storeActions],
+    [storeActions, setSelectedId],
   );
 
   const handlers = useMemo(

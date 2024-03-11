@@ -16,10 +16,7 @@ export const Designer = () => {
       <DesignerHandlerProvider value={{...handlers}}>
         <div className="flex w-full flex-1 items-stretch">
           <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] max-w-[20rem] flex-1 shrink-0 border-r bg-white lg:block">
-            <SurveyContent
-              handleSelectElement={handlers.handleSelectElement}
-              element={element}
-            />
+            <SurveyContent element={element} />
           </aside>
 
           <main className="flex flex-1 flex-col bg-accent">

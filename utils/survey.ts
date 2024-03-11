@@ -1,3 +1,4 @@
+import {generateId} from 'lucia';
 import {v4 as uuidv4} from 'uuid';
 import {elementTypes} from '@/lib/validations/element';
 import type {
@@ -31,7 +32,7 @@ export function buildNewElementHelper(
     case 'long_text':
     case 'short_text':
       return {
-        id: field?.id ?? uuidv4(),
+        id: `el_${generateId(12)}`,
         ref: field?.ref ?? uuidv4(),
         text: field?.text ?? '',
         description: field?.description ?? '',
@@ -69,6 +70,33 @@ export function buildNewElementHelper(
       };
     default:
       throw new Error('Invalid field type');
+  }
+}
+
+export function buildNewScreenHelper(type: ScreenType): ScreenSchema {
+  switch (type) {
+    case 'welcome_screen':
+      return {
+        id: `sc_${generateId(12)}`,
+        type,
+        text: 'Welcome to the survey!',
+        description: '',
+        properties: {
+          button_label: 'Start survey',
+        },
+      };
+    case 'thank_you_screen':
+      return {
+        id: `sc_${generateId(12)}`,
+        type,
+        text: 'Thank you for completing the survey!',
+        description: '',
+        properties: {
+          button_label: 'Submit',
+        },
+      };
+    default:
+      throw new Error('Invalid screen type');
   }
 }
 
