@@ -1,14 +1,10 @@
-import {
-  ElementSchemaType,
-  ScreenSchemaType,
-  SelectedElement,
-} from '@/types/element';
+import {ElementSchema, ScreenSchema, SelectedElement} from '@/types/element';
 import {ParsedModelType} from '@/types/survey';
 import {getIsScreenType} from '@/utils/survey';
 
 export const getInitialSelectedElement = (
-  welcomeScreen: ScreenSchemaType,
-  surveyElements: ElementSchemaType[],
+  welcomeScreen: ScreenSchema,
+  surveyElements: ElementSchema[],
 ) => {
   if (welcomeScreen) {
     return {
@@ -28,24 +24,25 @@ export const getInitialSelectedElement = (
 
 type GetCurrentElementArgs = {
   selectedElement: SelectedElement | null;
-  surveyElements: ElementSchemaType[];
-  surveyScreens: {welcome: ScreenSchemaType[]; thank_you: ScreenSchemaType[]};
+  elements: ElementSchema[];
+  screens: {
+    welcome: ScreenSchema[];
+    thank_you: ScreenSchema[];
+  };
 };
 
 export const getElementToEdit = ({
   selectedElement,
-  surveyElements,
-  surveyScreens,
+  elements,
+  screens,
 }: GetCurrentElementArgs) => {
   if (getIsScreenType(selectedElement?.type)) {
     const key =
       selectedElement?.type === 'thank_you_screen' ? 'thank_you' : 'welcome';
-    return (
-      surveyScreens[key].find((el) => el.id === selectedElement?.id) || null
-    );
+    return screens[key].find((el) => el.id === selectedElement?.id) || null;
   }
 
-  return surveyElements.find((el) => el.id === selectedElement?.id) || null;
+  return elements.find((el) => el.id === selectedElement?.id) || null;
 };
 
 export function getNextElementToSelect(

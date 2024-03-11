@@ -1,9 +1,9 @@
 import {useEffect, useRef, useState} from 'react';
 import {useSurveyStoreActions} from '@/survey-designer/_store/survey-designer-store';
-import {ChoicesSchemaType} from '@/types/element';
+import {ChoicesSchema} from '@/types/element';
 
 type UseChoicesProps = {
-  choices: ChoicesSchemaType;
+  choices: ChoicesSchema;
   elementId: string;
 };
 

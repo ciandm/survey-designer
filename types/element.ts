@@ -8,15 +8,18 @@ import {
   sortOrderEnum,
 } from '@/lib/validations/element';
 
-export type ElementSchemaType = z.infer<typeof elementSchema>;
-export type ChoicesSchemaType = z.infer<typeof choicesSchema>;
-export type SortOrderType = z.infer<typeof sortOrderEnum>;
-export type SurveyElementType = z.infer<typeof elementTypes>;
-export type ScreenSchemaType = z.infer<typeof screenSchema>;
-export type ScreenElementType = z.infer<typeof screenTypes>;
-export type AllElementTypes = SurveyElementType | ScreenElementType;
+export type ChoicesSchema = z.infer<typeof choicesSchema>;
+export type ChoicesSortOrder = z.infer<typeof sortOrderEnum>;
+
+export type ElementType = z.infer<typeof elementTypes>;
+export type ScreenType = z.infer<typeof screenTypes>;
+
+export type ElementSchema = z.infer<typeof elementSchema>;
+export type ScreenSchema = z.infer<typeof screenSchema>;
+
+export type SurveyElementTypes = ElementType | ScreenType;
 
 export type SelectedElement = {
   id: string;
-  type: ElementSchemaType['type'] | ScreenSchemaType['type'];
+  type: SurveyElementTypes;
 };

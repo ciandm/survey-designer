@@ -13,11 +13,11 @@ import {
   useSurveyElements,
   useSurveyStoreActions,
 } from '@/survey-designer/_store/survey-designer-store';
-import {ElementSchemaType} from '@/types/element';
+import {ElementSchema} from '@/types/element';
 import {useDesignerHandlers} from '../designer/designer.context';
 
 type FooterProps = {
-  element: ElementSchemaType;
+  element: ElementSchema;
 };
 
 export const Footer = ({element}: FooterProps) => {

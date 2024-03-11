@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import {ElementSchemaType} from '@/types/element';
+import {ElementSchema} from '@/types/element';
 import {ELEMENT_TYPE} from '../constants/element';
 import {elementSchema, elementTypes, screenSchema} from './element';
 
@@ -45,9 +45,7 @@ export const saveResponsesInput = z.object({
   surveyId: z.string(),
 });
 
-export const createSingleStepValidationSchema = (
-  elements: ElementSchemaType[],
-) => {
+export const createSingleStepValidationSchema = (elements: ElementSchema[]) => {
   return z
     .object({
       questionId: z.string(),
@@ -105,7 +103,7 @@ export const createSingleStepValidationSchema = (
     });
 };
 
-export const createMultiValidationSchema = (elements: ElementSchemaType[]) => {
+export const createMultiValidationSchema = (elements: ElementSchema[]) => {
   return z
     .object({
       fields: z.array(

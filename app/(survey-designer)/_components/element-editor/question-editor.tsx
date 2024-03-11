@@ -8,7 +8,7 @@ import {
   useSurveyElements,
   useSurveyStoreActions,
 } from '@/survey-designer/_store/survey-designer-store';
-import {ElementSchemaType} from '@/types/element';
+import {ElementSchema} from '@/types/element';
 import {AddChoiceButton} from '../choices/add-choice-button';
 import {Choices} from '../choices/choices';
 import {ChoicesList} from '../choices/choices-list';
@@ -16,7 +16,7 @@ import {useDesignerHandlers} from '../designer/designer.context';
 import {QuestionTypeSelect} from '../question-type-select';
 
 type QuestionEditorProps = {
-  element: ElementSchemaType;
+  element: ElementSchema;
   children?: React.ReactNode;
 };
 

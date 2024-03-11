@@ -1,14 +1,5 @@
 import {z} from 'zod';
 
-export const choicesSchema = z.array(
-  z.object({
-    id: z.string().min(1).max(255),
-    value: z.string(),
-  }),
-);
-
-export const screenTypes = z.enum(['welcome_screen', 'thank_you_screen']);
-
 export const sortOrderEnum = z.enum(['asc', 'desc', 'random']);
 
 export const elementTypes = z.enum([
@@ -29,8 +20,16 @@ export const elementTypes = z.enum([
   'statement',
   'section',
 ]);
+export const screenTypes = z.enum(['welcome_screen', 'thank_you_screen']);
 
-const properties = z.object({
+export const choicesSchema = z.array(
+  z.object({
+    id: z.string().min(1).max(255),
+    value: z.string(),
+  }),
+);
+
+const elementProperties = z.object({
   choices: choicesSchema.optional(),
   placeholder: z.string().optional(),
   allow_other_option: z.boolean().optional(),
@@ -38,7 +37,7 @@ const properties = z.object({
   required_message: z.string().default('This field is required').optional(),
 });
 
-const validations = z.object({
+const elementValidations = z.object({
   required: z.boolean().default(false).optional(),
   min_characters: z.number().optional(),
   max_characters: z.number().optional(),
@@ -52,8 +51,8 @@ export const elementSchema = z.object({
   type: elementTypes,
   description: z.string().optional(),
   ref: z.string(),
-  properties,
-  validations,
+  properties: elementProperties,
+  validations: elementValidations,
 });
 
 export const screenSchema = z.object({

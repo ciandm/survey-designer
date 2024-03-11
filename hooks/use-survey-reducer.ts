@@ -1,5 +1,5 @@
 import {useReducer} from 'react';
-import {ElementSchemaType} from '@/types/element';
+import {ElementSchema} from '@/types/element';
 import {
   SurveyFormState,
   SurveyResponsesMap,
@@ -16,13 +16,13 @@ type SurveyReducerAction =
   | {
       type: 'START_SURVEY';
       payload: {
-        initialElement: ElementSchemaType | null;
+        initialElement: ElementSchema | null;
       };
     }
   | {
       type: 'RESTART_SURVEY';
       payload: {
-        initialElement: ElementSchemaType;
+        initialElement: ElementSchema;
       };
     }
   | {
@@ -34,14 +34,14 @@ type SurveyReducerAction =
   | {
       type: 'NEXT_ELEMENT';
       payload: {
-        nextElement: ElementSchemaType;
+        nextElement: ElementSchema;
         data: SurveyFormState;
       };
     }
   | {
       type: 'PREVIOUS_ELEMENT';
       payload: {
-        previousElement: ElementSchemaType;
+        previousElement: ElementSchema;
       };
     };
 

@@ -1,13 +1,14 @@
 'use client';
 
 import React from 'react';
-import {ElementSchemaType, ScreenSchemaType} from '@/types/element';
-import {getIsElementSchema} from '@/utils/survey';
+import {ElementSchema, ScreenSchema} from '@/types/element';
+import {getIsElementSchema, getIsScreenSchema} from '@/utils/survey';
 import {GeneralSettings} from './components/general-settings';
 import {QuestionSettings} from './components/question-settings';
+import {ScreenSettings} from './components/screen-settings';
 
 type Props = {
-  element: ElementSchemaType | ScreenSchemaType | null;
+  element: ElementSchema | ScreenSchema | null;
 };
 
 export const SurveySettings = ({element}: Props) => {
@@ -18,6 +19,7 @@ export const SurveySettings = ({element}: Props) => {
 
   return (
     <React.Fragment key={key}>
+      {getIsScreenSchema(element) && <ScreenSettings element={element} />}
       {getIsElementSchema(element) && <QuestionSettings element={element} />}
     </React.Fragment>
   );

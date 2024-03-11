@@ -9,12 +9,12 @@ import {
 import {Input} from '@/components/ui/input';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Textarea} from '@/components/ui/textarea';
-import {ElementSchemaType} from '@/types/element';
+import {ElementSchema} from '@/types/element';
 import {SurveyFormState} from '@/types/survey';
 
 type FieldProps = {
   field: ControllerRenderProps<SurveyFormState, 'value'>;
-  element: ElementSchemaType;
+  element: ElementSchema;
 };
 
 export const TypeInputField = ({field, element}: FieldProps) => {
@@ -45,7 +45,7 @@ const TextField = ({field, element}: FieldProps) => {
 };
 
 type MultipleChoiceFieldProps = {
-  element: ElementSchemaType;
+  element: ElementSchema;
   field: ControllerRenderProps<SurveyFormState, 'value'>;
   index: number;
 };

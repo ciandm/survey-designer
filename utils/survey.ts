@@ -1,14 +1,14 @@
 import {v4 as uuidv4} from 'uuid';
 import {elementTypes} from '@/lib/validations/element';
 import type {
-  ElementSchemaType,
-  ScreenElementType,
-  ScreenSchemaType,
-  SurveyElementType,
+  ElementSchema,
+  ElementType,
+  ScreenSchema,
+  ScreenType,
 } from '@/types/element';
 import {ParsedModelType, SurveyFormConfig} from '@/types/survey';
 
-export function formatQuestionType(type: SurveyElementType): string {
+export function formatQuestionType(type: ElementType): string {
   switch (type) {
     case 'short_text':
       return 'Short Text';
@@ -24,9 +24,9 @@ export function formatQuestionType(type: SurveyElementType): string {
 }
 
 export function buildNewElementHelper(
-  type: SurveyElementType,
-  field: Partial<ElementSchemaType>,
-): ElementSchemaType {
+  type: ElementType,
+  field: Partial<ElementSchema>,
+): ElementSchema {
   switch (type) {
     case 'long_text':
     case 'short_text':
@@ -93,8 +93,8 @@ export const buildSurveyConfig = (model: ParsedModelType): SurveyFormConfig => {
 };
 
 export const getIsElementType = (
-  type?: SurveyElementType | ScreenElementType,
-): type is SurveyElementType => {
+  type?: ElementType | ScreenType,
+): type is ElementType => {
   if (type === 'welcome_screen' || type === 'thank_you_screen' || !type)
     return false;
   const options = elementTypes.options;
@@ -102,16 +102,16 @@ export const getIsElementType = (
 };
 
 export const getIsScreenType = (
-  type?: SurveyElementType | ScreenElementType,
-): type is ScreenElementType => {
+  type?: ElementType | ScreenType,
+): type is ScreenType => {
   if (type === 'welcome_screen' || type === 'thank_you_screen') return true;
   return false;
 };
 
 export const getIsElementSchema = (
-  element: ElementSchemaType | ScreenSchemaType,
-): element is ElementSchemaType => getIsElementType(element.type);
+  element: ElementSchema | ScreenSchema,
+): element is ElementSchema => getIsElementType(element.type);
 
 export const getIsScreenSchema = (
-  element: ElementSchemaType | ScreenSchemaType,
-): element is ScreenSchemaType => getIsScreenType(element.type);
+  element: ElementSchema | ScreenSchema,
+): element is ScreenSchema => getIsScreenType(element.type);

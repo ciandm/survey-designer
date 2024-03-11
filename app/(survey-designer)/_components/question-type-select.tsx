@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {ELEMENT_TYPE} from '@/lib/constants/element';
-import {ElementSchemaType, SurveyElementType} from '@/types/element';
+import {ElementSchema, ElementType, SurveyElementTypes} from '@/types/element';
 import {formatQuestionType} from '@/utils/survey';
 
 const questionTypeOptions = Object.values(ELEMENT_TYPE).map((value) => ({
@@ -18,8 +18,9 @@ const questionTypeOptions = Object.values(ELEMENT_TYPE).map((value) => ({
 type QuestionTypeSelectProps = {
   id?: string;
   className?: string;
-  element: ElementSchemaType;
-  onChange: (type: SurveyElementType) => void;
+  element?: ElementSchema;
+  type?: SurveyElementTypes;
+  onChange: (type: ElementType) => void;
   onOpenChange?: (open: boolean) => void;
 };
 
@@ -27,17 +28,22 @@ export const QuestionTypeSelect = ({
   id,
   className,
   element,
+  type,
   onChange,
   onOpenChange,
 }: QuestionTypeSelectProps) => {
+  const initType = element?.type ?? type;
+
   return (
     <Select
-      value={element?.type ?? ELEMENT_TYPE.short_text}
-      onValueChange={(value) => onChange(value as SurveyElementType)}
+      value={initType ?? ELEMENT_TYPE.short_text}
+      onValueChange={(value) => onChange(value as ElementType)}
       onOpenChange={onOpenChange}
     >
       <SelectTrigger id={id} className={className}>
-        <SelectValue placeholder="Select a element type" />
+        <SelectValue placeholder="Select a element type">
+          {initType}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent id={id}>
         <SelectGroup>

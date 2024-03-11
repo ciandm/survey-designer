@@ -1,11 +1,11 @@
 import React, {useMemo} from 'react';
-import {ChoicesSchemaType} from '@/types/element';
+import {ChoicesSchema} from '@/types/element';
 import {ChoicesContextProvider} from './choices.context';
 import {useChoices} from './use-choices';
 
 type ChoicesProps = {
   children: React.ReactNode;
-  choices?: ChoicesSchemaType;
+  choices?: ChoicesSchema;
   elementId: string;
 };
 

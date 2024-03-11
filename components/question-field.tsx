@@ -1,6 +1,6 @@
 import {ErrorMessage} from '@hookform/error-message';
 import {useSurveyFormContext} from '@/hooks/use-survey';
-import {ElementSchemaType} from '@/types/element';
+import {ElementSchema} from '@/types/element';
 import {cn} from '@/utils/classnames';
 import {
   FormDescription,
@@ -13,7 +13,7 @@ import {TypeInputField} from './type-field';
 
 type QuestionFieldProps = {
   index: number;
-  element: ElementSchemaType;
+  element: ElementSchema;
 };
 
 export const QuestionField = ({index, element}: QuestionFieldProps) => {

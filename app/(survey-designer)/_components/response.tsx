@@ -16,7 +16,7 @@ import {
 import {useToast} from '@/components/ui/use-toast';
 import {responsesSchema} from '@/lib/validations/survey';
 import {useDeleteSurveyResult} from '@/survey-designer/_hooks/use-delete-response';
-import {ChoicesSchemaType} from '@/types/element';
+import {ChoicesSchema} from '@/types/element';
 import {SurveyWithParsedModelType} from '@/types/survey';
 
 type ResponseProps = {
@@ -129,7 +129,7 @@ export const Response = ({surveyResult, survey}: ResponseProps) => {
 
 function getResponseValueByResponseId(
   responseId: string,
-  choices: ChoicesSchemaType = [],
+  choices: ChoicesSchema = [],
 ) {
   const response = choices.find((choice) => choice.id === responseId);
   if (!response) return null;

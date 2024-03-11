@@ -1,4 +1,4 @@
-import {ChoicesSchemaType} from '@/types/element';
+import {ChoicesSchema} from '@/types/element';
 import {createContext} from '@/utils/context';
 
 type Context = {
@@ -13,7 +13,7 @@ type Context = {
     handleInputKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     handleRemoveAll: () => void;
   };
-  choices: ChoicesSchemaType;
+  choices: ChoicesSchema;
   elementId: string;
 };
 

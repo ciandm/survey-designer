@@ -1,8 +1,8 @@
 import {v4 as uuidv4} from 'uuid';
-import {ElementSchemaType} from '@/types/element';
+import {ElementSchema} from '@/types/element';
 import {CreateSurveyInputType, SurveyWithParsedModelType} from '@/types/survey';
 
-function duplicateElements(elements: ElementSchemaType[]) {
+function duplicateElements(elements: ElementSchema[]) {
   return elements.map((element) => ({
     ...element,
     id: uuidv4(),

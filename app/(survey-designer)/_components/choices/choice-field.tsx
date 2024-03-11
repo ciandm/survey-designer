@@ -10,13 +10,13 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {useSurveyStoreActions} from '@/survey-designer/_store/survey-designer-store';
-import {ChoicesSchemaType} from '@/types/element';
+import {ChoicesSchema} from '@/types/element';
 
 type ChoiceFieldProps = {
   handleRemoveChoice: (id: string) => void;
   handleInputKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  choices: ChoicesSchemaType;
-  choice: ChoicesSchemaType[number];
+  choices: ChoicesSchema;
+  choice: ChoicesSchema[number];
   index: number;
   focusInputs: React.MutableRefObject<HTMLInputElement[]>;
   elementId: string;

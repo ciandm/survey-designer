@@ -2,11 +2,7 @@
 
 import {PlusIcon} from '@heroicons/react/20/solid';
 import {Button} from '@/components/ui/button';
-import {
-  AllElementTypes,
-  ElementSchemaType,
-  ScreenSchemaType,
-} from '@/types/element';
+import {ElementSchema, ScreenSchema, SurveyElementTypes} from '@/types/element';
 import {cn} from '@/utils/classnames';
 import {
   useSurveyElements,
@@ -15,8 +11,8 @@ import {
 import {useDesignerHandlers} from './designer/designer.context';
 
 type Props = {
-  element: ElementSchemaType | ScreenSchemaType | null;
-  handleSelectElement: (id: string, type: AllElementTypes) => void;
+  element: ElementSchema | ScreenSchema | null;
+  handleSelectElement: (id: string, type: SurveyElementTypes) => void;
 };
 
 export const SurveyContent = ({handleSelectElement, element}: Props) => {

@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {ELEMENT_CHOICE_SORT_ORDER_OPTIONS} from '@/lib/constants/element';
-import {ElementSchemaType} from '@/types/element';
+import {ElementSchema} from '@/types/element';
 import {useSurveyStoreActions} from '../../../_store/survey-designer-store';
 import {AddChoiceButton} from '../../choices/add-choice-button';
 import {Choices} from '../../choices/choices';
@@ -25,13 +25,13 @@ import {ChoicesList} from '../../choices/choices-list';
 import {RemoveAllChoicesButton} from '../../choices/remove-all-choices-button';
 import {SettingsField} from './settings-field';
 
-export const ChoicesSettings = ({element}: {element: ElementSchemaType}) => {
+export const ChoicesSettings = ({element}: {element: ElementSchema}) => {
   const {updateElement} = useSurveyStoreActions();
   const choices = element.properties.choices ?? [];
 
   const handleMinimumSelectionBlur = (
     value: string,
-    element: ElementSchemaType,
+    element: ElementSchema,
   ) => {
     const minSelections = parseInt(value);
 
@@ -45,7 +45,7 @@ export const ChoicesSettings = ({element}: {element: ElementSchemaType}) => {
 
   const handleMaximumSelectionBlur = (
     value: string,
-    element: ElementSchemaType,
+    element: ElementSchema,
   ) => {
     const currentMaxSelections = element.validations.max_selections ?? 0;
     const currentMinSelections = element.validations.min_selections ?? 0;

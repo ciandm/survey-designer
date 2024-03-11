@@ -1,4 +1,4 @@
-import {ElementSchemaType, ScreenSchemaType} from '@/types/element';
+import {ElementSchema, ScreenSchema} from '@/types/element';
 import {
   getIsElementSchema,
   getIsElementType,
@@ -9,7 +9,7 @@ import {Footer} from './footer';
 import {QuestionEditor} from './question-editor';
 
 type ElementEditorProps = {
-  element: ElementSchemaType | ScreenSchemaType | null;
+  element: ElementSchema | ScreenSchema | null;
 };
 
 export const ElementEditor = ({element}: ElementEditorProps) => {

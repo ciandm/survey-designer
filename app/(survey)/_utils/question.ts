@@ -1,16 +1,16 @@
 import {ID_PREFIXES} from '@/lib/constants/element';
-import {ChoicesSchemaType, ElementSchemaType} from '@/types/element';
+import {ChoicesSchema, ElementSchema} from '@/types/element';
 import {ParsedModelType} from '@/types/survey';
 
 export const getElementIndex = (
-  elements: ElementSchemaType[],
+  elements: ElementSchema[],
   elementId?: string,
 ) => {
   return elements.findIndex((q) => q.id === elementId);
 };
 
 export const getNextElement = (
-  elements: ElementSchemaType[],
+  elements: ElementSchema[],
   elementId?: string,
 ) => {
   const index = getElementIndex(elements, elementId);
@@ -18,7 +18,7 @@ export const getNextElement = (
 };
 
 export const getPreviousElement = (
-  elements: ElementSchemaType[],
+  elements: ElementSchema[],
   elementId?: string,
 ) => {
   const index = getElementIndex(elements, elementId);
@@ -26,22 +26,19 @@ export const getPreviousElement = (
 };
 
 export const getElementById = (
-  elements: ElementSchemaType[],
+  elements: ElementSchema[],
   elementId?: string,
 ) => {
   return elements.find((q) => q.id === elementId);
 };
 
-export const getCanGoBack = (
-  elements: ElementSchemaType[],
-  elementId?: string,
-) => {
+export const getCanGoBack = (elements: ElementSchema[], elementId?: string) => {
   const index = getElementIndex(elements, elementId);
   return index > 0;
 };
 
 export const getCanGoForward = (
-  elements: ElementSchemaType[],
+  elements: ElementSchema[],
   elementId?: string,
 ) => {
   const index = getElementIndex(elements, elementId);
@@ -49,7 +46,7 @@ export const getCanGoForward = (
 };
 
 export const getIsLastElement = (
-  elements: ElementSchemaType[],
+  elements: ElementSchema[],
   elementId?: string,
 ) => {
   const index = getElementIndex(elements, elementId);
@@ -57,7 +54,7 @@ export const getIsLastElement = (
 };
 
 export const getElementStates = (
-  elements: ElementSchemaType[],
+  elements: ElementSchema[],
   elementId: string,
 ) => {
   const canGoBack = getCanGoBack(elements, elementId);
@@ -77,7 +74,7 @@ export const getElementStates = (
   };
 };
 
-function hasChoices(element: ElementSchemaType) {
+function hasChoices(element: ElementSchema) {
   return element.type === 'multiple_choice' || element.type === 'single_choice';
 }
 
@@ -109,7 +106,7 @@ export function sortChoices(model: ParsedModelType): ParsedModelType {
   return copiedSchema;
 }
 
-function randomiseChoices(choices: ChoicesSchemaType = []) {
+function randomiseChoices(choices: ChoicesSchema = []) {
   const copiedChoices = [...choices];
 
   return copiedChoices.sort((choice) => {

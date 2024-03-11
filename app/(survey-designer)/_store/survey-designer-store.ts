@@ -2,7 +2,7 @@ import {isEqual, merge, omitBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import {createStore, StoreApi, useStore} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
-import {ElementSchemaType, ScreenSchemaType} from '@/types/element';
+import {ElementSchema, ScreenSchema} from '@/types/element';
 import {ParsedModelType, SurveyWithParsedModelType} from '@/types/survey';
 import {createContext} from '@/utils/context';
 import {buildNewElementHelper} from '@/utils/survey';
@@ -15,21 +15,16 @@ type SurveyDesignerStoreProps = {
 };
 
 type ElementStoreActions = {
-  insertElement: (
-    element: Partial<ElementSchemaType>,
-    index?: number,
-  ) => string;
-  deleteElement: (
-    element: Pick<ElementSchemaType, 'id'>,
-  ) => ElementSchemaType[];
+  insertElement: (element: Partial<ElementSchema>, index?: number) => string;
+  deleteElement: (element: Pick<ElementSchema, 'id'>) => ElementSchema[];
   duplicateElement: (
-    element: Pick<ElementSchemaType, 'id'>,
-  ) => ElementSchemaType | null;
-  changeElementType: (element: Pick<ElementSchemaType, 'id' | 'type'>) => void;
-  updateElement: (element: Partial<ElementSchemaType> & {id: string}) => void;
+    element: Pick<ElementSchema, 'id'>,
+  ) => ElementSchema | null;
+  changeElementType: (element: Pick<ElementSchema, 'id' | 'type'>) => void;
+  updateElement: (element: Partial<ElementSchema> & {id: string}) => void;
   setElements: (
     elements:
-      | ElementSchemaType[]
+      | ElementSchema[]
       | ((fn: ParsedModelType['elements']) => ParsedModelType['elements']),
   ) => void;
 };
@@ -44,7 +39,7 @@ type QuestionChoiceStoreActions = {
   }) => void;
   moveChoices: (params: {
     elementId: string;
-    newChoices: NonNullable<ElementSchemaType['properties']['choices']>;
+    newChoices: NonNullable<ElementSchema['properties']['choices']>;
   }) => void;
   deleteQuestionChoice: (params: {elementId: string; choiceId: string}) => void;
   deleteChoices: (params: {elementId: string}) => void;
@@ -66,13 +61,14 @@ type SurveySchemaStoreActions = {
 type SurveyScreenStoreActions = {
   insertScreen: (
     screen: 'welcome' | 'thank_you',
-    options: ScreenSchemaType,
+    options: ScreenSchema,
   ) => void;
   updateScreen: (
     screen: 'welcome' | 'thank_you',
     id: string,
-    options: Partial<ScreenSchemaType>,
+    options: Partial<ScreenSchema>,
   ) => void;
+  removeScreen: (screen: 'welcome' | 'thank_you', id: string) => void;
 };
 
 type SurveyDesignerStoreActions = SurveySchemaStoreActions &
@@ -149,7 +145,7 @@ export const createSurveyDesignerStore = (
         },
         duplicateElement: ({id}) => {
           const newId = uuidv4();
-          let newElement: ElementSchemaType | null = null;
+          let newElement: ElementSchema | null = null;
 
           set((state) => {
             const element = state.model.elements.find((q) => q.id === id);
@@ -183,7 +179,7 @@ export const createSurveyDesignerStore = (
               (q) => q.id === field.id,
             );
 
-            const newField: ElementSchemaType = {
+            const newField: ElementSchema = {
               ...fieldToUpdate,
               ...field,
               properties: omitBy(
@@ -229,7 +225,7 @@ export const createSurveyDesignerStore = (
               (q) => q.id === elementId,
             );
 
-            const newField: ElementSchemaType = {
+            const newField: ElementSchema = {
               ...fieldToUpdate,
               properties: {
                 ...fieldToUpdate.properties,
@@ -353,6 +349,13 @@ export const createSurveyDesignerStore = (
         insertScreen: (screen, options) => {
           set((state) => {
             state.model.screens[screen].push(options);
+          });
+        },
+        removeScreen: (screen, id) => {
+          set((state) => {
+            state.model.screens[screen] = state.model.screens[screen].filter(
+              (s) => s.id !== id,
+            );
           });
         },
       },

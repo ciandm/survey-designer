@@ -26,7 +26,7 @@ export const Designer = () => {
             <ElementEditor element={element} />
           </main>
 
-          <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] w-full max-w-sm shrink-0 flex-col overflow-auto border-l p-4 lg:block">
+          <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] w-full max-w-sm shrink-0 flex-col overflow-auto border-l lg:block">
             <SurveySettings element={element} />
           </aside>
         </div>
