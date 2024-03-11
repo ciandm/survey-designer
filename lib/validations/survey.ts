@@ -1,19 +1,15 @@
 import * as z from 'zod';
 import {ElementSchemaType} from '@/types/element';
 import {ELEMENT_TYPE} from '../constants/element';
-import {elementSchema} from './element';
-
-export const screenSchema = z.object({
-  message: z.string().nullable(),
-});
+import {elementSchema, elementTypes, screenSchema} from './element';
 
 export const modelSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
   elements: z.array(elementSchema),
   screens: z.object({
-    welcome: screenSchema,
-    thank_you: screenSchema,
+    welcome: z.array(screenSchema),
+    thank_you: z.array(screenSchema),
   }),
   version: z.number().default(1),
 });
@@ -39,7 +35,7 @@ export const deleteSurveyInput = publishSurveyInput.pick({surveyId: true});
 export const responseSchema = z.object({
   questionId: z.string(),
   value: z.array(z.string()),
-  type: z.nativeEnum(ELEMENT_TYPE),
+  type: elementTypes,
 });
 
 export const responsesSchema = z.array(responseSchema);

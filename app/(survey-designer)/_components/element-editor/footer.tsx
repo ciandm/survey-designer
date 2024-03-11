@@ -9,23 +9,24 @@ import {
 import {Button} from '@/components/ui/button';
 import {Label} from '@/components/ui/label';
 import {Switch} from '@/components/ui/switch';
-import {useElementCrud} from '@/survey-designer/_hooks/use-element-crud';
 import {
-  useDesignerActions,
   useSurveyElements,
+  useSurveyStoreActions,
 } from '@/survey-designer/_store/survey-designer-store';
 import {ElementSchemaType} from '@/types/element';
+import {useDesignerHandlers} from '../designer/designer.context';
 
 type FooterProps = {
   element: ElementSchemaType;
-  index: number;
-  onSettingsClick: () => void;
 };
 
-export const Footer = ({element, onSettingsClick, index}: FooterProps) => {
+export const Footer = ({element}: FooterProps) => {
   const elements = useSurveyElements();
-  const {handleRemoveElement, handleDuplicateElement} = useElementCrud();
-  const {updateElement, setElements} = useDesignerActions();
+  const {handleRemoveElement, handleDuplicateElement, handleSettingsClick} =
+    useDesignerHandlers();
+  const {updateElement, setElements} = useSurveyStoreActions();
+
+  const index = elements.findIndex((el) => el.id === element.id);
 
   const handleClickMoveDown = () => {
     setElements((elements) => arrayMove(elements, index, index + 1));
@@ -82,7 +83,7 @@ export const Footer = ({element, onSettingsClick, index}: FooterProps) => {
               variant="ghost"
               className="flex lg:hidden"
               size="icon"
-              onClick={onSettingsClick}
+              onClick={handleSettingsClick}
             >
               <Settings className="h-4 w-4" />
             </Button>

@@ -1,7 +1,7 @@
 'use client';
 
 import {demoTabConfig} from '@/config/designer';
-import {Designer} from '@/survey-designer/_components/designer';
+import {Designer} from '@/survey-designer/_components/designer/designer';
 import {DesignerTabItem} from '@/survey-designer/_components/designer-tab-manager';
 import {Previewer} from '@/survey-designer/_components/previewer';
 

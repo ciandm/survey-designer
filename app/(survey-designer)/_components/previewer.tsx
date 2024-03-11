@@ -20,7 +20,6 @@ import {useDesignerTabManager} from './designer-tab-manager';
 export const Previewer = () => {
   const initialModel = useSurveyModel();
   const model = useMemo(() => sortChoices(initialModel), [initialModel]);
-
   const {setActiveTab} = useDesignerTabManager();
 
   const {form, handlers, currentElement, screen} = useSurvey({
@@ -50,7 +49,7 @@ export const Previewer = () => {
         ) : (
           <>
             {screen === 'welcome_screen' && (
-              <WelcomeScreen message={model.screens.welcome.message}>
+              <WelcomeScreen message={model.screens.welcome[0].text}>
                 <Button onClick={handlers.handleStartSurvey} size="lg">
                   Start survey
                 </Button>
@@ -84,7 +83,7 @@ export const Previewer = () => {
                 </div>
               ))}
             {screen === 'thank_you_screen' && (
-              <ThankYouScreen message={model.screens.thank_you.message}>
+              <ThankYouScreen message={model.screens.thank_you[0].text}>
                 <Button onClick={() => handlers.handleRestartSurvey()}>
                   Restart survey (preview mode only)
                 </Button>

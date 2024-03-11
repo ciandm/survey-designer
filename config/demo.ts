@@ -18,12 +18,16 @@ export const demoSurvey: SurveyWithParsedModelType = {
       },
     ],
     screens: {
-      welcome: {
-        message: 'Welcome to the demo survey!',
-      },
-      thank_you: {
-        message: 'Thank you for taking the demo survey!',
-      },
+      welcome: [
+        {
+          type: 'welcome_screen',
+          id: uuid(),
+          text: 'Welcome to the demo survey!',
+          description: 'Welcome',
+          properties: {button_label: 'Start survey'},
+        },
+      ],
+      thank_you: [],
     },
     title: 'Demo survey',
     version: 1,

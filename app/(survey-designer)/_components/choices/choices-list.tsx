@@ -15,13 +15,13 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {useDesignerActions} from '@/survey-designer/_store/survey-designer-store';
+import {useSurveyStoreActions} from '@/survey-designer/_store/survey-designer-store';
 import {ChoicesField} from './choice-field';
 import {useChoicesContext} from './choices.context';
 
 export const ChoicesList = () => {
   const {handlers, focus, choices, elementId} = useChoicesContext();
-  const {moveChoices} = useDesignerActions();
+  const {moveChoices} = useSurveyStoreActions();
   const id = useId();
   const sensors = useSensors(
     useSensor(PointerSensor),

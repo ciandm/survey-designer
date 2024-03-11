@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {useDesignerActions} from '@/survey-designer/_store/survey-designer-store';
+import {useSurveyStoreActions} from '@/survey-designer/_store/survey-designer-store';
 import {ChoicesSchemaType} from '@/types/element';
 
 type ChoiceFieldProps = {
@@ -31,7 +31,7 @@ export const ChoicesField = ({
   handleInputKeyDown,
   handleRemoveChoice,
 }: ChoiceFieldProps) => {
-  const {updateQuestionChoice} = useDesignerActions();
+  const {updateQuestionChoice} = useSurveyStoreActions();
 
   return (
     <Sortable

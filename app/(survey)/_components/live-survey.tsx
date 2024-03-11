@@ -50,7 +50,7 @@ export const LiveSurvey = ({survey}: LiveSurveyProps) => {
       ) : (
         <>
           {screen === 'welcome_screen' && (
-            <WelcomeScreen message={model.screens.welcome.message}>
+            <WelcomeScreen message={model.screens.welcome[0].text}>
               <Button onClick={handlers.handleStartSurvey} size="lg">
                 Start survey
               </Button>

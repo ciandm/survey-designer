@@ -1,21 +1,24 @@
 'use client';
 
 import React from 'react';
-import {useActiveElement} from '@/survey-designer/_hooks/use-active-element';
+import {ElementSchemaType, ScreenSchemaType} from '@/types/element';
+import {getIsElementSchema} from '@/utils/survey';
 import {GeneralSettings} from './components/general-settings';
 import {QuestionSettings} from './components/question-settings';
 
-export const SurveySettings = () => {
-  const {activeElement} = useActiveElement();
+type Props = {
+  element: ElementSchemaType | ScreenSchemaType | null;
+};
 
-  if (!activeElement) return <GeneralSettings />;
+export const SurveySettings = ({element}: Props) => {
+  if (!element) return <GeneralSettings />;
 
   // Trigger a re-render when the active element changes
-  const key = `${activeElement?.id}-${activeElement?.type}`;
+  const key = `${element?.id}-${element?.type}`;
 
   return (
     <React.Fragment key={key}>
-      <QuestionSettings element={activeElement} />
+      {getIsElementSchema(element) && <QuestionSettings element={element} />}
     </React.Fragment>
   );
 };

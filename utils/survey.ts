@@ -1,5 +1,11 @@
 import {v4 as uuidv4} from 'uuid';
-import type {ElementSchemaType, SurveyElementType} from '@/types/element';
+import {elementTypes} from '@/lib/validations/element';
+import type {
+  ElementSchemaType,
+  ScreenElementType,
+  ScreenSchemaType,
+  SurveyElementType,
+} from '@/types/element';
 import {ParsedModelType, SurveyFormConfig} from '@/types/survey';
 
 export function formatQuestionType(type: SurveyElementType): string {
@@ -12,6 +18,8 @@ export function formatQuestionType(type: SurveyElementType): string {
       return 'Multiple Choice';
     case 'single_choice':
       return 'Single Choice';
+    default:
+      return '';
   }
 }
 
@@ -64,20 +72,6 @@ export function buildNewElementHelper(
   }
 }
 
-export function getNextElementToSelect(
-  elements: ElementSchemaType[],
-  elementId: string,
-) {
-  const questionIndex = elements.findIndex(
-    (element) => element.id === elementId,
-  );
-
-  const prevQuestion = elements[questionIndex - 1];
-  const nextQuestion = elements[questionIndex + 1];
-
-  return (prevQuestion || nextQuestion).id;
-}
-
 export function validateIsNotNull<T>(value: T | null): value is T {
   return value !== null;
 }
@@ -97,3 +91,27 @@ export const buildSurveyConfig = (model: ParsedModelType): SurveyFormConfig => {
   });
   return config;
 };
+
+export const getIsElementType = (
+  type?: SurveyElementType | ScreenElementType,
+): type is SurveyElementType => {
+  if (type === 'welcome_screen' || type === 'thank_you_screen' || !type)
+    return false;
+  const options = elementTypes.options;
+  return options.includes(type);
+};
+
+export const getIsScreenType = (
+  type?: SurveyElementType | ScreenElementType,
+): type is ScreenElementType => {
+  if (type === 'welcome_screen' || type === 'thank_you_screen') return true;
+  return false;
+};
+
+export const getIsElementSchema = (
+  element: ElementSchemaType | ScreenSchemaType,
+): element is ElementSchemaType => getIsElementType(element.type);
+
+export const getIsScreenSchema = (
+  element: ElementSchemaType | ScreenSchemaType,
+): element is ScreenSchemaType => getIsScreenType(element.type);

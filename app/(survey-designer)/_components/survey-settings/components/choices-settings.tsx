@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/tooltip';
 import {ELEMENT_CHOICE_SORT_ORDER_OPTIONS} from '@/lib/constants/element';
 import {ElementSchemaType} from '@/types/element';
-import {useDesignerActions} from '../../../_store/survey-designer-store';
+import {useSurveyStoreActions} from '../../../_store/survey-designer-store';
 import {AddChoiceButton} from '../../choices/add-choice-button';
 import {Choices} from '../../choices/choices';
 import {ChoicesList} from '../../choices/choices-list';
@@ -26,7 +26,7 @@ import {RemoveAllChoicesButton} from '../../choices/remove-all-choices-button';
 import {SettingsField} from './settings-field';
 
 export const ChoicesSettings = ({element}: {element: ElementSchemaType}) => {
-  const {updateElement} = useDesignerActions();
+  const {updateElement} = useSurveyStoreActions();
   const choices = element.properties.choices ?? [];
 
   const handleMinimumSelectionBlur = (

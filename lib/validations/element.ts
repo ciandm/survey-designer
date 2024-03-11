@@ -1,5 +1,4 @@
 import {z} from 'zod';
-import {ELEMENT_TYPE} from '../constants/element';
 
 export const choicesSchema = z.array(
   z.object({
@@ -8,7 +7,28 @@ export const choicesSchema = z.array(
   }),
 );
 
+export const screenTypes = z.enum(['welcome_screen', 'thank_you_screen']);
+
 export const sortOrderEnum = z.enum(['asc', 'desc', 'random']);
+
+export const elementTypes = z.enum([
+  'short_text',
+  'long_text',
+  'multiple_choice',
+  'single_choice',
+  'number',
+  'date',
+  'time',
+  'email',
+  'phone',
+  'website',
+  'address',
+  'rating',
+  'image',
+  'file',
+  'statement',
+  'section',
+]);
 
 const properties = z.object({
   choices: choicesSchema.optional(),
@@ -29,9 +49,19 @@ const validations = z.object({
 export const elementSchema = z.object({
   id: z.string(),
   text: z.string(),
-  type: z.nativeEnum(ELEMENT_TYPE),
+  type: elementTypes,
   description: z.string().optional(),
   ref: z.string(),
   properties,
   validations,
+});
+
+export const screenSchema = z.object({
+  id: z.string(),
+  text: z.string(),
+  description: z.string().optional(),
+  type: screenTypes,
+  properties: z.object({
+    button_label: z.string().nullable(),
+  }),
 });

@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {useDesignerActions} from '@/survey-designer/_store/survey-designer-store';
+import {useSurveyStoreActions} from '@/survey-designer/_store/survey-designer-store';
 import {ChoicesSchemaType} from '@/types/element';
 
 type UseChoicesProps = {
@@ -9,7 +9,7 @@ type UseChoicesProps = {
 
 export const useChoices = ({elementId, choices = []}: UseChoicesProps) => {
   const {insertQuestionChoice, deleteQuestionChoice, deleteChoices} =
-    useDesignerActions();
+    useSurveyStoreActions();
   const [focusIndex, setFocusIndex] = useState<number | null>(null);
   const focusInputs = useRef<HTMLInputElement[]>([]);
 

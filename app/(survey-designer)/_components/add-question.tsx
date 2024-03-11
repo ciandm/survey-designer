@@ -13,16 +13,16 @@ import {
 import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
 import {Separator} from '@/components/ui/separator';
 import {ELEMENT_OPTIONS} from '@/lib/constants/element';
-import {useElementCrud} from '@/survey-designer/_hooks/use-element-crud';
 import {SurveyElementType} from '@/types/element';
 import {cn} from '@/utils/classnames';
+import {useDesignerHandlers} from './designer/designer.context';
 
 type AddQuestionProps = {
   className?: string;
 };
 
 export const AddQuestion = ({className}: AddQuestionProps) => {
-  const {handleCreateElement} = useElementCrud();
+  const {handleCreateElement} = useDesignerHandlers();
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   return (

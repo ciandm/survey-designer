@@ -2,7 +2,7 @@ import {isEqual, merge, omitBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import {createStore, StoreApi, useStore} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
-import {ElementSchemaType} from '@/types/element';
+import {ElementSchemaType, ScreenSchemaType} from '@/types/element';
 import {ParsedModelType, SurveyWithParsedModelType} from '@/types/survey';
 import {createContext} from '@/utils/context';
 import {buildNewElementHelper} from '@/utils/survey';
@@ -22,7 +22,9 @@ type ElementStoreActions = {
   deleteElement: (
     element: Pick<ElementSchemaType, 'id'>,
   ) => ElementSchemaType[];
-  duplicateElement: (element: Pick<ElementSchemaType, 'id'>) => string;
+  duplicateElement: (
+    element: Pick<ElementSchemaType, 'id'>,
+  ) => ElementSchemaType | null;
   changeElementType: (element: Pick<ElementSchemaType, 'id' | 'type'>) => void;
   updateElement: (element: Partial<ElementSchemaType> & {id: string}) => void;
   setElements: (
@@ -62,7 +64,15 @@ type SurveySchemaStoreActions = {
 };
 
 type SurveyScreenStoreActions = {
-  updateScreen: (screen: 'welcome' | 'thank_you', message: string) => void;
+  insertScreen: (
+    screen: 'welcome' | 'thank_you',
+    options: ScreenSchemaType,
+  ) => void;
+  updateScreen: (
+    screen: 'welcome' | 'thank_you',
+    id: string,
+    options: Partial<ScreenSchemaType>,
+  ) => void;
 };
 
 type SurveyDesignerStoreActions = SurveySchemaStoreActions &
@@ -77,20 +87,16 @@ export type SurveyDesignerStoreState = SurveyDesignerStoreProps & {
 export const createSurveyDesignerStore = (
   initProps: Partial<SurveyWithParsedModelType> = {},
 ) => {
-  const model = merge(
+  const model: ParsedModelType = merge(
     {
       title: '',
       elements: [],
       version: 1,
       screens: {
-        thank_you: {
-          message: '',
-        },
-        welcome: {
-          message: '',
-        },
+        welcome: [],
+        thank_you: [],
       },
-    },
+    } as ParsedModelType,
     initProps?.model,
   );
 
@@ -143,11 +149,13 @@ export const createSurveyDesignerStore = (
         },
         duplicateElement: ({id}) => {
           const newId = uuidv4();
+          let newElement: ElementSchemaType | null = null;
+
           set((state) => {
             const element = state.model.elements.find((q) => q.id === id);
             if (!element) return state;
 
-            const newElement = buildNewElementHelper(element.type, {
+            newElement = buildNewElementHelper(element.type, {
               ...element,
               id: newId,
               text: element.text ? `${element.text} (copy)` : '',
@@ -162,7 +170,7 @@ export const createSurveyDesignerStore = (
               newElement,
             );
           });
-          return newId;
+          return newElement;
         },
         updateElement: (field) => {
           set((state) => {
@@ -335,9 +343,16 @@ export const createSurveyDesignerStore = (
             state.isPublished = isPublished;
           });
         },
-        updateScreen: (screen, message) => {
+        updateScreen: (screen, id, options) => {
           set((state) => {
-            state.model.screens[screen].message = message;
+            state.model.screens[screen] = state.model.screens[screen].map(
+              (s) => (s.id === id ? {...s, ...options} : s),
+            );
+          });
+        },
+        insertScreen: (screen, options) => {
+          set((state) => {
+            state.model.screens[screen].push(options);
           });
         },
       },
@@ -380,7 +395,7 @@ export const useIsSurveyChanged = () => {
   return !isEqual(model, savedSchema);
 };
 
-export const useDesignerActions = () => {
+export const useSurveyStoreActions = () => {
   const store = useDesignerContext();
   return useStore(store, (state) => state.actions);
 };

@@ -1,8 +1,8 @@
 import {useState} from 'react';
 import {useAction} from 'next-safe-action/hooks';
 import {
-  useDesignerActions,
   useSurveyId,
+  useSurveyStoreActions,
 } from '@/survey-designer/_store/survey-designer-store';
 import {publishSurveyAction} from '../_actions/publish-survey';
 
@@ -12,7 +12,7 @@ export const usePublishDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [action, setAction] = useState<PublishAction | null>(null);
   const surveyId = useSurveyId();
-  const {setPublished} = useDesignerActions();
+  const {setPublished} = useSurveyStoreActions();
   const {execute: handlePublishSurvey, ...rest} = useAction(
     publishSurveyAction,
     {

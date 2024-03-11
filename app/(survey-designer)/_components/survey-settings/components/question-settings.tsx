@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {ElementSchemaType} from '@/types/element';
-import {useDesignerActions} from '../../../_store/survey-designer-store';
+import {useSurveyStoreActions} from '../../../_store/survey-designer-store';
 import {QuestionTypeSelect} from '../../question-type-select';
 import {ChoicesSettings} from './choices-settings';
 import {SettingsField} from './settings-field';
@@ -21,7 +21,7 @@ type QuestionSettingsProps = {
 };
 
 export const QuestionSettings = ({element}: QuestionSettingsProps) => {
-  const {changeElementType, updateElement} = useDesignerActions();
+  const {changeElementType, updateElement} = useSurveyStoreActions();
   const hasChoicesConfig =
     element?.type === 'multiple_choice' || element?.type === 'single_choice';
 

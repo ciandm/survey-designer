@@ -72,12 +72,8 @@ export function generateNewSurvey(
       description: newDescription,
       elements: [],
       screens: {
-        welcome: {
-          message: null,
-        },
-        thank_you: {
-          message: null,
-        },
+        welcome: [],
+        thank_you: [],
       },
       version: 1,
     },
