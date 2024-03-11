@@ -1,16 +1,26 @@
 import React from 'react';
 
 type WelcomeScreenProps = {
-  message: string | null;
+  title?: string;
+  description?: string;
   children: React.ReactNode;
 };
 
-export const WelcomeScreen = ({message, children}: WelcomeScreenProps) => {
+export const WelcomeScreen = ({
+  title,
+  description,
+  children,
+}: WelcomeScreenProps) => {
   return (
     <div className="flex flex-1 flex-col items-center space-y-4 text-center">
       <h1 className="text-5xl">👋</h1>
       <p className="text-muted-foreground">
-        {message || 'Welcome to the survey'}
+        {title || 'Welcome to the survey'}
+        {description && (
+          <span className="mt-2 block text-base text-muted-foreground">
+            {description}
+          </span>
+        )}
       </p>
       {children}
     </div>

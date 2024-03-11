@@ -28,33 +28,42 @@ export function buildNewElementHelper(
   type: ElementType,
   field: Partial<ElementSchema>,
 ): ElementSchema {
+  const baseField = {
+    id: `el_${generateId(12)}`,
+    ref: field?.ref ?? uuidv4(),
+    text: field?.text ?? '',
+    description: field?.description ?? '',
+    type,
+    properties: {
+      placeholder: '',
+      choices: [],
+    },
+    validations: {
+      required: field.validations?.required || false,
+    },
+  };
   switch (type) {
     case 'long_text':
     case 'short_text':
       return {
-        id: `el_${generateId(12)}`,
-        ref: field?.ref ?? uuidv4(),
-        text: field?.text ?? '',
-        description: field?.description ?? '',
-        type,
+        ...baseField,
         properties: {
-          placeholder: '',
-          choices: [],
+          ...baseField.properties,
+          placeholder: field.properties?.placeholder || '',
         },
         validations: {
-          required: field.validations?.required || false,
+          ...baseField.validations,
+          min_characters: field.validations?.min_characters || 0,
+          max_characters: field.validations?.max_characters || 0,
         },
       };
 
     case 'multiple_choice':
     case 'single_choice':
       return {
-        id: field?.id ?? uuidv4(),
-        ref: field?.ref ?? uuidv4(),
-        text: field?.text ?? '',
-        description: field?.description ?? '',
-        type,
+        ...baseField,
         properties: {
+          ...baseField.properties,
           choices: field.properties?.choices?.length
             ? field.properties.choices
             : [
@@ -65,6 +74,7 @@ export function buildNewElementHelper(
               ],
         },
         validations: {
+          ...baseField.validations,
           required: field.validations?.required || false,
         },
       };
@@ -91,9 +101,7 @@ export function buildNewScreenHelper(type: ScreenType): ScreenSchema {
         type,
         text: 'Thank you for completing the survey!',
         description: '',
-        properties: {
-          button_label: 'Submit',
-        },
+        properties: {},
       };
     default:
       throw new Error('Invalid screen type');

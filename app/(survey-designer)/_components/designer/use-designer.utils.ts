@@ -27,7 +27,17 @@ function findSurveyElementById(id: string, model: ParsedModelType) {
     case 'el':
       return elements.find((element) => element.id === id) || null;
     case 'sc':
-      return screens.welcome.find((screen) => screen.id === id) || null;
+      const welcomeScreen =
+        screens.welcome.find((screen) => screen.id === id) || null;
+      if (welcomeScreen) {
+        return welcomeScreen;
+      }
+      const thankYouScreen =
+        screens.thank_you.find((screen) => screen.id === id) || null;
+      if (thankYouScreen) {
+        return thankYouScreen;
+      }
+      return null;
     default:
       return null;
   }

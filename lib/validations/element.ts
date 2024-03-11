@@ -7,19 +7,8 @@ export const elementTypes = z.enum([
   'long_text',
   'multiple_choice',
   'single_choice',
-  'number',
-  'date',
-  'time',
-  'email',
-  'phone',
-  'website',
-  'address',
-  'rating',
-  'image',
-  'file',
-  'statement',
-  'section',
 ]);
+
 export const screenTypes = z.enum(['welcome_screen', 'thank_you_screen']);
 
 export const choicesSchema = z.array(
@@ -61,6 +50,6 @@ export const screenSchema = z.object({
   description: z.string().optional(),
   type: screenTypes,
   properties: z.object({
-    button_label: z.string().nullable(),
+    button_label: z.string().optional(),
   }),
 });

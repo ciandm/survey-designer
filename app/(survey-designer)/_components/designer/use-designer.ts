@@ -5,6 +5,7 @@ import {
   useSurveyStoreActions,
 } from '@/survey-designer/_store/survey-designer-store';
 import {ElementType} from '@/types/element';
+import {SurveyScreenKey} from '@/types/survey';
 import {
   getElementByIdWithFallback,
   getInitialSelectedId,
@@ -81,6 +82,27 @@ export const useDesigner = () => {
     [storeActions, setSelectedId],
   );
 
+  const handleCreateScreen = useCallback(
+    ({key}: {key: SurveyScreenKey}) => {
+      const {id} = storeActions.insertScreen(key);
+      setSelectedId(id);
+    },
+    [storeActions, setSelectedId],
+  );
+
+  const handleRemoveScreen = useCallback(
+    ({key, id: removeId}: {key: SurveyScreenKey; id: string}) => {
+      storeActions.removeScreen({key, id: removeId});
+
+      if (selectedId === removeId) {
+        const {id} = getNextElementToSelect(model, removeId);
+
+        setSelectedId(id);
+      }
+    },
+    [storeActions, model, selectedId, setSelectedId],
+  );
+
   const handlers = useMemo(
     () => ({
       handleSelectElement,
@@ -88,6 +110,8 @@ export const useDesigner = () => {
       handleDuplicateElement,
       handleCreateElement,
       handleSettingsClick,
+      handleCreateScreen,
+      handleRemoveScreen,
     }),
     [
       handleCreateElement,
@@ -95,6 +119,8 @@ export const useDesigner = () => {
       handleRemoveElement,
       handleSelectElement,
       handleSettingsClick,
+      handleCreateScreen,
+      handleRemoveScreen,
     ],
   );
 

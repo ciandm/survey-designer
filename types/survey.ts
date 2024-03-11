@@ -25,6 +25,8 @@ export type SurveyScreen =
   | 'survey_screen'
   | 'thank_you_screen';
 
+export type SurveyScreenKey = keyof ParsedModelType['screens'];
+
 export type SurveyResponsesMap = {
   [questionId: string]: {
     value: string[];

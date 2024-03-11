@@ -29,6 +29,10 @@ export const Previewer = () => {
     },
   });
 
+  const {
+    screens: {welcome, thank_you},
+  } = model;
+
   const {element, index} = currentElement;
 
   return (
@@ -49,9 +53,12 @@ export const Previewer = () => {
         ) : (
           <>
             {screen === 'welcome_screen' && (
-              <WelcomeScreen message={model.screens.welcome[0].text}>
+              <WelcomeScreen
+                title={welcome[0].text}
+                description={welcome[0].description}
+              >
                 <Button onClick={handlers.handleStartSurvey} size="lg">
-                  Start survey
+                  {welcome[0].properties.button_label}
                 </Button>
               </WelcomeScreen>
             )}
@@ -83,7 +90,7 @@ export const Previewer = () => {
                 </div>
               ))}
             {screen === 'thank_you_screen' && (
-              <ThankYouScreen message={model.screens.thank_you[0].text}>
+              <ThankYouScreen message={thank_you[0].text}>
                 <Button onClick={() => handlers.handleRestartSurvey()}>
                   Restart survey (preview mode only)
                 </Button>

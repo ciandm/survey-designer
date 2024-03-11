@@ -27,7 +27,11 @@ export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
     dispatch,
   } = useSurveyReducer({
     defaultElementId: elements[0]?.id,
+    defaultScreen: model.screens.welcome.length
+      ? 'welcome_screen'
+      : 'survey_screen',
   });
+  const initialElement = elements[0];
 
   const currentElement = {
     element: elements.find((el) => el.id === currentElementId),
@@ -36,8 +40,8 @@ export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
 
   const form = useForm<SurveyFormState>({
     defaultValues: {
-      questionId: undefined,
-      type: undefined,
+      questionId: initialElement?.id,
+      type: initialElement?.type,
       value: [],
     },
     resolver: zodResolver(createSingleStepValidationSchema(elements)),

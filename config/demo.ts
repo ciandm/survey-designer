@@ -1,4 +1,3 @@
-import {v4 as uuid} from 'uuid';
 import {SurveyWithParsedModelType} from '@/types/survey';
 import {buildNewElementHelper, buildNewScreenHelper} from '@/utils/survey';
 

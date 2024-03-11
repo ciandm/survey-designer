@@ -2,10 +2,15 @@ import {isEqual, merge, omitBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import {createStore, StoreApi, useStore} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
-import {ElementSchema, ScreenSchema} from '@/types/element';
-import {ParsedModelType, SurveyWithParsedModelType} from '@/types/survey';
+import {ElementSchema, ScreenSchema, ScreenType} from '@/types/element';
+import {
+  ParsedModelType,
+  SurveyScreen,
+  SurveyScreenKey,
+  SurveyWithParsedModelType,
+} from '@/types/survey';
 import {createContext} from '@/utils/context';
-import {buildNewElementHelper} from '@/utils/survey';
+import {buildNewElementHelper, buildNewScreenHelper} from '@/utils/survey';
 
 type SurveyDesignerStoreProps = {
   id: string;
@@ -62,16 +67,12 @@ type SurveySchemaStoreActions = {
 };
 
 type SurveyScreenStoreActions = {
-  insertScreen: (
-    screen: 'welcome' | 'thank_you',
-    options: ScreenSchema,
-  ) => void;
+  insertScreen: (key: SurveyScreenKey) => ScreenSchema;
   updateScreen: (
-    screen: 'welcome' | 'thank_you',
-    id: string,
-    options: Partial<ScreenSchema>,
+    args: {id: string; key: SurveyScreenKey},
+    data: Partial<ScreenSchema>,
   ) => void;
-  removeScreen: (screen: 'welcome' | 'thank_you', id: string) => void;
+  removeScreen: (args: {id: string; key: SurveyScreenKey}) => void;
 };
 
 type SurveyDesignerStoreActions = SurveySchemaStoreActions &
@@ -340,21 +341,25 @@ export const createSurveyDesignerStore = (
             state.isPublished = isPublished;
           });
         },
-        updateScreen: (screen, id, options) => {
+        updateScreen: ({id, key}, options) => {
           set((state) => {
-            state.model.screens[screen] = state.model.screens[screen].map(
-              (s) => (s.id === id ? {...s, ...options} : s),
+            state.model.screens[key] = state.model.screens[key].map((s) =>
+              s.id === id ? {...s, ...options} : s,
             );
           });
         },
-        insertScreen: (screen, options) => {
+        insertScreen: (key) => {
+          const screen =
+            key === 'welcome' ? 'welcome_screen' : 'thank_you_screen';
+          let newScreen = buildNewScreenHelper(screen);
           set((state) => {
-            state.model.screens[screen].push(options);
+            state.model.screens[key].push(newScreen);
           });
+          return newScreen;
         },
-        removeScreen: (screen, id) => {
+        removeScreen: ({key, id}) => {
           set((state) => {
-            state.model.screens[screen] = state.model.screens[screen].filter(
+            state.model.screens[key] = state.model.screens[key].filter(
               (s) => s.id !== id,
             );
           });
