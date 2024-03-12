@@ -1,4 +1,4 @@
-import {useCallback, useMemo, useState} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useQueryState} from 'nuqs';
 import {
   useSurveyModel,
@@ -12,11 +12,10 @@ import {
   getNextElementToSelect,
 } from './use-designer.utils';
 
-export const useDesigner = () => {
+export const useElementController = () => {
   const model = useSurveyModel();
   const {fields} = model;
   const storeActions = useSurveyStoreActions();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedId, setSelectedId] = useQueryState('id', {
     defaultValue: getInitialSelectedId(model) ?? '',
   });
@@ -33,10 +32,6 @@ export const useDesigner = () => {
     [setSelectedId],
   );
 
-  const handleSettingsClick = useCallback(() => {
-    setIsSettingsOpen((prev) => !prev);
-  }, []);
-
   const handleRemoveField = useCallback(
     (removeId: string) => {
       if (fields.length === 1) return;
@@ -51,7 +46,7 @@ export const useDesigner = () => {
     [storeActions, model, selectedId, fields, setSelectedId],
   );
 
-  const handleDuplicateElement = useCallback(
+  const handleDuplicateField = useCallback(
     (duplicateId: string) => {
       const {id} = storeActions.duplicateField({id: duplicateId}) ?? {};
 
@@ -105,19 +100,17 @@ export const useDesigner = () => {
   const handlers = useMemo(
     () => ({
       handleSelectElement,
-      handleRemoveElement: handleRemoveField,
-      handleDuplicateElement,
-      handleCreateElement: handleCreateField,
-      handleSettingsClick,
+      handleRemoveField,
+      handleDuplicateField,
+      handleCreateField,
       handleCreateScreen,
       handleRemoveScreen,
     }),
     [
       handleCreateField,
-      handleDuplicateElement,
+      handleDuplicateField,
       handleRemoveField,
       handleSelectElement,
-      handleSettingsClick,
       handleCreateScreen,
       handleRemoveScreen,
     ],
@@ -126,12 +119,11 @@ export const useDesigner = () => {
   return {
     element,
     handlers,
-    settings: {
-      isOpen: isSettingsOpen,
-      setIsOpen: setIsSettingsOpen,
-    },
   };
 };
 
-export type UseDesignerReturn = ReturnType<typeof useDesigner>;
-export type UseDesignerHandlers = UseDesignerReturn['handlers'];
+export type UseElementControllerReturn = ReturnType<
+  typeof useElementController
+>;
+export type UseElementControllerHandlers =
+  UseElementControllerReturn['handlers'];

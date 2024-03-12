@@ -1,11 +1,14 @@
 'use client';
 
 import {useMemo} from 'react';
+import {ErrorMessage} from '@hookform/error-message';
 import {QuestionField} from '@/components/question-field';
 import {SurveyFormButtons} from '@/components/survey-form-buttons';
 import {SurveyScreen} from '@/components/survey-screen';
 import {ThankYouScreen} from '@/components/thank-you-screen';
+import {TypeInputField} from '@/components/type-field';
 import {Button} from '@/components/ui/button';
+import {FormField} from '@/components/ui/form';
 import {WelcomeScreen} from '@/components/welcome-screen';
 import {useSurvey} from '@/hooks/use-survey';
 import {useSurveyModel} from '@/survey-designer/_store/survey-designer-store';
@@ -64,10 +67,32 @@ export const Previewer = () => {
                     model={model}
                     onBack={handlers.handleGoBack}
                   >
-                    <QuestionField
-                      field={element}
-                      index={index}
-                      key={element?.id}
+                    <FormField
+                      {...form}
+                      name="value"
+                      render={({field: formField}) => (
+                        <QuestionField
+                          field={element}
+                          index={index}
+                          key={element?.id}
+                          isReadonly={false}
+                        >
+                          <div className="mb-2 mt-4">
+                            <TypeInputField
+                              formField={formField}
+                              field={element}
+                            />
+                          </div>
+                          <ErrorMessage
+                            name="value"
+                            render={({message}) => (
+                              <p className="text-sm font-medium leading-5 text-red-500">
+                                {message}
+                              </p>
+                            )}
+                          />
+                        </QuestionField>
+                      )}
                     />
                   </SurveyFormButtons>
                 </SurveyScreen>

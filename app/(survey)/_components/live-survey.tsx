@@ -1,10 +1,13 @@
 'use client';
 
+import {ErrorMessage} from '@hookform/error-message';
 import {useRouter} from 'next/navigation';
 import {QuestionField} from '@/components/question-field';
 import {SurveyFormButtons} from '@/components/survey-form-buttons';
 import {SurveyScreen} from '@/components/survey-screen';
+import {TypeInputField} from '@/components/type-field';
 import {Button} from '@/components/ui/button';
+import {FormField} from '@/components/ui/form';
 import {WelcomeScreen} from '@/components/welcome-screen';
 import {useSurvey} from '@/hooks/use-survey';
 import {SurveyWithParsedModelType} from '@/types/survey';
@@ -64,10 +67,27 @@ export const LiveSurvey = ({survey}: LiveSurveyProps) => {
                   model={model}
                   onBack={handlers.handleGoBack}
                 >
-                  <QuestionField
-                    field={element}
-                    index={index}
-                    key={element?.id}
+                  <FormField
+                    {...form}
+                    name="value"
+                    render={({field: formField}) => (
+                      <QuestionField field={element} index={index}>
+                        <div className="mt-4">
+                          <TypeInputField
+                            formField={formField}
+                            field={element}
+                          />
+                        </div>
+                        <ErrorMessage
+                          name="value"
+                          render={({message}) => (
+                            <p className="text-sm font-medium leading-5 text-red-500">
+                              {message}
+                            </p>
+                          )}
+                        />
+                      </QuestionField>
+                    )}
                   />
                 </SurveyFormButtons>
               </SurveyScreen>

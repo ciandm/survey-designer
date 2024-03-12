@@ -18,7 +18,7 @@ export const WelcomeScreen = ({
       </h1>
       <p className="text-muted-foreground">
         {description && (
-          <span className="mt-2 block text-base text-muted-foreground">
+          <span className="block text-base text-muted-foreground">
             {description}
           </span>
         )}
