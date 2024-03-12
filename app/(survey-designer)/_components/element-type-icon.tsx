@@ -5,7 +5,7 @@ import {
   InputIcon,
   RadiobuttonIcon,
 } from '@radix-ui/react-icons';
-import {SurveyElementTypes} from '@/types/element';
+import {SurveyElementType} from '@/types/element';
 
 const ELEMENT_OPTION_ICONS = {
   short_text: InputIcon,
@@ -17,7 +17,7 @@ const ELEMENT_OPTION_ICONS = {
 } as const;
 
 type ElementTypeIconProps = {
-  type?: SurveyElementTypes;
+  type?: SurveyElementType;
   className?: string;
 };
 

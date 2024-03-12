@@ -1,43 +1,37 @@
 import {ErrorMessage} from '@hookform/error-message';
 import {useSurveyFormContext} from '@/hooks/use-survey';
-import {ElementSchema} from '@/types/element';
+import {FieldSchema} from '@/types/field';
 import {cn} from '@/utils/classnames';
-import {
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from './ui/form';
+import {FormDescription, FormField, FormItem, FormLabel} from './ui/form';
 import {TypeInputField} from './type-field';
 
 type QuestionFieldProps = {
   index: number;
-  element: ElementSchema;
+  field: FieldSchema;
 };
 
-export const QuestionField = ({index, element}: QuestionFieldProps) => {
+export const QuestionField = ({index, field}: QuestionFieldProps) => {
   const {control} = useSurveyFormContext();
   return (
     <FormField
       control={control}
       name="value"
-      render={({field}) => (
+      render={({field: formField}) => (
         <FormItem>
           <div className="flex flex-col gap-1">
             <FormLabel
               className={cn('break-normal text-base font-medium leading-6', {
-                [`after:content-['_*']`]: element.validations.required,
+                [`after:content-['_*']`]: field.validations.required,
               })}
             >
-              {index + 1}. {!!element.text ? element.text : 'Untitled question'}
+              {index + 1}. {!!field.text ? field.text : 'Untitled question'}
             </FormLabel>
-            {!!element.description && (
-              <FormDescription>{element.description}</FormDescription>
+            {!!field.description && (
+              <FormDescription>{field.description}</FormDescription>
             )}
           </div>
           <div className="mt-4">
-            <TypeInputField field={field} element={element} />
+            <TypeInputField formField={formField} field={field} />
           </div>
           <ErrorMessage
             name="value"

@@ -20,7 +20,7 @@ import {ChoicesField} from './choice-field';
 import {useChoicesContext} from './choices.context';
 
 export const ChoicesList = () => {
-  const {handlers, focus, choices, elementId} = useChoicesContext();
+  const {handlers, focus, choices, fieldId} = useChoicesContext();
   const {moveChoices} = useSurveyStoreActions();
   const id = useId();
   const sensors = useSensors(
@@ -38,7 +38,7 @@ export const ChoicesList = () => {
       const newIndex = choices.findIndex((choice) => choice.id === over?.id);
 
       const newChoices = arrayMove(choices, oldIndex, newIndex);
-      moveChoices({elementId, newChoices});
+      moveChoices({fieldId, newChoices});
     }
   }
 
@@ -57,7 +57,7 @@ export const ChoicesList = () => {
           {choices.map((choice, index) => (
             <ChoicesField
               choices={choices}
-              elementId={elementId}
+              fieldId={fieldId}
               focusInputs={focus.focusInputs}
               handleInputKeyDown={handlers.handleInputKeyDown}
               handleRemoveChoice={handlers.handleRemoveChoice}

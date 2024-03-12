@@ -10,27 +10,27 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {ElementSchema, ElementType} from '@/types/element';
+import {FieldSchema, FieldType} from '@/types/field';
 import {useSurveyStoreActions} from '../../_store/survey-designer-store';
 import {SettingsField} from '../settings-field';
 import {SettingsWrapper} from '../settings-wrapper';
 import {ChoicesSettings} from './components/choices-settings';
 
-type QuestionSettingsProps = {
-  element: ElementSchema;
+type FieldSettingsProps = {
+  field: FieldSchema;
 };
 
-export const QuestionSettings = ({element}: QuestionSettingsProps) => {
+export const FieldSettings = ({field}: FieldSettingsProps) => {
   const storeActions = useSurveyStoreActions();
   const hasChoicesConfig =
-    element?.type === 'multiple_choice' || element?.type === 'single_choice';
+    field?.type === 'multiple_choice' || field?.type === 'single_choice';
 
   const hasPlaceholder =
-    element?.type === 'short_text' || element?.type === 'long_text';
+    field?.type === 'short_text' || field?.type === 'long_text';
 
-  const handleChangeElementType = (type: ElementType) => {
-    storeActions.changeElementType({
-      id: element.id,
+  const handleChangeFieldType = (type: FieldType) => {
+    storeActions.changeFieldType({
+      id: field.id,
       type,
     });
   };
@@ -38,19 +38,19 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
   return (
     <>
       <SettingsWrapper
-        onChangeElementType={handleChangeElementType}
-        elementType={element.type}
+        onChangeElementType={handleChangeFieldType}
+        elementType={field.type}
       >
         <div className="space-y-6 p-4">
           <SettingsField>
             <SettingsField.Label>Title</SettingsField.Label>
             <SettingsField.InputWrapper>
               <Textarea
-                key={`${element.text}-${element.id}-settings-title`}
-                defaultValue={element.text}
+                key={`${field.text}-${field.id}-settings-title`}
+                defaultValue={field.text}
                 onBlur={(e) =>
-                  storeActions.updateElement({
-                    id: element.id,
+                  storeActions.updateField({
+                    id: field.id,
                     text: e.target.value,
                   })
                 }
@@ -61,11 +61,11 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
             <SettingsField.Label>Description (optional)</SettingsField.Label>
             <SettingsField.InputWrapper>
               <Textarea
-                key={`${element.description}-${element.id}-settings-description`}
-                defaultValue={element.description}
+                key={`${field.description}-${field.id}-settings-description`}
+                defaultValue={field.description}
                 onBlur={(e) =>
-                  storeActions.updateElement({
-                    id: element.id,
+                  storeActions.updateField({
+                    id: field.id,
                     description: e.target.value,
                   })
                 }
@@ -77,11 +77,11 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
               <SettingsField.Label>Placeholder (optional)</SettingsField.Label>
               <SettingsField.InputWrapper>
                 <Textarea
-                  key={`${element.properties.placeholder}-${element.id}-settings-placeholder`}
-                  defaultValue={element.properties.placeholder}
+                  key={`${field.properties.placeholder}-${field.id}-settings-placeholder`}
+                  defaultValue={field.properties.placeholder}
                   onBlur={(e) =>
-                    storeActions.updateElement({
-                      id: element.id,
+                    storeActions.updateField({
+                      id: field.id,
                       properties: {
                         placeholder: e.target.value,
                       },
@@ -96,21 +96,21 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
               <Checkbox
                 className="mr-2"
                 onCheckedChange={(checked) => {
-                  storeActions.updateElement({
-                    id: element.id,
+                  storeActions.updateField({
+                    id: field.id,
                     validations: {
                       required: !!checked,
                     },
                   });
                 }}
                 id="settings-required"
-                checked={element.validations.required}
+                checked={field.validations.required}
               />
               <Label htmlFor="settings-required">
                 Make this question required
               </Label>
             </div>
-            {element.validations.required && (
+            {field.validations.required && (
               <div className="flex flex-col gap-2">
                 <div className="mt-3 flex items-center justify-between">
                   <Label htmlFor="required-error-message">
@@ -137,11 +137,11 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
                 <Textarea
                   name="required"
                   id="required-error-message"
-                  defaultValue={element.properties.required_message}
-                  key={`${element.properties.required_message}-${element.id}-required-message`}
+                  defaultValue={field.properties.required_message}
+                  key={`${field.properties.required_message}-${field.id}-required-message`}
                   onBlur={(e) =>
-                    storeActions.updateElement({
-                      id: element.id,
+                    storeActions.updateField({
+                      id: field.id,
                       properties: {
                         required_message: e.target.value,
                       },
@@ -157,7 +157,7 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
         <>
           <Separator className="my-4" />
           <div className="p-4">
-            <ChoicesSettings element={element} />
+            <ChoicesSettings field={field} />
           </div>
         </>
       )}

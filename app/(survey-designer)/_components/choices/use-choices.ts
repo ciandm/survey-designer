@@ -1,13 +1,13 @@
 import {useEffect, useRef, useState} from 'react';
 import {useSurveyStoreActions} from '@/survey-designer/_store/survey-designer-store';
-import {ChoicesSchema} from '@/types/element';
+import {ChoicesSchema} from '@/types/field';
 
 type UseChoicesProps = {
   choices: ChoicesSchema;
-  elementId: string;
+  fieldId: string;
 };
 
-export const useChoices = ({elementId, choices = []}: UseChoicesProps) => {
+export const useChoices = ({fieldId, choices = []}: UseChoicesProps) => {
   const {insertQuestionChoice, deleteQuestionChoice, deleteChoices} =
     useSurveyStoreActions();
   const [focusIndex, setFocusIndex] = useState<number | null>(null);
@@ -21,17 +21,17 @@ export const useChoices = ({elementId, choices = []}: UseChoicesProps) => {
   }, [focusIndex]);
 
   const handleInsertChoice = () => {
-    insertQuestionChoice({elementId});
+    insertQuestionChoice({fieldId});
     setFocusIndex(choices.length);
   };
 
   const handleRemoveChoice = (choiceId: string) => {
-    deleteQuestionChoice({elementId, choiceId});
+    deleteQuestionChoice({fieldId, choiceId});
     setFocusIndex(choices.length - 2);
   };
 
   const handleRemoveAll = () => {
-    deleteChoices({elementId});
+    deleteChoices({fieldId});
     setFocusIndex(null);
   };
 
@@ -39,7 +39,7 @@ export const useChoices = ({elementId, choices = []}: UseChoicesProps) => {
     if (e.key === 'Enter' && e.currentTarget.value !== '') {
       e.preventDefault();
       setFocusIndex(choices.length);
-      insertQuestionChoice({elementId});
+      insertQuestionChoice({fieldId});
     }
   };
 

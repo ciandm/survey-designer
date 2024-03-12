@@ -1,11 +1,11 @@
 import {ID_PREFIXES} from '@/lib/constants/element';
-import {choiceElementTypes, elementTypes} from '@/lib/validations/element';
-import {ChoicesSchema, ElementSchema, ElementType} from '@/types/element';
+import {choiceFieldTypes, fieldTypes} from '@/lib/validations/field';
+import {ChoicesSchema, FieldSchema, FieldType} from '@/types/field';
 import {ParsedModelType} from '@/types/survey';
 import {formatElementType} from './survey';
 
-export const getElementTypeGroup = (type: ElementType) => {
-  if (choiceElementTypes.options.find((t) => t === type)) {
+export const getElementTypeGroup = (type: FieldType) => {
+  if (choiceFieldTypes.options.find((t) => t === type)) {
     return 'Choices';
   }
 
@@ -15,17 +15,17 @@ export const getElementTypeGroup = (type: ElementType) => {
 type Option = {
   group: string;
   options: {
-    value: ElementType;
+    value: FieldType;
     label: string;
   }[];
 };
 
-export const elementTypeOptions = elementTypes.options.reduce<Option[]>(
+export const elementTypeOptions = fieldTypes.options.reduce<Option[]>(
   (acc, type) => {
     const group = getElementTypeGroup(type);
     const option = {
       group,
-      options: elementTypes.options
+      options: fieldTypes.options
         .filter((t) => t === type)
         .map((t) => ({
           value: t,
@@ -44,15 +44,15 @@ export const elementTypeOptions = elementTypes.options.reduce<Option[]>(
   [],
 );
 
-function hasChoices(element: ElementSchema) {
+function hasChoices(element: FieldSchema) {
   return element.type === 'multiple_choice' || element.type === 'single_choice';
 }
 
 export function sortChoices(model: ParsedModelType): ParsedModelType {
-  const {elements} = model;
+  const {fields} = model;
   const copiedSchema = {...model};
 
-  const newElements = elements.map((el) => {
+  const newElements = fields.map((el) => {
     const element = {...el, properties: {...el.properties}};
     if (hasChoices(element)) {
       switch (element.properties.sort_order) {
@@ -72,7 +72,7 @@ export function sortChoices(model: ParsedModelType): ParsedModelType {
     return element;
   });
 
-  copiedSchema.elements = newElements;
+  copiedSchema.fields = newElements;
   return copiedSchema;
 }
 

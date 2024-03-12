@@ -1,13 +1,14 @@
 import React from 'react';
 import {Separator} from '@/components/ui/separator';
-import {ElementType, SurveyElementTypes} from '@/types/element';
+import {SurveyElementType} from '@/types/element';
+import {FieldType} from '@/types/field';
 import {ElementTypeSelect} from './element-type-select';
 import {SettingsField} from './settings-field';
 
 type SettingsWrapperProps = {
   children: React.ReactNode;
-  elementType: SurveyElementTypes;
-  onChangeElementType: (type: ElementType) => void;
+  elementType: SurveyElementType;
+  onChangeElementType: (type: FieldType) => void;
 };
 
 export const SettingsWrapper = ({

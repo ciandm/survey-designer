@@ -1,11 +1,12 @@
 import * as z from 'zod';
-import {ElementSchema} from '@/types/element';
-import {elementSchema, elementTypes, screenSchema} from './element';
+import {FieldSchema} from '@/types/field';
+import {fieldSchema, fieldTypes} from './field';
+import {screenSchema} from './screen';
 
 export const modelSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
-  elements: z.array(elementSchema),
+  fields: z.array(fieldSchema),
   screens: z.object({
     welcome: z.array(screenSchema),
     thank_you: z.array(screenSchema),
@@ -34,7 +35,7 @@ export const deleteSurveyInput = publishSurveyInput.pick({surveyId: true});
 export const responseSchema = z.object({
   questionId: z.string(),
   value: z.array(z.string()),
-  type: elementTypes,
+  type: fieldTypes,
 });
 
 export const responsesSchema = z.array(responseSchema);
@@ -44,15 +45,15 @@ export const saveResponsesInput = z.object({
   surveyId: z.string(),
 });
 
-export const createSingleStepValidationSchema = (elements: ElementSchema[]) => {
+export const createSingleStepValidationSchema = (fields: FieldSchema[]) => {
   return z
     .object({
       questionId: z.string(),
       value: z.array(z.string()),
-      type: elementTypes,
+      type: fieldTypes,
     })
     .superRefine(({questionId, type, value}, ctx) => {
-      const element = elements.find((el) => el.id === questionId);
+      const element = fields.find((el) => el.id === questionId);
 
       if (!element) {
         return ctx.addIssue({
@@ -97,38 +98,6 @@ export const createSingleStepValidationSchema = (elements: ElementSchema[]) => {
           code: z.ZodIssueCode.custom,
         });
       }
-
-      return ctx;
-    });
-};
-
-export const createMultiValidationSchema = (elements: ElementSchema[]) => {
-  return z
-    .object({
-      fields: z.array(
-        z.object({
-          questionId: z.string(),
-          value: z.array(z.string()),
-          type: elementTypes,
-        }),
-      ),
-    })
-    .superRefine(({fields}, ctx) => {
-      fields.forEach((field, index) => {
-        const element = elements[index];
-
-        if (
-          element.validations.required &&
-          (!field.value.length || field.value[0].length === 0)
-        ) {
-          return ctx.addIssue({
-            message:
-              element.properties.required_message || 'This field is required',
-            path: ['fields', index, 'value'],
-            code: z.ZodIssueCode.custom,
-          });
-        }
-      });
 
       return ctx;
     });

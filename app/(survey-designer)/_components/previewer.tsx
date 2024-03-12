@@ -33,7 +33,7 @@ export const Previewer = () => {
   return (
     <div className="flex flex-1 bg-accent pt-40">
       <div className="mx-auto w-full max-w-xl px-4">
-        {model.elements.length === 0 ? (
+        {model.fields.length === 0 ? (
           <div className="mx-auto space-y-4 text-center">
             <h1 className="text-5xl">😭</h1>
             <p className="text-muted-foreground">
@@ -65,7 +65,7 @@ export const Previewer = () => {
                     onBack={handlers.handleGoBack}
                   >
                     <QuestionField
-                      element={element}
+                      field={element}
                       index={index}
                       key={element?.id}
                     />

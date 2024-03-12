@@ -1,13 +1,10 @@
 import {generateId} from 'lucia';
 import {v4 as uuidv4} from 'uuid';
-import {choiceElementTypes, elementTypes} from '@/lib/validations/element';
-import type {
-  ElementSchema,
-  ElementType,
-  ScreenSchema,
-  ScreenType,
-  SurveyElementTypes,
-} from '@/types/element';
+import {fieldTypes} from '@/lib/validations/field';
+import {SurveyElementType} from '@/types/element';
+import type {FieldSchema, FieldType} from '@/types/field';
+import {ScreenSchema, ScreenType} from '@/types/screen';
+import {ResponseType, SurveyResponsesMap} from '@/types/survey';
 import {
   CreateSurveyInputType,
   ParsedModelType,
@@ -15,7 +12,7 @@ import {
   SurveyWithParsedModelType,
 } from '@/types/survey';
 
-export function formatElementType(type: SurveyElementTypes): string {
+export function formatElementType(type: SurveyElementType): string {
   switch (type) {
     case 'short_text':
       return 'Short text';
@@ -34,10 +31,10 @@ export function formatElementType(type: SurveyElementTypes): string {
   }
 }
 
-export function buildNewElementHelper(
-  type: ElementType,
-  field: Partial<ElementSchema>,
-): ElementSchema {
+export function buildNewFieldHelper(
+  type: FieldType,
+  field: Partial<FieldSchema>,
+): FieldSchema {
   const baseField = {
     id: field?.id ?? `el_${generateId(12)}`,
     ref: field?.ref ?? uuidv4(),
@@ -123,13 +120,13 @@ export function validateIsNotNull<T>(value: T | null): value is T {
 }
 
 export const buildSurveyConfig = (model: ParsedModelType): SurveyFormConfig => {
-  const {elements = []} = model;
+  const {fields = []} = model;
   const config: SurveyFormConfig = {};
-  if (!elements.length) return config;
+  if (!fields.length) return config;
 
-  elements.forEach((el, index) => {
-    const nextElement = model.elements[index + 1];
-    const previousElement = model.elements[index - 1];
+  fields.forEach((el, index) => {
+    const nextElement = model.fields[index + 1];
+    const previousElement = model.fields[index - 1];
     config[el.id] = {
       next: nextElement?.id || 'complete',
       previous: previousElement?.id || null,
@@ -138,32 +135,32 @@ export const buildSurveyConfig = (model: ParsedModelType): SurveyFormConfig => {
   return config;
 };
 
-export const getIsElementType = (
-  type?: ElementType | ScreenType,
-): type is ElementType => {
+export const getIsFieldType = (
+  type?: FieldType | ScreenType,
+): type is FieldType => {
   if (type === 'welcome_screen' || type === 'thank_you_screen' || !type)
     return false;
-  const options = elementTypes.options;
+  const options = fieldTypes.options;
   return options.includes(type);
 };
 
 export const getIsScreenType = (
-  type?: ElementType | ScreenType,
+  type?: FieldType | ScreenType,
 ): type is ScreenType => {
   if (type === 'welcome_screen' || type === 'thank_you_screen') return true;
   return false;
 };
 
-export const getIsElementSchema = (
-  element: ElementSchema | ScreenSchema | null,
-): element is ElementSchema => getIsElementType(element?.type);
+export const getIsField = (
+  element: FieldSchema | ScreenSchema | null,
+): element is FieldSchema => getIsFieldType(element?.type);
 
-export const getIsScreenSchema = (
-  element: ElementSchema | ScreenSchema | null,
+export const getIsScreen = (
+  element: FieldSchema | ScreenSchema | null,
 ): element is ScreenSchema => getIsScreenType(element?.type);
 
-function duplicateElements(elements: ElementSchema[]) {
-  return elements.map((element) => ({
+function duplicateElements(fields: FieldSchema[]) {
+  return fields.map((element) => ({
     ...element,
     id: uuidv4(),
     ref: uuidv4(),
@@ -205,7 +202,7 @@ export function generateDuplicateSurvey(
       ...survey.model,
       title: newTitle,
       description: newDescription,
-      elements: duplicateElements(survey.model.elements),
+      fields: duplicateElements(survey.model.fields),
     },
   };
 }
@@ -230,7 +227,7 @@ export function generateNewSurvey(
     model: {
       title: newTitle,
       description: newDescription,
-      elements: [],
+      fields: [],
       screens: {
         welcome: [],
         thank_you: [],
@@ -238,4 +235,16 @@ export function generateNewSurvey(
       version: 1,
     },
   };
+}
+
+export function transformResponsesMap(
+  responsesMap: SurveyResponsesMap,
+): ResponseType[] {
+  return Object.entries(responsesMap).map(([questionId, response]) => {
+    return {
+      questionId,
+      value: response.value,
+      type: response.type,
+    };
+  });
 }

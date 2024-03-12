@@ -1,14 +1,15 @@
-import {ElementSchema, ScreenSchema} from '@/types/element';
+import {FieldSchema} from '@/types/field';
+import {ScreenSchema} from '@/types/screen';
 import {ParsedModelType} from '@/types/survey';
 
 export const getInitialSelectedId = (model: ParsedModelType) => {
-  const {elements, screens} = model;
+  const {fields, screens} = model;
   const welcomeScreen = screens.welcome[0];
 
   if (welcomeScreen) {
     return welcomeScreen.id;
   }
-  const firstElement = elements[0];
+  const firstElement = fields[0];
   if (firstElement) {
     return firstElement.id;
   }
@@ -21,11 +22,11 @@ type GetCurrentElementArgs = {
 };
 
 function findSurveyElementById(id: string, model: ParsedModelType) {
-  const {elements, screens} = model;
+  const {fields, screens} = model;
   const prefix = id.slice(0, 2);
   switch (prefix) {
     case 'el':
-      return elements.find((element) => element.id === id) || null;
+      return fields.find((field) => field.id === id) || null;
     case 'sc':
       const welcomeScreen =
         screens.welcome.find((screen) => screen.id === id) || null;
@@ -46,7 +47,7 @@ function findSurveyElementById(id: string, model: ParsedModelType) {
 export const getElementByIdWithFallback = ({
   id,
   model,
-}: GetCurrentElementArgs): ElementSchema | ScreenSchema | null => {
+}: GetCurrentElementArgs): FieldSchema | ScreenSchema | null => {
   let element = null;
 
   element = findSurveyElementById(id, model);
@@ -62,23 +63,18 @@ export const getElementByIdWithFallback = ({
   return element;
 };
 
-export function getNextElementToSelect(
-  model: ParsedModelType,
-  elementId: string,
-) {
-  const {elements, screens} = model;
+export function getNextElementToSelect(model: ParsedModelType, id: string) {
+  const {fields, screens} = model;
   const hasWelcomeScreen = screens.welcome.length > 0;
 
-  const questionIndex = elements.findIndex(
-    (element) => element.id === elementId,
-  );
+  const questionIndex = fields.findIndex((field) => field.id === id);
 
   if (hasWelcomeScreen && questionIndex === 0) {
     return screens.welcome[0];
   }
 
-  const prevElement = elements[questionIndex - 1];
-  const nextElement = elements[questionIndex + 1];
+  const prevElement = fields[questionIndex - 1];
+  const nextElement = fields[questionIndex + 1];
 
   return prevElement || nextElement || null;
 }

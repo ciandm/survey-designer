@@ -65,7 +65,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           ...model.data,
           title,
           description,
-          elements: model.data.elements.map((element) => ({
+          fields: model.data.fields.map((element) => ({
             ...element,
             id: uuidv4(),
             ref: uuidv4(),
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       model: {
         title: parsedData.data.title,
         description: parsedData.data.description,
-        elements: [],
+        fields: [],
         version: 1,
         screens: {
           welcome: {

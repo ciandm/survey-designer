@@ -7,7 +7,7 @@ import {
   saveResponsesInput,
   updateModelInput,
 } from '@/lib/validations/survey';
-import type {ElementType} from './element';
+import type {FieldType} from './field';
 
 export type UpdateSurveySchemaInputType = z.infer<typeof updateModelInput>;
 export type CreateSurveyInputType = z.infer<typeof createSurveyInput>;
@@ -25,12 +25,10 @@ export type SurveyScreen =
   | 'survey_screen'
   | 'thank_you_screen';
 
-export type SurveyScreenKey = keyof ParsedModelType['screens'];
-
 export type SurveyResponsesMap = {
   [questionId: string]: {
     value: string[];
-    type: ElementType;
+    type: FieldType;
   };
 };
 
@@ -39,7 +37,7 @@ export type SaveResponsesInput = z.infer<typeof saveResponsesInput>;
 export type SurveyFormState = {
   questionId: string;
   value: string[];
-  type: ElementType;
+  type: FieldType;
 };
 
 export type SurveyFormConfig = {

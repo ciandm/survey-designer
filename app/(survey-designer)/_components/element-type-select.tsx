@@ -8,7 +8,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {ELEMENT_OPTIONS} from '@/lib/constants/element';
-import {ElementType, SurveyElementTypes} from '@/types/element';
+import {SurveyElementType} from '@/types/element';
+import {FieldType} from '@/types/field';
 import {formatElementType} from '@/utils/survey';
 import {ElementTypeIcon} from './element-type-icon';
 
@@ -19,8 +20,8 @@ const GROUPED_OPTIONS_WITHOUT_SCREENS = ELEMENT_OPTIONS.filter(
 type ElementTypeSelectProps = {
   id?: string;
   className?: string;
-  type?: SurveyElementTypes;
-  onChange: (type: ElementType) => void;
+  type?: SurveyElementType;
+  onChange: (type: FieldType) => void;
   onOpenChange?: (open: boolean) => void;
 };
 
@@ -34,7 +35,7 @@ export const ElementTypeSelect = ({
   return (
     <Select
       value={type}
-      onValueChange={(value) => onChange(value as ElementType)}
+      onValueChange={(value) => onChange(value as FieldType)}
       onOpenChange={onOpenChange}
     >
       <SelectTrigger id={id} className={className}>

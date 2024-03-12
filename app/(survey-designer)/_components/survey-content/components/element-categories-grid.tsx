@@ -1,11 +1,13 @@
 import {Button} from '@/components/ui/button';
 import {ELEMENT_OPTIONS} from '@/lib/constants/element';
 import {useSurveyScreens} from '@/survey-designer/_store/survey-designer-store';
-import {ElementGroup, ElementType, ScreenType} from '@/types/element';
+import {ElementGroup} from '@/types/element';
+import {FieldType} from '@/types/field';
+import {ScreenType} from '@/types/screen';
 import {ElementTypeIcon} from '../../element-type-icon';
 
 type ElementCategoriesGridProps = {
-  onOptionClick: (group: ElementGroup, type: ElementType | ScreenType) => void;
+  onOptionClick: (group: ElementGroup, type: FieldType | ScreenType) => void;
 };
 
 export const ElementCategoriesGrid = ({
@@ -49,7 +51,7 @@ export const ElementCategoriesGrid = ({
 
 const getIsButtonDisabled = (
   group: ElementGroup,
-  type: ElementType | ScreenType,
+  type: FieldType | ScreenType,
   screens: ReturnType<typeof useSurveyScreens>,
 ) => {
   if (group === 'Screens') {

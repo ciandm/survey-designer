@@ -9,8 +9,8 @@ import {WelcomeScreen} from '@/components/welcome-screen';
 import {useSurvey} from '@/hooks/use-survey';
 import {SurveyWithParsedModelType} from '@/types/survey';
 import {getSiteUrl} from '@/utils/hrefs';
+import {transformResponsesMap} from '@/utils/survey';
 import {saveResponsesAction} from '../_actions/save-responses-action';
-import {transformResponsesMap} from '../_utils/response';
 
 type LiveSurveyProps = {
   survey: SurveyWithParsedModelType;
@@ -40,7 +40,7 @@ export const LiveSurvey = ({survey}: LiveSurveyProps) => {
 
   return (
     <>
-      {model.elements.length === 0 ? (
+      {model.fields.length === 0 ? (
         <div className="space-y-4 text-center">
           <h1 className="text-5xl">😭</h1>
           <p className="text-muted-foreground">
@@ -50,7 +50,7 @@ export const LiveSurvey = ({survey}: LiveSurveyProps) => {
       ) : (
         <>
           {screen === 'welcome_screen' && (
-            <WelcomeScreen message={model.screens.welcome[0].text}>
+            <WelcomeScreen title={model.screens.welcome[0].text}>
               <Button onClick={handlers.handleStartSurvey} size="lg">
                 Start survey
               </Button>
@@ -65,7 +65,7 @@ export const LiveSurvey = ({survey}: LiveSurveyProps) => {
                   onBack={handlers.handleGoBack}
                 >
                   <QuestionField
-                    element={element}
+                    field={element}
                     index={index}
                     key={element?.id}
                   />

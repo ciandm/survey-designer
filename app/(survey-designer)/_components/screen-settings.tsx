@@ -1,9 +1,10 @@
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
-import {ElementType, ScreenSchema} from '@/types/element';
+import {FieldType} from '@/types/field';
+import {ScreenSchema} from '@/types/screen';
 import {getStoreKeyForScreenType} from '@/utils/screen';
 import {
-  useSurveyElements,
+  useSurveyFields,
   useSurveyStoreActions,
 } from '../_store/survey-designer-store';
 import {UseDesignerReturn} from './designer/use-designer';
@@ -18,13 +19,13 @@ export const ScreenSettings = ({
   screen,
   handleCreateElement,
 }: ScreenSettingsProps) => {
-  const elements = useSurveyElements();
+  const fields = useSurveyFields();
   const {updateScreen, removeScreen} = useSurveyStoreActions();
 
-  const handleOnChangeElementType = (type: ElementType) => {
+  const handleOnChangeElementType = (type: FieldType) => {
     const key = screen.type === 'welcome_screen' ? 'welcome' : 'thank_you';
     removeScreen({id: screen.id, key});
-    const index = screen.type === 'welcome_screen' ? 0 : elements.length;
+    const index = screen.type === 'welcome_screen' ? 0 : fields.length;
     handleCreateElement({type, index});
   };
 

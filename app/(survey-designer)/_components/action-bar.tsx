@@ -10,54 +10,53 @@ import {Button} from '@/components/ui/button';
 import {Label} from '@/components/ui/label';
 import {Switch} from '@/components/ui/switch';
 import {
-  useSurveyElements,
+  useSurveyFields,
   useSurveyStoreActions,
 } from '@/survey-designer/_store/survey-designer-store';
-import {ElementSchema} from '@/types/element';
-import {getIsElementSchema} from '@/utils/survey';
-import {UseDesignerReturn} from '../../designer/use-designer';
+import {FieldSchema} from '@/types/field';
+import {UseDesignerReturn} from './designer/use-designer';
 
 type ActionBarProps = {
-  element: ElementSchema;
+  field: FieldSchema;
 } & Pick<
   UseDesignerReturn['handlers'],
   'handleRemoveElement' | 'handleDuplicateElement' | 'handleSettingsClick'
 >;
 
 export const ActionBar = ({
-  element,
+  field,
   handleDuplicateElement,
   handleRemoveElement,
   handleSettingsClick,
 }: ActionBarProps) => {
-  const elements = useSurveyElements();
-  const {updateElement, setElements} = useSurveyStoreActions();
+  const fields = useSurveyFields();
+  const {updateField, setFields} = useSurveyStoreActions();
 
-  const index = elements.findIndex((el) => el.id === element?.id);
+  const index = fields.findIndex((el) => el.id === field?.id);
 
   const handleClickMoveDown = () => {
-    setElements((elements) => arrayMove(elements, index, index + 1));
+    setFields((fields) => arrayMove(fields, index, index + 1));
   };
 
   const handleClickMoveUp = () => {
-    setElements((elements) => arrayMove(elements, index, index - 1));
+    setFields((fields) => arrayMove(fields, index, index - 1));
   };
 
   const isFirstElement =
-    elements.length === 1 ? true : elements[0].id === element?.id;
-  const isLastELement = elements.length === index + 1;
+    fields.length === 1 ? true : fields[0].id === field?.id;
+  const isLastELement = fields.length === index + 1;
 
   return (
-    <div className="sticky bottom-8 mx-auto mt-auto max-w-md rounded-lg border bg-white px-5 py-1.5 shadow-2xl">
+    <div className="sticky bottom-8 mx-auto mt-auto block max-w-md rounded-lg border bg-white px-5 py-1.5 shadow-2xl lg:hidden">
       <div className="flex">
         <div className="flex flex-1 items-center justify-between">
           <div className="mr-4 hidden items-center space-x-2 sm:flex">
             <Switch
               id="required"
-              checked={element?.validations.required}
+              checked={field?.validations.required}
               onCheckedChange={(checked) =>
-                updateElement({
-                  id: element?.id,
+                updateField({
+                  id: field?.id,
                   validations: {
                     required: checked,
                   },
@@ -71,7 +70,7 @@ export const ActionBar = ({
               <Button
                 variant="ghost"
                 size="icon"
-                disabled={elements.length === 1 || isLastELement}
+                disabled={fields.length === 1 || isLastELement}
                 onClick={handleClickMoveDown}
               >
                 <ChevronDownIcon className="h-4 w-4" />
@@ -79,7 +78,7 @@ export const ActionBar = ({
               <Button
                 variant="ghost"
                 size="icon"
-                disabled={elements.length === 1 || isFirstElement}
+                disabled={fields.length === 1 || isFirstElement}
                 onClick={handleClickMoveUp}
               >
                 <span className="sr-only">Move up</span>
@@ -100,18 +99,18 @@ export const ActionBar = ({
                 variant="ghost"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDuplicateElement(element?.id ?? '');
+                  handleDuplicateElement(field?.id ?? '');
                 }}
               >
                 <CopyIcon className="h-4 w-4" />
               </Button>
               <Button
-                disabled={elements.length === 1}
+                disabled={fields.length === 1}
                 variant="ghost"
                 size="icon"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleRemoveElement(element?.id ?? '');
+                  handleRemoveElement(field?.id ?? '');
                 }}
               >
                 <Trash2Icon className=" h-4 w-4" />
@@ -128,7 +127,7 @@ export const useActionBar = () => {
   const storeActions = useSurveyStoreActions();
 
   const handleRequiredChange = (id: string, required: boolean) => {
-    storeActions.updateElement({
+    storeActions.updateField({
       id,
       validations: {
         required,

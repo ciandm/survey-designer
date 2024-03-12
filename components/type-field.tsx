@@ -9,50 +9,52 @@ import {
 import {Input} from '@/components/ui/input';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Textarea} from '@/components/ui/textarea';
-import {ElementSchema} from '@/types/element';
+import {FieldSchema} from '@/types/field';
 import {SurveyFormState} from '@/types/survey';
 
 type FieldProps = {
-  field: ControllerRenderProps<SurveyFormState, 'value'>;
-  element: ElementSchema;
+  formField: ControllerRenderProps<SurveyFormState, 'value'>;
+  field: FieldSchema;
 };
 
-export const TypeInputField = ({field, element}: FieldProps) => {
-  switch (element.type) {
+export const TypeInputField = ({field, formField}: FieldProps) => {
+  switch (field.type) {
     case 'short_text':
     case 'long_text':
-      return <TextField field={field} element={element} />;
+      return <TextField field={field} formField={formField} />;
     case 'multiple_choice':
-      return <MultipleChoiceField field={field} element={element} index={0} />;
+      return (
+        <MultipleChoiceField formField={formField} field={field} index={0} />
+      );
     case 'single_choice':
-      return <SingleChoiceField field={field} element={element} />;
+      return <SingleChoiceField formField={formField} field={field} />;
     default:
       return null;
   }
 };
 
-const TextField = ({field, element}: FieldProps) => {
-  const Component = element.type === 'short_text' ? Input : Textarea;
+const TextField = ({formField, field}: FieldProps) => {
+  const Component = field.type === 'short_text' ? Input : Textarea;
   return (
     <FormControl>
       <Component
-        {...field}
-        placeholder={element.properties.placeholder ?? 'Your answer here...'}
-        onChange={(e) => field.onChange([e.target.value])}
+        {...formField}
+        placeholder={field.properties.placeholder ?? 'Your answer here...'}
+        onChange={(e) => formField.onChange([e.target.value])}
       />
     </FormControl>
   );
 };
 
 type MultipleChoiceFieldProps = {
-  element: ElementSchema;
-  field: ControllerRenderProps<SurveyFormState, 'value'>;
+  field: FieldSchema;
+  formField: ControllerRenderProps<SurveyFormState, 'value'>;
   index: number;
 };
 
-const MultipleChoiceField = ({element, index}: MultipleChoiceFieldProps) => {
+const MultipleChoiceField = ({field, index}: MultipleChoiceFieldProps) => {
   const {control} = useFormContext<SurveyFormState>();
-  const choices = element.properties.choices ?? [];
+  const choices = field.properties.choices ?? [];
 
   return (
     <div className="flex flex-col gap-2">
@@ -61,18 +63,18 @@ const MultipleChoiceField = ({element, index}: MultipleChoiceFieldProps) => {
           key={choice.id}
           control={control}
           name="value"
-          render={({field}) => (
+          render={({field: formField}) => (
             <FormItem className="flex items-center space-x-2 space-y-0">
               <FormControl>
                 <Checkbox
-                  {...field}
-                  checked={field.value.includes(choice.id)}
+                  {...formField}
+                  checked={formField.value.includes(choice.id)}
                   onCheckedChange={(checked) => {
                     if (checked) {
-                      field.onChange([...field.value, choice.id]);
+                      formField.onChange([...formField.value, choice.id]);
                     } else {
-                      field.onChange(
-                        field.value.filter((value) => value !== choice.id),
+                      formField.onChange(
+                        formField.value.filter((value) => value !== choice.id),
                       );
                     }
                   }}
@@ -90,17 +92,17 @@ const MultipleChoiceField = ({element, index}: MultipleChoiceFieldProps) => {
 };
 
 const SingleChoiceField = ({
-  element,
+  formField,
   field,
 }: Omit<MultipleChoiceFieldProps, 'index'>) => {
-  const choices = element.properties.choices ?? [];
+  const choices = field.properties.choices ?? [];
 
   return (
     <FormItem className="flex flex-col gap-2">
       <FormControl>
         <RadioGroup
-          onValueChange={(value) => field.onChange([value])}
-          defaultValue={field.value[0]}
+          onValueChange={(value) => formField.onChange([value])}
+          defaultValue={formField.value[0]}
         >
           {choices.map((choice) => (
             <FormItem

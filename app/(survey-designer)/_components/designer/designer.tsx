@@ -2,14 +2,10 @@
 
 import {Drawer, DrawerContent} from '@/components/ui/drawer';
 import {ScrollArea} from '@/components/ui/scroll-area';
-import {
-  getIsElementSchema,
-  getIsElementType,
-  getIsScreenSchema,
-} from '@/utils/survey';
-import {ActionBar} from '../element-canvas/components/action-bar';
+import {getIsField, getIsScreen} from '@/utils/survey';
+import {ActionBar} from '../action-bar';
 import {ElementEditor} from '../element-editor/element-editor';
-import {QuestionSettings} from '../question-settings/question-settings';
+import {FieldSettings} from '../field-settings/field-settings';
 import {ScreenSettings} from '../screen-settings';
 import {SurveyContent} from '../survey-content/survey-content';
 import {useDesigner} from './use-designer';
@@ -31,9 +27,9 @@ export const Designer = () => {
 
         <main className="flex flex-1 flex-col bg-accent">
           <ElementEditor element={element}>
-            {getIsElementSchema(element) && (
+            {getIsField(element) && (
               <ActionBar
-                element={element}
+                field={element}
                 handleDuplicateElement={handlers.handleDuplicateElement}
                 handleRemoveElement={handlers.handleRemoveElement}
                 handleSettingsClick={handlers.handleSettingsClick}
@@ -43,15 +39,13 @@ export const Designer = () => {
         </main>
 
         <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] w-full max-w-sm shrink-0 flex-col overflow-auto border-l lg:block">
-          {getIsScreenSchema(element) && (
+          {getIsScreen(element) && (
             <ScreenSettings
               handleCreateElement={handlers.handleCreateElement}
               screen={element}
             />
           )}
-          {getIsElementSchema(element) && (
-            <QuestionSettings element={element} />
-          )}
+          {getIsField(element) && <FieldSettings field={element} />}
         </aside>
       </div>
       <Drawer
@@ -63,15 +57,13 @@ export const Designer = () => {
         <DrawerContent className="flex max-h-[90%] flex-col">
           <ScrollArea className="overflow-y-auto px-4 py-6">
             <div className="mx-auto max-w-lg">
-              {getIsScreenSchema(element) && (
+              {getIsScreen(element) && (
                 <ScreenSettings
                   handleCreateElement={handlers.handleCreateElement}
                   screen={element}
                 />
               )}
-              {getIsElementSchema(element) && (
-                <QuestionSettings element={element} />
-              )}
+              {getIsField(element) && <FieldSettings field={element} />}
             </div>
           </ScrollArea>
         </DrawerContent>

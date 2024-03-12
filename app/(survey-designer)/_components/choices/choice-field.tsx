@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {useSurveyStoreActions} from '@/survey-designer/_store/survey-designer-store';
-import {ChoicesSchema} from '@/types/element';
+import {ChoicesSchema} from '@/types/field';
 
 type ChoiceFieldProps = {
   handleRemoveChoice: (id: string) => void;
@@ -19,14 +19,14 @@ type ChoiceFieldProps = {
   choice: ChoicesSchema[number];
   index: number;
   focusInputs: React.MutableRefObject<HTMLInputElement[]>;
-  elementId: string;
+  fieldId: string;
 };
 
 export const ChoicesField = ({
   choice,
   index,
   choices,
-  elementId,
+  fieldId,
   focusInputs,
   handleInputKeyDown,
   handleRemoveChoice,
@@ -48,7 +48,7 @@ export const ChoicesField = ({
             ref={(el) => (el ? (focusInputs.current[index] = el) : null)}
             onBlur={(e) =>
               updateQuestionChoice({
-                elementId,
+                fieldId,
                 newChoice: {
                   id: choice.id,
                   value: e.target.value,

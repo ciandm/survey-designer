@@ -35,18 +35,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  ElementGroup,
-  ElementSchema,
-  ElementType,
-  ScreenSchema,
-  ScreenType,
-} from '@/types/element';
+import {ElementGroup} from '@/types/element';
+import {FieldSchema, FieldType} from '@/types/field';
+import {ScreenSchema, ScreenType} from '@/types/screen';
 import {cn} from '@/utils/classnames';
 import {getStoreKeyForScreenType} from '@/utils/screen';
-import {getIsElementType, getIsScreenType} from '@/utils/survey';
+import {getIsFieldType, getIsScreenType} from '@/utils/survey';
 import {
-  useSurveyElements,
+  useSurveyFields,
   useSurveyScreens,
   useSurveyStoreActions,
 } from '../../_store/survey-designer-store';
@@ -55,7 +51,7 @@ import {ElementTypeIcon} from '../element-type-icon';
 import {ElementCategoriesGrid} from './components/element-categories-grid';
 
 type SurveyContentProps = {
-  element: ElementSchema | ScreenSchema | null;
+  element: FieldSchema | ScreenSchema | null;
 } & Pick<
   UseDesignerHandlers,
   'handleSelectElement' | 'handleCreateElement' | 'handleCreateScreen'
@@ -69,7 +65,7 @@ export const SurveyContent = ({
 }: SurveyContentProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const storeActions = useSurveyStoreActions();
-  const elements = useSurveyElements();
+  const fields = useSurveyFields();
   const screens = useSurveyScreens();
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -87,23 +83,23 @@ export const SurveyContent = ({
     const {active, over} = event;
 
     if (active.id !== over?.id) {
-      storeActions.setElements((elements) => {
-        const oldIndex = elements.findIndex((q) => q.id === active.id);
-        const newIndex = elements.findIndex((q) => q.id === over?.id);
+      storeActions.setFields((fields) => {
+        const oldIndex = fields.findIndex((q) => q.id === active.id);
+        const newIndex = fields.findIndex((q) => q.id === over?.id);
 
-        return arrayMove(elements, oldIndex, newIndex);
+        return arrayMove(fields, oldIndex, newIndex);
       });
     }
   };
 
   const handleClickOption = (
     group: ElementGroup,
-    type: ElementType | ScreenType,
+    type: FieldType | ScreenType,
   ) => {
     if (group === 'Screens' && getIsScreenType(type)) {
       handleCreateScreen({key: getStoreKeyForScreenType(type)});
     } else {
-      if (getIsElementType(type)) {
+      if (getIsFieldType(type)) {
         handleCreateElement({type});
       }
     }
@@ -145,10 +141,10 @@ export const SurveyContent = ({
               modifiers={[restrictToParentElement]}
             >
               <SortableContext
-                items={elements.map((el) => el.id)}
+                items={fields.map((el) => el.id)}
                 strategy={verticalListSortingStrategy}
               >
-                {elements.map((el, index) => {
+                {fields.map((el, index) => {
                   const text = !!el.text ? el.text : '...';
                   return (
                     <Sortable key={el.id} id={el.id}>

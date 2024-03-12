@@ -4,8 +4,8 @@ import {
   useSurveyModel,
   useSurveyStoreActions,
 } from '@/survey-designer/_store/survey-designer-store';
-import {ElementType} from '@/types/element';
-import {SurveyScreenKey} from '@/types/survey';
+import {FieldType} from '@/types/field';
+import {SurveyScreenKey} from '@/types/screen';
 import {
   getElementByIdWithFallback,
   getInitialSelectedId,
@@ -14,7 +14,7 @@ import {
 
 export const useDesigner = () => {
   const model = useSurveyModel();
-  const {elements} = model;
+  const {fields} = model;
   const storeActions = useSurveyStoreActions();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedId, setSelectedId] = useQueryState('id', {
@@ -37,24 +37,23 @@ export const useDesigner = () => {
     setIsSettingsOpen((prev) => !prev);
   }, []);
 
-  const handleRemoveElement = useCallback(
+  const handleRemoveField = useCallback(
     (removeId: string) => {
-      const elementsBeforeDelete = [...elements];
-      if (elementsBeforeDelete.length === 1) return;
+      if (fields.length === 1) return;
 
-      storeActions.deleteElement({id: removeId});
+      storeActions.deleteField({id: removeId});
       if (selectedId === removeId) {
         const {id} = getNextElementToSelect(model, removeId);
 
         setSelectedId(id);
       }
     },
-    [storeActions, model, selectedId, elements, setSelectedId],
+    [storeActions, model, selectedId, fields, setSelectedId],
   );
 
   const handleDuplicateElement = useCallback(
     (duplicateId: string) => {
-      const {id} = storeActions.duplicateElement({id: duplicateId}) ?? {};
+      const {id} = storeActions.duplicateField({id: duplicateId}) ?? {};
 
       if (id) {
         setSelectedId(id);
@@ -63,15 +62,15 @@ export const useDesigner = () => {
     [storeActions, setSelectedId],
   );
 
-  const handleCreateElement = useCallback(
+  const handleCreateField = useCallback(
     ({
       type = 'short_text',
       index,
     }: {
-      type?: ElementType;
+      type?: FieldType;
       index?: number;
     } = {}) => {
-      const {id} = storeActions.insertElement(
+      const {id} = storeActions.insertField(
         {
           type,
         },
@@ -106,17 +105,17 @@ export const useDesigner = () => {
   const handlers = useMemo(
     () => ({
       handleSelectElement,
-      handleRemoveElement,
+      handleRemoveElement: handleRemoveField,
       handleDuplicateElement,
-      handleCreateElement,
+      handleCreateElement: handleCreateField,
       handleSettingsClick,
       handleCreateScreen,
       handleRemoveScreen,
     }),
     [
-      handleCreateElement,
+      handleCreateField,
       handleDuplicateElement,
-      handleRemoveElement,
+      handleRemoveField,
       handleSelectElement,
       handleSettingsClick,
       handleCreateScreen,

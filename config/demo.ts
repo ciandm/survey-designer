@@ -1,13 +1,13 @@
 import {SurveyWithParsedModelType} from '@/types/survey';
-import {buildNewElementHelper, buildNewScreenHelper} from '@/utils/survey';
+import {buildNewFieldHelper, buildNewScreenHelper} from '@/utils/survey';
 
 export const demoSurvey: SurveyWithParsedModelType = {
   createdAt: new Date(),
   id: 'demo',
   is_published: false,
   model: {
-    elements: [
-      buildNewElementHelper('short_text', {
+    fields: [
+      buildNewFieldHelper('short_text', {
         text: 'What is your name?',
         description: 'Please enter your full name',
         validations: {required: true},

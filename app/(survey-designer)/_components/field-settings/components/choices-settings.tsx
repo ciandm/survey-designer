@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {ELEMENT_CHOICE_SORT_ORDER_OPTIONS} from '@/lib/constants/element';
-import {ElementSchema} from '@/types/element';
+import {FieldSchema} from '@/types/field';
 import {useSurveyStoreActions} from '../../../_store/survey-designer-store';
 import {AddChoiceButton} from '../../choices/add-choice-button';
 import {Choices} from '../../choices/choices';
@@ -25,30 +25,24 @@ import {ChoicesList} from '../../choices/choices-list';
 import {RemoveAllChoicesButton} from '../../choices/remove-all-choices-button';
 import {SettingsField} from '../../settings-field';
 
-export const ChoicesSettings = ({element}: {element: ElementSchema}) => {
-  const {updateElement} = useSurveyStoreActions();
-  const choices = element.properties.choices ?? [];
+export const ChoicesSettings = ({field}: {field: FieldSchema}) => {
+  const {updateField: updateElement} = useSurveyStoreActions();
+  const choices = field.properties.choices ?? [];
 
-  const handleMinimumSelectionBlur = (
-    value: string,
-    element: ElementSchema,
-  ) => {
+  const handleMinimumSelectionBlur = (value: string, field: FieldSchema) => {
     const minSelections = parseInt(value);
 
     updateElement({
-      id: element.id,
+      id: field.id,
       validations: {
         min_selections: minSelections,
       },
     });
   };
 
-  const handleMaximumSelectionBlur = (
-    value: string,
-    element: ElementSchema,
-  ) => {
-    const currentMaxSelections = element.validations.max_selections ?? 0;
-    const currentMinSelections = element.validations.min_selections ?? 0;
+  const handleMaximumSelectionBlur = (value: string, field: FieldSchema) => {
+    const currentMaxSelections = field.validations.max_selections ?? 0;
+    const currentMinSelections = field.validations.min_selections ?? 0;
     const maxSelections = parseInt(value);
 
     if (currentMaxSelections === maxSelections) return;
@@ -62,7 +56,7 @@ export const ChoicesSettings = ({element}: {element: ElementSchema}) => {
     }
 
     updateElement({
-      id: element.id,
+      id: field.id,
       validations: {
         max_selections: maxSelections,
         min_selections: newMinSelections,
@@ -73,7 +67,7 @@ export const ChoicesSettings = ({element}: {element: ElementSchema}) => {
   return (
     <div className="space-y-6">
       <div>
-        <Choices elementId={element.id} choices={choices}>
+        <Choices fieldId={field.id} choices={choices}>
           <div className="mb-2 grid grid-cols-[1fr_40px_40px] items-center justify-between gap-2">
             <p className="text-sm font-medium">Choices</p>
             <TooltipProvider delayDuration={100}>
@@ -109,10 +103,10 @@ export const ChoicesSettings = ({element}: {element: ElementSchema}) => {
           Sort choices
         </Label>
         <Select
-          value={element.properties.sort_order ?? 'none'}
+          value={field.properties.sort_order ?? 'none'}
           onValueChange={(value) => {
             updateElement({
-              id: element.id,
+              id: field.id,
               properties: {
                 sort_order: value === 'none' ? undefined : (value as any),
               },
@@ -133,20 +127,20 @@ export const ChoicesSettings = ({element}: {element: ElementSchema}) => {
           </SelectContent>
         </Select>
       </div>
-      {element.type === 'multiple_choice' && (
+      {field.type === 'multiple_choice' && (
         <>
           <SettingsField>
             <SettingsField.Label>Minimum selection</SettingsField.Label>
             <SettingsField.InputWrapper>
               <Input
                 type="number"
-                defaultValue={element.validations.min_selections ?? 0}
+                defaultValue={field.validations.min_selections ?? 0}
                 max={choices.length}
                 min={0}
                 onBlur={(e) =>
-                  handleMinimumSelectionBlur(e.target.value, element)
+                  handleMinimumSelectionBlur(e.target.value, field)
                 }
-                key={`${element.validations.min_selections}-${element.id}-minimum-selection`}
+                key={`${field.validations.min_selections}-${field.id}-minimum-selection`}
               />
             </SettingsField.InputWrapper>
           </SettingsField>
@@ -158,11 +152,11 @@ export const ChoicesSettings = ({element}: {element: ElementSchema}) => {
                 id="maximum-selection"
                 min={0}
                 max={choices.length}
-                defaultValue={element.validations.max_selections ?? 0}
+                defaultValue={field.validations.max_selections ?? 0}
                 onBlur={(e) =>
-                  handleMaximumSelectionBlur(e.target.value, element)
+                  handleMaximumSelectionBlur(e.target.value, field)
                 }
-                key={`${element.validations.max_selections}-${element.id}-maximum-selection`}
+                key={`${field.validations.max_selections}-${field.id}-maximum-selection`}
               />
             </SettingsField.InputWrapper>
           </SettingsField>

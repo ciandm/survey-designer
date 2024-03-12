@@ -29,7 +29,7 @@ const SurveyCompletedPage = async ({params}: Props) => {
 
   return (
     <ExpireCookie surveyId={params.id}>
-      <ThankYouScreen message={message} />
+      <ThankYouScreen title={message} />
     </ExpireCookie>
   );
 };

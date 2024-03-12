@@ -1,4 +1,4 @@
-import {ChoicesSchema} from '@/types/element';
+import {ChoicesSchema} from '@/types/field';
 import {createContext} from '@/utils/context';
 
 type Context = {
@@ -14,7 +14,7 @@ type Context = {
     handleRemoveAll: () => void;
   };
   choices: ChoicesSchema;
-  elementId: string;
+  fieldId: string;
 };
 
 export const [ChoicesContextProvider, useChoicesContext] =

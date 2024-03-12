@@ -3,21 +3,21 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Textarea} from '@/components/ui/textarea';
-import {useSurveyElements} from '@/survey-designer/_store/survey-designer-store';
-import {ElementSchema, ScreenSchema} from '@/types/element';
+import {useSurveyFields} from '@/survey-designer/_store/survey-designer-store';
+import {SurveyElementSchema} from '@/types/element';
 import {cn} from '@/utils/classnames';
-import {getIsElementSchema, getIsScreenSchema} from '@/utils/survey';
+import {getIsField, getIsScreen} from '@/utils/survey';
 import {AddChoiceButton} from '../choices/add-choice-button';
 import {Choices} from '../choices/choices';
 import {ChoicesList} from '../choices/choices-list';
 
 type ElementEditorProps = {
-  element: ElementSchema | ScreenSchema | null;
+  element: SurveyElementSchema | null;
   children: React.ReactNode;
 };
 
 export const ElementEditor = ({element, children}: ElementEditorProps) => {
-  const surveyElements = useSurveyElements();
+  const surveyElements = useSurveyFields();
   const index = surveyElements.findIndex((el) => el.id === element?.id);
 
   if (!element) {
@@ -26,7 +26,7 @@ export const ElementEditor = ({element, children}: ElementEditorProps) => {
 
   return (
     <div className="flex flex-1 flex-col">
-      {getIsScreenSchema(element) && (
+      {getIsScreen(element) && (
         <div className="flex flex-1 flex-col items-center justify-center gap-8 p-8">
           <div className="flex flex-col items-center gap-2">
             <h1 className="text-2xl font-semibold leading-6 text-gray-900">
@@ -47,7 +47,7 @@ export const ElementEditor = ({element, children}: ElementEditorProps) => {
           )}
         </div>
       )}
-      {getIsElementSchema(element) && (
+      {getIsField(element) && (
         <div className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center gap-6 px-6 pb-2 pt-4">
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-1">
@@ -69,7 +69,7 @@ export const ElementEditor = ({element, children}: ElementEditorProps) => {
             {(element.type === 'multiple_choice' ||
               element.type === 'single_choice') && (
               <Choices
-                elementId={element.id}
+                fieldId={element.id}
                 choices={element.properties.choices}
               >
                 <ChoicesList />
