@@ -1,54 +1,46 @@
-import {ErrorMessage} from '@hookform/error-message';
-import {useSurveyFormContext} from '@/hooks/use-survey';
-import {ElementSchemaType} from '@/types/element';
+import React from 'react';
+import {Label} from '@/components/ui/label';
+import {FieldSchema} from '@/types/field';
 import {cn} from '@/utils/classnames';
-import {
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from './ui/form';
-import {TypeInputField} from './type-field';
+import {FormDescription, FormItem, FormLabel} from './ui/form';
 
 type QuestionFieldProps = {
   index: number;
-  element: ElementSchemaType;
+  field: FieldSchema;
+  children: React.ReactNode;
+  isReadonly?: boolean;
+  id?: string;
 };
 
-export const QuestionField = ({index, element}: QuestionFieldProps) => {
-  const {control} = useSurveyFormContext();
+export const QuestionField = ({
+  index,
+  children,
+  field,
+  isReadonly = true,
+  id,
+}: QuestionFieldProps) => {
+  const LabelComponent = isReadonly ? Label : FormLabel;
+  const WrapperComponent = isReadonly ? React.Fragment : FormItem;
+  const DescriptionComponent = isReadonly ? 'p' : FormDescription;
+
   return (
-    <FormField
-      control={control}
-      name="value"
-      render={({field}) => (
-        <FormItem>
-          <div className="flex flex-col gap-1">
-            <FormLabel
-              className={cn('break-normal text-base font-medium leading-6', {
-                [`after:content-['_*']`]: element.validations.required,
-              })}
-            >
-              {index + 1}. {!!element.text ? element.text : 'Untitled question'}
-            </FormLabel>
-            {!!element.description && (
-              <FormDescription>{element.description}</FormDescription>
-            )}
-          </div>
-          <div className="mt-4">
-            <TypeInputField field={field} element={element} />
-          </div>
-          <ErrorMessage
-            name="value"
-            render={({message}) => (
-              <p className="text-sm font-medium leading-5 text-red-500">
-                {message}
-              </p>
-            )}
-          />
-        </FormItem>
-      )}
-    />
+    <WrapperComponent>
+      <div className="mb-2 flex flex-col gap-1">
+        <LabelComponent
+          {...(id && {htmlFor: id})}
+          className={cn('break-normal text-base font-medium leading-6', {
+            [`after:content-['*']`]: field.validations.required,
+          })}
+        >
+          {index + 1}. {!!field.text ? field.text : 'Untitled question'}
+        </LabelComponent>
+        {!!field.description && (
+          <DescriptionComponent className="text-sm text-muted-foreground">
+            {field.description}
+          </DescriptionComponent>
+        )}
+      </div>
+      {children}
+    </WrapperComponent>
   );
 };

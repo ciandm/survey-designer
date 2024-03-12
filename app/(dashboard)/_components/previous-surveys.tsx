@@ -26,7 +26,7 @@ export const PreviousSurveys = async () => {
           <div className="mt-4 flex w-full justify-between gap-0.5 text-left sm:mt-0 sm:w-auto sm:flex-grow-0 sm:flex-col sm:text-right">
             <p className="text-sm">{survey.SurveyResult.length} responses</p>
             <p className="text-sm text-muted-foreground">
-              {survey.model.elements.length + ' questions'}
+              {survey.model.fields.length + ' questions'}
             </p>
           </div>
         </PreviousSurveyContainer>

@@ -90,7 +90,7 @@ export const SurveyList = ({surveys}: Props) => {
                       </Link>
                     </Button>
                     <div className="flex gap-2 text-sm text-muted-foreground">
-                      <span>{survey.model.elements.length} questions</span>
+                      <span>{survey.model.fields.length} questions</span>
                       <span>•</span>
                       <span>{survey.SurveyResult.length} responses</span>
                     </div>

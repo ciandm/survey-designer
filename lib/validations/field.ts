@@ -1,5 +1,14 @@
 import {z} from 'zod';
-import {ELEMENT_TYPE} from '../constants/element';
+
+export const sortOrderEnum = z.enum(['asc', 'desc', 'random']);
+
+export const textFieldTypes = z.enum(['short_text', 'long_text']);
+export const choiceFieldTypes = z.enum(['multiple_choice', 'single_choice']);
+
+export const fieldTypes = z.enum([
+  ...textFieldTypes.options,
+  ...choiceFieldTypes.options,
+]);
 
 export const choicesSchema = z.array(
   z.object({
@@ -7,8 +16,6 @@ export const choicesSchema = z.array(
     value: z.string(),
   }),
 );
-
-export const sortOrderEnum = z.enum(['asc', 'desc', 'random']);
 
 const properties = z.object({
   choices: choicesSchema.optional(),
@@ -26,10 +33,10 @@ const validations = z.object({
   max_selections: z.number().optional(),
 });
 
-export const elementSchema = z.object({
+export const fieldSchema = z.object({
   id: z.string(),
   text: z.string(),
-  type: z.nativeEnum(ELEMENT_TYPE),
+  type: fieldTypes,
   description: z.string().optional(),
   ref: z.string(),
   properties,

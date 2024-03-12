@@ -25,11 +25,11 @@ const SurveyCompletedPage = async ({params}: Props) => {
     return redirect(getSiteUrl.surveyPage({surveyId: params.id}));
   }
 
-  const message = survey.model.screens.thank_you.message;
+  const message = survey.model.screens.thank_you[0].text;
 
   return (
     <ExpireCookie surveyId={params.id}>
-      <ThankYouScreen message={message} />
+      <ThankYouScreen title={message} />
     </ExpireCookie>
   );
 };

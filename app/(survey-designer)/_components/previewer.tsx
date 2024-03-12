@@ -1,26 +1,23 @@
 'use client';
 
 import {useMemo} from 'react';
+import {ErrorMessage} from '@hookform/error-message';
 import {QuestionField} from '@/components/question-field';
 import {SurveyFormButtons} from '@/components/survey-form-buttons';
 import {SurveyScreen} from '@/components/survey-screen';
-import {
-  SurveyShell,
-  SurveyShellAside,
-  SurveyShellMain,
-} from '@/components/survey-shell';
 import {ThankYouScreen} from '@/components/thank-you-screen';
+import {TypeInputField} from '@/components/type-field';
 import {Button} from '@/components/ui/button';
+import {FormField} from '@/components/ui/form';
 import {WelcomeScreen} from '@/components/welcome-screen';
 import {useSurvey} from '@/hooks/use-survey';
-import {sortChoices} from '@/survey/_utils/question';
 import {useSurveyModel} from '@/survey-designer/_store/survey-designer-store';
+import {sortChoices} from '@/utils/element';
 import {useDesignerTabManager} from './designer-tab-manager';
 
 export const Previewer = () => {
   const initialModel = useSurveyModel();
   const model = useMemo(() => sortChoices(initialModel), [initialModel]);
-
   const {setActiveTab} = useDesignerTabManager();
 
   const {form, handlers, currentElement, screen} = useSurvey({
@@ -30,13 +27,16 @@ export const Previewer = () => {
     },
   });
 
+  const {
+    screens: {welcome, thank_you},
+  } = model;
+
   const {element, index} = currentElement;
 
   return (
-    <SurveyShell>
-      <SurveyShellAside model={model} />
-      <SurveyShellMain>
-        {model.elements.length === 0 ? (
+    <div className="flex flex-1 bg-accent pt-40">
+      <div className="mx-auto w-full max-w-xl px-4">
+        {model.fields.length === 0 ? (
           <div className="mx-auto space-y-4 text-center">
             <h1 className="text-5xl">😭</h1>
             <p className="text-muted-foreground">
@@ -50,9 +50,12 @@ export const Previewer = () => {
         ) : (
           <>
             {screen === 'welcome_screen' && (
-              <WelcomeScreen message={model.screens.welcome.message}>
+              <WelcomeScreen
+                title={welcome[0].text}
+                description={welcome[0].description}
+              >
                 <Button onClick={handlers.handleStartSurvey} size="lg">
-                  Start survey
+                  {welcome[0].properties.button_label}
                 </Button>
               </WelcomeScreen>
             )}
@@ -64,10 +67,32 @@ export const Previewer = () => {
                     model={model}
                     onBack={handlers.handleGoBack}
                   >
-                    <QuestionField
-                      element={element}
-                      index={index}
-                      key={element?.id}
+                    <FormField
+                      {...form}
+                      name="value"
+                      render={({field: formField}) => (
+                        <QuestionField
+                          field={element}
+                          index={index}
+                          key={element?.id}
+                          isReadonly={false}
+                        >
+                          <div className="mb-2 mt-4">
+                            <TypeInputField
+                              formField={formField}
+                              field={element}
+                            />
+                          </div>
+                          <ErrorMessage
+                            name="value"
+                            render={({message}) => (
+                              <p className="text-sm font-medium leading-5 text-red-500">
+                                {message}
+                              </p>
+                            )}
+                          />
+                        </QuestionField>
+                      )}
                     />
                   </SurveyFormButtons>
                 </SurveyScreen>
@@ -84,7 +109,10 @@ export const Previewer = () => {
                 </div>
               ))}
             {screen === 'thank_you_screen' && (
-              <ThankYouScreen message={model.screens.thank_you.message}>
+              <ThankYouScreen
+                title={thank_you[0].text}
+                description={thank_you[0].description}
+              >
                 <Button onClick={() => handlers.handleRestartSurvey()}>
                   Restart survey (preview mode only)
                 </Button>
@@ -92,7 +120,7 @@ export const Previewer = () => {
             )}
           </>
         )}
-      </SurveyShellMain>
-    </SurveyShell>
+      </div>
+    </div>
   );
 };

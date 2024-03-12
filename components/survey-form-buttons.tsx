@@ -21,25 +21,25 @@ export const SurveyFormButtons = ({
   currentElementId,
   children,
 }: SurveyFormButtonsProps) => {
-  const {elements} = model;
+  const {fields} = model;
   const {formState} = useSurveyFormContext();
-  const currentElementIndex = elements.findIndex(
+  const currentElementIndex = fields.findIndex(
     (el) => el.id === currentElementId,
   );
   const isFirstElement = currentElementIndex === 0;
-  const isLastElement = currentElementIndex === elements.length - 1;
+  const isLastElement = currentElementIndex === fields.length - 1;
 
   const SubmitIcon = isLastElement ? CheckIcon : ArrowRightIcon;
   const submitText = isLastElement ? 'Complete survey' : 'Next question';
 
   return (
-    <>
-      {elements.length > 1 && (
+    <div className="relative">
+      {fields.length > 1 && !isFirstElement && (
         <Button
           variant="ghost"
           type="button"
           onClick={onBack}
-          className="mb-8 p-0"
+          className="absolute -top-16 mb-8 p-0"
           size="sm"
           disabled={isFirstElement}
         >
@@ -60,6 +60,6 @@ export const SurveyFormButtons = ({
         {submitText}
         <SubmitIcon className="ml-2 h-4 w-4" />
       </Button>
-    </>
+    </div>
   );
 };

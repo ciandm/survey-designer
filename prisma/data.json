@@ -3,7 +3,7 @@
     "id": "9f6842e1-76b4-4d5f-a4cb-4f7fdddb2d63",
     "title": "Sample Survey",
     "description": "This is a sample survey for demonstration purposes.",
-    "elements": [
+    "fields": [
       {
         "id": "f73d956b-4e80-47ae-8c3a-eb5351eac6bb",
         "text": "What is your favorite color?",
@@ -106,7 +106,7 @@
     "id": "d1c90388-1b1a-4dc4-b5f3-76b2d587bc39",
     "title": "Another Sample Survey",
     "description": "This is another sample survey for demonstration purposes.",
-    "elements": [
+    "fields": [
       {
         "id": "50cbf7f3-74cc-40d8-a9a3-73d4642ec4d1",
         "text": "What is your favorite animal?",
@@ -210,7 +210,7 @@
     "id": "f3a2e5d2-58e1-4e2c-8351-32a01d6a3274",
     "title": "Yet Another Sample Survey",
     "description": "This is yet another sample survey for demonstration purposes.",
-    "elements": [
+    "fields": [
       {
         "id": "9a1d87fd-1b53-4c45-b5bb-3f5960a5b04e",
         "text": "What is your favorite food?",

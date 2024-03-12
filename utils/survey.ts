@@ -1,51 +1,76 @@
+import {generateId} from 'lucia';
 import {v4 as uuidv4} from 'uuid';
-import type {ElementSchemaType, SurveyElementType} from '@/types/element';
-import {ParsedModelType, SurveyFormConfig} from '@/types/survey';
+import {fieldTypes} from '@/lib/validations/field';
+import {SurveyElementType} from '@/types/element';
+import type {FieldSchema, FieldType} from '@/types/field';
+import {ScreenSchema, ScreenType} from '@/types/screen';
+import {ResponseType, SurveyResponsesMap} from '@/types/survey';
+import {
+  CreateSurveyInputType,
+  ParsedModelType,
+  SurveyFormConfig,
+  SurveyWithParsedModelType,
+} from '@/types/survey';
 
-export function formatQuestionType(type: SurveyElementType): string {
+export function formatElementType(type: SurveyElementType): string {
   switch (type) {
     case 'short_text':
-      return 'Short Text';
+      return 'Short text';
     case 'long_text':
-      return 'Long Text';
+      return 'Long text';
     case 'multiple_choice':
-      return 'Multiple Choice';
+      return 'Multiple choice';
     case 'single_choice':
-      return 'Single Choice';
+      return 'Single choice';
+    case 'thank_you_screen':
+      return 'Thank you screen';
+    case 'welcome_screen':
+      return 'Welcome screen';
+    default:
+      return '';
   }
 }
 
-export function buildNewElementHelper(
-  type: SurveyElementType,
-  field: Partial<ElementSchemaType>,
-): ElementSchemaType {
+export function buildNewFieldHelper(
+  type: FieldType,
+  field: Partial<FieldSchema>,
+): FieldSchema {
+  const baseField = {
+    id: field?.id ?? `el_${generateId(12)}`,
+    ref: field?.ref ?? uuidv4(),
+    text: field?.text ?? '',
+    description: field?.description ?? '',
+    type,
+    properties: {
+      placeholder: '',
+      choices: [],
+    },
+    validations: {
+      required: field.validations?.required || false,
+    },
+  };
   switch (type) {
     case 'long_text':
     case 'short_text':
       return {
-        id: field?.id ?? uuidv4(),
-        ref: field?.ref ?? uuidv4(),
-        text: field?.text ?? '',
-        description: field?.description ?? '',
-        type,
+        ...baseField,
         properties: {
-          placeholder: '',
-          choices: [],
+          ...baseField.properties,
+          placeholder: field.properties?.placeholder || 'Your answer here',
         },
         validations: {
-          required: field.validations?.required || false,
+          ...baseField.validations,
+          min_characters: field.validations?.min_characters || 0,
+          max_characters: field.validations?.max_characters || 0,
         },
       };
 
     case 'multiple_choice':
     case 'single_choice':
       return {
-        id: field?.id ?? uuidv4(),
-        ref: field?.ref ?? uuidv4(),
-        text: field?.text ?? '',
-        description: field?.description ?? '',
-        type,
+        ...baseField,
         properties: {
+          ...baseField.properties,
           choices: field.properties?.choices?.length
             ? field.properties.choices
             : [
@@ -56,6 +81,7 @@ export function buildNewElementHelper(
               ],
         },
         validations: {
+          ...baseField.validations,
           required: field.validations?.required || false,
         },
       };
@@ -64,18 +90,29 @@ export function buildNewElementHelper(
   }
 }
 
-export function getNextElementToSelect(
-  elements: ElementSchemaType[],
-  elementId: string,
-) {
-  const questionIndex = elements.findIndex(
-    (element) => element.id === elementId,
-  );
-
-  const prevQuestion = elements[questionIndex - 1];
-  const nextQuestion = elements[questionIndex + 1];
-
-  return (prevQuestion || nextQuestion).id;
+export function buildNewScreenHelper(type: ScreenType): ScreenSchema {
+  switch (type) {
+    case 'welcome_screen':
+      return {
+        id: `sc_${generateId(12)}`,
+        type,
+        text: 'Welcome to the survey!',
+        description: '',
+        properties: {
+          button_label: 'Start survey',
+        },
+      };
+    case 'thank_you_screen':
+      return {
+        id: `sc_${generateId(12)}`,
+        type,
+        text: 'Thank you for completing the survey!',
+        description: '',
+        properties: {},
+      };
+    default:
+      throw new Error('Invalid screen type');
+  }
 }
 
 export function validateIsNotNull<T>(value: T | null): value is T {
@@ -83,13 +120,13 @@ export function validateIsNotNull<T>(value: T | null): value is T {
 }
 
 export const buildSurveyConfig = (model: ParsedModelType): SurveyFormConfig => {
-  const {elements = []} = model;
+  const {fields = []} = model;
   const config: SurveyFormConfig = {};
-  if (!elements.length) return config;
+  if (!fields.length) return config;
 
-  elements.forEach((el, index) => {
-    const nextElement = model.elements[index + 1];
-    const previousElement = model.elements[index - 1];
+  fields.forEach((el, index) => {
+    const nextElement = model.fields[index + 1];
+    const previousElement = model.fields[index - 1];
     config[el.id] = {
       next: nextElement?.id || 'complete',
       previous: previousElement?.id || null,
@@ -97,3 +134,117 @@ export const buildSurveyConfig = (model: ParsedModelType): SurveyFormConfig => {
   });
   return config;
 };
+
+export const getIsFieldType = (
+  type?: FieldType | ScreenType,
+): type is FieldType => {
+  if (type === 'welcome_screen' || type === 'thank_you_screen' || !type)
+    return false;
+  const options = fieldTypes.options;
+  return options.includes(type);
+};
+
+export const getIsScreenType = (
+  type?: FieldType | ScreenType,
+): type is ScreenType => {
+  if (type === 'welcome_screen' || type === 'thank_you_screen') return true;
+  return false;
+};
+
+export const getIsField = (
+  element: FieldSchema | ScreenSchema | null,
+): element is FieldSchema => getIsFieldType(element?.type);
+
+export const getIsScreen = (
+  element: FieldSchema | ScreenSchema | null,
+): element is ScreenSchema => getIsScreenType(element?.type);
+
+function duplicateElements(fields: FieldSchema[]) {
+  return fields.map((element) => ({
+    ...element,
+    id: uuidv4(),
+    ref: uuidv4(),
+    properties: {
+      ...element.properties,
+      choices:
+        element.properties.choices?.map((choice) => ({
+          ...choice,
+          id: uuidv4(),
+        })) ?? [],
+    },
+  }));
+}
+
+export function generateDuplicateSurvey(
+  survey: SurveyWithParsedModelType,
+  input: Omit<CreateSurveyInputType, 'duplicatedFrom'>,
+): Omit<SurveyWithParsedModelType, 'createdAt' | 'updatedAt' | 'id'> {
+  const {model} = survey;
+  let newTitle = input.title;
+  let newDescription = input.description;
+
+  if (!newTitle) {
+    newTitle = survey.model.title
+      ? `${survey.model.title} (Copy)`
+      : 'Untitled Survey (Copy)';
+  }
+
+  if (!newDescription) {
+    newDescription = model.description
+      ? `${model.description} (Copy)`
+      : 'Untitled Survey (Copy)';
+  }
+
+  return {
+    is_published: false,
+    userId: survey.userId,
+    model: {
+      ...survey.model,
+      title: newTitle,
+      description: newDescription,
+      fields: duplicateElements(survey.model.fields),
+    },
+  };
+}
+
+export function generateNewSurvey(
+  input: Omit<CreateSurveyInputType, 'duplicatedFrom'> & {userId: string},
+): Omit<SurveyWithParsedModelType, 'createdAt' | 'updatedAt' | 'id'> {
+  let newTitle = input.title;
+  let newDescription = input.description;
+
+  if (!newTitle) {
+    newTitle = 'Untitled Survey';
+  }
+
+  if (!newDescription) {
+    newDescription = 'Untitled Survey';
+  }
+
+  return {
+    userId: input.userId,
+    is_published: false,
+    model: {
+      title: newTitle,
+      description: newDescription,
+      fields: [],
+      screens: {
+        welcome: [],
+        thank_you: [],
+      },
+      version: 1,
+    },
+  };
+}
+
+export function transformResponsesMap(
+  responsesMap: SurveyResponsesMap,
+): ResponseType[] {
+  return Object.entries(responsesMap).map(([questionId, response]) => {
+    return {
+      questionId,
+      value: response.value,
+      type: response.type,
+    };
+  });
+}

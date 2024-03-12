@@ -1,12 +1,20 @@
-import {z} from 'zod';
-import {ELEMENT_TYPE} from '@/lib/constants/element';
-import {
-  choicesSchema,
-  elementSchema,
-  sortOrderEnum,
-} from '@/lib/validations/element';
+import {FieldSchema, FieldType} from './field';
+import {ScreenSchema, ScreenType} from './screen';
 
-export type ElementSchemaType = z.infer<typeof elementSchema>;
-export type ChoicesSchemaType = z.infer<typeof choicesSchema>;
-export type SortOrderType = z.infer<typeof sortOrderEnum>;
-export type SurveyElementType = keyof typeof ELEMENT_TYPE;
+export type SurveyElementType = FieldType | ScreenType;
+export type SurveyElementSchema = FieldSchema | ScreenSchema;
+
+export type SelectedElement = {
+  id: string;
+  type: SurveyElementType;
+};
+
+export type ElementGroup = 'Text' | 'Choices' | 'Screens';
+
+export type ElementOptions = {
+  group: ElementGroup;
+  options: {
+    value: SurveyElementType;
+    label: string;
+  }[];
+};

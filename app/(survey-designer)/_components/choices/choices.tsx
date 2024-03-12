@@ -1,18 +1,18 @@
 import React, {useMemo} from 'react';
-import {ChoicesSchemaType} from '@/types/element';
+import {ChoicesSchema} from '@/types/field';
 import {ChoicesContextProvider} from './choices.context';
 import {useChoices} from './use-choices';
 
 type ChoicesProps = {
   children: React.ReactNode;
-  choices?: ChoicesSchemaType;
-  elementId: string;
+  choices?: ChoicesSchema;
+  fieldId: string;
 };
 
-export const Choices = ({children, choices = [], elementId}: ChoicesProps) => {
+export const Choices = ({children, choices = [], fieldId}: ChoicesProps) => {
   const {handlers, focus, isAddChoiceDisabled} = useChoices({
     choices,
-    elementId,
+    fieldId,
   });
 
   const value = useMemo(
@@ -21,9 +21,9 @@ export const Choices = ({children, choices = [], elementId}: ChoicesProps) => {
       handlers,
       isAddChoiceDisabled,
       choices,
-      elementId,
+      fieldId,
     }),
-    [focus, handlers, isAddChoiceDisabled, choices, elementId],
+    [focus, handlers, isAddChoiceDisabled, choices, fieldId],
   );
 
   return (

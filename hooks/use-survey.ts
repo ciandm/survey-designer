@@ -20,33 +20,37 @@ type UseSurveyProps = {
 };
 
 export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
-  const {elements} = model;
+  const {fields} = model;
   const config = buildSurveyConfig(model);
   const {
     state: {screen, currentElementId, responsesMap},
     dispatch,
   } = useSurveyReducer({
-    defaultElementId: elements[0]?.id,
+    defaultElementId: fields[0]?.id,
+    defaultScreen: model.screens.welcome.length
+      ? 'welcome_screen'
+      : 'survey_screen',
   });
+  const initialElement = fields[0];
 
   const currentElement = {
-    element: elements.find((el) => el.id === currentElementId),
-    index: elements.findIndex((el) => el.id === currentElementId),
+    element: fields.find((el) => el.id === currentElementId),
+    index: fields.findIndex((el) => el.id === currentElementId),
   };
 
   const form = useForm<SurveyFormState>({
     defaultValues: {
-      questionId: undefined,
-      type: undefined,
+      questionId: initialElement?.id,
+      type: initialElement?.type,
       value: [],
     },
-    resolver: zodResolver(createSingleStepValidationSchema(elements)),
+    resolver: zodResolver(createSingleStepValidationSchema(fields)),
   });
 
   const handleStartSurvey = () => {
-    if (!elements.length) return;
+    if (!fields.length) return;
 
-    const initialElement = elements[0];
+    const initialElement = fields[0];
     form.reset({
       questionId: initialElement?.id,
       type: initialElement?.type,
@@ -64,7 +68,7 @@ export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
     dispatch({
       type: 'RESTART_SURVEY',
       payload: {
-        initialElement: elements[0],
+        initialElement: fields[0],
       },
     });
   };
@@ -89,7 +93,7 @@ export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
         });
       }
 
-      const nextElement = elements.find((el) => el.id === next);
+      const nextElement = fields.find((el) => el.id === next);
       if (!nextElement) return;
 
       const {value} = responsesMap[nextElement.id] || {};
@@ -115,7 +119,7 @@ export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
   const handleGoBack = () => {
     if (!currentElementId) return;
     const {previous} = config[currentElementId];
-    const previousElement = elements.find((el) => el.id === previous);
+    const previousElement = fields.find((el) => el.id === previous);
 
     if (!previousElement) return;
     const prevResponse = responsesMap[previousElement.id];

@@ -1,16 +1,4 @@
-import {
-  CheckboxIcon,
-  FileTextIcon,
-  InputIcon,
-  RadiobuttonIcon,
-} from '@radix-ui/react-icons';
-
-export const ELEMENT_TYPE = {
-  short_text: 'short_text',
-  long_text: 'long_text',
-  multiple_choice: 'multiple_choice',
-  single_choice: 'single_choice',
-} as const;
+import {ElementOptions} from '@/types/element';
 
 export const ID_PREFIXES = {
   ELEMENT: 'element-',
@@ -18,18 +6,30 @@ export const ID_PREFIXES = {
   OTHER_CHOICE: 'other-',
 } as const;
 
-export const ELEMENT_OPTIONS = [
+export const ELEMENT_OPTIONS: ElementOptions[] = [
   {
-    label: 'Multiple choice',
-    value: ELEMENT_TYPE.multiple_choice,
-    icon: CheckboxIcon,
+    group: 'Text',
+    options: [
+      {label: 'Short text', value: 'short_text'},
+      {label: 'Long text', value: 'long_text'},
+    ],
   },
-  {label: 'Short text', value: ELEMENT_TYPE.short_text, icon: InputIcon},
-  {label: 'Long text', value: ELEMENT_TYPE.long_text, icon: FileTextIcon},
   {
-    label: 'Single choice',
-    value: ELEMENT_TYPE.single_choice,
-    icon: RadiobuttonIcon,
+    group: 'Choices',
+    options: [
+      {label: 'Single choice', value: 'single_choice'},
+      {label: 'Multiple choice', value: 'multiple_choice'},
+    ],
+  },
+  {
+    group: 'Screens',
+    options: [
+      {label: 'Welcome screen', value: 'welcome_screen'},
+      {
+        label: 'Thank you screen',
+        value: 'thank_you_screen',
+      },
+    ],
   },
 ];
 
