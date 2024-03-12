@@ -4,7 +4,7 @@ import {
   useSurveyModel,
   useSurveyStoreActions,
 } from '../../../_store/survey-designer-store';
-import {SettingsField} from './settings-field';
+import {SettingsField} from '../../settings-field';
 
 export const GeneralSettings = () => {
   const model = useSurveyModel();

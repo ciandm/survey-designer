@@ -5,30 +5,32 @@ import {getStoreKeyForScreenType} from '@/utils/screen';
 import {
   useSurveyElements,
   useSurveyStoreActions,
-} from '../../../_store/survey-designer-store';
-import {useDesignerHandlers} from '../../designer/designer.context';
+} from '../_store/survey-designer-store';
+import {UseDesignerReturn} from './designer/use-designer';
 import {SettingsField} from './settings-field';
 import {SettingsWrapper} from './settings-wrapper';
 
 type ScreenSettingsProps = {
-  element: ScreenSchema;
-};
+  screen: ScreenSchema;
+} & Pick<UseDesignerReturn['handlers'], 'handleCreateElement'>;
 
-export const ScreenSettings = ({element}: ScreenSettingsProps) => {
+export const ScreenSettings = ({
+  screen,
+  handleCreateElement,
+}: ScreenSettingsProps) => {
   const elements = useSurveyElements();
   const {updateScreen, removeScreen} = useSurveyStoreActions();
-  const {handleCreateElement} = useDesignerHandlers();
 
   const handleOnChangeElementType = (type: ElementType) => {
-    const key = element.type === 'welcome_screen' ? 'welcome' : 'thank_you';
-    removeScreen({id: element.id, key});
-    const index = element.type === 'welcome_screen' ? 0 : elements.length;
+    const key = screen.type === 'welcome_screen' ? 'welcome' : 'thank_you';
+    removeScreen({id: screen.id, key});
+    const index = screen.type === 'welcome_screen' ? 0 : elements.length;
     handleCreateElement({type, index});
   };
 
   return (
     <SettingsWrapper
-      elementType={element.type}
+      elementType={screen.type}
       onChangeElementType={handleOnChangeElementType}
     >
       <div className="space-y-6 p-4">
@@ -36,11 +38,11 @@ export const ScreenSettings = ({element}: ScreenSettingsProps) => {
           <SettingsField.Label>Title</SettingsField.Label>
           <SettingsField.InputWrapper>
             <Textarea
-              key={`${element.text}-${element.id}-settings-title`}
-              defaultValue={element.text}
+              key={`${screen.text}-${screen.id}-settings-title`}
+              defaultValue={screen.text}
               onBlur={(e) =>
                 updateScreen(
-                  {id: element.id, key: getStoreKeyForScreenType(element.type)},
+                  {id: screen.id, key: getStoreKeyForScreenType(screen.type)},
                   {
                     text: e.target.value,
                   },
@@ -53,11 +55,11 @@ export const ScreenSettings = ({element}: ScreenSettingsProps) => {
           <SettingsField.Label>Description (optional)</SettingsField.Label>
           <SettingsField.InputWrapper>
             <Textarea
-              key={`${element.text}-${element.id}-settings-description`}
-              defaultValue={element.description}
+              key={`${screen.text}-${screen.id}-settings-description`}
+              defaultValue={screen.description}
               onBlur={(e) =>
                 updateScreen(
-                  {id: element.id, key: getStoreKeyForScreenType(element.type)},
+                  {id: screen.id, key: getStoreKeyForScreenType(screen.type)},
                   {
                     description: e.target.value,
                   },
@@ -66,18 +68,18 @@ export const ScreenSettings = ({element}: ScreenSettingsProps) => {
             />
           </SettingsField.InputWrapper>
         </SettingsField>
-        {element.type === 'welcome_screen' && (
+        {screen.type === 'welcome_screen' && (
           <SettingsField>
             <SettingsField.Label>Button label</SettingsField.Label>
             <SettingsField.InputWrapper>
               <Input
-                key={`${element.text}-${element.id}-settings-button`}
-                defaultValue={element.properties.button_label ?? ''}
+                key={`${screen.text}-${screen.id}-settings-button`}
+                defaultValue={screen.properties.button_label ?? ''}
                 onBlur={(e) =>
                   updateScreen(
                     {
-                      id: element.id,
-                      key: getStoreKeyForScreenType(element.type),
+                      id: screen.id,
+                      key: getStoreKeyForScreenType(screen.type),
                     },
                     {
                       properties: {

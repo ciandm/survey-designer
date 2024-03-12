@@ -15,14 +15,14 @@ import {Separator} from '@/components/ui/separator';
 import {ELEMENT_OPTIONS} from '@/lib/constants/element';
 import {ElementType} from '@/types/element';
 import {cn} from '@/utils/classnames';
-import {useDesignerHandlers} from './designer/designer.context';
+import {useDesignerCrudHandlers} from './designer/designer.context';
 
 type AddQuestionProps = {
   className?: string;
 };
 
 export const AddQuestion = ({className}: AddQuestionProps) => {
-  const {handleCreateElement} = useDesignerHandlers();
+  const {handleCreateElement} = useDesignerCrudHandlers();
   const [popoverOpen, setPopoverOpen] = useState(false);
 
   return (

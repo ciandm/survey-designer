@@ -23,7 +23,7 @@ import {AddChoiceButton} from '../../choices/add-choice-button';
 import {Choices} from '../../choices/choices';
 import {ChoicesList} from '../../choices/choices-list';
 import {RemoveAllChoicesButton} from '../../choices/remove-all-choices-button';
-import {SettingsField} from './settings-field';
+import {SettingsField} from '../../settings-field';
 
 export const ChoicesSettings = ({element}: {element: ElementSchema}) => {
   const {updateElement} = useSurveyStoreActions();

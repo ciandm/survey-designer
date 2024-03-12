@@ -2,10 +2,9 @@ import {isEqual, merge, omitBy} from 'lodash';
 import {v4 as uuidv4} from 'uuid';
 import {createStore, StoreApi, useStore} from 'zustand';
 import {immer} from 'zustand/middleware/immer';
-import {ElementSchema, ScreenSchema, ScreenType} from '@/types/element';
+import {ElementSchema, ScreenSchema} from '@/types/element';
 import {
   ParsedModelType,
-  SurveyScreen,
   SurveyScreenKey,
   SurveyWithParsedModelType,
 } from '@/types/survey';
@@ -163,7 +162,7 @@ export const createSurveyDesignerStore = (
             });
 
             const indexOfFieldToDuplicate = state.model.elements.findIndex(
-              (q) => q.id === duplicateId,
+              (q) => q.id === id,
             );
             state.model.elements.splice(
               indexOfFieldToDuplicate + 1,

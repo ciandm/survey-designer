@@ -155,12 +155,12 @@ export const getIsScreenType = (
 };
 
 export const getIsElementSchema = (
-  element: ElementSchema | ScreenSchema,
-): element is ElementSchema => getIsElementType(element.type);
+  element: ElementSchema | ScreenSchema | null,
+): element is ElementSchema => getIsElementType(element?.type);
 
 export const getIsScreenSchema = (
-  element: ElementSchema | ScreenSchema,
-): element is ScreenSchema => getIsScreenType(element.type);
+  element: ElementSchema | ScreenSchema | null,
+): element is ScreenSchema => getIsScreenType(element?.type);
 
 function duplicateElements(elements: ElementSchema[]) {
   return elements.map((element) => ({

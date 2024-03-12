@@ -33,13 +33,13 @@ export const SurveyFormButtons = ({
   const submitText = isLastElement ? 'Complete survey' : 'Next question';
 
   return (
-    <>
-      {elements.length > 1 && (
+    <div className="relative">
+      {elements.length > 1 && !isFirstElement && (
         <Button
           variant="ghost"
           type="button"
           onClick={onBack}
-          className="mb-8 p-0"
+          className="absolute -top-16 mb-8 p-0"
           size="sm"
           disabled={isFirstElement}
         >
@@ -60,6 +60,6 @@ export const SurveyFormButtons = ({
         {submitText}
         <SubmitIcon className="ml-2 h-4 w-4" />
       </Button>
-    </>
+    </div>
   );
 };

@@ -15,7 +15,7 @@ export const demoSurvey: SurveyWithParsedModelType = {
     ],
     screens: {
       welcome: [buildNewScreenHelper('welcome_screen')],
-      thank_you: [],
+      thank_you: [buildNewScreenHelper('thank_you_screen')],
     },
     title: 'Demo survey',
     version: 1,

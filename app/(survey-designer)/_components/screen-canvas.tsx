@@ -1,15 +1,16 @@
-import React from 'react';
 import {Button} from '@/components/ui/button';
 import {ScreenSchema} from '@/types/element';
 import {getStoreKeyForScreenType} from '@/utils/screen';
-import {useDesignerHandlers} from '../designer/designer.context';
+import {UseDesignerHandlers} from './designer/use-designer';
 
-type ScreenEditorProps = {
+type ScreenCanvasProps = {
   element: ScreenSchema;
-};
+} & Pick<UseDesignerHandlers, 'handleRemoveScreen'>;
 
-export const ScreenEditor = ({element}: ScreenEditorProps) => {
-  const {handleRemoveScreen} = useDesignerHandlers();
+export const ScreenCanvas = ({
+  element,
+  handleRemoveScreen,
+}: ScreenCanvasProps) => {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-8 p-8">
       <div className="flex flex-col items-center gap-2">
@@ -25,19 +26,21 @@ export const ScreenEditor = ({element}: ScreenEditorProps) => {
         )}
       </div>
       {element.type === 'welcome_screen' && (
-        <Button size="lg">{element.properties.button_label}</Button>
+        <>
+          <Button size="lg">{element.properties.button_label}</Button>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              handleRemoveScreen({
+                key: getStoreKeyForScreenType(element.type),
+                id: element.id,
+              })
+            }
+          >
+            Delete
+          </Button>
+        </>
       )}
-      <Button
-        variant="secondary"
-        onClick={() =>
-          handleRemoveScreen({
-            key: getStoreKeyForScreenType(element.type),
-            id: element.id,
-          })
-        }
-      >
-        Delete
-      </Button>
     </div>
   );
 };

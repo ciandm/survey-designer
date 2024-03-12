@@ -135,3 +135,4 @@ export const useDesigner = () => {
 };
 
 export type UseDesignerReturn = ReturnType<typeof useDesigner>;
+export type UseDesignerHandlers = UseDesignerReturn['handlers'];

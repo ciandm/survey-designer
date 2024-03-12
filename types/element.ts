@@ -23,3 +23,13 @@ export type SelectedElement = {
   id: string;
   type: SurveyElementTypes;
 };
+
+export type ElementGroup = 'Text' | 'Choices' | 'Screens';
+
+export type ElementOptions = {
+  group: ElementGroup;
+  options: {
+    value: SurveyElementTypes;
+    label: string;
+  }[];
+};

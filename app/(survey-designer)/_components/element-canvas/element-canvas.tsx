@@ -1,43 +1,24 @@
 import React from 'react';
 import {PlusIcon} from 'lucide-react';
-import {Badge} from '@/components/ui/badge';
-import {FormDescription, FormLabel} from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {Separator} from '@/components/ui/separator';
 import {Textarea} from '@/components/ui/textarea';
-import {
-  useSurveyElements,
-  useSurveyStoreActions,
-} from '@/survey-designer/_store/survey-designer-store';
+import {useSurveyElements} from '@/survey-designer/_store/survey-designer-store';
 import {ElementSchema} from '@/types/element';
 import {cn} from '@/utils/classnames';
 import {AddChoiceButton} from '../choices/add-choice-button';
 import {Choices} from '../choices/choices';
 import {ChoicesList} from '../choices/choices-list';
-import {useDesignerHandlers} from '../designer/designer.context';
-import {ElementTypeSelect} from '../element-type-select';
 
-type QuestionEditorProps = {
+type ElementCanvasProps = {
   element: ElementSchema;
   children?: React.ReactNode;
 };
 
-export const QuestionEditor = ({element, children}: QuestionEditorProps) => {
-  const {changeElementType, updateElement} = useSurveyStoreActions();
-  const {handleSelectElement} = useDesignerHandlers();
+export const ElementCanvas = ({element, children}: ElementCanvasProps) => {
   const surveyElements = useSurveyElements();
 
   const index = surveyElements.findIndex((el) => el.id === element.id);
-
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      e.currentTarget.blur();
-    }
-  };
 
   return (
     <>

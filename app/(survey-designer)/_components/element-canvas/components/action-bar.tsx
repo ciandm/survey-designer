@@ -14,19 +14,26 @@ import {
   useSurveyStoreActions,
 } from '@/survey-designer/_store/survey-designer-store';
 import {ElementSchema} from '@/types/element';
-import {useDesignerHandlers} from '../designer/designer.context';
+import {getIsElementSchema} from '@/utils/survey';
+import {UseDesignerReturn} from '../../designer/use-designer';
 
 type ActionBarProps = {
   element: ElementSchema;
-};
+} & Pick<
+  UseDesignerReturn['handlers'],
+  'handleRemoveElement' | 'handleDuplicateElement' | 'handleSettingsClick'
+>;
 
-export const ActionBar = ({element}: ActionBarProps) => {
+export const ActionBar = ({
+  element,
+  handleDuplicateElement,
+  handleRemoveElement,
+  handleSettingsClick,
+}: ActionBarProps) => {
   const elements = useSurveyElements();
-  const {handleRemoveElement, handleDuplicateElement, handleSettingsClick} =
-    useDesignerHandlers();
   const {updateElement, setElements} = useSurveyStoreActions();
 
-  const index = elements.findIndex((el) => el.id === element.id);
+  const index = elements.findIndex((el) => el.id === element?.id);
 
   const handleClickMoveDown = () => {
     setElements((elements) => arrayMove(elements, index, index + 1));
@@ -37,20 +44,20 @@ export const ActionBar = ({element}: ActionBarProps) => {
   };
 
   const isFirstElement =
-    elements.length === 1 ? true : elements[0].id === element.id;
+    elements.length === 1 ? true : elements[0].id === element?.id;
   const isLastELement = elements.length === index + 1;
 
   return (
-    <footer className="sticky bottom-8 mx-auto mt-auto w-full max-w-md rounded-lg border bg-white px-5 py-1.5 shadow-2xl">
+    <div className="sticky bottom-8 mx-auto mt-auto max-w-md rounded-lg border bg-white px-5 py-1.5 shadow-2xl">
       <div className="flex">
         <div className="flex flex-1 items-center justify-between">
-          <div className="hidden items-center space-x-2 sm:flex">
+          <div className="mr-4 hidden items-center space-x-2 sm:flex">
             <Switch
               id="required"
-              checked={element.validations.required}
+              checked={element?.validations.required}
               onCheckedChange={(checked) =>
                 updateElement({
-                  id: element.id,
+                  id: element?.id,
                   validations: {
                     required: checked,
                   },
@@ -93,7 +100,7 @@ export const ActionBar = ({element}: ActionBarProps) => {
                 variant="ghost"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDuplicateElement(element.id);
+                  handleDuplicateElement(element?.id ?? '');
                 }}
               >
                 <CopyIcon className="h-4 w-4" />
@@ -104,7 +111,7 @@ export const ActionBar = ({element}: ActionBarProps) => {
                 size="icon"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleRemoveElement(element.id);
+                  handleRemoveElement(element?.id ?? '');
                 }}
               >
                 <Trash2Icon className=" h-4 w-4" />
@@ -113,6 +120,19 @@ export const ActionBar = ({element}: ActionBarProps) => {
           </div>
         </div>
       </div>
-    </footer>
+    </div>
   );
+};
+
+export const useActionBar = () => {
+  const storeActions = useSurveyStoreActions();
+
+  const handleRequiredChange = (id: string, required: boolean) => {
+    storeActions.updateElement({
+      id,
+      validations: {
+        required,
+      },
+    });
+  };
 };

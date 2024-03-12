@@ -40,7 +40,9 @@ export const ElementTypeSelect = ({
       <SelectTrigger id={id} className={className}>
         <SelectValue placeholder="Select a element type">
           <div className="flex items-center">
-            <ElementTypeIcon type={type} className="mr-2" />
+            <div className="mr-2 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary">
+              <ElementTypeIcon type={type} />
+            </div>
             {formatElementType(type ?? 'short_text')}
           </div>
         </SelectValue>
@@ -48,21 +50,19 @@ export const ElementTypeSelect = ({
       <SelectContent id={id}>
         {GROUPED_OPTIONS_WITHOUT_SCREENS.map(({group, options}) => {
           return (
-            <>
-              <SelectGroup>
-                <SelectLabel key={group}>{group}</SelectLabel>
-                {options.map((option) => {
-                  return (
-                    <SelectItem key={option.value} value={option.value}>
-                      <div className="flex w-full flex-1 items-center justify-between">
-                        <ElementTypeIcon type={option.value} className="mr-2" />
-                        <span>{option.label}</span>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectGroup>
-            </>
+            <SelectGroup key={group}>
+              <SelectLabel>{group}</SelectLabel>
+              {options.map((option) => {
+                return (
+                  <SelectItem key={option.value} value={option.value}>
+                    <div className="flex w-full flex-1 items-center justify-between">
+                      <ElementTypeIcon type={option.value} className="mr-2" />
+                      <span>{option.label}</span>
+                    </div>
+                  </SelectItem>
+                );
+              })}
+            </SelectGroup>
           );
         })}
       </SelectContent>

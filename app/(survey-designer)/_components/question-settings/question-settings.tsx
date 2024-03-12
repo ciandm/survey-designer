@@ -11,17 +11,17 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {ElementSchema, ElementType} from '@/types/element';
-import {useSurveyStoreActions} from '../../../_store/survey-designer-store';
-import {ChoicesSettings} from './choices-settings';
-import {SettingsField} from './settings-field';
-import {SettingsWrapper} from './settings-wrapper';
+import {useSurveyStoreActions} from '../../_store/survey-designer-store';
+import {SettingsField} from '../settings-field';
+import {SettingsWrapper} from '../settings-wrapper';
+import {ChoicesSettings} from './components/choices-settings';
 
 type QuestionSettingsProps = {
   element: ElementSchema;
 };
 
 export const QuestionSettings = ({element}: QuestionSettingsProps) => {
-  const {changeElementType, updateElement} = useSurveyStoreActions();
+  const storeActions = useSurveyStoreActions();
   const hasChoicesConfig =
     element?.type === 'multiple_choice' || element?.type === 'single_choice';
 
@@ -29,7 +29,7 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
     element?.type === 'short_text' || element?.type === 'long_text';
 
   const handleChangeElementType = (type: ElementType) => {
-    changeElementType({
+    storeActions.changeElementType({
       id: element.id,
       type,
     });
@@ -49,7 +49,7 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
                 key={`${element.text}-${element.id}-settings-title`}
                 defaultValue={element.text}
                 onBlur={(e) =>
-                  updateElement({
+                  storeActions.updateElement({
                     id: element.id,
                     text: e.target.value,
                   })
@@ -64,7 +64,7 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
                 key={`${element.description}-${element.id}-settings-description`}
                 defaultValue={element.description}
                 onBlur={(e) =>
-                  updateElement({
+                  storeActions.updateElement({
                     id: element.id,
                     description: e.target.value,
                   })
@@ -80,7 +80,7 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
                   key={`${element.properties.placeholder}-${element.id}-settings-placeholder`}
                   defaultValue={element.properties.placeholder}
                   onBlur={(e) =>
-                    updateElement({
+                    storeActions.updateElement({
                       id: element.id,
                       properties: {
                         placeholder: e.target.value,
@@ -96,7 +96,7 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
               <Checkbox
                 className="mr-2"
                 onCheckedChange={(checked) => {
-                  updateElement({
+                  storeActions.updateElement({
                     id: element.id,
                     validations: {
                       required: !!checked,
@@ -140,7 +140,7 @@ export const QuestionSettings = ({element}: QuestionSettingsProps) => {
                   defaultValue={element.properties.required_message}
                   key={`${element.properties.required_message}-${element.id}-required-message`}
                   onBlur={(e) =>
-                    updateElement({
+                    storeActions.updateElement({
                       id: element.id,
                       properties: {
                         required_message: e.target.value,

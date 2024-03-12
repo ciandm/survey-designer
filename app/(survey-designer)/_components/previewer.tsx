@@ -4,11 +4,6 @@ import {useMemo} from 'react';
 import {QuestionField} from '@/components/question-field';
 import {SurveyFormButtons} from '@/components/survey-form-buttons';
 import {SurveyScreen} from '@/components/survey-screen';
-import {
-  SurveyShell,
-  SurveyShellAside,
-  SurveyShellMain,
-} from '@/components/survey-shell';
 import {ThankYouScreen} from '@/components/thank-you-screen';
 import {Button} from '@/components/ui/button';
 import {WelcomeScreen} from '@/components/welcome-screen';
@@ -36,9 +31,8 @@ export const Previewer = () => {
   const {element, index} = currentElement;
 
   return (
-    <SurveyShell>
-      <SurveyShellAside model={model} />
-      <SurveyShellMain>
+    <div className="flex flex-1 bg-accent pt-40">
+      <div className="mx-auto w-full max-w-xl px-4">
         {model.elements.length === 0 ? (
           <div className="mx-auto space-y-4 text-center">
             <h1 className="text-5xl">😭</h1>
@@ -90,7 +84,10 @@ export const Previewer = () => {
                 </div>
               ))}
             {screen === 'thank_you_screen' && (
-              <ThankYouScreen message={thank_you[0].text}>
+              <ThankYouScreen
+                title={thank_you[0].text}
+                description={thank_you[0].description}
+              >
                 <Button onClick={() => handlers.handleRestartSurvey()}>
                   Restart survey (preview mode only)
                 </Button>
@@ -98,7 +95,7 @@ export const Previewer = () => {
             )}
           </>
         )}
-      </SurveyShellMain>
-    </SurveyShell>
+      </div>
+    </div>
   );
 };

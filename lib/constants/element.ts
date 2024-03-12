@@ -1,24 +1,10 @@
-import {
-  CheckboxIcon,
-  FileTextIcon,
-  InputIcon,
-  RadiobuttonIcon,
-} from '@radix-ui/react-icons';
-import {SurveyElementTypes} from '@/types/element';
+import {ElementOptions} from '@/types/element';
 
 export const ID_PREFIXES = {
   ELEMENT: 'element-',
   ELEMENT_CHOICE: 'choice-',
   OTHER_CHOICE: 'other-',
 } as const;
-
-type ElementOptions = {
-  group: 'Text' | 'Choices' | 'Screens';
-  options: {
-    value: SurveyElementTypes;
-    label: string;
-  }[];
-};
 
 export const ELEMENT_OPTIONS: ElementOptions[] = [
   {
