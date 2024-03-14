@@ -1,6 +1,5 @@
 'use client';
 
-import {useMemo} from 'react';
 import {ErrorMessage} from '@hookform/error-message';
 import {QuestionField} from '@/components/question-field';
 import {SurveyFormButtons} from '@/components/survey-form-buttons';
@@ -11,20 +10,16 @@ import {Button} from '@/components/ui/button';
 import {FormField} from '@/components/ui/form';
 import {WelcomeScreen} from '@/components/welcome-screen';
 import {useSurvey} from '@/hooks/use-survey';
-import {useSurveyModel} from '@/survey-designer/_store/survey-designer-store';
-import {sortChoices} from '@/utils/element';
+import {useSurveyModel} from '../_hooks/use-survey-model';
 import {useDesignerTabManager} from './designer-tab-manager';
 
 export const Previewer = () => {
-  const initialModel = useSurveyModel();
-  const model = useMemo(() => sortChoices(initialModel), [initialModel]);
+  const model = useSurveyModel();
   const {setActiveTab} = useDesignerTabManager();
 
   const {form, handlers, currentElement, screen} = useSurvey({
     model,
-    onSurveySubmit: ({handleSetScreen}) => {
-      handleSetScreen('thank_you_screen');
-    },
+    isPreview: true,
   });
 
   const {

@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {useSurveyStoreActions} from '@/survey-designer/_store/survey-designer-store';
+import {useDesignerStoreActions} from '@/survey-designer/_store/designer-store/designer-store';
 import {ChoicesSchema} from '@/types/field';
 
 type ChoiceFieldProps = {
@@ -31,7 +31,7 @@ export const ChoicesField = ({
   handleInputKeyDown,
   handleRemoveChoice,
 }: ChoiceFieldProps) => {
-  const {updateQuestionChoice} = useSurveyStoreActions();
+  const storeActions = useDesignerStoreActions();
 
   return (
     <Sortable
@@ -47,12 +47,8 @@ export const ChoicesField = ({
             key={`${choice.id}-${index}-${choice.value}`}
             ref={(el) => (el ? (focusInputs.current[index] = el) : null)}
             onBlur={(e) =>
-              updateQuestionChoice({
-                fieldId,
-                newChoice: {
-                  id: choice.id,
-                  value: e.target.value,
-                },
+              storeActions.choices.updateChoice(fieldId, choice.id, {
+                value: e.target.value,
               })
             }
             onKeyDown={handleInputKeyDown}

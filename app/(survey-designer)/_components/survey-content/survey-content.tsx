@@ -6,6 +6,7 @@ import {restrictToParentElement} from '@dnd-kit/modifiers';
 import {SortableContext, verticalListSortingStrategy} from '@dnd-kit/sortable';
 import {PlusIcon} from '@heroicons/react/20/solid';
 import {DotsVerticalIcon} from '@radix-ui/react-icons';
+import {isEmpty} from 'lodash';
 import {Sortable} from '@/components/sortable';
 import {Button} from '@/components/ui/button';
 import {
@@ -29,50 +30,87 @@ import {cn} from '@/utils/classnames';
 import {getStoreKeyForScreenType} from '@/utils/screen';
 import {getIsFieldType, getIsScreenType} from '@/utils/survey';
 import {
-  useSurveyFields,
-  useSurveyScreens,
-} from '../../_store/survey-designer-store';
-import {UseElementControllerHandlers} from '../designer/use-element-controller';
+  useDesignerStoreActions,
+  useDesignerStoreFieldsList,
+  useDesignerStoreScreens,
+} from '../../_store/designer-store/designer-store';
+import {UseElementControllerReturn} from '../designer/use-element-controller';
 import {ElementTypeIcon} from '../element-type-icon';
 import {ElementCategoriesGrid} from './components/element-categories-grid';
 import {useSortableContent} from './use-sortable-content';
 
 type SurveyContentProps = {
   element: FieldSchema | ScreenSchema | null;
-  onSelectElement: UseElementControllerHandlers['handleSelectElement'];
-  onCreateField: UseElementControllerHandlers['handleCreateField'];
-  onRemoveField: UseElementControllerHandlers['handleRemoveField'];
-  onCreateScreen: UseElementControllerHandlers['handleCreateScreen'];
-  onDuplicateField: UseElementControllerHandlers['handleDuplicateField'];
-  onRemoveScreen: UseElementControllerHandlers['handleRemoveScreen'];
+  onSetSelectedElement: UseElementControllerReturn['handleSetSelectedElement'];
 };
 
 export const SurveyContent = ({
   element,
-  onSelectElement,
-  onCreateField,
-  onRemoveField,
-  onCreateScreen,
-  onDuplicateField,
-  onRemoveScreen,
+  onSetSelectedElement: onSelectElement,
 }: SurveyContentProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const fields = useSurveyFields();
-  const screens = useSurveyScreens();
+  const storeActions = useDesignerStoreActions();
+  const fields = useDesignerStoreFieldsList();
+  const screens = useDesignerStoreScreens();
   const {handleDragEnd, sensors} = useSortableContent();
 
   const handleClickOption = (
     group: ElementGroup,
     type: FieldType | ScreenType,
   ) => {
+    let id = '';
     if (group === 'Screens' && getIsScreenType(type)) {
-      onCreateScreen({key: getStoreKeyForScreenType(type)});
+      id = storeActions.screens.insertScreen({
+        key: getStoreKeyForScreenType(type),
+      }).id;
     } else {
       if (getIsFieldType(type)) {
-        onCreateField({type});
+        id = storeActions.fields.insertField({type}).id;
       }
     }
     setIsDialogOpen(false);
+    onSelectElement({
+      id,
+    });
+  };
+
+  const handleRemoveScreen = ({
+    id,
+    key,
+  }: {
+    id: string;
+    key: 'welcome' | 'thank_you';
+  }) => {
+    storeActions.screens.deleteScreen({id, key});
+    switch (key) {
+      case 'welcome':
+        onSelectElement({
+          id: fields[0].id,
+        });
+        break;
+      case 'thank_you':
+        onSelectElement({
+          id: fields[fields.length - 1].id,
+        });
+        break;
+    }
+  };
+
+  const handleDuplicateField = (duplicateId: string) => {
+    const {id = ''} =
+      storeActions.fields.duplicateField({id: duplicateId}) ?? {};
+    onSelectElement({
+      id,
+    });
+  };
+
+  const handleDeleteField = (removeId: string) => {
+    const index = fields.findIndex((el) => el.id === removeId);
+    const nextIndex = index === fields.length - 1 ? index - 1 : index + 1;
+    storeActions.fields.deleteField({id: removeId});
+    onSelectElement({
+      id: fields[nextIndex].id,
+    });
   };
 
   return (
@@ -89,16 +127,24 @@ export const SurveyContent = ({
           </Button>
         </div>
         <ul className="flex h-full w-full flex-1 flex-col items-stretch overflow-auto">
-          {screens.welcome.length > 0 && (
+          {screens.welcome._entities.length > 0 && (
             <li className="w-full">
               <ContentRow
-                isActive={element?.id === screens.welcome[0].id}
-                onClick={() => onSelectElement(screens.welcome[0].id)}
+                isActive={
+                  element?.id ===
+                  screens.welcome.data[screens.welcome._entities[0]].id
+                }
+                onClick={() =>
+                  onSelectElement({
+                    id: screens.welcome.data[screens.welcome._entities[0]].id,
+                  })
+                }
                 menuItems={
                   <DropdownMenuItem
                     onClick={() =>
-                      onRemoveScreen({
-                        id: screens.welcome[0].id,
+                      handleRemoveScreen({
+                        id: screens.welcome.data[screens.welcome._entities[0]]
+                          .id,
                         key: 'welcome',
                       })
                     }
@@ -138,11 +184,15 @@ export const SurveyContent = ({
                         <ContentRow
                           isActive={element?.id === fi.id}
                           id={fi.id}
-                          onClick={() => onSelectElement(fi.id)}
+                          onClick={() =>
+                            onSelectElement({
+                              id: fi.id,
+                            })
+                          }
                           menuItems={
                             <>
                               <DropdownMenuItem
-                                onClick={() => onDuplicateField(fi.id)}
+                                onClick={() => handleDuplicateField(fi.id)}
                               >
                                 Duplicate
                               </DropdownMenuItem>
@@ -152,7 +202,7 @@ export const SurveyContent = ({
                                   <DropdownMenuItem
                                     disabled={fields.length === 1}
                                     className="text-red-500"
-                                    onClick={() => onRemoveField(fi.id)}
+                                    onClick={() => handleDeleteField(fi.id)}
                                   >
                                     Delete
                                   </DropdownMenuItem>
@@ -174,16 +224,26 @@ export const SurveyContent = ({
               </SortableContext>
             </DndContext>
           </div>
-          {screens.thank_you.length > 0 && (
+          {!isEmpty(screens.thank_you.data) && (
             <li className="w-full">
               <ContentRow
-                isActive={element?.id === screens.thank_you[0].id}
-                onClick={() => onSelectElement(screens.thank_you[0].id)}
+                isActive={
+                  element?.id ===
+                  screens.thank_you.data[screens.thank_you._entities[0]].id
+                }
+                onClick={() =>
+                  onSelectElement({
+                    id: screens.thank_you.data[screens.thank_you._entities[0]]
+                      .id,
+                  })
+                }
                 menuItems={
                   <DropdownMenuItem
                     onClick={() =>
-                      onRemoveScreen({
-                        id: screens.thank_you[0].id,
+                      handleRemoveScreen({
+                        id: screens.thank_you.data[
+                          screens.thank_you._entities[0]
+                        ].id,
                         key: 'thank_you',
                       })
                     }

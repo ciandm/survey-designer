@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {useSurveyStoreActions} from '@/survey-designer/_store/survey-designer-store';
+import {useDesignerStoreActions} from '@/survey-designer/_store/designer-store/designer-store';
 import {ChoicesSchema} from '@/types/field';
 
 type UseChoicesProps = {
@@ -8,8 +8,7 @@ type UseChoicesProps = {
 };
 
 export const useChoices = ({fieldId, choices = []}: UseChoicesProps) => {
-  const {insertQuestionChoice, deleteQuestionChoice, deleteChoices} =
-    useSurveyStoreActions();
+  const storeActions = useDesignerStoreActions();
   const [focusIndex, setFocusIndex] = useState<number | null>(null);
   const focusInputs = useRef<HTMLInputElement[]>([]);
 
@@ -21,17 +20,17 @@ export const useChoices = ({fieldId, choices = []}: UseChoicesProps) => {
   }, [focusIndex]);
 
   const handleInsertChoice = () => {
-    insertQuestionChoice({fieldId});
+    storeActions.choices.insertChoice(fieldId);
     setFocusIndex(choices.length);
   };
 
   const handleRemoveChoice = (choiceId: string) => {
-    deleteQuestionChoice({fieldId, choiceId});
+    storeActions.choices.deleteChoice(fieldId, {choiceId});
     setFocusIndex(choices.length - 2);
   };
 
   const handleRemoveAll = () => {
-    deleteChoices({fieldId});
+    storeActions.choices.deleteChoices(fieldId);
     setFocusIndex(null);
   };
 
@@ -39,7 +38,7 @@ export const useChoices = ({fieldId, choices = []}: UseChoicesProps) => {
     if (e.key === 'Enter' && e.currentTarget.value !== '') {
       e.preventDefault();
       setFocusIndex(choices.length);
-      insertQuestionChoice({fieldId});
+      storeActions.choices.insertChoice(fieldId);
     }
   };
 

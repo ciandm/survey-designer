@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import {FieldSchema, FieldType} from '@/types/field';
-import {useSurveyStoreActions} from '../../_store/survey-designer-store';
+import {useDesignerStoreActions} from '../../_store/designer-store/designer-store';
 import {SettingsField} from '../settings-field';
 import {SettingsWrapper} from '../settings-wrapper';
 import {ChoicesSettings} from './components/choices-settings';
@@ -21,7 +21,7 @@ type FieldSettingsProps = {
 };
 
 export const FieldSettings = ({field}: FieldSettingsProps) => {
-  const storeActions = useSurveyStoreActions();
+  const storeActions = useDesignerStoreActions();
   const hasChoicesConfig =
     field?.type === 'multiple_choice' || field?.type === 'single_choice';
 
@@ -29,7 +29,7 @@ export const FieldSettings = ({field}: FieldSettingsProps) => {
     field?.type === 'short_text' || field?.type === 'long_text';
 
   const handleChangeFieldType = (type: FieldType) => {
-    storeActions.changeFieldType({
+    storeActions.fields.changeFieldType({
       id: field.id,
       type,
     });
@@ -50,8 +50,7 @@ export const FieldSettings = ({field}: FieldSettingsProps) => {
                   key={`${field.text}-${field.id}-settings-title`}
                   defaultValue={field.text}
                   onBlur={(e) =>
-                    storeActions.updateField({
-                      id: field.id,
+                    storeActions.fields.updateField(field.id, {
                       text: e.target.value,
                     })
                   }
@@ -65,8 +64,7 @@ export const FieldSettings = ({field}: FieldSettingsProps) => {
                   key={`${field.description}-${field.id}-settings-description`}
                   defaultValue={field.description}
                   onBlur={(e) =>
-                    storeActions.updateField({
-                      id: field.id,
+                    storeActions.fields.updateField(field.id, {
                       description: e.target.value,
                     })
                   }
@@ -83,8 +81,7 @@ export const FieldSettings = ({field}: FieldSettingsProps) => {
                     key={`${field.properties.placeholder}-${field.id}-settings-placeholder`}
                     defaultValue={field.properties.placeholder}
                     onBlur={(e) =>
-                      storeActions.updateField({
-                        id: field.id,
+                      storeActions.fields.updateField(field.id, {
                         properties: {
                           placeholder: e.target.value,
                         },
@@ -99,8 +96,7 @@ export const FieldSettings = ({field}: FieldSettingsProps) => {
                 <Checkbox
                   className="mr-2"
                   onCheckedChange={(checked) => {
-                    storeActions.updateField({
-                      id: field.id,
+                    storeActions.fields.updateField(field.id, {
                       validations: {
                         required: !!checked,
                       },
@@ -147,8 +143,7 @@ export const FieldSettings = ({field}: FieldSettingsProps) => {
                     defaultValue={field.properties.required_message}
                     key={`${field.properties.required_message}-${field.id}-required-message`}
                     onBlur={(e) =>
-                      storeActions.updateField({
-                        id: field.id,
+                      storeActions.fields.updateField(field.id, {
                         properties: {
                           required_message: e.target.value,
                         },

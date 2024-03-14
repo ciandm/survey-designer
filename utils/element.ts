@@ -48,11 +48,8 @@ function hasChoices(element: FieldSchema) {
   return element.type === 'multiple_choice' || element.type === 'single_choice';
 }
 
-export function sortChoices(model: ParsedModelType): ParsedModelType {
-  const {fields} = model;
-  const copiedSchema = {...model};
-
-  const newElements = fields.map((el) => {
+export function sortChoices(fields: FieldSchema[]): FieldSchema[] {
+  const newFields = fields.map((el) => {
     const element = {...el, properties: {...el.properties}};
     if (hasChoices(element)) {
       switch (element.properties.sort_order) {
@@ -72,8 +69,7 @@ export function sortChoices(model: ParsedModelType): ParsedModelType {
     return element;
   });
 
-  copiedSchema.fields = newElements;
-  return copiedSchema;
+  return newFields;
 }
 
 function randomiseChoices(choices: ChoicesSchema = []) {

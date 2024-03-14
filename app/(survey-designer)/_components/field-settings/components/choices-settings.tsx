@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/tooltip';
 import {ELEMENT_CHOICE_SORT_ORDER_OPTIONS} from '@/lib/constants/element';
 import {FieldSchema} from '@/types/field';
-import {useSurveyStoreActions} from '../../../_store/survey-designer-store';
+import {useDesignerStoreActions} from '../../../_store/designer-store/designer-store';
 import {AddChoiceButton} from '../../choices/add-choice-button';
 import {Choices} from '../../choices/choices';
 import {ChoicesList} from '../../choices/choices-list';
@@ -26,14 +26,13 @@ import {RemoveAllChoicesButton} from '../../choices/remove-all-choices-button';
 import {SettingsField} from '../../settings-field';
 
 export const ChoicesSettings = ({field}: {field: FieldSchema}) => {
-  const {updateField: updateElement} = useSurveyStoreActions();
+  const storeActions = useDesignerStoreActions();
   const choices = field.properties.choices ?? [];
 
   const handleMinimumSelectionBlur = (value: string, field: FieldSchema) => {
     const minSelections = parseInt(value);
 
-    updateElement({
-      id: field.id,
+    storeActions.fields.updateField(field.id, {
       validations: {
         min_selections: minSelections,
       },
@@ -55,8 +54,7 @@ export const ChoicesSettings = ({field}: {field: FieldSchema}) => {
       newMinSelections = maxSelections;
     }
 
-    updateElement({
-      id: field.id,
+    storeActions.fields.updateField(field.id, {
       validations: {
         max_selections: maxSelections,
         min_selections: newMinSelections,
@@ -105,8 +103,7 @@ export const ChoicesSettings = ({field}: {field: FieldSchema}) => {
         <Select
           value={field.properties.sort_order ?? 'none'}
           onValueChange={(value) => {
-            updateElement({
-              id: field.id,
+            storeActions.fields.updateField(field.id, {
               properties: {
                 sort_order: value === 'none' ? undefined : (value as any),
               },

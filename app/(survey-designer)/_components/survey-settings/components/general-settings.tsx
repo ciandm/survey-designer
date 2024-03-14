@@ -1,14 +1,14 @@
 import {Separator} from '@/components/ui/separator';
 import {Textarea} from '@/components/ui/textarea';
 import {
+  useDesignerStoreActions,
   useSurveyModel,
-  useSurveyStoreActions,
-} from '../../../_store/survey-designer-store';
+} from '../../../_store/designer-store/designer-store';
 import {SettingsField} from '../../settings-field';
 
 export const GeneralSettings = () => {
   const model = useSurveyModel();
-  const {updateTitle, updateDescription} = useSurveyStoreActions();
+  const {updateTitle, updateDescription} = useDesignerStoreActions();
 
   return (
     <div className="space-y-6">

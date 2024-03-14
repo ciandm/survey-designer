@@ -13,50 +13,68 @@ import {Drawer, DrawerContent} from '@/components/ui/drawer';
 import {Label} from '@/components/ui/label';
 import {Switch} from '@/components/ui/switch';
 import {
-  useSurveyFields,
-  useSurveyStoreActions,
-} from '@/survey-designer/_store/survey-designer-store';
+  useDesignerStoreActions,
+  useDesignerStoreFields,
+} from '@/survey-designer/_store/designer-store/designer-store';
 import {FieldSchema} from '@/types/field';
-import {UseElementControllerHandlers} from './designer/use-element-controller';
+import {UseElementControllerReturn} from './designer/use-element-controller';
 import {FieldSettings} from './field-settings/field-settings';
 
 type ActionBarProps = {
   field: FieldSchema;
-  onRemoveField: UseElementControllerHandlers['handleRemoveField'];
-  onDuplicateField: UseElementControllerHandlers['handleDuplicateField'];
+  onSetSelectedElement: UseElementControllerReturn['handleSetSelectedElement'];
 };
 
-export const ActionBar = ({
-  field,
-  onDuplicateField,
-  onRemoveField,
-}: ActionBarProps) => {
-  const fields = useSurveyFields();
-  const storeActions = useSurveyStoreActions();
+export const ActionBar = ({field, onSetSelectedElement}: ActionBarProps) => {
+  const fields = useDesignerStoreFields();
+  const storeActions = useDesignerStoreActions();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  const index = fields.findIndex((el) => el.id === field?.id);
-
   const handleClickMoveDown = () => {
-    storeActions.setFields((fields) => arrayMove(fields, index, index + 1));
-  };
-
-  const handleClickMoveUp = () => {
-    storeActions.setFields((fields) => arrayMove(fields, index, index - 1));
-  };
-
-  const handleRequiredChange = (required: boolean) => {
-    storeActions.updateField({
-      id: field.id,
-      validations: {
-        required,
-      },
+    storeActions.fields.setFields(({_entities, ...rest}) => {
+      const index = _entities.indexOf(field.id);
+      const newOrder = arrayMove(_entities, index, index + 1);
+      return {
+        ...rest,
+        _entities: newOrder,
+      };
     });
   };
 
-  const isFirstElement =
-    fields.length === 1 ? true : fields[0].id === field?.id;
-  const isLastELement = fields.length === index + 1;
+  const handleClickMoveUp = () => {
+    storeActions.fields.setFields(({_entities, ...rest}) => {
+      const index = _entities.indexOf(field.id);
+      const newOrder = arrayMove(_entities, index, index - 1);
+      return {
+        ...rest,
+        _entities: newOrder,
+      };
+    });
+  };
+
+  const handleRequiredChange = (required: boolean) => {
+    storeActions.fields.updateField(field.id, () => ({
+      validations: {
+        required,
+      },
+    }));
+  };
+
+  const handleDuplicateField = (duplicateId: string) => {
+    const {id = ''} =
+      storeActions.fields.duplicateField({id: duplicateId}) ?? {};
+    onSetSelectedElement({id});
+  };
+
+  const handleRemoveField = (id: string) => {
+    const index = fields._entities.indexOf(id);
+    const nextId = fields._entities[index + 1] ?? fields._entities[index - 1];
+    storeActions.fields.deleteField({id});
+    onSetSelectedElement({id: nextId});
+  };
+
+  const isFirstElement = fields._entities[0] === field.id;
+  const isLastELement = fields._entities[fields._length] === field.id;
 
   return (
     <div className="sticky p-4">
@@ -76,7 +94,9 @@ export const ActionBar = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  disabled={fields.length === 1 || isFirstElement}
+                  disabled={
+                    Object.keys(fields.data).length === 1 || isFirstElement
+                  }
                   onClick={handleClickMoveUp}
                 >
                   <span className="sr-only">Move up</span>
@@ -85,7 +105,9 @@ export const ActionBar = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  disabled={fields.length === 1 || isLastELement}
+                  disabled={
+                    Object.keys(fields.data).length === 1 || isLastELement
+                  }
                   onClick={handleClickMoveDown}
                 >
                   <ChevronDownIcon className="h-4 w-4" />
@@ -105,18 +127,18 @@ export const ActionBar = ({
                   variant="ghost"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onDuplicateField(field?.id ?? '');
+                    handleDuplicateField(field?.id ?? '');
                   }}
                 >
                   <CopyIcon className="h-4 w-4" />
                 </Button>
                 <Button
-                  disabled={fields.length === 1}
+                  disabled={Object.keys(fields.data).length === 1}
                   variant="ghost"
                   size="icon"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onRemoveField(field?.id ?? '');
+                    handleRemoveField(field?.id ?? '');
                   }}
                 >
                   <Trash2Icon className=" h-4 w-4" />

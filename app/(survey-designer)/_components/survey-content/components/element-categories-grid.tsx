@@ -1,6 +1,7 @@
+import {isEmpty} from 'lodash';
 import {Button} from '@/components/ui/button';
 import {ELEMENT_OPTIONS} from '@/lib/constants/element';
-import {useSurveyScreens} from '@/survey-designer/_store/survey-designer-store';
+import {useDesignerStoreScreens} from '@/survey-designer/_store/designer-store/designer-store';
 import {ElementGroup} from '@/types/element';
 import {FieldType} from '@/types/field';
 import {ScreenType} from '@/types/screen';
@@ -13,7 +14,7 @@ type ElementCategoriesGridProps = {
 export const ElementCategoriesGrid = ({
   onOptionClick,
 }: ElementCategoriesGridProps) => {
-  const screens = useSurveyScreens();
+  const screens = useDesignerStoreScreens();
 
   return (
     <div className="flex flex-col gap-3">
@@ -52,14 +53,14 @@ export const ElementCategoriesGrid = ({
 const getIsButtonDisabled = (
   group: ElementGroup,
   type: FieldType | ScreenType,
-  screens: ReturnType<typeof useSurveyScreens>,
+  screens: ReturnType<typeof useDesignerStoreScreens>,
 ) => {
   if (group === 'Screens') {
     if (type === 'welcome_screen') {
-      return screens.welcome.length > 0;
+      return !isEmpty(screens.welcome.data);
     }
     if (type === 'thank_you_screen') {
-      return screens.thank_you.length > 0;
+      return !isEmpty(screens.thank_you.data);
     }
   }
   return false;

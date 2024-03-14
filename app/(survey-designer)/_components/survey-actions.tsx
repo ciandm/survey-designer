@@ -31,11 +31,9 @@ import {cn} from '@/utils/classnames';
 import {getSiteUrl} from '@/utils/hrefs';
 import {updateModelAction} from '../_actions/update-model';
 import {
-  useIsSurveyChanged,
-  useSurveyId,
-  useSurveyModel,
-  useSurveyPublished,
-} from '../_store/survey-designer-store';
+  useDesignerStoreIsPublished,
+  useDesignerStoreSurveyId,
+} from '../_store/designer-store/designer-store';
 import {CopySurveyUrl} from './copy-survey-url';
 import {usePublishTrigger} from './publish-dialog';
 
@@ -43,8 +41,7 @@ const actionClassName =
   'bg-transparent text-white hover:bg-blue-800/20 hover:text-white';
 
 export const SurveyActions = () => {
-  const isChangesMade = useIsSurveyChanged();
-  const isPublished = useSurveyPublished();
+  const isPublished = useDesignerStoreIsPublished();
   const {
     handleClickDeleteSurvey,
     handleClickDuplicateSurvey,
@@ -79,7 +76,7 @@ export const SurveyActions = () => {
         variant="ghost"
         className={cn('hidden  sm:flex', actionClassName)}
         onClick={handleClickSave}
-        disabled={saveSchemaStatus === 'executing' || !isChangesMade}
+        disabled={saveSchemaStatus === 'executing'}
       >
         Save changes
       </Button>
@@ -119,7 +116,6 @@ export const SurveyActions = () => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-[200px]">
           <DropdownMenuItem
-            disabled={!isChangesMade}
             className="sm:hidden"
             onSelect={() => handleClickSave()}
           >
@@ -176,10 +172,10 @@ export const SurveyActions = () => {
 };
 
 const useActions = () => {
-  const model = useSurveyModel();
-  const id = useSurveyId();
+  // const model = useSurveyModel();
+  const id = useDesignerStoreSurveyId();
   const router = useRouter();
-  const isPublished = useSurveyPublished();
+  const isPublished = useDesignerStoreIsPublished();
   const {handleTriggerDuplicateSurveyDialog} = useDuplicateSurveyFormTrigger();
   const {handleTriggerDeleteSurveyConfirm} = useDeleteSurveyDialogTrigger();
   const [isShareDrawerOpen, setIsShareDrawerOpen] = useState(false);
@@ -213,7 +209,7 @@ const useActions = () => {
         </div>
       ),
     });
-    handleSaveSchema({id, model});
+    // handleSaveSchema({id, model});
   };
 
   const handleClickDeleteSurvey = async () => {
@@ -224,14 +220,14 @@ const useActions = () => {
   };
 
   const handleClickDuplicateSurvey = () => {
-    const initialData = {
-      id,
-      title: model.title,
-      description: model.description,
-    };
-    handleTriggerDuplicateSurveyDialog({
-      initialData,
-    });
+    // const initialData = {
+    //   id,
+    //   title: model.title,
+    //   description: model.description,
+    // };
+    // handleTriggerDuplicateSurveyDialog({
+    //   initialData,
+    // });
   };
 
   const handleClickPublishSurvey = (e: Event) => {

@@ -12,14 +12,10 @@ import {useSurveyReducer} from './use-survey-reducer';
 
 type UseSurveyProps = {
   model: ParsedModelType;
-  onSurveySubmit?: (props: {
-    data: SurveyFormState;
-    handleSetScreen: (screen: SurveyScreen) => void;
-    responses: SurveyResponsesMap;
-  }) => Promise<void> | void;
+  isPreview?: boolean;
 };
 
-export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
+export const useSurvey = ({model, isPreview}: UseSurveyProps) => {
   const {fields} = model;
   const config = buildSurveyConfig(model);
   const {
@@ -86,11 +82,15 @@ export const useSurvey = ({model, onSurveySubmit}: UseSurveyProps) => {
       const {next} = config[currentElementId];
 
       if (next === 'complete') {
-        return onSurveySubmit?.({
-          data,
-          handleSetScreen,
-          responses: responsesMap,
-        });
+        if (isPreview) {
+          handleSetScreen('thank_you_screen');
+          return;
+        }
+        // return onSurveySubmit?.({
+        //   data,
+        //   handleSetScreen,
+        //   responses: responsesMap,
+        // });
       }
 
       const nextElement = fields.find((el) => el.id === next);

@@ -4,7 +4,7 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
 import {Textarea} from '@/components/ui/textarea';
-import {useSurveyFields} from '@/survey-designer/_store/survey-designer-store';
+import {useDesignerStoreFields} from '@/survey-designer/_store/designer-store/designer-store';
 import {SurveyElementSchema} from '@/types/element';
 import {cn} from '@/utils/classnames';
 import {getIsField, getIsScreen} from '@/utils/survey';
@@ -18,8 +18,7 @@ type ElementEditorProps = {
 };
 
 export const ElementEditor = ({element, children}: ElementEditorProps) => {
-  const surveyElements = useSurveyFields();
-  const index = surveyElements.findIndex((el) => el.id === element?.id);
+  const surveyElements = useDesignerStoreFields();
 
   if (!element) {
     return null;
@@ -54,7 +53,7 @@ export const ElementEditor = ({element, children}: ElementEditorProps) => {
             <div className="flex flex-col gap-1">
               <QuestionField
                 field={element}
-                index={index}
+                index={0}
                 id={`question-${element.id}`}
               >
                 {(element.type === 'multiple_choice' ||

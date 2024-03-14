@@ -6,10 +6,14 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {arrayMove, sortableKeyboardCoordinates} from '@dnd-kit/sortable';
-import {useSurveyStoreActions} from '@/survey-designer/_store/survey-designer-store';
+import {useDesignerStoreActions} from '@/survey-designer/_store/designer-store/designer-store';
+import {
+  fieldsListToFieldsObject,
+  fieldsObjectToList,
+} from '@/survey-designer/_store/designer-store/designer-store.utils';
 
 export const useSortableContent = () => {
-  const storeActions = useSurveyStoreActions();
+  const storeActions = useDesignerStoreActions();
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -26,11 +30,16 @@ export const useSortableContent = () => {
     const {active, over} = event;
 
     if (active.id !== over?.id) {
-      storeActions.setFields((fields) => {
-        const oldIndex = fields.findIndex((q) => q.id === active.id);
-        const newIndex = fields.findIndex((q) => q.id === over?.id);
+      storeActions.fields.setFields(({_entities: _order, ...restField}) => {
+        const oldIndex = _order.findIndex((o) => o === active.id);
+        const newIndex = _order.findIndex((o) => o === over?.id);
 
-        return arrayMove(fields, oldIndex, newIndex);
+        const newOrder = arrayMove(_order, oldIndex, newIndex);
+
+        return {
+          ...restField,
+          _entities: newOrder,
+        };
       });
     }
   };

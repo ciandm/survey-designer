@@ -9,19 +9,14 @@ import {SurveyContent} from '../survey-content/survey-content';
 import {useElementController} from './use-element-controller';
 
 export const Designer = () => {
-  const {element, handlers} = useElementController();
+  const {element, handleSetSelectedElement} = useElementController();
 
   return (
     <div className="flex w-full flex-1 items-stretch">
       <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] max-w-[20rem] flex-1 shrink-0 border-r bg-white lg:block">
         <SurveyContent
+          onSetSelectedElement={handleSetSelectedElement}
           element={element}
-          onCreateField={handlers.handleCreateField}
-          onDuplicateField={handlers.handleDuplicateField}
-          onRemoveField={handlers.handleRemoveField}
-          onCreateScreen={handlers.handleCreateScreen}
-          onRemoveScreen={handlers.handleRemoveScreen}
-          onSelectElement={handlers.handleSelectElement}
         />
       </aside>
       <main className="flex flex-1 flex-col bg-accent">
@@ -29,8 +24,7 @@ export const Designer = () => {
           {getIsField(element) && (
             <ActionBar
               field={element}
-              onDuplicateField={handlers.handleDuplicateField}
-              onRemoveField={handlers.handleRemoveField}
+              onSetSelectedElement={handleSetSelectedElement}
             />
           )}
         </ElementEditor>
@@ -39,7 +33,7 @@ export const Designer = () => {
         {getIsScreen(element) && (
           <ScreenSettings
             screen={element}
-            onCreateField={handlers.handleCreateField}
+            onSetSelectedElement={handleSetSelectedElement}
           />
         )}
         {getIsField(element) && <FieldSettings field={element} />}
