@@ -1,8 +1,8 @@
-import React from 'react';
 import {SurveyWithParsedModelType} from '@/types/survey';
-import {getResponses} from '../_lib/get-responses';
-import {DeleteResponsesButton} from './delete-responses-button';
+import {getResponses} from '../../_lib/get-responses';
+import {DeleteResponsesButton} from '../delete-responses-button';
 import {Response} from './response';
+import {ResponsesEmptyState} from './responses-empty-state';
 
 type ResponsesProps = {
   id: string;
@@ -13,7 +13,7 @@ export const Responses = async ({id, survey}: ResponsesProps) => {
   const surveyResults = await getResponses(id);
 
   if (surveyResults.length === 0) {
-    return <div>No responses found</div>;
+    return <ResponsesEmptyState />;
   }
 
   return (
