@@ -215,7 +215,12 @@ export const createDesignerStore = (
 
               if (!field.properties.choices) return;
 
-              field.properties.choices = [];
+              field.properties.choices = [
+                {
+                  id: uuidv4(),
+                  value: '',
+                },
+              ];
             });
           },
           duplicateChoice: (fieldId, {choiceId}) => {

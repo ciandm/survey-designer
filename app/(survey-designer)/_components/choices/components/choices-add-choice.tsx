@@ -1,9 +1,9 @@
 import React from 'react';
 import {Button, ButtonProps} from '@/components/ui/button';
-import {useChoicesContext} from './choices.context';
-import {isAddChoiceDisabled} from './choices.utils';
+import {useChoicesContext} from '../choices.context';
+import {isAddChoiceDisabled} from '../choices.utils';
 
-export const AddChoiceButton = React.forwardRef<
+export const ChoicesAddChoice = React.forwardRef<
   HTMLButtonElement,
   Omit<ButtonProps, 'onClick'>
 >(({children, asChild, ...rest}, ref) => {
@@ -24,4 +24,4 @@ export const AddChoiceButton = React.forwardRef<
   );
 });
 
-AddChoiceButton.displayName = 'AddChoiceButton';
+ChoicesAddChoice.displayName = 'AddChoiceButton';

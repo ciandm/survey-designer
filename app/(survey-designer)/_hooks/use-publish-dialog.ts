@@ -3,7 +3,7 @@ import {useAction} from 'next-safe-action/hooks';
 import {
   useDesignerStoreActions,
   useDesignerStoreSurveyId,
-} from '@/survey-designer/_store/designer-store/designer-store';
+} from '@/survey-designer/_store/designer-store';
 import {publishSurveyAction} from '../_actions/publish-survey';
 
 type PublishAction = 'publish' | 'unpublish';

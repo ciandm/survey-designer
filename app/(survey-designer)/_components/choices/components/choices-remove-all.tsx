@@ -1,9 +1,9 @@
 import React from 'react';
 import {Button, ButtonProps} from '@/components/ui/button';
-import {useChoicesContext} from './choices.context';
-import {isRemoveAllDisabled} from './choices.utils';
+import {useChoicesContext} from '../choices.context';
+import {isRemoveAllDisabled} from '../choices.utils';
 
-export const RemoveAllChoicesButton = React.forwardRef<
+export const ChoicesRemoveAll = React.forwardRef<
   HTMLButtonElement,
   Omit<ButtonProps, 'onClick'>
 >(({children, ...rest}, ref) => {
@@ -24,4 +24,4 @@ export const RemoveAllChoicesButton = React.forwardRef<
   );
 });
 
-RemoveAllChoicesButton.displayName = 'RemoveAllChoicesButton';
+ChoicesRemoveAll.displayName = 'RemoveAllChoicesButton';

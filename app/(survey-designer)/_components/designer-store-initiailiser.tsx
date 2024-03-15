@@ -4,7 +4,7 @@ import {useRef} from 'react';
 import {
   createDesignerStore,
   SurveyDesignerStoreProvider,
-} from '@/survey-designer/_store/designer-store/designer-store';
+} from '@/survey-designer/_store/designer-store';
 import {SurveyWithParsedModelType} from '@/types/survey';
 
 type DesignerStoreInitialiserProps = {

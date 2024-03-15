@@ -6,21 +6,21 @@ import {SurveyFormButtons} from '@/components/survey-form-buttons';
 import {TypeInputField} from '@/components/type-field';
 import {Button} from '@/components/ui/button';
 import {Form, FormField} from '@/components/ui/form';
-import {useSurvey} from '@/hooks/use-survey';
+import {useSurveyManager} from '@/hooks/use-survey-manager';
 import {ParsedModelType} from '@/types/survey';
 import {FieldElement} from './field-element';
 
 type SurveyProps = {
   model: ParsedModelType;
-  id: string;
   isPreview?: boolean;
+  id: string;
 };
 
 export const Survey = ({model, id, isPreview = false}: SurveyProps) => {
-  const {form, handlers, currentElement, screen} = useSurvey({
+  const {form, handlers, currentElement, screen} = useSurveyManager({
     model,
-    id,
     isPreview,
+    id,
   });
 
   const {

@@ -106,8 +106,6 @@ const FormControl = React.forwardRef<
 >(({...props}, ref) => {
   const {error, formItemId, formDescriptionId, formMessageId} = useFormField();
 
-  console.log(formItemId);
-
   return (
     <Slot
       ref={ref}

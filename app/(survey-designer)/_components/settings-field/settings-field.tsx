@@ -1,6 +1,7 @@
 import React, {useId} from 'react';
 import {Label} from '@/components/ui/label';
-import {createContext} from '@/utils/context';
+import {SettingsInputContextProvider} from './settings-field.context';
+import {useSettingsInputContext} from './settings-field.context';
 
 type SettingsFieldProps = {
   children: React.ReactNode | (({id}: {id: string}) => React.ReactNode);
@@ -18,13 +19,11 @@ export const SettingsField = ({children}: SettingsFieldProps) => {
   );
 };
 
-const SettingsInputLabel = ({children}: {children: React.ReactNode}) => {
-  const {id} = useSettingsInputContext();
-
-  return <Label htmlFor={id}>{children}</Label>;
-};
-
-const SettingsInputWrapper = ({children}: {children: React.ReactElement}) => {
+export const SettingsFieldInputWrapper = ({
+  children,
+}: {
+  children: React.ReactElement;
+}) => {
   const {id} = useSettingsInputContext();
 
   const handleKeyDown = (
@@ -45,9 +44,8 @@ const SettingsInputWrapper = ({children}: {children: React.ReactElement}) => {
   return Component;
 };
 
-const [SettingsInputContextProvider, useSettingsInputContext] = createContext<{
-  id: string;
-}>();
+export const SettingsFieldLabel = ({children}: {children: React.ReactNode}) => {
+  const {id} = useSettingsInputContext();
 
-SettingsField.Label = SettingsInputLabel;
-SettingsField.InputWrapper = SettingsInputWrapper;
+  return <Label htmlFor={id}>{children}</Label>;
+};

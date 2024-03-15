@@ -1,9 +1,9 @@
 import {useCallback} from 'react';
 import {useQueryState} from 'nuqs';
-import {useDesignerStoreElements} from '@/survey-designer/_store/designer-store/designer-store';
-import {getElementByIdWithFallback} from './use-designer.utils';
+import {useDesignerStoreElements} from '@/survey-designer/_store/designer-store';
+import {getElementByIdWithFallback} from './use-designer-element.utils';
 
-export const useElementController = () => {
+export const useDesignerElement = () => {
   const elements = useDesignerStoreElements();
   const [selectedId, setSelectedId] = useQueryState('id');
 
@@ -25,6 +25,4 @@ export const useElementController = () => {
   };
 };
 
-export type UseElementControllerReturn = ReturnType<
-  typeof useElementController
->;
+export type UseDesignerElementReturn = ReturnType<typeof useDesignerElement>;

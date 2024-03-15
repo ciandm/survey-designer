@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {useDesignerStoreActions} from '@/survey-designer/_store/designer-store/designer-store';
+import {useDesignerStoreActions} from '@/survey-designer/_store/designer-store';
 import {ChoicesSchema} from '@/types/field';
 
 type UseChoicesProps = {

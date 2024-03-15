@@ -2,24 +2,24 @@
 
 import {getIsField, getIsScreen} from '@/utils/survey';
 import {ActionBar} from '../action-bar';
-import {ElementEditor} from '../element-editor/element-editor';
-import {FieldSettings} from '../field-settings/field-settings';
+import {ElementEditor} from '../element-editor';
+import {FieldSettings} from '../field-settings';
 import {ScreenSettings} from '../screen-settings';
-import {SurveyContent} from '../survey-content/survey-content';
-import {useElementController} from './use-element-controller';
+import {SurveyContent} from '../survey-content';
+import {useDesignerElement} from './hooks/use-designer-element';
 
 export const Designer = () => {
-  const {element, handleSetSelectedElement} = useElementController();
+  const {element, handleSetSelectedElement} = useDesignerElement();
 
   return (
     <div className="flex w-full flex-1 items-stretch">
-      <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] max-w-[20rem] flex-1 shrink-0 border-r bg-white lg:block">
+      <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] max-w-[16rem] flex-grow border-r bg-white lg:block">
         <SurveyContent
           onSetSelectedElement={handleSetSelectedElement}
           element={element}
         />
       </aside>
-      <main className="flex flex-1 flex-col bg-accent">
+      <main className="flex flex-1 flex-shrink-0 flex-col bg-accent">
         <ElementEditor element={element}>
           {getIsField(element) && (
             <ActionBar
@@ -29,7 +29,7 @@ export const Designer = () => {
           )}
         </ElementEditor>
       </main>
-      <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] w-full max-w-sm shrink-0 flex-col overflow-hidden border-l lg:flex">
+      <aside className="sticky bottom-0 top-[6.25rem] hidden h-[calc(100vh-6.25rem)] max-w-[18rem] flex-1 flex-col overflow-hidden border-l lg:flex">
         {getIsScreen(element) && (
           <ScreenSettings
             screen={element}

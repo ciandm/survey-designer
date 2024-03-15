@@ -7,13 +7,17 @@ import {
   useDesignerStoreActions,
   useDesignerStoreFields,
 } from '../_store/designer-store/designer-store';
-import {UseElementControllerReturn} from './designer/use-element-controller';
-import {SettingsField} from './settings-field';
-import {SettingsWrapper} from './settings-wrapper';
+import {UseDesignerElementReturn} from './designer/hooks/use-designer-element';
+import {
+  SettingsField,
+  SettingsFieldInputWrapper,
+  SettingsFieldLabel,
+} from './settings-field';
+import {SettingsShell} from './settings-shell';
 
 type ScreenSettingsProps = {
   screen: ScreenSchema;
-  onSetSelectedElement: UseElementControllerReturn['handleSetSelectedElement'];
+  onSetSelectedElement: UseDesignerElementReturn['handleSetSelectedElement'];
 };
 
 export const ScreenSettings = ({
@@ -32,15 +36,15 @@ export const ScreenSettings = ({
   };
 
   return (
-    <SettingsWrapper
+    <SettingsShell
       elementType={screen.type}
       onChangeElementType={handleOnChangeElementType}
     >
       <div className="flex-1 overflow-y-auto">
         <div className="space-y-6 p-4">
           <SettingsField>
-            <SettingsField.Label>Title</SettingsField.Label>
-            <SettingsField.InputWrapper>
+            <SettingsFieldLabel>Title</SettingsFieldLabel>
+            <SettingsFieldInputWrapper>
               <Textarea
                 key={`${screen.text}-${screen.id}-settings-title`}
                 defaultValue={screen.text}
@@ -53,11 +57,11 @@ export const ScreenSettings = ({
                   )
                 }
               />
-            </SettingsField.InputWrapper>
+            </SettingsFieldInputWrapper>
           </SettingsField>
           <SettingsField>
-            <SettingsField.Label>Description (optional)</SettingsField.Label>
-            <SettingsField.InputWrapper>
+            <SettingsFieldLabel>Description (optional)</SettingsFieldLabel>
+            <SettingsFieldInputWrapper>
               <Textarea
                 key={`${screen.text}-${screen.id}-settings-description`}
                 defaultValue={screen.description}
@@ -70,12 +74,12 @@ export const ScreenSettings = ({
                   )
                 }
               />
-            </SettingsField.InputWrapper>
+            </SettingsFieldInputWrapper>
           </SettingsField>
           {screen.type === 'welcome_screen' && (
             <SettingsField>
-              <SettingsField.Label>Button label</SettingsField.Label>
-              <SettingsField.InputWrapper>
+              <SettingsFieldLabel>Button label</SettingsFieldLabel>
+              <SettingsFieldInputWrapper>
                 <Input
                   key={`${screen.text}-${screen.id}-settings-button`}
                   defaultValue={screen.properties.button_label ?? ''}
@@ -93,11 +97,11 @@ export const ScreenSettings = ({
                     )
                   }
                 />
-              </SettingsField.InputWrapper>
+              </SettingsFieldInputWrapper>
             </SettingsField>
           )}
         </div>
       </div>
-    </SettingsWrapper>
+    </SettingsShell>
   );
 };
