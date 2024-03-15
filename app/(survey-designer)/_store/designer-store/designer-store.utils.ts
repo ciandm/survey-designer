@@ -60,6 +60,9 @@ export const buildInitialState = (
     survey: {
       id: initProps?.id ?? generateId(15),
       isPublished: initProps?.is_published ?? false,
+      version: initProps?.model?.version ?? 1,
+      description: initProps?.model?.description ?? '',
+      title: initProps?.model?.title ?? '',
     },
     elements: {
       fields: {

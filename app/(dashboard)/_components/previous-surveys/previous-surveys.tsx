@@ -1,6 +1,6 @@
 import {Skeleton} from '@/components/ui/skeleton';
 import {getUserSurveys} from '@/dashboard/_lib/get-user-surveys';
-import {PreviousSurveyContainer} from './previous-survey-container';
+import {PreviousSurveyClickable} from './previous-survey-clickable';
 
 export const PreviousSurveys = async () => {
   const surveys = await getUserSurveys();
@@ -8,7 +8,7 @@ export const PreviousSurveys = async () => {
   return (
     <ul className="flex flex-col rounded-lg border bg-card">
       {surveys.map((survey) => (
-        <PreviousSurveyContainer key={survey.id} survey={survey}>
+        <PreviousSurveyClickable key={survey.id} survey={survey}>
           <div className="flex-1">
             <h3 className="text-sm font-medium">{survey.model.title}</h3>
             <div className="mt-1 flex gap-2">
@@ -29,7 +29,7 @@ export const PreviousSurveys = async () => {
               {survey.model.fields.length + ' questions'}
             </p>
           </div>
-        </PreviousSurveyContainer>
+        </PreviousSurveyClickable>
       ))}
     </ul>
   );

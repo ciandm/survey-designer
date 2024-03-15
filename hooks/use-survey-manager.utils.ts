@@ -1,9 +1,5 @@
 import {FieldSchema, FieldType} from '@/types/field';
-import {
-  SurveyFormState,
-  SurveyResponsesMap,
-  SurveyScreen,
-} from '@/types/survey';
+import {SurveyResponsesMap, SurveyScreen} from '@/types/survey';
 
 type SurveyReducerState = {
   screen: SurveyScreen;

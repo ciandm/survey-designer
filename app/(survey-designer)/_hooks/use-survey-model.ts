@@ -11,22 +11,30 @@ import {
   screensObjectToList,
 } from '../_store/designer-store/designer-store.utils';
 
-export const useSurveyModel = (): ParsedModelType => {
+type UseSurveyModelProps = {
+  shouldSortChoices?: boolean;
+};
+
+export const useSurveyModel = ({
+  shouldSortChoices = false,
+}: UseSurveyModelProps = {}): ParsedModelType => {
   const fields = useDesignerStoreFields();
   const screens = useDesignerStoreScreens();
   const survey = useDesignerStoreSurvey();
 
+  const fieldsList = fieldsObjectToList(fields);
+
   return useMemo(
     () => ({
-      fields: sortChoices(fieldsObjectToList(fields)),
+      fields: shouldSortChoices ? sortChoices(fieldsList) : fieldsList,
       screens: {
         thank_you: screensObjectToList(screens.thank_you.data),
         welcome: screensObjectToList(screens.welcome.data),
       },
       title: survey.title ?? '',
       description: survey.description,
-      version: 1,
+      version: survey.version,
     }),
-    [fields, screens, survey],
+    [fieldsList, screens, survey, shouldSortChoices],
   );
 };

@@ -14,15 +14,21 @@ export const deleteSurveyAction = action(
       throw new ActionError('Unauthorized');
     }
 
-    await db.survey.delete({
-      where: {
-        id: surveyId,
-        userId: user.id,
-      },
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve({success: true});
+      }, 1000);
     });
 
-    return {
-      success: true,
-    };
+    // await db.survey.delete({
+    //   where: {
+    //     id: surveyId,
+    //     userId: user.id,
+    //   },
+    // });
+
+    // return {
+    //   success: true,
+    // };
   },
 );

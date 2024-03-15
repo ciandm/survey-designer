@@ -1,8 +1,5 @@
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
-import {DeleteSurveyDialog} from '@/components/delete-survey-dialog';
-import {DuplicateSurveyDialog} from '@/components/duplicate-survey-dialog';
-import {LoadingOverlay} from '@/components/loading-overlay';
 import {Toaster} from '@/components/ui/sonner';
 import {QueryClientProvider} from '@/lib/query-client/provider';
 import {cn} from '@/utils/classnames';
@@ -29,13 +26,7 @@ export default async function RootLayout({
       <body
         className={cn('bg-background font-sans antialiased', inter.variable)}
       >
-        <QueryClientProvider>
-          <LoadingOverlay>
-            <DuplicateSurveyDialog>
-              <DeleteSurveyDialog>{children}</DeleteSurveyDialog>
-            </DuplicateSurveyDialog>
-          </LoadingOverlay>
-        </QueryClientProvider>
+        <QueryClientProvider>{children}</QueryClientProvider>
         <Toaster />
       </body>
     </html>

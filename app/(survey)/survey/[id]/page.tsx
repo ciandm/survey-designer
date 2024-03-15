@@ -1,8 +1,8 @@
 import {Metadata} from 'next';
 import {notFound} from 'next/navigation';
+import {Survey} from '@/components/survey';
 import {db} from '@/lib/db';
 import {modelSchema} from '@/lib/validations/survey';
-import {LiveSurvey} from '@/survey/_components/live-survey';
 import {getPublishedSurvey} from '@/survey/_lib/get-published-survey';
 
 type Props = {
@@ -18,7 +18,7 @@ const SurveyPage = async ({params}: Props) => {
     return notFound();
   }
 
-  return <LiveSurvey survey={survey} />;
+  return <Survey id={params.id} model={survey.model} />;
 };
 
 export default SurveyPage;
@@ -47,6 +47,6 @@ export async function generateMetadata({params}: Props): Promise<Metadata> {
   }
 
   return {
-    title: model.data.title,
+    title: `Survey | ${model.data.title}`,
   };
 }

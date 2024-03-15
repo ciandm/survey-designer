@@ -16,8 +16,8 @@ export const ChoicesAddChoice = React.forwardRef<
     <Button
       disabled={isAddChoiceDisabled(choices)}
       ref={ref}
-      onClick={handleInsertChoice}
       {...rest}
+      onClick={handleInsertChoice}
     >
       {children}
     </Button>

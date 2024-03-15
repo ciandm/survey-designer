@@ -1,6 +1,8 @@
-import {User} from 'lucia';
+'use client';
+
 import Link from 'next/link';
 import {DesignerNavigation} from '@/survey-designer/_components/designer-navigation';
+import {useDesignerStoreSurvey} from '@/survey-designer/_store/designer-store';
 import {TabConfig} from '@/types/tab';
 
 type DesignerToolbarProps = {
@@ -16,6 +18,8 @@ export const DesignerToolbar = ({
   title = 'Survey editor',
   children,
 }: DesignerToolbarProps) => {
+  const {title: surveyTitle} = useDesignerStoreSurvey();
+
   return (
     <header className="sticky top-0 z-10 flex flex-col border-b bg-blue-950 md:py-0">
       <div className="flex min-h-[3.5rem] flex-1 items-center justify-between px-4 py-2.5">
@@ -24,7 +28,7 @@ export const DesignerToolbar = ({
             Home
           </Link>
           <span>/</span>
-          <span className="truncate font-semibold">{title}</span>
+          <span className="truncate font-semibold">{surveyTitle ?? title}</span>
         </div>
         {children}
       </div>

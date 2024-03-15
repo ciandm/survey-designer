@@ -93,12 +93,15 @@ export type StoreElements = {
   screens: StoreScreens;
 };
 
+export type StoreSurvey = {
+  title?: string;
+  description?: string;
+  id: string;
+  isPublished: boolean;
+  version: number;
+};
+
 export type SurveyDesignerStoreProps = {
   elements: StoreElements;
-  survey: {
-    title?: string;
-    description?: string;
-    id: string;
-    isPublished: boolean;
-  };
+  survey: StoreSurvey;
 };

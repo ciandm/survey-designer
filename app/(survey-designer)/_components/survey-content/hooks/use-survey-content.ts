@@ -4,10 +4,7 @@ import {
   useDesignerStoreFieldsList,
   useDesignerStoreScreens,
 } from '@/survey-designer/_store/designer-store';
-import {
-  StoreScreen,
-  StoreScreens,
-} from '@/survey-designer/_store/designer-store.types';
+import {StoreScreens} from '@/survey-designer/_store/designer-store/designer-store.types';
 import {ElementGroup} from '@/types/element';
 import {FieldSchema, FieldType} from '@/types/field';
 import {ScreenSchema, ScreenType} from '@/types/screen';

@@ -1,8 +1,8 @@
-import {StoreElements} from '@/survey-designer/_store/designer-store.types';
+import {StoreElements} from '@/survey-designer/_store/designer-store/designer-store.types';
 import {FieldSchema} from '@/types/field';
 import {ScreenSchema} from '@/types/screen';
 
-export const getInitialSelectedElement = (
+const getInitialSelectedElement = (
   elements: StoreElements,
 ): FieldSchema | ScreenSchema | null => {
   const {fields, screens} = elements;
