@@ -36,8 +36,8 @@ export function buildNewFieldHelper(
   field: Partial<FieldSchema>,
 ): FieldSchema {
   const baseField = {
-    id: field?.id ?? `el_${generateId(12)}`,
-    ref: field?.ref ?? uuidv4(),
+    id: field?.id ?? generateId(15),
+    ref: field?.ref ?? generateId(15),
     text: field?.text ?? '',
     description: field?.description ?? '',
     type,
@@ -94,7 +94,7 @@ export function buildNewScreenHelper(type: ScreenType): ScreenSchema {
   switch (type) {
     case 'welcome_screen':
       return {
-        id: `sc_${generateId(12)}`,
+        id: generateId(15),
         type,
         text: 'Welcome to the survey!',
         description: '',
@@ -104,7 +104,7 @@ export function buildNewScreenHelper(type: ScreenType): ScreenSchema {
       };
     case 'thank_you_screen':
       return {
-        id: `sc_${generateId(12)}`,
+        id: generateId(15),
         type,
         text: 'Thank you for completing the survey!',
         description: '',

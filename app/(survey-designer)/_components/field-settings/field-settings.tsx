@@ -1,8 +1,9 @@
-import {HelpCircleIcon} from 'lucide-react';
+import {PlusCircledIcon} from '@radix-ui/react-icons';
+import {EraserIcon} from 'lucide-react';
 import {Button} from '@/components/ui/button';
-import {Checkbox} from '@/components/ui/checkbox';
 import {Label} from '@/components/ui/label';
 import {Separator} from '@/components/ui/separator';
+import {Switch} from '@/components/ui/switch';
 import {Textarea} from '@/components/ui/textarea';
 import {
   Tooltip,
@@ -10,165 +11,129 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {FieldSchema, FieldType} from '@/types/field';
-import {useSurveyStoreActions} from '../../_store/survey-designer-store';
-import {SettingsField} from '../settings-field';
-import {SettingsWrapper} from '../settings-wrapper';
-import {ChoicesSettings} from './components/choices-settings';
+import {FieldSchema} from '@/types/field';
+import {
+  Choices,
+  ChoicesAddChoice,
+  ChoicesList,
+  ChoicesRemoveAll,
+} from '../choices';
+import {
+  SettingsField,
+  SettingsFieldInputWrapper,
+  SettingsFieldLabel,
+} from '../settings-field';
+import {SettingsShell} from '../settings-shell';
+import {ChoicesOptions} from './components/choices-options';
+import {getHasChoicesConfig, getHasPlaceholder} from './field-settings.utils';
+import {useFieldSettings} from './use-field-settings';
 
 type FieldSettingsProps = {
   field: FieldSchema;
 };
 
 export const FieldSettings = ({field}: FieldSettingsProps) => {
-  const storeActions = useSurveyStoreActions();
-  const hasChoicesConfig =
-    field?.type === 'multiple_choice' || field?.type === 'single_choice';
+  const {
+    handleChangeDescription,
+    handleChangeFieldType,
+    handleChangePlaceholder,
+    handleChangeTitle,
+    handleCheckedChange,
+  } = useFieldSettings(field);
 
-  const hasPlaceholder =
-    field?.type === 'short_text' || field?.type === 'long_text';
-
-  const handleChangeFieldType = (type: FieldType) => {
-    storeActions.changeFieldType({
-      id: field.id,
-      type,
-    });
-  };
+  const hasChoicesConfig = getHasChoicesConfig(field);
+  const hasPlaceholder = getHasPlaceholder(field);
 
   return (
     <>
-      <SettingsWrapper
+      <SettingsShell
         onChangeElementType={handleChangeFieldType}
         elementType={field.type}
       >
         <div className="overflow-auto">
           <div className="space-y-6 p-4">
+            <div className="flex items-center">
+              <Switch
+                className="mr-2"
+                onCheckedChange={handleCheckedChange}
+                id="settings-required"
+                checked={field.validations.required}
+              />
+              <Label htmlFor="settings-required">Required</Label>
+            </div>
             <SettingsField>
-              <SettingsField.Label>Title</SettingsField.Label>
-              <SettingsField.InputWrapper>
-                <Textarea
-                  key={`${field.text}-${field.id}-settings-title`}
-                  defaultValue={field.text}
-                  onBlur={(e) =>
-                    storeActions.updateField({
-                      id: field.id,
-                      text: e.target.value,
-                    })
-                  }
-                />
-              </SettingsField.InputWrapper>
+              <SettingsFieldLabel>Title</SettingsFieldLabel>
+              <SettingsFieldInputWrapper>
+                <Textarea value={field.text} onChange={handleChangeTitle} />
+              </SettingsFieldInputWrapper>
             </SettingsField>
             <SettingsField>
-              <SettingsField.Label>Description (optional)</SettingsField.Label>
-              <SettingsField.InputWrapper>
+              <SettingsFieldLabel>Description (optional)</SettingsFieldLabel>
+              <SettingsFieldInputWrapper>
                 <Textarea
-                  key={`${field.description}-${field.id}-settings-description`}
-                  defaultValue={field.description}
-                  onBlur={(e) =>
-                    storeActions.updateField({
-                      id: field.id,
-                      description: e.target.value,
-                    })
-                  }
+                  value={field.description}
+                  onChange={handleChangeDescription}
                 />
-              </SettingsField.InputWrapper>
+              </SettingsFieldInputWrapper>
             </SettingsField>
             {hasPlaceholder && (
               <SettingsField>
-                <SettingsField.Label>
-                  Placeholder (optional)
-                </SettingsField.Label>
-                <SettingsField.InputWrapper>
+                <SettingsFieldLabel>Placeholder (optional)</SettingsFieldLabel>
+                <SettingsFieldInputWrapper>
                   <Textarea
-                    key={`${field.properties.placeholder}-${field.id}-settings-placeholder`}
-                    defaultValue={field.properties.placeholder}
-                    onBlur={(e) =>
-                      storeActions.updateField({
-                        id: field.id,
-                        properties: {
-                          placeholder: e.target.value,
-                        },
-                      })
-                    }
+                    value={field.properties.placeholder}
+                    onChange={handleChangePlaceholder}
                   />
-                </SettingsField.InputWrapper>
+                </SettingsFieldInputWrapper>
               </SettingsField>
             )}
-            <div className="flex flex-col">
-              <div className="flex items-center">
-                <Checkbox
-                  className="mr-2"
-                  onCheckedChange={(checked) => {
-                    storeActions.updateField({
-                      id: field.id,
-                      validations: {
-                        required: !!checked,
-                      },
-                    });
-                  }}
-                  id="settings-required"
-                  checked={field.validations.required}
-                />
-                <Label htmlFor="settings-required">
-                  Make this question required
-                </Label>
-              </div>
-              {field.validations.required && (
-                <div className="flex flex-col gap-2">
-                  <div className="mt-3 flex items-center justify-between">
-                    <Label htmlFor="required-error-message">
-                      Required error message (optional)
-                    </Label>
-                    <TooltipProvider delayDuration={100}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-6 w-6"
-                          >
-                            <HelpCircleIcon className="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="left" className="max-w-xs">
-                          <p className="text-xs leading-snug">
-                            If the question is required, this message will be
-                            shown if the user tries to submit the form without
-                            answering this question. Defaults to &quot;This
-                            field is required&quot;.
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                  <Textarea
-                    name="required"
-                    id="required-error-message"
-                    defaultValue={field.properties.required_message}
-                    key={`${field.properties.required_message}-${field.id}-required-message`}
-                    onBlur={(e) =>
-                      storeActions.updateField({
-                        id: field.id,
-                        properties: {
-                          required_message: e.target.value,
-                        },
-                      })
-                    }
-                  />
-                </div>
-              )}
-            </div>
           </div>
           {hasChoicesConfig && (
             <>
               <Separator className="my-4" />
               <div className="p-4">
-                <ChoicesSettings field={field} />
+                <ChoicesOptions field={field}>
+                  <Choices
+                    fieldId={field.id}
+                    choices={field.properties.choices}
+                  >
+                    <div className="mb-2 grid grid-cols-[1fr_40px_40px] items-center justify-between gap-2">
+                      <p className="text-sm font-medium">Choices</p>
+                      <TooltipProvider delayDuration={100}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <ChoicesRemoveAll size="icon" variant="ghost">
+                              <EraserIcon className="h-5 w-5" />
+                            </ChoicesRemoveAll>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="max-w-xs">
+                            <p className="text-xs leading-snug">
+                              Delete choices
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <TooltipProvider delayDuration={100}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <ChoicesAddChoice variant="ghost" size="icon">
+                              <PlusCircledIcon className="h-5 w-5" />
+                            </ChoicesAddChoice>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="max-w-xs">
+                            <p className="text-xs leading-snug">Add choice</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    <ChoicesList />
+                  </Choices>
+                </ChoicesOptions>
               </div>
             </>
           )}
         </div>
-      </SettingsWrapper>
+      </SettingsShell>
     </>
   );
 };

@@ -1,20 +1,14 @@
 'use client';
 
-import {useState} from 'react';
+import {useId} from 'react';
 import {closestCenter, DndContext} from '@dnd-kit/core';
 import {restrictToParentElement} from '@dnd-kit/modifiers';
 import {SortableContext, verticalListSortingStrategy} from '@dnd-kit/sortable';
 import {PlusIcon} from '@heroicons/react/20/solid';
 import {DotsVerticalIcon} from '@radix-ui/react-icons';
+import {isEmpty} from 'lodash';
 import {Sortable} from '@/components/sortable';
 import {Button} from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,58 +16,42 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {ElementGroup} from '@/types/element';
-import {FieldSchema, FieldType} from '@/types/field';
-import {ScreenSchema, ScreenType} from '@/types/screen';
+import {FieldSchema} from '@/types/field';
+import {ScreenSchema} from '@/types/screen';
 import {cn} from '@/utils/classnames';
-import {getStoreKeyForScreenType} from '@/utils/screen';
-import {getIsFieldType, getIsScreenType} from '@/utils/survey';
 import {
-  useSurveyFields,
-  useSurveyScreens,
-} from '../../_store/survey-designer-store';
-import {UseElementControllerHandlers} from '../designer/use-element-controller';
+  useDesignerStoreFieldsList,
+  useDesignerStoreScreens,
+} from '../../_store/designer-store/designer-store';
+import {UseDesignerElementReturn} from '../designer/hooks/use-designer-element';
 import {ElementTypeIcon} from '../element-type-icon';
-import {ElementCategoriesGrid} from './components/element-categories-grid';
-import {useSortableContent} from './use-sortable-content';
+import {CategoriesDialog} from './components/categories-dialog';
+import {useSortableContent} from './hooks/use-sortable-content';
+import {useSurveyContent} from './hooks/use-survey-content';
 
 type SurveyContentProps = {
   element: FieldSchema | ScreenSchema | null;
-  onSelectElement: UseElementControllerHandlers['handleSelectElement'];
-  onCreateField: UseElementControllerHandlers['handleCreateField'];
-  onRemoveField: UseElementControllerHandlers['handleRemoveField'];
-  onCreateScreen: UseElementControllerHandlers['handleCreateScreen'];
-  onDuplicateField: UseElementControllerHandlers['handleDuplicateField'];
-  onRemoveScreen: UseElementControllerHandlers['handleRemoveScreen'];
+  onSetSelectedElement: UseDesignerElementReturn['handleSetSelectedElement'];
 };
 
 export const SurveyContent = ({
   element,
-  onSelectElement,
-  onCreateField,
-  onRemoveField,
-  onCreateScreen,
-  onDuplicateField,
-  onRemoveScreen,
+  onSetSelectedElement,
 }: SurveyContentProps) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const fields = useSurveyFields();
-  const screens = useSurveyScreens();
+  const {
+    dialog,
+    handlers: {
+      handleClickOption,
+      handleDeleteField,
+      handleDuplicateField,
+      handleRemoveScreen,
+      handleSelectScreen,
+      handleSelectField,
+    },
+  } = useSurveyContent({element, onSetSelectedElement});
   const {handleDragEnd, sensors} = useSortableContent();
-
-  const handleClickOption = (
-    group: ElementGroup,
-    type: FieldType | ScreenType,
-  ) => {
-    if (group === 'Screens' && getIsScreenType(type)) {
-      onCreateScreen({key: getStoreKeyForScreenType(type)});
-    } else {
-      if (getIsFieldType(type)) {
-        onCreateField({type});
-      }
-    }
-    setIsDialogOpen(false);
-  };
+  const fields = useDesignerStoreFieldsList();
+  const screens = useDesignerStoreScreens();
 
   return (
     <>
@@ -83,22 +61,24 @@ export const SurveyContent = ({
           <Button
             size="icon"
             variant="secondary"
-            onClick={() => setIsDialogOpen(true)}
+            onClick={() => dialog.setIsOpen(true)}
           >
             <PlusIcon className="h-4 w-4" />
           </Button>
         </div>
         <ul className="flex h-full w-full flex-1 flex-col items-stretch overflow-auto">
-          {screens.welcome.length > 0 && (
+          {!isEmpty(screens.welcome.data) && (
             <li className="w-full">
               <ContentRow
-                isActive={element?.id === screens.welcome[0].id}
-                onClick={() => onSelectElement(screens.welcome[0].id)}
+                isActive={
+                  element?.id ===
+                  screens.welcome.data[screens.welcome._entities[0]].id
+                }
+                onClick={() => handleSelectScreen({key: 'welcome'})}
                 menuItems={
                   <DropdownMenuItem
                     onClick={() =>
-                      onRemoveScreen({
-                        id: screens.welcome[0].id,
+                      handleRemoveScreen({
                         key: 'welcome',
                       })
                     }
@@ -116,6 +96,7 @@ export const SurveyContent = ({
           )}
           <div>
             <DndContext
+              id={useId()}
               sensors={sensors}
               collisionDetection={closestCenter}
               onDragEnd={handleDragEnd}
@@ -129,61 +110,62 @@ export const SurveyContent = ({
                   const text = !!fi.text ? fi.text : '...';
                   return (
                     <Sortable key={fi.id} id={fi.id}>
-                      <li
-                        key={fi.id}
-                        className={cn('w-full', {
-                          'bg-accent': element?.id === fi.id,
-                        })}
-                      >
-                        <ContentRow
-                          isActive={element?.id === fi.id}
-                          id={fi.id}
-                          onClick={() => onSelectElement(fi.id)}
-                          menuItems={
-                            <>
-                              <DropdownMenuItem
-                                onClick={() => onDuplicateField(fi.id)}
-                              >
-                                Duplicate
-                              </DropdownMenuItem>
-                              {fields.length > 1 && (
-                                <>
-                                  <DropdownMenuSeparator />
-                                  <DropdownMenuItem
-                                    disabled={fields.length === 1}
-                                    className="text-red-500"
-                                    onClick={() => onRemoveField(fi.id)}
-                                  >
-                                    Delete
-                                  </DropdownMenuItem>
-                                </>
-                              )}
-                            </>
-                          }
-                        >
-                          <ContentBadge>
-                            <ElementTypeIcon type={fi.type} />
-                            {index + 1}
-                          </ContentBadge>
-                          <span className="truncate text-xs">{text}</span>
-                        </ContentRow>
-                      </li>
+                      {({attributes, listeners, isSorting}) => (
+                        <li {...attributes} {...listeners}>
+                          <ContentRow
+                            isActive={element?.id === fi.id}
+                            onClick={() => handleSelectField(fi.id)}
+                            className={cn({
+                              'cursor-grabbing': isSorting,
+                            })}
+                            menuItems={
+                              <>
+                                <DropdownMenuItem
+                                  onClick={() => handleDuplicateField(fi.id)}
+                                >
+                                  Duplicate
+                                </DropdownMenuItem>
+                                {fields.length > 1 && (
+                                  <>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem
+                                      disabled={fields.length === 1}
+                                      className="text-red-500"
+                                      onClick={() => handleDeleteField(fi.id)}
+                                    >
+                                      Delete
+                                    </DropdownMenuItem>
+                                  </>
+                                )}
+                              </>
+                            }
+                          >
+                            <ContentBadge>
+                              <ElementTypeIcon type={fi.type} />
+                              {index + 1}
+                            </ContentBadge>
+                            <span className="truncate text-xs">{text}</span>
+                          </ContentRow>
+                        </li>
+                      )}
                     </Sortable>
                   );
                 })}
               </SortableContext>
             </DndContext>
           </div>
-          {screens.thank_you.length > 0 && (
+          {!isEmpty(screens.thank_you.data) && (
             <li className="w-full">
               <ContentRow
-                isActive={element?.id === screens.thank_you[0].id}
-                onClick={() => onSelectElement(screens.thank_you[0].id)}
+                isActive={
+                  element?.id ===
+                  screens.thank_you.data[screens.thank_you._entities[0]].id
+                }
+                onClick={() => handleSelectScreen({key: 'thank_you'})}
                 menuItems={
                   <DropdownMenuItem
                     onClick={() =>
-                      onRemoveScreen({
-                        id: screens.thank_you[0].id,
+                      handleRemoveScreen({
                         key: 'thank_you',
                       })
                     }
@@ -201,19 +183,11 @@ export const SurveyContent = ({
           )}
         </ul>
       </div>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Add content to your survey</DialogTitle>
-            <DialogDescription>
-              Add questions, screens, and more to your survey.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            <ElementCategoriesGrid onOptionClick={handleClickOption} />
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CategoriesDialog
+        isOpen={dialog.isOpen}
+        setIsOpen={dialog.setIsOpen}
+        onOptionClick={handleClickOption}
+      />
     </>
   );
 };
@@ -221,38 +195,41 @@ export const SurveyContent = ({
 type ContentRow = {
   children?: React.ReactNode;
   onClick?: () => void;
-  onDuplicate?: () => void;
-  onDelete?: () => void;
   isActive: boolean;
-  id?: string;
   menuItems?: React.ReactNode;
+  className?: string;
 };
 
-const ContentRow = ({children, onClick, isActive, menuItems}: ContentRow) => {
+const ContentRow = ({
+  children,
+  className,
+  onClick,
+  isActive,
+  menuItems,
+}: ContentRow) => {
   return (
-    <>
-      <DropdownMenu>
-        <div
-          onClick={onClick}
-          className={cn(
-            'flex min-h-[3rem] w-full items-center gap-3 p-2 text-muted-foreground',
-            isActive && 'bg-accent',
-          )}
-        >
-          {children}
-          <DropdownMenuTrigger asChild>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="ml-auto h-8 w-8 group-hover:flex"
-            >
-              <DotsVerticalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-        </div>
-        <DropdownMenuContent side="right">{menuItems}</DropdownMenuContent>
-      </DropdownMenu>
-    </>
+    <DropdownMenu>
+      <div
+        onClick={onClick}
+        className={cn(
+          'flex min-h-[3rem] w-full cursor-pointer items-center gap-3 p-2 text-muted-foreground',
+          isActive && 'bg-accent',
+          className,
+        )}
+      >
+        {children}
+        <DropdownMenuTrigger asChild>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="ml-auto h-8 w-8 flex-shrink-0 group-hover:flex"
+          >
+            <DotsVerticalIcon className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+      </div>
+      <DropdownMenuContent side="right">{menuItems}</DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 

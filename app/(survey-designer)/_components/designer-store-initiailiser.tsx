@@ -2,9 +2,9 @@
 
 import {useRef} from 'react';
 import {
-  createSurveyDesignerStore,
+  createDesignerStore,
   SurveyDesignerStoreProvider,
-} from '@/survey-designer/_store/survey-designer-store';
+} from '@/survey-designer/_store/designer-store';
 import {SurveyWithParsedModelType} from '@/types/survey';
 
 type DesignerStoreInitialiserProps = {
@@ -16,7 +16,7 @@ export const DesignerStoreInitialiser = ({
   survey,
   children,
 }: DesignerStoreInitialiserProps) => {
-  const designerStore = useRef(createSurveyDesignerStore({...survey})).current;
+  const designerStore = useRef(createDesignerStore({...survey})).current;
 
   return (
     <SurveyDesignerStoreProvider value={designerStore}>

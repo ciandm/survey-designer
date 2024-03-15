@@ -23,7 +23,7 @@ import {getSiteUrl} from '@/utils/hrefs';
 import {createSurveyAction} from '../../(survey-designer)/_actions/create-survey';
 
 const createFormSchema = z.object({
-  title: z.string().min(1, 'You must provide a title'),
+  title: z.string().min(1, 'Every survey deserves a title'),
   description: z.string().optional(),
 });
 

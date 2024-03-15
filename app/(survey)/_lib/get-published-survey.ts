@@ -1,6 +1,7 @@
 import {cache} from 'react';
 import {db} from '@/lib/db';
 import {modelSchema} from '@/lib/validations/survey';
+import {sortChoices} from '@/utils/element';
 
 export const getPublishedSurvey = cache(async (id: string) => {
   const survey = await db.survey.findUnique({
@@ -24,6 +25,9 @@ export const getPublishedSurvey = cache(async (id: string) => {
 
   return {
     ...survey,
-    model: model.data,
+    model: {
+      ...model.data,
+      fields: sortChoices(model.data.fields),
+    },
   };
 });

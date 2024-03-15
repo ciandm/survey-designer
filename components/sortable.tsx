@@ -30,7 +30,7 @@ export const Sortable = ({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    cursor: isSorting ? 'grabbing' : 'pointer',
+    cursor: isSorting ? 'grabbing' : 'auto',
   };
 
   if (typeof children === 'function') {

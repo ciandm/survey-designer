@@ -1,7 +1,7 @@
 import React, {useMemo} from 'react';
 import {ChoicesSchema} from '@/types/field';
+import {useChoices} from './hooks/use-choices';
 import {ChoicesContextProvider} from './choices.context';
-import {useChoices} from './use-choices';
 
 type ChoicesProps = {
   children: React.ReactNode;

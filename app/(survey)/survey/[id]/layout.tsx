@@ -1,11 +1,5 @@
 import React from 'react';
 import {notFound} from 'next/navigation';
-import {
-  SurveyShell,
-  SurveyShellAside,
-  SurveyShellMain,
-} from '@/components/survey-shell';
-import {sortChoices} from '@/utils/element';
 import {getPublishedSurvey} from '../../_lib/get-published-survey';
 
 type SurveyLayoutProps = {
@@ -22,14 +16,7 @@ const SurveyLayout = async ({children, params}: SurveyLayoutProps) => {
     return notFound();
   }
 
-  const model = sortChoices(survey.model);
-
-  return (
-    <SurveyShell className="min-h-screen">
-      <SurveyShellAside model={model} className="md:h-screen" />
-      <SurveyShellMain>{children}</SurveyShellMain>
-    </SurveyShell>
-  );
+  return <div className="flex min-h-screen">{children}</div>;
 };
 
 export default SurveyLayout;

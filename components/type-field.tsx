@@ -52,7 +52,7 @@ type MultipleChoiceFieldProps = {
   index: number;
 };
 
-const MultipleChoiceField = ({field, index}: MultipleChoiceFieldProps) => {
+const MultipleChoiceField = ({field}: MultipleChoiceFieldProps) => {
   const {control} = useFormContext<SurveyFormState>();
   const choices = field.properties.choices ?? [];
 
@@ -95,30 +95,37 @@ const SingleChoiceField = ({
   formField,
   field,
 }: Omit<MultipleChoiceFieldProps, 'index'>) => {
+  const {control} = useFormContext<SurveyFormState>();
   const choices = field.properties.choices ?? [];
 
   return (
-    <FormItem className="flex flex-col gap-2">
-      <FormControl>
-        <RadioGroup
-          onValueChange={(value) => formField.onChange([value])}
-          defaultValue={formField.value[0]}
-        >
-          {choices.map((choice) => (
-            <FormItem
-              className="flex items-center space-x-3 space-y-0"
-              key={choice.id}
+    <FormField
+      control={control}
+      name="value"
+      render={({field: formField}) => (
+        <FormItem className="flex flex-col gap-2">
+          <FormControl>
+            <RadioGroup
+              onValueChange={(value) => formField.onChange([value])}
+              defaultValue={formField.value[0]}
             >
-              <FormControl>
-                <RadioGroupItem value={choice.value} />
-              </FormControl>
-              <FormLabel className="font-normal">
-                {choice.value || '...'}
-              </FormLabel>
-            </FormItem>
-          ))}
-        </RadioGroup>
-      </FormControl>
-    </FormItem>
+              {choices.map((choice) => (
+                <FormItem
+                  className="flex items-center space-x-3 space-y-0"
+                  key={choice.id}
+                >
+                  <FormControl>
+                    <RadioGroupItem value={choice.value} />
+                  </FormControl>
+                  <FormLabel className="font-normal">
+                    {choice.value || '...'}
+                  </FormLabel>
+                </FormItem>
+              ))}
+            </RadioGroup>
+          </FormControl>
+        </FormItem>
+      )}
+    />
   );
 };

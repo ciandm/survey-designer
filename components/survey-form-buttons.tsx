@@ -4,7 +4,7 @@ import {
   CheckIcon,
 } from '@heroicons/react/20/solid';
 import {Loader2} from 'lucide-react';
-import {useSurveyFormContext} from '@/hooks/use-survey';
+import {useSurveyFormContext} from '@/hooks/use-survey-manager';
 import {ParsedModelType} from '@/types/survey';
 import {Button} from './ui/button';
 
@@ -33,7 +33,7 @@ export const SurveyFormButtons = ({
   const submitText = isLastElement ? 'Complete survey' : 'Next question';
 
   return (
-    <div className="relative">
+    <>
       {fields.length > 1 && !isFirstElement && (
         <Button
           variant="ghost"
@@ -51,7 +51,7 @@ export const SurveyFormButtons = ({
       <Button
         type="submit"
         disabled={formState.isSubmitting}
-        className="mt-12"
+        className="mt-12 self-start"
         size="lg"
       >
         {formState.isSubmitting && (
@@ -60,6 +60,6 @@ export const SurveyFormButtons = ({
         {submitText}
         <SubmitIcon className="ml-2 h-4 w-4" />
       </Button>
-    </div>
+    </>
   );
 };
