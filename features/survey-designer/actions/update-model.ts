@@ -21,7 +21,7 @@ export const updateModelAction = action(
       data: {
         model: {
           ...model,
-          version: model.version + 1,
+          version: (model?.version ?? 0) + 1,
         },
       },
     });

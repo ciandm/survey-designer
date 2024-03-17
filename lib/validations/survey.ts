@@ -27,7 +27,12 @@ export const publishSurveyInput = z.object({
 
 export const updateModelInput = z.object({
   id: z.string().min(1),
-  model: modelSchema,
+  model: modelSchema.partial(),
+});
+
+export const updateSurveyInput = z.object({
+  title: z.string().min(1, {message: 'Every survey deserves a title'}),
+  description: z.string().optional(),
 });
 
 export const deleteSurveyInput = publishSurveyInput.pick({surveyId: true});

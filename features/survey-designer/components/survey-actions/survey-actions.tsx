@@ -194,10 +194,11 @@ export const SurveyActions = () => {
         </Drawer>
       </div>
       <DuplicateSurveyDialog
+        id={survey.id}
         key={duplicateDialogOptions.data?.id}
         isOpen={duplicateDialogOptions.isOpen}
         onOpenChange={(isOpen) => handleOpenChange(isOpen, 'duplicate')}
-        data={duplicateDialogOptions.data ?? {}}
+        initialData={duplicateDialogOptions.data ?? {}}
       />
       <DeleteSurveyDialog
         key={deleteDialogOptions.data?.id}

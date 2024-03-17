@@ -1,10 +1,10 @@
 import React from 'react';
 import {WipAlert} from 'features/landing-page/components/wip-alert';
-import {DesignerToolbar} from '@/components/designer-toolbar';
 import {demoSurvey} from '@/config/demo';
 import {demoTabConfig} from '@/config/designer';
 import {DesignerStoreInitialiser} from '@/features/survey-designer/components/designer-store-initiailiser';
 import {DesignerTabManager} from '@/features/survey-designer/components/designer-tab-manager';
+import {DesignerToolbar} from '@/features/survey-designer/components/designer-toolbar/designer-toolbar';
 import {getSiteUrl} from '@/utils/hrefs';
 
 const tabs = demoTabConfig.map(({tab}) => tab);

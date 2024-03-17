@@ -93,12 +93,8 @@
       }
     ],
     "screens": {
-      "welcome": {
-        "message": "Welcome to our survey!"
-      },
-      "thank_you": {
-        "message": "Thank you for completing the survey."
-      }
+      "welcome": [],
+      "thank_you": []
     },
     "version": 1
   },
@@ -197,12 +193,8 @@
       }
     ],
     "screens": {
-      "welcome": {
-        "message": "Welcome to our survey!"
-      },
-      "thank_you": {
-        "message": "Thank you for completing the survey."
-      }
+      "welcome": [],
+      "thank_you": []
     },
     "version": 1
   },
@@ -307,12 +299,8 @@
       }
     ],
     "screens": {
-      "welcome": {
-        "message": "Welcome to our survey!"
-      },
-      "thank_you": {
-        "message": "Thank you for completing the survey."
-      }
+      "welcome": [],
+      "thank_you": []
     },
     "version": 1
   }
