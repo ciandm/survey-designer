@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import {redirect} from 'next/navigation';
 import {Button} from '@/components/ui/button';
-import {SurveyList} from '@/dashboard/_components/survey-list';
-import {getUserSurveys} from '@/dashboard/_lib/get-user-surveys';
+import {SurveyList} from '@/features/dashboard/components/survey-list';
+import {getUserSurveys} from '@/features/dashboard/lib/get-user-surveys';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/utils/hrefs';
 

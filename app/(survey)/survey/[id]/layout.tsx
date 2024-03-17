@@ -1,6 +1,6 @@
 import React from 'react';
 import {notFound} from 'next/navigation';
-import {getPublishedSurvey} from '../../_lib/get-published-survey';
+import {getPublishedSurvey} from '@/features/survey/lib/get-published-survey';
 
 type SurveyLayoutProps = {
   children: React.ReactNode;

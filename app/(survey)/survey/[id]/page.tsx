@@ -1,9 +1,9 @@
 import {Metadata} from 'next';
 import {notFound} from 'next/navigation';
 import {Survey} from '@/components/survey';
+import {getPublishedSurvey} from '@/features/survey/lib/get-published-survey';
 import {db} from '@/lib/db';
 import {modelSchema} from '@/lib/validations/survey';
-import {getPublishedSurvey} from '@/survey/_lib/get-published-survey';
 
 type Props = {
   params: {

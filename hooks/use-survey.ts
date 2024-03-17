@@ -1,12 +1,7 @@
 import {useForm, useFormContext} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {createSingleStepValidationSchema} from '@/lib/validations/survey';
-import {
-  ParsedModelType,
-  SurveyFormState,
-  SurveyResponsesMap,
-  SurveyScreen,
-} from '@/types/survey';
+import {ParsedModelType, SurveyFormState, SurveyScreen} from '@/types/survey';
 import {buildSurveyConfig} from '@/utils/survey';
 import {useSurveyReducer} from './use-survey-reducer';
 

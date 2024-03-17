@@ -1,9 +1,9 @@
 import {cookies} from 'next/headers';
 import {redirect} from 'next/navigation';
 import {ThankYouScreen} from '@/components/thank-you-screen';
-import {ExpireCookie} from '@/survey/_components/expire-cookie';
-import {COMPLETED_SURVEY_COOKIE} from '@/survey/_constants/survey';
-import {getPublishedSurvey} from '@/survey/_lib/get-published-survey';
+import {ExpireCookie} from '@/features/survey/components/expire-cookie';
+import {COMPLETED_SURVEY_COOKIE} from '@/features/survey/constants/survey';
+import {getPublishedSurvey} from '@/features/survey/lib/get-published-survey';
 import {getSiteUrl} from '@/utils/hrefs';
 
 type Props = {

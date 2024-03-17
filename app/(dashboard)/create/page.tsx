@@ -1,7 +1,7 @@
 import {Suspense} from 'react';
 import {redirect} from 'next/navigation';
-import {CreateForm} from '@/dashboard/_components/create-form';
-import {PreviousSurveys} from '@/dashboard/_components/previous-surveys/previous-surveys';
+import {CreateForm} from '@/features/dashboard/components/create-form';
+import {PreviousSurveys} from '@/features/dashboard/components/previous-surveys';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/utils/hrefs';
 

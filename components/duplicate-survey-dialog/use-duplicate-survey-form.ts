@@ -4,7 +4,7 @@ import {useRouter} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
 import {z} from 'zod';
-import {createSurveyAction} from '@/survey-designer/_actions/create-survey';
+import {createSurveyAction} from '@/features/survey-designer/actions/create-survey';
 import {getSiteUrl} from '@/utils/hrefs';
 
 const schema = z.object({

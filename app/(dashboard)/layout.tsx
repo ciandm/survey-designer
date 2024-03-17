@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import {redirect} from 'next/navigation';
-import {UserAccountNav} from '@/dashboard/_components/user-account-nav';
+import {UserAccountNav} from '@/features/auth/components/user-account-nav';
 import {getUser} from '@/lib/auth';
 import {getSiteUrl} from '@/utils/hrefs';
 

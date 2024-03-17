@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import {DesignerNavigation} from '@/survey-designer/_components/designer-navigation';
-import {useDesignerStoreSurvey} from '@/survey-designer/_store/designer-store';
+import {DesignerNavigation} from '@/features/survey-designer/components/designer-navigation';
+import {useDesignerStoreSurvey} from '@/features/survey-designer/store/designer-store';
 import {TabConfig} from '@/types/tab';
 
 type DesignerToolbarProps = {
