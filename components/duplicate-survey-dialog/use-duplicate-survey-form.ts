@@ -1,29 +1,19 @@
-import {useForm} from 'react-hook-form';
-import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
-import {z} from 'zod';
 import {createSurveyAction} from '@/features/survey-designer/actions/create-survey';
+import {useSurveyForm, UseSurveyFormProps} from '@/hooks/use-survey-form';
 import {getSiteUrl} from '@/utils/hrefs';
 
-const schema = z.object({
-  id: z.string(),
-  title: z.string().min(1, {message: 'Every survey deserves a title'}),
-  description: z.string().optional(),
-});
-
-type DuplicateSurveyFormState = z.infer<typeof schema>;
-
-export type UseDuplicateSurveyFormProps = {
-  data?: Partial<DuplicateSurveyFormState>;
+type UseDuplicateSurveyFormProps = UseSurveyFormProps & {
+  id: string;
 };
 
-export const useDuplicateSurveyForm = ({data}: UseDuplicateSurveyFormProps) => {
-  const form = useForm<DuplicateSurveyFormState>({
-    resolver: zodResolver(schema),
-    defaultValues: data,
-  });
+export const useDuplicateSurveyForm = ({
+  initialData,
+  id,
+}: UseDuplicateSurveyFormProps) => {
+  const form = useSurveyForm({initialData});
   const router = useRouter();
   const {execute: handleDuplicateSurvey, status} = useAction(
     createSurveyAction,
@@ -39,7 +29,7 @@ export const useDuplicateSurveyForm = ({data}: UseDuplicateSurveyFormProps) => {
 
   const onSubmit = form.handleSubmit((data) => {
     handleDuplicateSurvey({
-      duplicatedFrom: data.id,
+      duplicatedFrom: id,
       title: data.title,
       description: data.description,
     });

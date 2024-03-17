@@ -171,6 +171,6 @@ export const useSurveyManager = ({model, id, isPreview}: UseSurveyProps) => {
   };
 };
 
-export type UseSurveyFormReturn = ReturnType<typeof useSurveyManager>;
+export type UseSurveyManagerReturn = ReturnType<typeof useSurveyManager>;
 
 export const useSurveyFormContext = () => useFormContext<SurveyFormState>();

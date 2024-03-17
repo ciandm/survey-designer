@@ -149,9 +149,10 @@ export const SurveyList = ({surveys}: Props) => {
       />
       <DuplicateSurveyDialog
         key={duplicateDialogOptions.data?.id}
+        id={duplicateDialogOptions.data?.id || ''}
         isOpen={duplicateDialogOptions.isOpen}
         onOpenChange={(isOpen) => handleOpenChange(isOpen, 'duplicate')}
-        data={duplicateDialogOptions.data || {}}
+        initialData={duplicateDialogOptions.data || {}}
       />
     </>
   );

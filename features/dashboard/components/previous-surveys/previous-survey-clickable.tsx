@@ -34,12 +34,13 @@ export const PreviousSurveyClickable = ({
         {children}
       </button>
       <DuplicateSurveyDialog
+        id={survey.id}
         key={duplicateDialogOptions.data?.id}
         isOpen={duplicateDialogOptions.isOpen}
         onOpenChange={(isOpen) =>
           dispatch({type: 'TOGGLE_DIALOG', payload: {isOpen, key: 'duplicate'}})
         }
-        data={duplicateDialogOptions.data ?? {}}
+        initialData={duplicateDialogOptions.data ?? {}}
       />
     </>
   );
