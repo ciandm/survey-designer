@@ -1,13 +1,13 @@
 import {useReducer} from 'react';
 import {useForm, useFormContext} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
-import router from 'next/router';
+import {useRouter} from 'next/navigation';
 import {createSingleStepValidationSchema} from '@/lib/validations/survey';
 import {saveResponsesAction} from '@/survey/_actions/save-responses-action';
 import {ParsedModelType, SurveyFormState, SurveyScreen} from '@/types/survey';
 import {getSiteUrl} from '@/utils/hrefs';
 import {buildSurveyConfig, transformResponsesMap} from '@/utils/survey';
-import {surveyManagerReducer} from './use-survey-manager.utils';
+import {surveyManagerReducer} from './use-survey-manager.reducer';
 
 type UseSurveyProps = {
   model: ParsedModelType;
@@ -17,6 +17,7 @@ type UseSurveyProps = {
 
 export const useSurveyManager = ({model, id, isPreview}: UseSurveyProps) => {
   const {fields} = model;
+  const router = useRouter();
   const config = buildSurveyConfig(model);
   const [{screen, currentElementId, responsesMap}, dispatch] = useReducer(
     surveyManagerReducer,
@@ -110,6 +111,7 @@ export const useSurveyManager = ({model, id, isPreview}: UseSurveyProps) => {
           router.push(getSiteUrl.completePage({surveyId: id}));
         } catch (error) {
           alert('Failed to save survey responses');
+          console.error(error);
         }
       }
 
