@@ -1,9 +1,9 @@
 import {notFound, redirect} from 'next/navigation';
-import {DesignerToolbar} from '@/components/designer-toolbar';
 import {tabConfig} from '@/config/designer';
 import {UserAccountNav} from '@/features/auth/components/user-account-nav';
 import {DesignerStoreInitialiser} from '@/features/survey-designer/components/designer-store-initiailiser';
 import {DesignerTabManager} from '@/features/survey-designer/components/designer-tab-manager';
+import {DesignerToolbar} from '@/features/survey-designer/components/designer-toolbar/designer-toolbar';
 import {SurveyActions} from '@/features/survey-designer/components/survey-actions/survey-actions';
 import {getUserSurvey} from '@/features/survey-designer/lib/get-user-survey';
 import {getUser} from '@/lib/auth';

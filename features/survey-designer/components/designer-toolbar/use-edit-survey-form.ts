@@ -1,3 +1,4 @@
+import {usePathname} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
 import {updateModelAction} from '@/features/survey-designer/actions/update-model';
 import {
@@ -9,7 +10,7 @@ import {
   SurveyFormState,
   useSurveyForm,
   UseSurveyFormProps,
-} from './use-survey-form';
+} from '@/hooks/use-survey-form';
 
 type useEditSurveyForm = {
   initialData?: UseSurveyFormProps['initialData'];
@@ -22,6 +23,7 @@ export const useEditSurveyForm = ({
   id,
   onSuccess,
 }: useEditSurveyForm) => {
+  const pathname = usePathname();
   const form = useSurveyForm({initialData});
   const elements = useDesignerStoreElements();
   const survey = useDesignerStoreSurvey();
@@ -37,6 +39,11 @@ export const useEditSurveyForm = ({
 
   const onSubmit = form.handleSubmit(
     (data) => {
+      if (pathname === '/demo') {
+        onSuccess?.(data);
+        form.reset(data);
+        return;
+      }
       const model = buildSurveyModel({elements, survey});
       handleUpdateModel({
         id,
