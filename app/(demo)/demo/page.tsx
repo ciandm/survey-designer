@@ -2,9 +2,9 @@
 
 import {Suspense} from 'react';
 import {demoTabConfig} from '@/config/designer';
-import {Designer} from '@/survey-designer/_components/designer/designer';
-import {DesignerTabItem} from '@/survey-designer/_components/designer-tab-manager';
-import {Previewer} from '@/survey-designer/_components/previewer';
+import {Designer} from '@/features/survey-designer/components/designer/designer';
+import {DesignerTabItem} from '@/features/survey-designer/components/designer-tab-manager';
+import {Previewer} from '@/features/survey-designer/components/previewer';
 
 const DemoPage = () => {
   return (

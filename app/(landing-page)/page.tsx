@@ -1,4 +1,4 @@
-import {HeroSection} from './_components/hero-section';
+import {HeroSection} from '@/features/landing-page/components/hero-section';
 
 const LandingPage = async () => {
   return (

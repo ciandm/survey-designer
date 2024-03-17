@@ -3,7 +3,7 @@
 import {XCircleIcon} from '@heroicons/react/20/solid';
 import {Loader2} from 'lucide-react';
 import {useAction} from 'next-safe-action/hooks';
-import {deleteSurveyAction} from '@/survey-designer/_actions/delete-survey';
+import {deleteSurveyAction} from '@/features/survey-designer/actions/delete-survey';
 import {
   AlertDialog,
   AlertDialogCancel,
