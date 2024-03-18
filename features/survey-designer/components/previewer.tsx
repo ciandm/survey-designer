@@ -1,7 +1,7 @@
 'use client';
 
 import {useMemo} from 'react';
-import {Survey} from '@/components/survey';
+import {Survey} from '@/components/survey/survey';
 import {
   useDesignerStoreElements,
   useDesignerStoreSurvey,

@@ -7,7 +7,7 @@ import {createSingleStepValidationSchema} from '@/lib/validations/survey';
 import {ParsedModelType, SurveyFormState, SurveyScreen} from '@/types/survey';
 import {getSiteUrl} from '@/utils/hrefs';
 import {buildSurveyConfig, transformResponsesMap} from '@/utils/survey';
-import {surveyManagerReducer} from './use-survey-manager.reducer';
+import {surveyManagerReducer} from './use-survey.reducer';
 
 type UseSurveyProps = {
   model: ParsedModelType;
@@ -15,7 +15,7 @@ type UseSurveyProps = {
   isPreview?: boolean;
 };
 
-export const useSurveyManager = ({model, id, isPreview}: UseSurveyProps) => {
+export const useSurvey = ({model, id, isPreview}: UseSurveyProps) => {
   const {fields} = model;
   const router = useRouter();
   const config = buildSurveyConfig(model);
@@ -171,6 +171,6 @@ export const useSurveyManager = ({model, id, isPreview}: UseSurveyProps) => {
   };
 };
 
-export type UseSurveyManagerReturn = ReturnType<typeof useSurveyManager>;
+export type UseSurveyManagerReturn = ReturnType<typeof useSurvey>;
 
 export const useSurveyFormContext = () => useFormContext<SurveyFormState>();
