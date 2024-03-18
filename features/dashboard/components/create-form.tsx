@@ -7,7 +7,7 @@ import {useRouter} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
 import {z} from 'zod';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {
   Form,
   FormControl,
@@ -16,9 +16,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import {Input} from '@/components/ui/input';
-import {Textarea} from '@/components/ui/textarea';
+} from '@/components/ui';
+import {Input} from '@/components/ui';
+import {Textarea} from '@/components/ui';
 import {createSurveyAction} from '@/features/survey-designer/actions/create-survey';
 import {getSiteUrl} from '@/utils/hrefs';
 

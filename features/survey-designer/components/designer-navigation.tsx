@@ -1,6 +1,6 @@
 'use client';
 
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {TabConfig} from '@/types/tab';
 import {cn} from '@/utils/classnames';
 import {useDesignerTabManager} from './designer-tab-manager';

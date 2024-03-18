@@ -4,7 +4,6 @@ import {
   CheckIcon,
 } from '@heroicons/react/20/solid';
 import {Loader2} from 'lucide-react';
-import {useSurveyFormContext} from '@/components/survey/hooks/use-survey';
 import {ParsedModelType} from '@/types/survey';
 import {Button} from './ui/button';
 
@@ -13,6 +12,7 @@ type SurveyFormButtonsProps = {
   model: ParsedModelType;
   currentElementId: string;
   children: React.ReactNode;
+  isSubmitting?: boolean;
 };
 
 export const SurveyFormButtons = ({
@@ -20,9 +20,9 @@ export const SurveyFormButtons = ({
   model,
   currentElementId,
   children,
+  isSubmitting = false,
 }: SurveyFormButtonsProps) => {
   const {fields} = model;
-  const {formState} = useSurveyFormContext();
   const currentElementIndex = fields.findIndex(
     (el) => el.id === currentElementId,
   );
@@ -50,13 +50,11 @@ export const SurveyFormButtons = ({
       {children}
       <Button
         type="submit"
-        disabled={formState.isSubmitting}
+        disabled={isSubmitting}
         className="mt-12 self-start"
         size="lg"
       >
-        {formState.isSubmitting && (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        )}
+        {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {submitText}
         <SubmitIcon className="ml-2 h-4 w-4" />
       </Button>

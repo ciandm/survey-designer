@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {redirect} from 'next/navigation';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {AuthFormWrapper} from '@/features/auth/components/auth-form-wrapper';
 import {RegisterForm} from '@/features/auth/components/register-form';
 import {getUser} from '@/lib/auth';

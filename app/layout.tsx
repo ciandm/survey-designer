@@ -1,6 +1,6 @@
 import type {Metadata} from 'next';
 import {Inter} from 'next/font/google';
-import {Toaster} from '@/components/ui/sonner';
+import {Toaster} from '@/components/ui';
 import {QueryClientProvider} from '@/lib/query-client/provider';
 import {cn} from '@/utils/classnames';
 import './globals.css';

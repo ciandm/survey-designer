@@ -5,7 +5,7 @@ import {ChatBubbleOvalLeftEllipsisIcon} from '@heroicons/react/20/solid';
 import {Loader2} from 'lucide-react';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {publishSurveyAction} from '@/features/survey-designer/actions/publish-survey';
 import {CopySurveyUrl} from '@/features/survey-designer/components/copy-survey-url';
 import {

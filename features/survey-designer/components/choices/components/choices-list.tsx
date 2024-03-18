@@ -18,14 +18,14 @@ import {
 import {DragHandleDots2Icon} from '@radix-ui/react-icons';
 import {Trash2} from 'lucide-react';
 import {Sortable} from '@/components/sortable';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
+import {Button} from '@/components/ui';
+import {Input} from '@/components/ui';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@/components/ui';
 import {useDesignerStoreActions} from '@/features/survey-designer/store/designer-store';
 import {useChoicesContext} from '../choices.context';
 

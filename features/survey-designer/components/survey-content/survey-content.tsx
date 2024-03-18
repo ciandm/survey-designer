@@ -8,14 +8,14 @@ import {PlusIcon} from '@heroicons/react/20/solid';
 import {DotsVerticalIcon} from '@radix-ui/react-icons';
 import {isEmpty} from 'lodash';
 import {Sortable} from '@/components/sortable';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui';
 import {
   useDesignerStoreFieldsList,
   useDesignerStoreScreens,

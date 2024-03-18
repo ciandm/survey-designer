@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {toast} from 'sonner';
 import {SurveyDialog} from '@/components/survey-dialog';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {DesignerNavigation} from '@/features/survey-designer/components/designer-navigation';
 import {useEditSurveyForm} from '@/features/survey-designer/components/designer-toolbar/use-edit-survey-form';
 import {
@@ -39,7 +39,6 @@ export const DesignerToolbar = ({
     initialData: {title: surveyTitle, description},
     id,
     onSuccess: ({title, description = ''}) => {
-      console.log('hi!');
       storeActions.survey.updateTitle(title);
       storeActions.survey.updateDescription(description);
       setIsSurveyDialogOpen(false);

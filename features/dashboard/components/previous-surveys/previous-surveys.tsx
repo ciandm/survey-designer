@@ -1,5 +1,5 @@
 import {getUserSurveys} from 'features/dashboard/lib/get-user-surveys';
-import {Skeleton} from '@/components/ui/skeleton';
+import {Skeleton} from '@/components/ui';
 import {PreviousSurveyClickable} from './previous-survey-clickable';
 
 export const PreviousSurveys = async () => {

@@ -1,5 +1,5 @@
-import {Input} from '@/components/ui/input';
-import {Textarea} from '@/components/ui/textarea';
+import {Input} from '@/components/ui';
+import {Textarea} from '@/components/ui';
 import {FieldType} from '@/types/field';
 import {ScreenSchema} from '@/types/screen';
 import {getStoreKeyForScreenType} from '@/utils/screen';

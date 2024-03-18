@@ -7,10 +7,10 @@ import {
   Settings,
   Trash2Icon,
 } from 'lucide-react';
-import {Button} from '@/components/ui/button';
-import {Drawer, DrawerContent} from '@/components/ui/drawer';
-import {Label} from '@/components/ui/label';
-import {Switch} from '@/components/ui/switch';
+import {Button} from '@/components/ui';
+import {Drawer, DrawerContent} from '@/components/ui';
+import {Label} from '@/components/ui';
+import {Switch} from '@/components/ui';
 import {useDesignerStoreFields} from '@/features/survey-designer/store/designer-store';
 import {FieldSchema} from '@/types/field';
 import {UseDesignerElementReturn} from '../designer/hooks/use-designer-element';

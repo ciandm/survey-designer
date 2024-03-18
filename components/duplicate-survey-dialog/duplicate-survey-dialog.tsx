@@ -1,12 +1,11 @@
 'use client';
 
 import {Loader2} from 'lucide-react';
-import {useDesignerStoreSurveyId} from '@/features/survey-designer/store/designer-store';
 import {UseSurveyFormProps} from '@/hooks/use-survey-form';
 import {SurveyDialog} from '../survey-dialog';
 import {Button} from '../ui/button';
 import {DialogHeader, DialogTitle} from '../ui/dialog';
-import {useDuplicateSurveyForm} from './use-duplicate-survey-form';
+import {useDuplicateSurveyDialog} from './hooks/use-duplicate-dialog';
 
 type DuplicateSurveyFormProps = {
   isOpen: boolean;
@@ -21,7 +20,7 @@ export const DuplicateSurveyDialog = ({
   initialData,
   id,
 }: DuplicateSurveyFormProps) => {
-  const {form, status, onSubmit} = useDuplicateSurveyForm({initialData, id});
+  const {form, status, onSubmit} = useDuplicateSurveyDialog({initialData, id});
 
   return (
     <SurveyDialog

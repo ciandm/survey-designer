@@ -7,7 +7,7 @@ import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
 import {z} from 'zod';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {
   Form,
   FormControl,
@@ -16,8 +16,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import {Input} from '@/components/ui/input';
+} from '@/components/ui';
+import {Input} from '@/components/ui';
 import {registerSchema} from '@/lib/validations/auth';
 import {getSiteUrl} from '@/utils/hrefs';
 import {registerAction} from '../actions/register-action';

@@ -6,7 +6,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui';
 import {ELEMENT_OPTIONS} from '@/lib/constants/element';
 import {SurveyElementType} from '@/types/element';
 import {FieldType} from '@/types/field';

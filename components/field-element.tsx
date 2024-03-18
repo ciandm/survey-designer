@@ -1,6 +1,6 @@
 import React from 'react';
-import {FormDescription, FormItem, FormLabel} from '@/components/ui/form';
-import {Label} from '@/components/ui/label';
+import {FormDescription, FormItem, FormLabel} from '@/components/ui';
+import {Label} from '@/components/ui';
 import {FieldSchema} from '@/types/field';
 import {cn} from '@/utils/classnames';
 

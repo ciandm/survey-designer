@@ -1,5 +1,5 @@
 import React from 'react';
-import {Separator} from '@/components/ui/separator';
+import {Separator} from '@/components/ui';
 import {SurveyElementType} from '@/types/element';
 import {FieldType} from '@/types/field';
 import {ElementTypeSelect} from './element-type-select';

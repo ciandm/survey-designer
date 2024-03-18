@@ -5,8 +5,8 @@ import {ScreenElement} from '@/components/screen-element';
 import {useSurvey} from '@/components/survey/hooks/use-survey';
 import {SurveyFormButtons} from '@/components/survey-form-buttons';
 import {TypeInputField} from '@/components/type-field';
-import {Button} from '@/components/ui/button';
-import {Form, FormField} from '@/components/ui/form';
+import {Button} from '@/components/ui';
+import {Form, FormField} from '@/components/ui';
 import {ParsedModelType} from '@/types/survey';
 import {FieldElement} from '../field-element';
 
@@ -64,6 +64,7 @@ export const Survey = ({model, id, isPreview = false}: SurveyProps) => {
                         currentElementId={element.id}
                         model={model}
                         onBack={handlers.handleGoBack}
+                        isSubmitting={form.formState.isSubmitting}
                       >
                         <TypeInputField formField={formField} field={element} />
                         <ErrorMessage

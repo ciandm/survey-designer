@@ -1,5 +1,5 @@
 import React, {useId} from 'react';
-import {Label} from '@/components/ui/label';
+import {Label} from '@/components/ui';
 import {SettingsInputContextProvider} from './settings-field.context';
 import {useSettingsInputContext} from './settings-field.context';
 

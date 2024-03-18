@@ -4,7 +4,7 @@ import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {getSiteUrl} from '@/utils/hrefs';
 import {logOutAction} from '../actions/log-out-action';
 
