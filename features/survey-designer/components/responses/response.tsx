@@ -3,8 +3,8 @@
 import {SurveyResult} from '@prisma/client';
 import {CheckCircle2, Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
-import {Badge} from '@/components/ui/badge';
-import {Button} from '@/components/ui/button';
+import {Badge} from '@/components/ui';
+import {Button} from '@/components/ui';
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/components/ui';
 import {useToast} from '@/components/ui/use-toast';
 import {useDeleteSurveyResult} from '@/features/survey-designer/hooks/use-delete-response';
 import {responsesSchema} from '@/lib/validations/survey';

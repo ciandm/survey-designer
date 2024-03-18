@@ -1,9 +1,9 @@
 import {Metadata} from 'next';
 import {tabConfig} from '@/config/designer';
-import {Designer} from '@/features/survey-designer/components/designer/designer';
+import {Designer} from '@/features/survey-designer/components/designer';
 import {DesignerTabItem} from '@/features/survey-designer/components/designer-tab-manager';
 import {Previewer} from '@/features/survey-designer/components/previewer';
-import {Responses} from '@/features/survey-designer/components/responses/responses';
+import {Responses} from '@/features/survey-designer/components/responses';
 import {getUserSurvey} from '@/features/survey-designer/lib/get-user-survey';
 
 const tabs = tabConfig.map((item) => item.tab);

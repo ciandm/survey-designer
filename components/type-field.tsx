@@ -1,14 +1,9 @@
 import {ControllerRenderProps, useFormContext} from 'react-hook-form';
-import {Checkbox} from '@/components/ui/checkbox';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from '@/components/ui/form';
-import {Input} from '@/components/ui/input';
-import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
-import {Textarea} from '@/components/ui/textarea';
+import {Checkbox} from '@/components/ui';
+import {FormControl, FormField, FormItem, FormLabel} from '@/components/ui';
+import {Input} from '@/components/ui';
+import {RadioGroup, RadioGroupItem} from '@/components/ui';
+import {Textarea} from '@/components/ui';
 import {FieldSchema} from '@/types/field';
 import {SurveyFormState} from '@/types/survey';
 

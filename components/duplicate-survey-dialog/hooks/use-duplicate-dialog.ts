@@ -5,14 +5,14 @@ import {createSurveyAction} from '@/features/survey-designer/actions/create-surv
 import {useSurveyForm, UseSurveyFormProps} from '@/hooks/use-survey-form';
 import {getSiteUrl} from '@/utils/hrefs';
 
-type UseDuplicateSurveyFormProps = UseSurveyFormProps & {
+type UseDuplicateSurveyDialogProps = UseSurveyFormProps & {
   id: string;
 };
 
-export const useDuplicateSurveyForm = ({
+export const useDuplicateSurveyDialog = ({
   initialData,
   id,
-}: UseDuplicateSurveyFormProps) => {
+}: UseDuplicateSurveyDialogProps) => {
   const form = useSurveyForm({initialData});
   const router = useRouter();
   const {execute: handleDuplicateSurvey, status} = useAction(

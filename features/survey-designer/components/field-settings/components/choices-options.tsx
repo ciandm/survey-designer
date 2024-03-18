@@ -1,5 +1,5 @@
 import {Label} from '@radix-ui/react-label';
-import {Input} from '@/components/ui/input';
+import {Input} from '@/components/ui';
 import {
   Select,
   SelectContent,
@@ -7,7 +7,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui';
 import {
   SettingsField,
   SettingsFieldInputWrapper,

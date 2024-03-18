@@ -1,7 +1,7 @@
 'use client';
 
 import {UseFormReturn} from 'react-hook-form';
-import {Form} from '@/components/ui/form';
+import {Form} from '@/components/ui';
 import {SurveyFormState} from '@/types/survey';
 
 type SurveyScreenProps = {

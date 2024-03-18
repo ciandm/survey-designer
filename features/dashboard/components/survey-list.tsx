@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import {DeleteSurveyDialog} from '@/components/delete-survey-dialog';
 import {DuplicateSurveyDialog} from '@/components/duplicate-survey-dialog/duplicate-survey-dialog';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui';
 import {useSurveyDialog} from '@/features/survey-designer/hooks/use-survey-dialog';
 import {WithParsedModel} from '@/types/survey';
 import {cn} from '@/utils/classnames';

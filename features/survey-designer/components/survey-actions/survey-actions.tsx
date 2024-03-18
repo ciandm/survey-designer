@@ -5,7 +5,7 @@ import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {DeleteSurveyDialog} from '@/components/delete-survey-dialog';
 import {DuplicateSurveyDialog} from '@/components/duplicate-survey-dialog/duplicate-survey-dialog';
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {
   Drawer,
   DrawerContent,
@@ -14,15 +14,15 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/components/ui/drawer';
+} from '@/components/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui/popover';
+} from '@/components/ui';
+import {Popover, PopoverContent, PopoverTrigger} from '@/components/ui';
 import {useSurveyDialog} from '@/features/survey-designer/hooks/use-survey-dialog';
 import {
   useDesignerStoreIsPublished,

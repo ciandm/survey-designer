@@ -6,14 +6,14 @@ import {Loader2} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
-import {Avatar, AvatarFallback} from '@/components/ui/avatar';
+import {Avatar, AvatarFallback} from '@/components/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui';
 import {logOutAction} from '@/features/auth/actions/log-out-action';
 import {cn} from '@/utils/classnames';
 import {getSiteUrl} from '@/utils/hrefs';

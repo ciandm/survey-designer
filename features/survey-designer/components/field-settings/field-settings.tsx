@@ -1,16 +1,16 @@
 import {PlusCircledIcon} from '@radix-ui/react-icons';
 import {EraserIcon} from 'lucide-react';
-import {Button} from '@/components/ui/button';
-import {Label} from '@/components/ui/label';
-import {Separator} from '@/components/ui/separator';
-import {Switch} from '@/components/ui/switch';
-import {Textarea} from '@/components/ui/textarea';
+import {Button} from '@/components/ui';
+import {Label} from '@/components/ui';
+import {Separator} from '@/components/ui';
+import {Switch} from '@/components/ui';
+import {Textarea} from '@/components/ui';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@/components/ui';
 import {FieldSchema} from '@/types/field';
 import {
   Choices,

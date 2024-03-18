@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dialog, DialogContent} from '@/components/ui/dialog';
+import {Dialog, DialogContent} from '@/components/ui';
 import {UseSurveyFormReturn} from '@/hooks/use-survey-form';
 import {
   Form,

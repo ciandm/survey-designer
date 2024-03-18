@@ -5,8 +5,8 @@ import {CheckCircleIcon, CheckIcon} from '@heroicons/react/20/solid';
 import {CopyIcon} from 'lucide-react';
 import {useParams} from 'next/navigation';
 import {toast} from 'sonner';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
+import {Button} from '@/components/ui';
+import {Input} from '@/components/ui';
 import {cn} from '@/utils/classnames';
 
 export const CopySurveyUrl = ({className}: {className?: string}) => {

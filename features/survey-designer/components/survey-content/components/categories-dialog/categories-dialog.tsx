@@ -1,11 +1,11 @@
-import {Button} from '@/components/ui/button';
+import {Button} from '@/components/ui';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/components/ui';
 import {ElementTypeIcon} from '@/features/survey-designer/components/element-type-icon';
 import {useDesignerStoreScreens} from '@/features/survey-designer/store/designer-store';
 import {ELEMENT_OPTIONS} from '@/lib/constants/element';
