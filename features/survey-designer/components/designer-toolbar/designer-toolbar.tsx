@@ -39,7 +39,6 @@ export const DesignerToolbar = ({
     initialData: {title: surveyTitle, description},
     id,
     onSuccess: ({title, description = ''}) => {
-      console.log('hi!');
       storeActions.survey.updateTitle(title);
       storeActions.survey.updateDescription(description);
       setIsSurveyDialogOpen(false);
