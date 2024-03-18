@@ -4,7 +4,7 @@ import {
   CheckIcon,
 } from '@heroicons/react/20/solid';
 import {Loader2} from 'lucide-react';
-import {useSurveyFormContext} from '@/hooks/use-survey-manager';
+import {useSurveyFormContext} from '@/components/survey/hooks/use-survey';
 import {ParsedModelType} from '@/types/survey';
 import {Button} from './ui/button';
 

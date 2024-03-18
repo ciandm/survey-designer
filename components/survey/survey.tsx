@@ -2,13 +2,13 @@
 
 import {ErrorMessage} from '@hookform/error-message';
 import {ScreenElement} from '@/components/screen-element';
+import {useSurvey} from '@/components/survey/hooks/use-survey';
 import {SurveyFormButtons} from '@/components/survey-form-buttons';
 import {TypeInputField} from '@/components/type-field';
 import {Button} from '@/components/ui/button';
 import {Form, FormField} from '@/components/ui/form';
-import {useSurveyManager} from '@/hooks/use-survey-manager';
 import {ParsedModelType} from '@/types/survey';
-import {FieldElement} from './field-element';
+import {FieldElement} from '../field-element';
 
 type SurveyProps = {
   model: ParsedModelType;
@@ -17,7 +17,7 @@ type SurveyProps = {
 };
 
 export const Survey = ({model, id, isPreview = false}: SurveyProps) => {
-  const {form, handlers, currentElement, screen} = useSurveyManager({
+  const {form, handlers, currentElement, screen} = useSurvey({
     model,
     isPreview,
     id,
